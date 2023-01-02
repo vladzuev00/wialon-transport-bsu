@@ -16,6 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString(callSuper = true)
 @Builder
 public class ParameterEntity extends AbstractEntity<Long> {
 
@@ -36,6 +37,7 @@ public class ParameterEntity extends AbstractEntity<Long> {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "extended_data_id")
+    @ToString.Exclude
     private ExtendedDataEntity extendedData;
 
     public enum Type {
