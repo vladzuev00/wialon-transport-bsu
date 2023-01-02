@@ -139,10 +139,10 @@ ALTER TABLE outbound_commands
 
 CREATE TABLE tracker_last_data_calculations(
 	id BIGSERIAL NOT NULL PRIMARY KEY,
-	gps_odometer DECIMAL NOT NULL,
+	gps_odometer DOUBLE PRECISION NOT NULL,
 	ignition_on BOOLEAN NOT NULL,
 	engine_on_duration_seconds BIGINT NOT NULL,
-	acceleration DECIMAL NOT NULL,
+	acceleration DOUBLE PRECISION NOT NULL,
 	data_id BIGINT NOT NULL
 );
 
