@@ -14,6 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
+@Builder
 public class DataCalculationsEntity extends AbstractEntity<Long> {
 
     @Id
