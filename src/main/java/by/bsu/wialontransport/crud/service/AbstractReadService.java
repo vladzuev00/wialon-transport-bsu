@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.AbstractDto;
 import by.bsu.wialontransport.crud.entity.AbstractEntity;
 import by.bsu.wialontransport.crud.mapper.AbstractMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,17 +24,20 @@ public abstract class AbstractReadService<
         this.repository = repository;
     }
 
-    public Optional<DtoType> findById(final IdType id) {
+    @Transactional(readOnly = true)
+    public final Optional<DtoType> findById(final IdType id) {
         final Optional<EntityType> optionalEntity = this.repository.findById(id);
         return optionalEntity.map(this.mapper::mapToDto);
     }
 
-    public List<DtoType> findById(final Collection<IdType> ids) {
+    @Transactional(readOnly = true)
+    public final List<DtoType> findById(final Collection<IdType> ids) {
         final List<EntityType> foundEntities = this.repository.findAllById(ids);
         return this.mapper.mapToDto(foundEntities);
     }
 
-    public boolean isExist(final IdType id) {
+    @Transactional(readOnly = true)
+    public final boolean isExist(final IdType id) {
         return this.repository.existsById(id);
     }
 }
