@@ -12,9 +12,9 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoType extends AbstractDto<?>> {
-    protected final ModelMapper modelMapper;
-    protected final Class<EntityType> entityType;
-    protected final Class<DtoType> dtoType;
+    private final ModelMapper modelMapper;
+    private final Class<EntityType> entityType;
+    private final Class<DtoType> dtoType;
 
     public AbstractMapper(final ModelMapper modelMapper, final Class<EntityType> entityType,
                           final Class<DtoType> dtoType) {
@@ -24,11 +24,11 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
         this.configureMapper();
     }
 
-    public DtoType mapToDto(final EntityType mapped) {
+    public final DtoType mapToDto(final EntityType mapped) {
         return !isNull(mapped) ? this.modelMapper.map(mapped, this.dtoType) : null;
     }
 
-    public List<DtoType> mapToDto(final Collection<EntityType> mapped) {
+    public final List<DtoType> mapToDto(final Collection<EntityType> mapped) {
         return !isNull(mapped)
                 ? mapped.stream()
                 .map(this::mapToDto)
@@ -36,11 +36,11 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
                 : null;
     }
 
-    public EntityType mapToEntity(DtoType mapped) {
+    public final EntityType mapToEntity(DtoType mapped) {
         return !isNull(mapped) ? this.modelMapper.map(mapped, this.entityType) : null;
     }
 
-    public List<EntityType> mapToEntity(Collection<DtoType> mapped) {
+    public final List<EntityType> mapToEntity(Collection<DtoType> mapped) {
         return !isNull(mapped)
                 ? mapped.stream()
                 .map(this::mapToEntity)

@@ -6,17 +6,20 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Value
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Data implements AbstractDto<Long> {
-    Long id;
-    LocalDate date;
-    LocalTime time;
-    Latitude latitude;
-    Longitude longitude;
-    int speed;
-    int course;
-    int height;
-    int amountOfSatellites;
+    private final Long id;
+    private final LocalDate date;
+    private final LocalTime time;
+    private final Latitude latitude;
+    private final Longitude longitude;
+    private final int speed;
+    private final int course;
+    private final int height;
+    private final int amountOfSatellites;
 
     @AllArgsConstructor
     @Getter
