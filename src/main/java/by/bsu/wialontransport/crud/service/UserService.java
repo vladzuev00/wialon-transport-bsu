@@ -7,8 +7,7 @@ import by.bsu.wialontransport.crud.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class UserService
-        extends AbstractCRUDService<Long, UserEntity, User, UserMapper, UserRepository> {
+public class UserService extends AbstractCRUDService<Long, UserEntity, User, UserMapper, UserRepository> {
 
     public UserService(UserMapper mapper, UserRepository repository) {
         super(mapper, repository);
