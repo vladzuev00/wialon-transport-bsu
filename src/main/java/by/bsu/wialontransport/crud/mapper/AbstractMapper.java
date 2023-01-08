@@ -50,10 +50,6 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
 
     protected abstract DtoType createDto(EntityType entity);
 
-    protected void mapSpecificFields(EntityType source, DtoType destination) {
-
-    }
-
     protected void mapSpecificFields(DtoType source, EntityType destination) {
 
     }
@@ -61,19 +57,9 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
     @SuppressWarnings("unchecked")
     private void configureMapper() {
         this.modelMapper.createTypeMap(this.entityType, this.dtoType)
-                .setPostConverter(this.createConverterEntityToDto())
                 .setProvider(request -> this.createDto((EntityType) request.getSource()));
         this.modelMapper.createTypeMap(this.dtoType, this.entityType)
                 .setPostConverter(this.createConverterDtoToEntity());
-    }
-
-    private Converter<EntityType, DtoType> createConverterEntityToDto() {
-        return context -> {
-            final EntityType source = context.getSource();
-            final DtoType destination = context.getDestination();
-            mapSpecificFields(source, destination);
-            return context.getDestination();
-        };
     }
 
     private Converter<DtoType, EntityType> createConverterDtoToEntity() {
