@@ -102,5 +102,11 @@
       <version>2.3.9</version>
     </dependency>
 
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.77.Final</version>
+    </dependency>
+
   </dependencies>
 </project>

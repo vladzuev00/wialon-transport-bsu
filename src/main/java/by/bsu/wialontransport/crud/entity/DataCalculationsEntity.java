@@ -7,6 +7,7 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
+//TODO: add type of message(as in signum)
 @Entity
 @Table(name = "tracker_last_data_calculations")
 @NoArgsConstructor

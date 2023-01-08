@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -20,6 +19,21 @@ public class Data implements AbstractDto<Long> {
     private final int course;
     private final int height;
     private final int amountOfSatellites;
+
+    @Builder(builderMethodName = "dataBuilder")
+    public Data(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,
+                final Longitude longitude, final int speed, final int course, final int height,
+                final int amountOfSatellites) {
+        this.id = id;
+        this.date = date;
+        this.time = time;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.speed = speed;
+        this.course = course;
+        this.height = height;
+        this.amountOfSatellites = amountOfSatellites;
+    }
 
     @AllArgsConstructor
     @Getter
