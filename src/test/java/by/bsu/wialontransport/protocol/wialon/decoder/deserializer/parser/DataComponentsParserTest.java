@@ -17,12 +17,12 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static java.time.LocalDateTime.MIN;
 import static org.junit.Assert.*;
 
-public final class MessageComponentsParserTest {
+public final class DataComponentsParserTest {
     private static final String FIELD_NAME_MESSAGE_REGEX = "MESSAGE_REGEX";
 
     private final String messageRegex;
 
-    public MessageComponentsParserTest()
+    public DataComponentsParserTest()
             throws Exception {
         this.messageRegex = findMessageRegex();
     }
@@ -33,13 +33,13 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        new MessageComponentsParser(givenMessage);
+        new DataComponentsParser(givenMessage);
     }
 
     @Test(expected = NotValidMessageException.class)
     public void parserShouldNotBeCreatedWithNotValidMessage() {
         final String givenMessage = "not valid message";
-        new MessageComponentsParser(givenMessage);
+        new DataComponentsParser(givenMessage);
     }
 
     @Test
@@ -63,7 +63,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final LocalDateTime actual = parser.parseDateTime();
         final LocalDateTime expected = LocalDateTime.of(
@@ -77,7 +77,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final LocalDateTime actual = parser.parseDateTime();
         assertEquals(MIN, actual);
@@ -89,7 +89,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final Latitude actual = parser.parseLatitude();
         final Latitude expected = Latitude.builder()
@@ -108,7 +108,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final Latitude actual = parser.parseLatitude();
         final Latitude expected = Latitude.builder()
@@ -126,7 +126,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final Longitude actual = parser.parseLongitude();
         final Longitude expected = Longitude.builder()
@@ -144,7 +144,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final Longitude actual = parser.parseLongitude();
         final Longitude expected = Longitude.builder()
@@ -162,7 +162,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseSpeed();
         final int expected = 100;
@@ -175,7 +175,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseSpeed();
         assertEquals(Integer.MIN_VALUE, actual);
@@ -187,7 +187,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseCourse();
         final int expected = 15;
@@ -200,7 +200,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseCourse();
         assertEquals(Integer.MIN_VALUE, actual);
@@ -212,7 +212,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseAltitude();
         final int expected = 10;
@@ -225,7 +225,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseAltitude();
         assertEquals(Integer.MIN_VALUE, actual);
@@ -237,7 +237,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseAmountSatellites();
         final int expected = 177;
@@ -250,7 +250,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseAmountSatellites();
         assertEquals(Integer.MIN_VALUE, actual);
@@ -262,7 +262,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final double actual = parser.parseReductionPrecision();
         final double expected = 545.4554;
@@ -275,7 +275,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final double actual = parser.parseReductionPrecision();
         assertEquals(Double.MIN_VALUE, actual, 0.);
@@ -287,7 +287,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseInputs();
         final int expected = 19;
@@ -300,7 +300,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseInputs();
         assertEquals(Integer.MIN_VALUE, actual);
@@ -312,7 +312,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseOutputs();
         final int expected = 18;
@@ -325,7 +325,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final int actual = parser.parseOutputs();
         final int expected = Integer.MIN_VALUE;
@@ -338,7 +338,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final double[] actual = parser.parseAnalogInputs();
         final double[] expected = new double[]{
@@ -353,7 +353,7 @@ public final class MessageComponentsParserTest {
                 + ";"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final double[] actual = parser.parseAnalogInputs();
         final double[] expected = new double[]{
@@ -367,7 +367,7 @@ public final class MessageComponentsParserTest {
                 + "NA;"
                 + "keydrivercode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final double[] actual = parser.parseAnalogInputs();
         final double[] expected = new double[]{
@@ -381,7 +381,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "driverkeycode;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final String actual = parser.parseDriverKeyCode();
         final String expected = "driverkeycode";
@@ -394,7 +394,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "NA;"
                 + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final String actual = parser.parseDriverKeyCode();
         final String expected = "not defined";
@@ -407,7 +407,7 @@ public final class MessageComponentsParserTest {
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name1:1:654321,param-name2:2:65.4321,param-name3:3:param-value";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final List<Parameter> actual = parser.parseParameters();
         final List<Parameter> expected = List.of(
@@ -435,7 +435,7 @@ public final class MessageComponentsParserTest {
         final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;";
-        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+        final DataComponentsParser parser = new DataComponentsParser(givenMessage);
 
         final List<Parameter> actual = parser.parseParameters();
         assertTrue(actual.isEmpty());
@@ -443,7 +443,7 @@ public final class MessageComponentsParserTest {
 
     private static String findMessageRegex()
             throws Exception {
-        final Field messageRegexField = MessageComponentsParser.class.getDeclaredField(FIELD_NAME_MESSAGE_REGEX);
+        final Field messageRegexField = DataComponentsParser.class.getDeclaredField(FIELD_NAME_MESSAGE_REGEX);
         messageRegexField.setAccessible(true);
         try {
             return (String) messageRegexField.get(null);

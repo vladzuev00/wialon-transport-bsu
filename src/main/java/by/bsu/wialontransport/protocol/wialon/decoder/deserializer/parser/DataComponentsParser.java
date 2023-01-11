@@ -25,7 +25,7 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.regex.Pattern.compile;
 
-public final class MessageComponentsParser {
+public final class DataComponentsParser {
     private static final String MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE = "Given message '%s' isn't valid.";
 
     private static final int GROUP_NUMBER_DATE_TIME = 1;
@@ -114,7 +114,7 @@ public final class MessageComponentsParser {
     private final GeographicCoordinateParser<Longitude> longitudeParser;
     private final ParameterParser parameterParser;
 
-    public MessageComponentsParser(final String source) {
+    public DataComponentsParser(final String source) {
         this.matcher = MESSAGE_PATTERN.matcher(source);
         if (!this.matcher.matches()) {
             throw new NotValidMessageException(format(MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE, source));
@@ -224,7 +224,7 @@ public final class MessageComponentsParser {
         }
 
         public final T parse() {
-            final String geographicCoordinateString = MessageComponentsParser.this.matcher.group(this.groupNumber);
+            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
             return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
                     ? this.createDefinedGeographicCoordinate()
                     : this.createNotDefinedGeographicCoordinate();
@@ -235,10 +235,10 @@ public final class MessageComponentsParser {
         protected abstract T createNotDefinedGeographicCoordinate();
 
         private T createDefinedGeographicCoordinate() {
-            final int degrees = parseInt(MessageComponentsParser.this.matcher.group(this.groupNumberDegrees));
-            final int minutes = parseInt(MessageComponentsParser.this.matcher.group(this.groupNumberMinutes));
-            final int minuteShare = parseInt(MessageComponentsParser.this.matcher.group(this.groupNumberMinuteShare));
-            final String typeValue = MessageComponentsParser.this.matcher.group(this.groupNumberType);
+            final int degrees = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberDegrees));
+            final int minutes = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberMinutes));
+            final int minuteShare = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberMinuteShare));
+            final String typeValue = DataComponentsParser.this.matcher.group(this.groupNumberType);
             return this.create(degrees, minutes, minuteShare, typeValue.charAt(0));
         }
     }
