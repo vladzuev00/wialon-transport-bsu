@@ -1,6 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
+import by.bsu.wialontransport.crud.dto.Data.Longitude;
+import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import org.junit.Test;
 
@@ -8,7 +10,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NOT_DEFINED;
+import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static java.lang.Integer.MIN_VALUE;
 import static java.time.LocalDateTime.MIN;
 import static org.junit.Assert.assertEquals;
@@ -112,7 +114,43 @@ public final class MessageComponentsParserTest {
                 .degrees(MIN_VALUE)
                 .minutes(MIN_VALUE)
                 .minuteShare(MIN_VALUE)
-                .type(NOT_DEFINED)
+                .type(DataEntity.Latitude.Type.NOT_DEFINED)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void longitudeShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final Longitude actual = parser.parseLongitude();
+        final Longitude expected = Longitude.builder()
+                .degrees(37)
+                .minutes(39)
+                .minuteShare(6834)
+                .type(EAST)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void notDefinedLongitudeShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;NA;NA;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final Longitude actual = parser.parseLongitude();
+        final Longitude expected = Longitude.builder()
+                .degrees(MIN_VALUE)
+                .minutes(MIN_VALUE)
+                .minuteShare(MIN_VALUE)
+                .type(DataEntity.Longitude.Type.NOT_DEFINED)
                 .build();
         assertEquals(expected, actual);
     }

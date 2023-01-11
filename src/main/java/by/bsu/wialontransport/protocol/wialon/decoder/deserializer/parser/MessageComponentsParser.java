@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NOT_DEFINED;
 import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
@@ -30,10 +29,12 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
     private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
 
-    private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 10;
-    private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 11;
-    private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 12;
-    private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 13;
+
+    private static final int GROUP_NUMBER_LONGITUDE = 13;
+    private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
+    private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
+    private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
+    private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
 
     private static final int GROUP_NUMBER_SPEED = 14;
     private static final int GROUP_NUMBER_COURSE = 16;
@@ -87,7 +88,7 @@ public final class MessageComponentsParser {
             throw new NotValidMessageException(format(MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE, source));
         }
         this.latitudeParser = new LatitudeParser();
-        this.longitudeParser = null;
+        this.longitudeParser = new LongitudeParser();
     }
 
     public LocalDateTime parseDateTime() {
@@ -178,7 +179,7 @@ public final class MessageComponentsParser {
                 .degrees(MIN_VALUE)
                 .minutes(MIN_VALUE)
                 .minuteShare(MIN_VALUE)
-                .type(NOT_DEFINED)
+                .type(DataEntity.Latitude.Type.NOT_DEFINED)
                 .build();
 
         public LatitudeParser() {
@@ -198,17 +199,28 @@ public final class MessageComponentsParser {
         }
     }
 
-//    private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
-//
-//        public LongitudeParser() {
-//            super(GROUP_NUMBER_LONGITUDE_DEGREES, GROUP_NUMBER_LONGITUDE_MINUTES, GROUP_NUMBER_LONGITUDE_MINUTE_SHARE,
-//                    GROUP_NUMBER_LONGITUDE_TYPE_VALUE);
-//        }
-//
-//        @Override
-//        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-//            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
-//            return new Longitude(degrees, minutes, minuteShare, type);
-//        }
-//    }
+    private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
+        private static final Longitude NOT_DEFINED_LONGITUDE = Longitude.builder()
+                .degrees(MIN_VALUE)
+                .minutes(MIN_VALUE)
+                .minuteShare(MIN_VALUE)
+                .type(DataEntity.Longitude.Type.NOT_DEFINED)
+                .build();
+
+        public LongitudeParser() {
+            super(GROUP_NUMBER_LONGITUDE, GROUP_NUMBER_LONGITUDE_DEGREES, GROUP_NUMBER_LONGITUDE_MINUTES,
+                    GROUP_NUMBER_LONGITUDE_MINUTE_SHARE, GROUP_NUMBER_LONGITUDE_TYPE_VALUE);
+        }
+
+        @Override
+        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
+            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
+            return new Longitude(degrees, minutes, minuteShare, type);
+        }
+
+        @Override
+        protected Longitude createNotDefinedGeographicCoordinate() {
+            return NOT_DEFINED_LONGITUDE;
+        }
+    }
 }
