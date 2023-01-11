@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialonpackage.blackbox;
+package by.bsu.wialontransport.protocol.wialon.wialonpackage.blackbox;
 
 import lombok.*;
 

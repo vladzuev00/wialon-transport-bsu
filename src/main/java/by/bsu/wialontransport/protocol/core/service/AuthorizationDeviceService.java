@@ -6,16 +6,16 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.wialonpackage.login.RequestLoginPackage;
-import by.bsu.wialontransport.protocol.wialonpackage.login.ResponseLoginPackage;
-import by.bsu.wialontransport.protocol.wialonpackage.login.ResponseLoginPackage.Status;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static by.bsu.wialontransport.protocol.wialonpackage.login.ResponseLoginPackage.Status.*;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status.*;
 
 @Service
 @RequiredArgsConstructor

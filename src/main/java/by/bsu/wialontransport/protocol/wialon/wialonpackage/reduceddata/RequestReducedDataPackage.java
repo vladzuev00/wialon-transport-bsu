@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialonpackage.reduceddata;
+package by.bsu.wialontransport.protocol.wialon.wialonpackage.reduceddata;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import lombok.Value;

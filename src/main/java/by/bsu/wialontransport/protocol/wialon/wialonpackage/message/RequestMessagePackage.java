@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialonpackage.message;
+package by.bsu.wialontransport.protocol.wialon.wialonpackage.message;
 
 import lombok.Value;
 

@@ -1,13 +1,13 @@
-package by.bsu.wialontransport.protocol.wialonpackage.data;
+package by.bsu.wialontransport.protocol.wialon.wialonpackage.reduceddata;
 
-import lombok.*;
+import lombok.Value;
 
 import static java.lang.Byte.MIN_VALUE;
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseDataPackage {
-    public static final String PREFIX = "#AD#";
+public class ResponseReducedDataPackage {
+    public static final String PREFIX = "#ASD#";
 
     Status status;
 
@@ -15,9 +15,7 @@ public class ResponseDataPackage {
         NOT_DEFINED(MIN_VALUE), ERROR_PACKAGE_STRUCTURE((byte) -1), INCORRECT_TIME((byte) 0),
         PACKAGE_FIX_SUCCESS((byte) 1), ERROR_GETTING_COORDINATE((byte) 10),
         ERROR_GETTING_SPEED_OR_COURSE_OR_HEIGHT((byte) 11),
-        ERROR_GETTING_AMOUNT_SATELLITES_OR_REDUCTION_PRECISION((byte) 12),
-        ERROR_GETTING_INPUTS_OR_OUTPUTS((byte) 13), ERROR_GETTING_ANALOG_INPUTS((byte) 14),
-        ERROR_GETTING_PARAMETERS((byte) 15);
+        ERROR_GETTING_AMOUNT_SATELLITES((byte) 12);
 
         private final byte value;
 
