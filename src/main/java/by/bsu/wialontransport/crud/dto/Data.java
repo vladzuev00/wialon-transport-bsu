@@ -17,6 +17,8 @@ public class Data implements AbstractDto<Long> {
     private final Longitude longitude;
     private final int speed;
     private final int course;
+
+    //TODO: rename to altitude
     private final int height;
     private final int amountOfSatellites;
 
