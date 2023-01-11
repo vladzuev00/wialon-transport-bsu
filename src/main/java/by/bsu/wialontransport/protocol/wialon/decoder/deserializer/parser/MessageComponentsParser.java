@@ -36,9 +36,9 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
     private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
 
-    private static final int GROUP_NUMBER_SPEED = 14;
-    private static final int GROUP_NUMBER_COURSE = 16;
-    private static final int GROUP_NUMBER_ALTITUDE = 18;
+    private static final int GROUP_NUMBER_SPEED = 20;
+    private static final int GROUP_NUMBER_COURSE = 22;
+    private static final int GROUP_NUMBER_ALTITUDE = 24;
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 20;
     private static final int GROUP_NUMBER_PARAMETERS = 35;
 
@@ -54,7 +54,7 @@ public final class MessageComponentsParser {
     private static final int NOT_DEFINED_COURSE = Integer.MIN_VALUE;
 
     private static final String NOT_DEFINED_ALTITUDE_STRING = "NA";
-    private static final int NOT_DEFINED_ALTITUDE = 0;
+    private static final int NOT_DEFINED_ALTITUDE = MIN_VALUE;
 
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
     private static final int NOT_DEFINED_AMOUNT_SATELLITE = 0;
