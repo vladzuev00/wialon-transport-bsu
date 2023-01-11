@@ -51,6 +51,7 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_INPUTS = 31;
     private static final int GROUP_NUMBER_OUTPUTS = 33;
     private static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
+    private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -81,6 +82,9 @@ public final class MessageComponentsParser {
 
     private static final String NOT_DEFINED_ANALOG_INPUTS_STRING = "NA";
     private static final String DELIMITER_ANALOG_INPUTS = ",";
+
+    private static final String NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING = "NA";
+    private static final String NOT_DEFINED_DRIVER_KEY_CODE = "not defined";
 
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
@@ -180,6 +184,13 @@ public final class MessageComponentsParser {
         return stream(analogInputsString.split(DELIMITER_ANALOG_INPUTS))
                 .mapToDouble(Double::parseDouble)
                 .toArray();
+    }
+
+    public String parseDriverKeyCode() {
+        final String inboundDriverKeyCode = this.matcher.group(GROUP_NUMBER_DRIVER_KEY_CODE);
+        return !inboundDriverKeyCode.equals(NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING)
+                ? inboundDriverKeyCode
+                : NOT_DEFINED_DRIVER_KEY_CODE;
     }
 
     public List<Parameter> parseParameters() {
