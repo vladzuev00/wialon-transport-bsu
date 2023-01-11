@@ -4,7 +4,10 @@ import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.except
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.MIN;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public final class MessageComponentsParserTest {
@@ -45,6 +48,32 @@ public final class MessageComponentsParserTest {
     public void messageWithNotDefinedComponentsShouldMatchToRegex() {
         final String givenMessage = "NA;NA;5544.6025;N;03739.6834;E;NA;NA;NA;NA;NA;NA;NA;;NA;";
         assertTrue(givenMessage.matches(this.messageRegex));
+    }
+
+    @Test
+    public void dateTimeShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final LocalDateTime actual = parser.parseDateTime();
+        final LocalDateTime expected = LocalDateTime.of(
+                2022, 11, 15, 14, 56, 43);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void notDefinedDateTimeShouldBeParsed() {
+        final String givenMessage = "NA;NA;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final LocalDateTime actual = parser.parseDateTime();
+        assertEquals(MIN, actual);
     }
 
     private static String findMessageRegex()
