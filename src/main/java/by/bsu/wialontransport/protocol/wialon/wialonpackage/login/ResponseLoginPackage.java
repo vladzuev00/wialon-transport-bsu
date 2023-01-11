@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.login;
 
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import lombok.Value;
 
 import java.util.Objects;
@@ -7,7 +8,7 @@ import java.util.Objects;
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseLoginPackage {
+public class ResponseLoginPackage implements Package {
     public static final String PREFIX = "#AL#";
 
     Status status;

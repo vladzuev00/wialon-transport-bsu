@@ -1,11 +1,12 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.message;
 
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import lombok.Value;
 
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseMessagePackage {
+public class ResponseMessagePackage implements Package {
     public static final String PREFIX = "#AM#";
 
     Status status;

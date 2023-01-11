@@ -1,12 +1,13 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.reduceddata;
 
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import lombok.Value;
 
 import static java.lang.Byte.MIN_VALUE;
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseReducedDataPackage {
+public class ResponseReducedDataPackage implements Package {
     public static final String PREFIX = "#ASD#";
 
     Status status;

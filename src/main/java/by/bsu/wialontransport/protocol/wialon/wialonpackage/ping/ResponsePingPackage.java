@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.ping;
 
-public final class ResponsePingPackage {
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+
+public final class ResponsePingPackage implements Package {
     public static final String PREFIX = "#AP#";
 }
