@@ -36,6 +36,7 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_COURSE = 16;
     private static final int GROUP_NUMBER_ALTITUDE = 18;
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 20;
+    private static final int GROUP_NUMBER_PARAMETERS = 35;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
@@ -53,6 +54,9 @@ public final class MessageComponentsParser {
 
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
     private static final int NOT_DEFINED_AMOUNT_SATELLITE = 0;
+
+    private static final String DELIMITER_PARAMETERS = ",";
+    private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
 
     private static final String MESSAGE_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"         //date, time
@@ -119,6 +123,13 @@ public final class MessageComponentsParser {
                 ? parseInt(amountSatellitesString)
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
+
+//    public List<Parameter> parseParameters() {
+//        final String parameters = this.matcher.group(GROUP_NUMBER_PARAMETERS);
+//        stream(parameters.split(DELIMITER_PARAMETERS))
+//                .map(parameterString -> parameterString.split(DELIMITER_PARAMETER_COMPONENTS))
+//                .
+//    }
 
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private final int groupNumberDegrees;
