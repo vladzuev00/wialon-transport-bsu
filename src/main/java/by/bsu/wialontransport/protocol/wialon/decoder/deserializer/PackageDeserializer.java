@@ -1,13 +1,16 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.Package.PREFIX;
+
 @FunctionalInterface
 public interface PackageDeserializer {
-    String PACKAGE_PREFIX = "/r/n";
 
     Package deserialize(String deserialized);
 
     static String removePrefix(String source) {
-        final int indexAfterPrefix = PACKAGE_PREFIX.length();
+        final int indexAfterPrefix = PREFIX.length();
         return source.substring(indexAfterPrefix);
     }
 }
