@@ -15,8 +15,7 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static java.time.LocalDateTime.MIN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class MessageComponentsParserTest {
     private static final String FIELD_NAME_MESSAGE_REGEX = "MESSAGE_REGEX";
@@ -305,6 +304,75 @@ public final class MessageComponentsParserTest {
 
         final int actual = parser.parseInputs();
         assertEquals(Integer.MIN_VALUE, actual);
+    }
+
+    @Test
+    public void outputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final int actual = parser.parseOutputs();
+        final int expected = 18;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void notDefinedOutputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;NA;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final int actual = parser.parseOutputs();
+        final int expected = Integer.MIN_VALUE;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void analogInputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final double[] actual = parser.parseAnalogInputs();
+        final double[] expected = new double[]{
+                5.5, 4343.454544334, 454.433, 1
+        };
+        assertArrayEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void emptyAnalogInputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;18;"
+                + ";"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final double[] actual = parser.parseAnalogInputs();
+        final double[] expected = new double[]{
+        };
+        assertArrayEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void notDefinedAnalogInputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;18;"
+                + "NA;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final double[] actual = parser.parseAnalogInputs();
+        final double[] expected = new double[]{
+        };
+        assertArrayEquals(expected, actual, 0.);
     }
 
     @Test

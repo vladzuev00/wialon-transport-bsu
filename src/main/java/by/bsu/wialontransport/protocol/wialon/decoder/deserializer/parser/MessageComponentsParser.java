@@ -49,7 +49,8 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
     private static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
     private static final int GROUP_NUMBER_INPUTS = 31;
-    private static final int GROUP_NUMBER_OUTPUTS = 32;
+    private static final int GROUP_NUMBER_OUTPUTS = 33;
+    private static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -74,6 +75,12 @@ public final class MessageComponentsParser {
 
     private static final String NOT_DEFINED_INPUTS_STRING = "NA";
     private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
+
+    private static final String NOT_DEFINED_OUTPUTS_STRING = "NA";
+    private static final int NOT_DEFINED_OUTPUTS = Integer.MIN_VALUE;
+
+    private static final String NOT_DEFINED_ANALOG_INPUTS_STRING = "NA";
+    private static final String DELIMITER_ANALOG_INPUTS = ",";
 
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
@@ -158,6 +165,21 @@ public final class MessageComponentsParser {
     public int parseInputs() {
         final String inputsString = this.matcher.group(GROUP_NUMBER_INPUTS);
         return !inputsString.equals(NOT_DEFINED_INPUTS_STRING) ? parseInt(inputsString) : NOT_DEFINED_INPUTS;
+    }
+
+    public int parseOutputs() {
+        final String outputsString = this.matcher.group(GROUP_NUMBER_OUTPUTS);
+        return !outputsString.equals(NOT_DEFINED_OUTPUTS_STRING) ? parseInt(outputsString) : NOT_DEFINED_OUTPUTS;
+    }
+
+    public double[] parseAnalogInputs() {
+        final String analogInputsString = this.matcher.group(GROUP_NUMBER_ANALOG_INPUTS);
+        if (analogInputsString.isEmpty() || analogInputsString.equals(NOT_DEFINED_ANALOG_INPUTS_STRING)) {
+            return new double[0];
+        }
+        return stream(analogInputsString.split(DELIMITER_ANALOG_INPUTS))
+                .mapToDouble(Double::parseDouble)
+                .toArray();
     }
 
     public List<Parameter> parseParameters() {
