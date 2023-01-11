@@ -3,19 +3,26 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
+import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
+import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import static java.lang.Byte.parseByte;
 import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.regex.Pattern.compile;
 
 public final class MessageComponentsParser {
@@ -40,7 +47,7 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
-    private static final int GROUP_NUMBER_PARAMETERS = 35;
+    private static final int GROUP_NUMBER_PARAMETERS = 41;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
@@ -61,6 +68,9 @@ public final class MessageComponentsParser {
 
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
+    private static final int PARAMETER_NAME_INDEX = 0;
+    private static final int PARAMETER_TYPE_INDEX = 1;
+    private static final int PARAMETER_VALUE_INDEX = 2;
 
     private static final String MESSAGE_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
@@ -128,12 +138,30 @@ public final class MessageComponentsParser {
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
-//    public List<Parameter> parseParameters() {
-//        final String parameters = this.matcher.group(GROUP_NUMBER_PARAMETERS);
-//        stream(parameters.split(DELIMITER_PARAMETERS))
-//                .map(parameterString -> parameterString.split(DELIMITER_PARAMETER_COMPONENTS))
-//                .
-//    }
+    public List<Parameter> parseParameters() {
+        final String parameters = this.matcher.group(GROUP_NUMBER_PARAMETERS);
+        return !parameters.isEmpty() ?
+                stream(parameters.split(DELIMITER_PARAMETERS))
+                        .map(parameterString -> parameterString.split(DELIMITER_PARAMETER_COMPONENTS))
+                        .map(MessageComponentsParser::mapToParameter)
+                        .collect(Collectors.toList())
+                : emptyList();
+    }
+
+    private static Parameter mapToParameter(final String[] components) {
+        final String name = components[PARAMETER_NAME_INDEX];
+
+        final String typeString = components[PARAMETER_TYPE_INDEX];
+        final ParameterEntity.Type type = ParameterEntity.Type.findByValue(parseByte(typeString));
+
+        final String value = components[PARAMETER_VALUE_INDEX];
+
+        return Parameter.builder()
+                .name(name)
+                .type(type)
+                .value(value)
+                .build();
+    }
 
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING = "NA;NA";

@@ -2,15 +2,18 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
+import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static java.lang.Integer.MIN_VALUE;
 import static java.time.LocalDateTime.MIN;
 import static org.junit.Assert.assertEquals;
@@ -253,6 +256,46 @@ public final class MessageComponentsParserTest {
 
         final int actual = parser.parseAmountSatellites();
         assertEquals(MIN_VALUE, actual);
+    }
+
+    @Test
+    public void parametersShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name1:1:654321,param-name2:2:65.4321,param-name3:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final List<Parameter> actual = parser.parseParameters();
+        final List<Parameter> expected = List.of(
+                Parameter.builder()
+                        .name("param-name1")
+                        .type(INTEGER)
+                        .value("654321")
+                        .build(),
+                Parameter.builder()
+                        .name("param-name2")
+                        .type(DOUBLE)
+                        .value("65.4321")
+                        .build(),
+                Parameter.builder()
+                        .name("param-name3")
+                        .type(STRING)
+                        .value("param-value")
+                        .build()
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void emptyParametersShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final List<Parameter> actual = parser.parseParameters();
+        assertTrue(actual.isEmpty());
     }
 
     private static String findMessageRegex()
