@@ -112,6 +112,7 @@ public final class MessageComponentsParser {
     private final Matcher matcher;
     private final GeographicCoordinateParser<Latitude> latitudeParser;
     private final GeographicCoordinateParser<Longitude> longitudeParser;
+    private final ParameterParser parameterParser;
 
     public MessageComponentsParser(final String source) {
         this.matcher = MESSAGE_PATTERN.matcher(source);
@@ -120,6 +121,7 @@ public final class MessageComponentsParser {
         }
         this.latitudeParser = new LatitudeParser();
         this.longitudeParser = new LongitudeParser();
+        this.parameterParser = new ParameterParser();
     }
 
     public LocalDateTime parseDateTime() {
@@ -194,28 +196,12 @@ public final class MessageComponentsParser {
     }
 
     public List<Parameter> parseParameters() {
-        final String parameters = this.matcher.group(GROUP_NUMBER_PARAMETERS);
-        return !parameters.isEmpty() ?
-                stream(parameters.split(DELIMITER_PARAMETERS))
-                        .map(parameterString -> parameterString.split(DELIMITER_PARAMETER_COMPONENTS))
-                        .map(MessageComponentsParser::mapToParameter)
+        final String parametersString = this.matcher.group(GROUP_NUMBER_PARAMETERS);
+        return !parametersString.isEmpty() ?
+                stream(parametersString.split(DELIMITER_PARAMETERS))
+                        .map(this.parameterParser::parse)
                         .collect(Collectors.toList())
                 : emptyList();
-    }
-
-    private static Parameter mapToParameter(final String[] components) {
-        final String name = components[PARAMETER_NAME_INDEX];
-
-        final String typeString = components[PARAMETER_TYPE_INDEX];
-        final ParameterEntity.Type type = ParameterEntity.Type.findByValue(parseByte(typeString));
-
-        final String value = components[PARAMETER_VALUE_INDEX];
-
-        return Parameter.builder()
-                .name(name)
-                .type(type)
-                .value(value)
-                .build();
     }
 
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
@@ -304,6 +290,26 @@ public final class MessageComponentsParser {
         @Override
         protected Longitude createNotDefinedGeographicCoordinate() {
             return NOT_DEFINED_LONGITUDE;
+        }
+    }
+
+    private static final class ParameterParser {
+
+        public Parameter parse(final String source) {
+            final String[] components = source.split(DELIMITER_PARAMETER_COMPONENTS);
+            final String name = components[PARAMETER_NAME_INDEX];
+            final ParameterEntity.Type type = parseType(components);
+            final String value = components[PARAMETER_VALUE_INDEX];
+            return Parameter.builder()
+                    .name(name)
+                    .type(type)
+                    .value(value)
+                    .build();
+        }
+
+        private static ParameterEntity.Type parseType(final String[] components) {
+            final String typeString = components[PARAMETER_TYPE_INDEX];
+            return ParameterEntity.Type.findByValue(parseByte(typeString));
         }
     }
 }
