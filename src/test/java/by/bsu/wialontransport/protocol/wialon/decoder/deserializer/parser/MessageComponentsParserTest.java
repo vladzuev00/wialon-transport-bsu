@@ -1,11 +1,15 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
+import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
+import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NOT_DEFINED;
+import static java.lang.Integer.MIN_VALUE;
 import static java.time.LocalDateTime.MIN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -74,6 +78,43 @@ public final class MessageComponentsParserTest {
 
         final LocalDateTime actual = parser.parseDateTime();
         assertEquals(MIN, actual);
+    }
+
+    @Test
+    public void latitudeShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final Latitude actual = parser.parseLatitude();
+        final Latitude expected = Latitude.builder()
+                .degrees(55)
+                .minutes(44)
+                .minuteShare(6025)
+                .type(NORTH)
+                .build();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void notDefinedLatitudeShouldBeParsed() {
+        final String givenMessage = "151122;145643;NA;NA;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final Latitude actual = parser.parseLatitude();
+        final Latitude expected = Latitude.builder()
+                .degrees(MIN_VALUE)
+                .minutes(MIN_VALUE)
+                .minuteShare(MIN_VALUE)
+                .type(NOT_DEFINED)
+                .build();
+        assertEquals(expected, actual);
     }
 
     private static String findMessageRegex()
