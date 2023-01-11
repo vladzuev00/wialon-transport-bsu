@@ -14,7 +14,6 @@ import java.util.List;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static java.lang.Integer.MIN_VALUE;
 import static java.time.LocalDateTime.MIN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -114,9 +113,9 @@ public final class MessageComponentsParserTest {
 
         final Latitude actual = parser.parseLatitude();
         final Latitude expected = Latitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
+                .degrees(Integer.MIN_VALUE)
+                .minutes(Integer.MIN_VALUE)
+                .minuteShare(Integer.MIN_VALUE)
                 .type(DataEntity.Latitude.Type.NOT_DEFINED)
                 .build();
         assertEquals(expected, actual);
@@ -150,9 +149,9 @@ public final class MessageComponentsParserTest {
 
         final Longitude actual = parser.parseLongitude();
         final Longitude expected = Longitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
+                .degrees(Integer.MIN_VALUE)
+                .minutes(Integer.MIN_VALUE)
+                .minuteShare(Integer.MIN_VALUE)
                 .type(DataEntity.Longitude.Type.NOT_DEFINED)
                 .build();
         assertEquals(expected, actual);
@@ -180,7 +179,7 @@ public final class MessageComponentsParserTest {
         final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
 
         final int actual = parser.parseSpeed();
-        assertEquals(MIN_VALUE, actual);
+        assertEquals(Integer.MIN_VALUE, actual);
     }
 
     @Test
@@ -205,7 +204,7 @@ public final class MessageComponentsParserTest {
         final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
 
         final int actual = parser.parseCourse();
-        assertEquals(MIN_VALUE, actual);
+        assertEquals(Integer.MIN_VALUE, actual);
     }
 
     @Test
@@ -230,7 +229,7 @@ public final class MessageComponentsParserTest {
         final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
 
         final int actual = parser.parseAltitude();
-        assertEquals(MIN_VALUE, actual);
+        assertEquals(Integer.MIN_VALUE, actual);
     }
 
     @Test
@@ -255,7 +254,32 @@ public final class MessageComponentsParserTest {
         final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
 
         final int actual = parser.parseAmountSatellites();
-        assertEquals(MIN_VALUE, actual);
+        assertEquals(Integer.MIN_VALUE, actual);
+    }
+
+    @Test
+    public void reductionPrecisionShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final double actual = parser.parseReductionPrecision();
+        final double expected = 545.4554;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void notDefinedReductionPrecisionShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;NA;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final double actual = parser.parseReductionPrecision();
+        assertEquals(Double.MIN_VALUE, actual, 0.);
     }
 
     @Test

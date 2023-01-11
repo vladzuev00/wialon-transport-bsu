@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.Byte.parseByte;
-import static java.lang.Integer.MIN_VALUE;
+import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
@@ -47,6 +47,7 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
+    private static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -61,10 +62,13 @@ public final class MessageComponentsParser {
     private static final int NOT_DEFINED_COURSE = Integer.MIN_VALUE;
 
     private static final String NOT_DEFINED_ALTITUDE_STRING = "NA";
-    private static final int NOT_DEFINED_ALTITUDE = MIN_VALUE;
+    private static final int NOT_DEFINED_ALTITUDE = Integer.MIN_VALUE;
 
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
-    private static final int NOT_DEFINED_AMOUNT_SATELLITE = MIN_VALUE;
+    private static final int NOT_DEFINED_AMOUNT_SATELLITE = Integer.MIN_VALUE;
+
+    private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
+    private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
 
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
@@ -138,6 +142,13 @@ public final class MessageComponentsParser {
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
+    public double parseReductionPrecision() {
+        final String reductionPrecisionString = this.matcher.group(GROUP_NUMBER_REDUCTION_PRECISION);
+        return !reductionPrecisionString.equals(NOT_DEFINED_REDUCTION_PRECISION_STRING)
+                ? parseDouble(reductionPrecisionString)
+                : NOT_DEFINED_REDUCTION_PRECISION;
+    }
+
     public List<Parameter> parseParameters() {
         final String parameters = this.matcher.group(GROUP_NUMBER_PARAMETERS);
         return !parameters.isEmpty() ?
@@ -204,9 +215,9 @@ public final class MessageComponentsParser {
 
     private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
         private static final Latitude NOT_DEFINED_LATITUDE = Latitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
+                .degrees(Integer.MIN_VALUE)
+                .minutes(Integer.MIN_VALUE)
+                .minuteShare(Integer.MIN_VALUE)
                 .type(DataEntity.Latitude.Type.NOT_DEFINED)
                 .build();
 
@@ -229,9 +240,9 @@ public final class MessageComponentsParser {
 
     private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
         private static final Longitude NOT_DEFINED_LONGITUDE = Longitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
+                .degrees(Integer.MIN_VALUE)
+                .minutes(Integer.MIN_VALUE)
+                .minuteShare(Integer.MIN_VALUE)
                 .type(DataEntity.Longitude.Type.NOT_DEFINED)
                 .build();
 
