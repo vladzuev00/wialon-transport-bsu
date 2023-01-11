@@ -283,6 +283,31 @@ public final class MessageComponentsParserTest {
     }
 
     @Test
+    public void inputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;19;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final int actual = parser.parseInputs();
+        final int expected = 19;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void notDefinedInputsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;17;545.4554;NA;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name:1:654321,param-name:2:65.4321,param-name:3:param-value";
+        final MessageComponentsParser parser = new MessageComponentsParser(givenMessage);
+
+        final int actual = parser.parseInputs();
+        assertEquals(Integer.MIN_VALUE, actual);
+    }
+
+    @Test
     public void parametersShouldBeParsed() {
         final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"

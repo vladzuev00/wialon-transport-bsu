@@ -48,6 +48,8 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_ALTITUDE = 24;
     private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
     private static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
+    private static final int GROUP_NUMBER_INPUTS = 31;
+    private static final int GROUP_NUMBER_OUTPUTS = 32;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -70,6 +72,9 @@ public final class MessageComponentsParser {
     private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
     private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
 
+    private static final String NOT_DEFINED_INPUTS_STRING = "NA";
+    private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
+
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
     private static final int PARAMETER_NAME_INDEX = 0;
@@ -85,7 +90,8 @@ public final class MessageComponentsParser {
             + "(\\d+|(NA));"                                       //altitude
             + "(\\d+|(NA));"                                       //amountSatellite
             + "((\\d+\\.\\d+)|(NA));"                              //hdop
-            + "(((\\d+|(NA));){2})"                                //inputs, outputs
+            + "(\\d+|(NA));"                                       //inputs
+            + "(\\d+|(NA));"                                       //outputs
             //NA comes from retranslator
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
@@ -147,6 +153,11 @@ public final class MessageComponentsParser {
         return !reductionPrecisionString.equals(NOT_DEFINED_REDUCTION_PRECISION_STRING)
                 ? parseDouble(reductionPrecisionString)
                 : NOT_DEFINED_REDUCTION_PRECISION;
+    }
+
+    public int parseInputs() {
+        final String inputsString = this.matcher.group(GROUP_NUMBER_INPUTS);
+        return !inputsString.equals(NOT_DEFINED_INPUTS_STRING) ? parseInt(inputsString) : NOT_DEFINED_INPUTS;
     }
 
     public List<Parameter> parseParameters() {
