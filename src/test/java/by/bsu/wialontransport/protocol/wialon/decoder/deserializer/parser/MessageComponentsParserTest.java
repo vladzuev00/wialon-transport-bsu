@@ -46,7 +46,7 @@ public final class MessageComponentsParserTest {
 
     @Test
     public void messageWithNotDefinedComponentsShouldMatchToRegex() {
-        final String givenMessage = "NA;NA;5544.6025;N;03739.6834;E;NA;NA;NA;NA;NA;NA;NA;;NA;";
+        final String givenMessage = "NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;;NA;";
         assertTrue(givenMessage.matches(this.messageRegex));
     }
 

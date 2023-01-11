@@ -59,19 +59,19 @@ public final class MessageComponentsParser {
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
 
     private static final String MESSAGE_REGEX
-            = "((\\d{6}|(NA));(\\d{6}|(NA)));"         //date, time
-            + "(\\d{2})(\\d{2})\\.(\\d+);([NS]);"      //latitude
-            + "(\\d{3})(\\d{2})\\.(\\d+);([EW]);"      //longitude
-            + "(\\d+|(NA));"                           //speed
-            + "(\\d+|(NA));"                           //course
-            + "(\\d+|(NA));"                           //altitude
-            + "(\\d+|(NA));"                           //amountSatellite
-            + "((\\d+\\.\\d+)|(NA));"                  //hdop
-            + "(((\\d+|(NA));){2})"                    //inputs, outputs
+            = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
+            + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
+            + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
+            + "(\\d+|(NA));"                                       //speed
+            + "(\\d+|(NA));"                                       //course
+            + "(\\d+|(NA));"                                       //altitude
+            + "(\\d+|(NA));"                                       //amountSatellite
+            + "((\\d+\\.\\d+)|(NA));"                              //hdop
+            + "(((\\d+|(NA));){2})"                                //inputs, outputs
             //NA comes from retranslator
-            + "(((\\d+(\\.\\d+)?),?)*|(NA));"          //analogInputs
-            + "(.*);"                                  //driverKeyCode
-            + "(([^:]+:[123]:[^:]+,?)*)";              //parameters
+            + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
+            + "(.*);"                                              //driverKeyCode
+            + "(([^:]+:[123]:[^:]+,?)*)";                          //parameters
     private static final Pattern MESSAGE_PATTERN = compile(MESSAGE_REGEX);
 
     private final Matcher matcher;
