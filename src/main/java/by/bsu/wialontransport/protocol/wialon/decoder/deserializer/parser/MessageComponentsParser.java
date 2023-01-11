@@ -39,7 +39,7 @@ public final class MessageComponentsParser {
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
-    private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 20;
+    private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
     private static final int GROUP_NUMBER_PARAMETERS = 35;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -57,7 +57,7 @@ public final class MessageComponentsParser {
     private static final int NOT_DEFINED_ALTITUDE = MIN_VALUE;
 
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
-    private static final int NOT_DEFINED_AMOUNT_SATELLITE = 0;
+    private static final int NOT_DEFINED_AMOUNT_SATELLITE = MIN_VALUE;
 
     private static final String DELIMITER_PARAMETERS = ",";
     private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
