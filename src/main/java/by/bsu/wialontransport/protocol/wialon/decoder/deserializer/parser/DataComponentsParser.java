@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
@@ -13,12 +13,13 @@ import java.util.regex.Pattern;
 
 import static by.bsu.wialontransport.util.DataRegexUtil.*;
 import static by.bsu.wialontransport.util.DataRegexUtil.GROUP_NUMBER_LONGITUDE_TYPE_VALUE;
+import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
-public abstract class AbstractDataComponentsParser {
+public class DataComponentsParser {
     private static final String MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE = "Given message '%s' isn't valid.";
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
@@ -27,32 +28,34 @@ public abstract class AbstractDataComponentsParser {
     private static final LocalDateTime NOT_DEFINED_DATE_TIME = LocalDateTime.MIN;
 
     private static final String NOT_DEFINED_SPEED_STRING = "NA";
-    private static final int NOT_DEFINED_SPEED = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_SPEED = MIN_VALUE;
 
     private static final String NOT_DEFINED_COURSE_STRING = "NA";
-    private static final int NOT_DEFINED_COURSE = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_COURSE = MIN_VALUE;
 
     private static final String NOT_DEFINED_ALTITUDE_STRING = "NA";
-    private static final int NOT_DEFINED_ALTITUDE = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_ALTITUDE = MIN_VALUE;
 
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
-    private static final int NOT_DEFINED_AMOUNT_SATELLITE = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_AMOUNT_SATELLITE = MIN_VALUE;
 
-    private final Matcher matcher;
     private final GeographicCoordinateParser<Latitude> latitudeParser;
     private final GeographicCoordinateParser<Longitude> longitudeParser;
+    private Matcher matcher;
 
-    public AbstractDataComponentsParser(final Pattern pattern, final String source) {
+    public DataComponentsParser() {
+        this.latitudeParser = new LatitudeParser();
+        this.longitudeParser = new LongitudeParser();
+        this.matcher = null;
+    }
+
+    public final DataComponentsParser match(final String source) {
+        final Pattern pattern = this.findPattern();
         this.matcher = pattern.matcher(source);
         if (!this.matcher.matches()) {
             throw new NotValidMessageException(format(MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE, source));
         }
-        this.latitudeParser = new LatitudeParser();
-        this.longitudeParser = new LongitudeParser();
-    }
-
-    protected final Matcher getMatcher() {
-        return this.matcher;
+        return this;
     }
 
     public final LocalDateTime parseDateTime() {
@@ -92,6 +95,14 @@ public abstract class AbstractDataComponentsParser {
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
+    protected final Matcher getMatcher() {
+        return this.matcher;
+    }
+
+    protected Pattern findPattern() {
+        return PATTERN_DATA;
+    }
+
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING = "NA;NA";
 
@@ -112,7 +123,7 @@ public abstract class AbstractDataComponentsParser {
         }
 
         public final T parse() {
-            final String geographicCoordinateString = AbstractDataComponentsParser.this.matcher.group(this.groupNumber);
+            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
             return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
                     ? this.createDefinedGeographicCoordinate()
                     : this.createNotDefinedGeographicCoordinate();
@@ -123,20 +134,20 @@ public abstract class AbstractDataComponentsParser {
         protected abstract T createNotDefinedGeographicCoordinate();
 
         private T createDefinedGeographicCoordinate() {
-            final int degrees = parseInt(AbstractDataComponentsParser.this.matcher.group(this.groupNumberDegrees));
-            final int minutes = parseInt(AbstractDataComponentsParser.this.matcher.group(this.groupNumberMinutes));
+            final int degrees = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberDegrees));
+            final int minutes = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberMinutes));
             final int minuteShare = parseInt(
-                    AbstractDataComponentsParser.this.matcher.group(this.groupNumberMinuteShare));
-            final String typeValue = AbstractDataComponentsParser.this.matcher.group(this.groupNumberType);
+                    DataComponentsParser.this.matcher.group(this.groupNumberMinuteShare));
+            final String typeValue = DataComponentsParser.this.matcher.group(this.groupNumberType);
             return this.create(degrees, minutes, minuteShare, typeValue.charAt(0));
         }
     }
 
     private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
         private static final Latitude NOT_DEFINED_LATITUDE = Latitude.builder()
-                .degrees(Integer.MIN_VALUE)
-                .minutes(Integer.MIN_VALUE)
-                .minuteShare(Integer.MIN_VALUE)
+                .degrees(MIN_VALUE)
+                .minutes(MIN_VALUE)
+                .minuteShare(MIN_VALUE)
                 .type(DataEntity.Latitude.Type.NOT_DEFINED)
                 .build();
 
@@ -159,9 +170,9 @@ public abstract class AbstractDataComponentsParser {
 
     private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
         private static final Longitude NOT_DEFINED_LONGITUDE = Longitude.builder()
-                .degrees(Integer.MIN_VALUE)
-                .minutes(Integer.MIN_VALUE)
-                .minuteShare(Integer.MIN_VALUE)
+                .degrees(MIN_VALUE)
+                .minutes(MIN_VALUE)
+                .minuteShare(MIN_VALUE)
                 .type(DataEntity.Longitude.Type.NOT_DEFINED)
                 .build();
 

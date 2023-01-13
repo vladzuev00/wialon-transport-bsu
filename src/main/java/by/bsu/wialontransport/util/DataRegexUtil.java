@@ -8,7 +8,7 @@ import static java.util.regex.Pattern.compile;
 
 @UtilityClass
 public class DataRegexUtil {
-    private static final String REGEX_DATA
+    public static final String REGEX_DATA
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
@@ -18,7 +18,7 @@ public class DataRegexUtil {
             + "(\\d+|(NA));";                                      //amountSatellite
     public static final Pattern PATTERN_DATA = compile(REGEX_DATA);
 
-    private static final String REGEX_EXTENDED_DATA = REGEX_DATA
+    public static final String REGEX_EXTENDED_DATA = REGEX_DATA
             + "((\\d+\\.\\d+)|(NA));"                              //hdop
             + "(\\d+|(NA));"                                       //inputs
             + "(\\d+|(NA));"                                       //outputs

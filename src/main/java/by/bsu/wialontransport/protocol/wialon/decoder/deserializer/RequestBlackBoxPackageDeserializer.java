@@ -1,9 +1,17 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
+import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.ExtendedDataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.blackbox.RequestBlackBoxPackage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 @Component
 @RequiredArgsConstructor
@@ -16,12 +24,12 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
     @Override
     public RequestBlackBoxPackage deserialize(final String source) {
         try {
-            final String setOfDataString = PackageDeserializer.removePrefix(source);
-            final String[] dataStrings = setOfDataString.split(REGEX_DATA_DELIMITER);
-            final List<Message> messages = stream(serializedMessages)
+            final String message = PackageDeserializer.removePrefix(source);
+            final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
+            final List<Data> data = stream(dataStrings)
                     .map(this.extendedDataParser::parse)
                     .collect(toList());
-            return new BlackBoxPackage(messages);
+            return new RequestBlackBoxPackage(data);
         } catch (final NotValidMessageException cause) {
             throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
         }

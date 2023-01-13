@@ -1,9 +1,10 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static by.bsu.wialontransport.util.DataRegexUtil.*;
@@ -13,7 +14,7 @@ import static java.lang.Integer.parseInt;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 
-public final class ExtendedDataComponentsParser extends AbstractDataComponentsParser {
+public final class ExtendedDataComponentsParser extends DataComponentsParser {
     private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
     private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
 
@@ -37,8 +38,7 @@ public final class ExtendedDataComponentsParser extends AbstractDataComponentsPa
 
     private final ParameterParser parameterParser;
 
-    public ExtendedDataComponentsParser(final String source) {
-        super(PATTERN_EXTENDED_DATA, source);
+    public ExtendedDataComponentsParser() {
         this.parameterParser = new ParameterParser();
     }
 
@@ -83,6 +83,11 @@ public final class ExtendedDataComponentsParser extends AbstractDataComponentsPa
                         .map(this.parameterParser::parse)
                         .collect(Collectors.toList())
                 : emptyList();
+    }
+
+    @Override
+    protected Pattern findPattern() {
+        return PATTERN_EXTENDED_DATA;
     }
 
     private static final class ParameterParser {
