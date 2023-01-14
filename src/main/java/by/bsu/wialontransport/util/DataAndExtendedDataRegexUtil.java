@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import static java.util.regex.Pattern.compile;
 
 @UtilityClass
-public class DataRegexUtil {
+public class DataAndExtendedDataRegexUtil {
     public static final String REGEX_DATA
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude

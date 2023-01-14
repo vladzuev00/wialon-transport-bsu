@@ -1,27 +1,23 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
 
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.entity.DataEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.wialontransport.util.DataRegexUtil.*;
-import static by.bsu.wialontransport.util.DataRegexUtil.GROUP_NUMBER_LONGITUDE_TYPE_VALUE;
+import static by.bsu.wialontransport.util.DataAndExtendedDataRegexUtil.*;
+import static by.bsu.wialontransport.util.DataAndExtendedDataRegexUtil.GROUP_NUMBER_LONGITUDE_TYPE_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
-import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class DataComponentsParser {
-    private static final String MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE = "Given message '%s' isn't valid.";
-
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
     private static final String NOT_DEFINED_DATE_TIME_STRING = "NA;NA";
@@ -49,13 +45,10 @@ public class DataComponentsParser {
         this.matcher = null;
     }
 
-    public final DataComponentsParser match(final String source) {
+    public final boolean match(final String source) {
         final Pattern pattern = this.findPattern();
         this.matcher = pattern.matcher(source);
-        if (!this.matcher.matches()) {
-            throw new NotValidMessageException(format(MESSAGE_TEMPLATE_EXCEPTION_NOT_VALID_MESSAGE, source));
-        }
-        return this;
+        return this.matcher.matches();
     }
 
     public final LocalDateTime parseDateTime() {

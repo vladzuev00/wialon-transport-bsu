@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.DataComponentsParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import org.junit.Test;
 

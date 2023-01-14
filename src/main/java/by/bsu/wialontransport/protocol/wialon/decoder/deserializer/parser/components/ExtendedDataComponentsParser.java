@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static by.bsu.wialontransport.util.DataRegexUtil.*;
+import static by.bsu.wialontransport.util.DataAndExtendedDataRegexUtil.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;

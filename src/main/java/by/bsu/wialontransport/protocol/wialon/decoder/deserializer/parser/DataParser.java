@@ -1,25 +1,24 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
-import by.bsu.wialontransport.crud.dto.ExtendedData;
+import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.DataComponentsParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.ExtendedDataComponentsParser;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static by.bsu.wialontransport.crud.dto.ExtendedData.extendedDataBuilder;
+import static by.bsu.wialontransport.crud.dto.Data.dataBuilder;
 
-@Component
-public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, ExtendedDataComponentsParser> {
+public final class DataParser extends AbstractDataParser<Data, DataComponentsParser> {
 
     @Override
-    protected ExtendedDataComponentsParser createParser() {
+    protected DataComponentsParser createParser() {
         return new ExtendedDataComponentsParser();
     }
 
     @Override
-    protected ExtendedData create(final ExtendedDataComponentsParser parser) {
+    protected Data create(final DataComponentsParser parser) {
         final LocalDateTime dateTime = parser.parseDateTime();
-        return extendedDataBuilder()
+        return dataBuilder()
                 .date(dateTime.toLocalDate())
                 .time(dateTime.toLocalTime())
                 .latitude(parser.parseLatitude())
@@ -28,11 +27,6 @@ public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, E
                 .course(parser.parseCourse())
                 .height(parser.parseAltitude())
                 .amountOfSatellites(parser.parseAmountSatellites())
-                .reductionPrecision(parser.parseReductionPrecision())
-                .inputs(parser.parseInputs())
-                .outputs(parser.parseOutputs())
-                .analogInputs(parser.parseAnalogInputs())
-                .driverKeyCode(parser.parseDriverKeyCode())
                 .build();
     }
 }
