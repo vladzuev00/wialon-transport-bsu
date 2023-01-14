@@ -7,14 +7,31 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static by.bsu.wialontransport.util.DataAndExtendedDataRegexUtil.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.regex.Pattern.compile;
 
 public final class ExtendedDataComponentsParser extends DataComponentsParser {
+    public static final String REGEX_EXTENDED_DATA = REGEX_DATA
+            + "((\\d+\\.\\d+)|(NA));"                              //hdop
+            + "(\\d+|(NA));"                                       //inputs
+            + "(\\d+|(NA));"                                       //outputs
+            //NA comes from retranslator
+            + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
+            + "(.*);"                                              //driverKeyCode
+            + "(([^:]+:[123]:[^:]+,?)*)";                          //parameters;
+    public static final Pattern PATTERN_EXTENDED_DATA = compile(REGEX_EXTENDED_DATA);
+
+    public static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
+    public static final int GROUP_NUMBER_INPUTS = 31;
+    public static final int GROUP_NUMBER_OUTPUTS = 33;
+    public static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
+    public static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
+    public static final int GROUP_NUMBER_PARAMETERS = 41;
+
     private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
     private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
 
