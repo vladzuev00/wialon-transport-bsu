@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.ExtendedDataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.factory.DataFactory;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.blackbox.RequestBlackBoxPackage;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
     private static final String REGEX_DATA_DELIMITER = "\\|";
     private static final String RESPONSE_FAILURE_HANDLING = "#AB#0";
 
-    private final ExtendedDataParser extendedDataParser;
+    private final DataFactory dataFactory;
 
     @Override
     public RequestBlackBoxPackage deserialize(final String source) {
@@ -27,7 +27,7 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
             final String message = PackageDeserializer.removePrefix(source);
             final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
             final List<Data> data = stream(dataStrings)
-                    .map(this.extendedDataParser::parse)
+                    .map(this.dataFactory::create)
                     .collect(toList());
             return new RequestBlackBoxPackage(data);
         } catch (final NotValidMessageException cause) {
