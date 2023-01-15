@@ -60,24 +60,24 @@ public final class ExtendedDataComponentsParser extends DataComponentsParser {
     }
 
     public double parseReductionPrecision() {
-        final String reductionPrecisionString = super.getMatcher().group(GROUP_NUMBER_REDUCTION_PRECISION);
+        final String reductionPrecisionString = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_REDUCTION_PRECISION);
         return !reductionPrecisionString.equals(NOT_DEFINED_REDUCTION_PRECISION_STRING)
                 ? parseDouble(reductionPrecisionString)
                 : NOT_DEFINED_REDUCTION_PRECISION;
     }
 
     public int parseInputs() {
-        final String inputsString = super.getMatcher().group(GROUP_NUMBER_INPUTS);
+        final String inputsString = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_INPUTS);
         return !inputsString.equals(NOT_DEFINED_INPUTS_STRING) ? parseInt(inputsString) : NOT_DEFINED_INPUTS;
     }
 
     public int parseOutputs() {
-        final String outputsString = super.getMatcher().group(GROUP_NUMBER_OUTPUTS);
+        final String outputsString = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_OUTPUTS);
         return !outputsString.equals(NOT_DEFINED_OUTPUTS_STRING) ? parseInt(outputsString) : NOT_DEFINED_OUTPUTS;
     }
 
     public double[] parseAnalogInputs() {
-        final String analogInputsString = super.getMatcher().group(GROUP_NUMBER_ANALOG_INPUTS);
+        final String analogInputsString = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_ANALOG_INPUTS);
         if (analogInputsString.isEmpty() || analogInputsString.equals(NOT_DEFINED_ANALOG_INPUTS_STRING)) {
             return new double[0];
         }
@@ -87,14 +87,14 @@ public final class ExtendedDataComponentsParser extends DataComponentsParser {
     }
 
     public String parseDriverKeyCode() {
-        final String inboundDriverKeyCode = super.getMatcher().group(GROUP_NUMBER_DRIVER_KEY_CODE);
+        final String inboundDriverKeyCode = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_DRIVER_KEY_CODE);
         return !inboundDriverKeyCode.equals(NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING)
                 ? inboundDriverKeyCode
                 : NOT_DEFINED_DRIVER_KEY_CODE;
     }
 
     public List<Parameter> parseParameters() {
-        final String parametersString = super.getMatcher().group(GROUP_NUMBER_PARAMETERS);
+        final String parametersString = super.getMatcherIfWasInitialized().group(GROUP_NUMBER_PARAMETERS);
         return !parametersString.isEmpty() ?
                 stream(parametersString.split(DELIMITER_PARAMETERS))
                         .map(this.parameterParser::parse)

@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.entity.DataEntity;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.exception.NoCallMatchMethodBeforeParsingException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ public class DataComponentsParser {
             + "(\\d+|(NA));"                                       //speed
             + "(\\d+|(NA));"                                       //course
             + "(\\d+|(NA));"                                       //altitude
-            + "(\\d+|(NA));";                                      //amountSatellite
+            + "(\\d+|(NA))";                                       //amountSatellite
     public static final Pattern PATTERN_DATA = compile(REGEX_DATA);
 
     public static final int GROUP_NUMBER_DATE_TIME = 1;
@@ -80,7 +81,8 @@ public class DataComponentsParser {
     }
 
     public final LocalDateTime parseDateTime() {
-        final String dateTimeGroup = this.matcher.group(GROUP_NUMBER_DATE_TIME);
+        final Matcher matcher = this.getMatcherIfWasInitialized();
+        final String dateTimeGroup = matcher.group(GROUP_NUMBER_DATE_TIME);
         return !dateTimeGroup.equals(NOT_DEFINED_DATE_TIME_STRING)
                 ? parse(dateTimeGroup, DATE_TIME_FORMATTER)
                 : NOT_DEFINED_DATE_TIME;
@@ -95,28 +97,35 @@ public class DataComponentsParser {
     }
 
     public final int parseSpeed() {
-        final String speedString = this.matcher.group(GROUP_NUMBER_SPEED);
+        final Matcher matcher = this.getMatcherIfWasInitialized();
+        final String speedString = matcher.group(GROUP_NUMBER_SPEED);
         return !speedString.equals(NOT_DEFINED_SPEED_STRING) ? parseInt(speedString) : NOT_DEFINED_SPEED;
     }
 
     public final int parseCourse() {
-        final String courseString = this.matcher.group(GROUP_NUMBER_COURSE);
+        final Matcher matcher = this.getMatcherIfWasInitialized();
+        final String courseString = matcher.group(GROUP_NUMBER_COURSE);
         return !courseString.equals(NOT_DEFINED_COURSE_STRING) ? parseInt(courseString) : NOT_DEFINED_COURSE;
     }
 
     public final int parseAltitude() {
-        final String altitudeString = this.matcher.group(GROUP_NUMBER_ALTITUDE);
+        final Matcher matcher = this.getMatcherIfWasInitialized();
+        final String altitudeString = matcher.group(GROUP_NUMBER_ALTITUDE);
         return !altitudeString.equals(NOT_DEFINED_ALTITUDE_STRING) ? parseInt(altitudeString) : NOT_DEFINED_ALTITUDE;
     }
 
     public final int parseAmountSatellites() {
-        final String amountSatellitesString = this.matcher.group(GROUP_NUMBER_AMOUNT_SATELLITES);
+        final Matcher matcher = this.getMatcherIfWasInitialized();
+        final String amountSatellitesString = matcher.group(GROUP_NUMBER_AMOUNT_SATELLITES);
         return !amountSatellitesString.equals(NOT_DEFINED_AMOUNT_SATELLITE_STRING)
                 ? parseInt(amountSatellitesString)
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
-    protected final Matcher getMatcher() {
+    protected final Matcher getMatcherIfWasInitialized() {
+        if (this.matcher == null) {
+            throw new NoCallMatchMethodBeforeParsingException();
+        }
         return this.matcher;
     }
 
@@ -144,9 +153,10 @@ public class DataComponentsParser {
         }
 
         public final T parse() {
-            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
+            final Matcher matcher = DataComponentsParser.this.getMatcherIfWasInitialized();
+            final String geographicCoordinateString = matcher.group(this.groupNumber);
             return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
-                    ? this.createDefinedGeographicCoordinate()
+                    ? this.createDefinedGeographicCoordinate(matcher)
                     : this.createNotDefinedGeographicCoordinate();
         }
 
@@ -154,12 +164,11 @@ public class DataComponentsParser {
 
         protected abstract T createNotDefinedGeographicCoordinate();
 
-        private T createDefinedGeographicCoordinate() {
-            final int degrees = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberDegrees));
-            final int minutes = parseInt(DataComponentsParser.this.matcher.group(this.groupNumberMinutes));
-            final int minuteShare = parseInt(
-                    DataComponentsParser.this.matcher.group(this.groupNumberMinuteShare));
-            final String typeValue = DataComponentsParser.this.matcher.group(this.groupNumberType);
+        private T createDefinedGeographicCoordinate(final Matcher matcher) {
+            final int degrees = parseInt(matcher.group(this.groupNumberDegrees));
+            final int minutes = parseInt(matcher.group(this.groupNumberMinutes));
+            final int minuteShare = parseInt(matcher.group(this.groupNumberMinuteShare));
+            final String typeValue = matcher.group(this.groupNumberType);
             return this.create(degrees, minutes, minuteShare, typeValue.charAt(0));
         }
     }
