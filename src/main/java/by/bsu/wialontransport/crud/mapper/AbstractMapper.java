@@ -48,6 +48,10 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
                 : null;
     }
 
+    protected final ModelMapper getModelMapper() {
+        return this.modelMapper;
+    }
+
     protected abstract DtoType createDto(EntityType entity);
 
     protected void mapSpecificFields(DtoType source, EntityType destination) {

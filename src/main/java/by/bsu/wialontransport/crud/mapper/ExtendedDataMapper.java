@@ -18,7 +18,7 @@ public final class ExtendedDataMapper extends AbstractDataMapper<ExtendedDataEnt
                 entity.getId(), entity.getDate(), entity.getTime(), mapLatitude(entity), mapLongitude(entity),
                 entity.getSpeed(), entity.getCourse(), entity.getHeight(), entity.getAmountOfSatellites(),
                 entity.getReductionPrecision(), entity.getInputs(), entity.getOutputs(), entity.getAnalogInputs(),
-                entity.getDriverKeyCode()
+                entity.getDriverKeyCode(), null
         );
     }
 }

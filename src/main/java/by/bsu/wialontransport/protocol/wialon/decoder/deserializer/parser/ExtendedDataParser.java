@@ -33,6 +33,7 @@ public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, E
                 .outputs(parser.parseOutputs())
                 .analogInputs(parser.parseAnalogInputs())
                 .driverKeyCode(parser.parseDriverKeyCode())
+                .parameters(parser.parseParameters())
                 .build();
     }
 }

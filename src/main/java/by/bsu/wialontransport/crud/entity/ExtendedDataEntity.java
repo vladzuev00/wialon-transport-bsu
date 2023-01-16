@@ -7,9 +7,11 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tracker_last_extended_data")
@@ -39,6 +41,10 @@ public class ExtendedDataEntity extends DataEntity {
 
     @Column(name = "driver_key_code")
     private String driverKeyCode;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "extendedData")
+    private List<ParameterEntity> parameters;
 
     @Builder(builderMethodName = "extendedDataEntityBuilder")
     public ExtendedDataEntity(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,

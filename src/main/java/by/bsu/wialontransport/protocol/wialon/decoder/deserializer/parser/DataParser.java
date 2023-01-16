@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.DataComponentsParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.ExtendedDataComponentsParser;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ public final class DataParser extends AbstractDataParser<Data, DataComponentsPar
 
     @Override
     protected DataComponentsParser createParser() {
-        return new ExtendedDataComponentsParser();
+        return new DataComponentsParser();
     }
 
     @Override
