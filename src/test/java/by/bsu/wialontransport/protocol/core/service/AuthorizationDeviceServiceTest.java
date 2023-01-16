@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.service;
+package by.bsu.wialontransport.protocol.core.service;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
@@ -6,7 +6,6 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.service.AuthorizationDeviceService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
 import io.netty.channel.ChannelHandlerContext;

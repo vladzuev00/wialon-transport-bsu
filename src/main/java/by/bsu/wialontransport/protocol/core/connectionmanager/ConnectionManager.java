@@ -32,11 +32,11 @@ public final class ConnectionManager {
         });
     }
 
-    public Optional<ChannelHandlerContext> find(final Long deviceId) {
-        return ofNullable(this.contextsByTrackerIds.get(deviceId));
+    public Optional<ChannelHandlerContext> find(final Long trackerId) {
+        return ofNullable(this.contextsByTrackerIds.get(trackerId));
     }
 
-    public void remove(final Long deviceId) {
-        this.contextsByTrackerIds.remove(deviceId);
+    public void remove(final Long trackerId) {
+        this.contextsByTrackerIds.remove(trackerId);
     }
 }
