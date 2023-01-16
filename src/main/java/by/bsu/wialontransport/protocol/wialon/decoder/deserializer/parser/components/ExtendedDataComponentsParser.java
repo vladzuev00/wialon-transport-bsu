@@ -16,7 +16,7 @@ import static java.util.regex.Pattern.compile;
 
 public final class ExtendedDataComponentsParser extends DataComponentsParser {
     public static final String REGEX_EXTENDED_DATA = REGEX_DATA
-            + "((\\d+\\.\\d+)|(NA));"                              //hdop
+            + ";((\\d+\\.\\d+)|(NA));"                              //hdop
             + "(\\d+|(NA));"                                       //inputs
             + "(\\d+|(NA));"                                       //outputs
             //NA comes from retranslator
