@@ -1,7 +1,6 @@
-package by.bsu.wialontransport.protocol.core;
+package by.bsu.wialontransport.protocol.core.connectionmanager;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;

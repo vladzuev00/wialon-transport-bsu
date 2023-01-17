@@ -17,7 +17,7 @@ import static java.util.Optional.ofNullable;
 public final class ContextAttributeManager {
     private static final String NAME_ATTRIBUTE_KEY_TRACKER_IMEI = "tracker_imei";
     private static final String NAME_ATTRIBUTE_KEY_TRACKER = "tracker";
-    private static final String ATTRIBUTE_KEY_LAST_DATA = "last_data";
+    private static final String NAME_ATTRIBUTE_KEY_LAST_DATA = "last_data";
 
     private final AttributeKey<String> attributeKeyTrackerImei;
     private final AttributeKey<Tracker> attributeKeyTracker;
@@ -26,7 +26,7 @@ public final class ContextAttributeManager {
     public ContextAttributeManager() {
         this.attributeKeyTrackerImei = valueOf(NAME_ATTRIBUTE_KEY_TRACKER_IMEI);
         this.attributeKeyTracker = valueOf(NAME_ATTRIBUTE_KEY_TRACKER);
-        this.attributeKeyLastData = valueOf(ATTRIBUTE_KEY_LAST_DATA);
+        this.attributeKeyLastData = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA);
     }
 
     public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
