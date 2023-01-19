@@ -3,7 +3,6 @@ package by.bsu.wialontransport.protocol.wialon.handler.chain;
 import by.bsu.wialontransport.protocol.core.service.AuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,6 @@ public final class RequestLoginPackageHandler extends PackageHandler {
     @Override
     protected void handleIndependently(final Package requestPackage, final ChannelHandlerContext context) {
         final RequestLoginPackage requestLoginPackage = (RequestLoginPackage) requestPackage;
-        final ResponseLoginPackage responseLoginPackage = this.authorizationTrackerService
-                .authorize(requestLoginPackage, context);
-        context.writeAndFlush(responseLoginPackage);
+        this.authorizationTrackerService.authorize(requestLoginPackage, context);
     }
 }

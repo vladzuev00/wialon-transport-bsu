@@ -25,8 +25,7 @@ public final class AuthorizationTrackerService {
     private final ConnectionManager connectionManager;
     private final DataService dataService;
 
-    public ResponseLoginPackage authorize(final RequestLoginPackage requestPackage,
-                                          final ChannelHandlerContext context) {
+    public void authorize(final RequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());
         final Status status = optionalTracker
@@ -38,7 +37,7 @@ public final class AuthorizationTrackerService {
             this.connectionManager.add(context);
             this.putLastDataIfExist(context, tracker);
         }
-        return new ResponseLoginPackage(status);
+        sendResponse(context, status);
     }
 
     private static Status checkPassword(final Tracker tracker, final String packagePassword) {
@@ -49,5 +48,10 @@ public final class AuthorizationTrackerService {
     private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
         final Optional<Data> optionalTrackerLastData = this.dataService.findTrackerLastData(tracker.getId());
         optionalTrackerLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
+    }
+
+    private static void sendResponse(final ChannelHandlerContext context, final Status status) {
+        final ResponseLoginPackage responseLoginPackage = new ResponseLoginPackage(status);
+        context.writeAndFlush(responseLoginPackage);
     }
 }
