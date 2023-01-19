@@ -19,7 +19,7 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.Respons
 
 @Service
 @RequiredArgsConstructor
-public final class AuthorizationDeviceService {
+public final class AuthorizationTrackerService {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class AuthorizationDeviceServiceTest {
+public final class AuthorizationTrackerServiceTest {
 
     @Mock
     private ContextAttributeManager mockedContextAttributeManager;
@@ -42,7 +42,7 @@ public final class AuthorizationDeviceServiceTest {
     @Mock
     private DataService mockedDataService;
 
-    private AuthorizationDeviceService authorizationDeviceService;
+    private AuthorizationTrackerService authorizationTrackerService;
 
     @Captor
     private ArgumentCaptor<ChannelHandlerContext> contextArgumentCaptor;
@@ -61,7 +61,7 @@ public final class AuthorizationDeviceServiceTest {
 
     @Before
     public void initializeAuthorizationDeviceService() {
-        this.authorizationDeviceService = new AuthorizationDeviceService(this.mockedContextAttributeManager,
+        this.authorizationTrackerService = new AuthorizationTrackerService(this.mockedContextAttributeManager,
                 this.mockedTrackerService, this.mockedConnectionManager, this.mockedDataService);
     }
 
@@ -84,7 +84,7 @@ public final class AuthorizationDeviceServiceTest {
                 .build();
         when(this.mockedDataService.findTrackerLastData(anyLong())).thenReturn(Optional.of(givenData));
 
-        final ResponseLoginPackage actual = this.authorizationDeviceService.authorize(givenPackage, givenContext);
+        final ResponseLoginPackage actual = this.authorizationTrackerService.authorize(givenPackage, givenContext);
         final ResponseLoginPackage expected = new ResponseLoginPackage(SUCCESS_AUTHORIZATION);
         assertEquals(expected, actual);
 
@@ -126,7 +126,7 @@ public final class AuthorizationDeviceServiceTest {
 
         when(this.mockedDataService.findTrackerLastData(anyLong())).thenReturn(empty());
 
-        final ResponseLoginPackage actual = this.authorizationDeviceService.authorize(givenPackage, givenContext);
+        final ResponseLoginPackage actual = this.authorizationTrackerService.authorize(givenPackage, givenContext);
         final ResponseLoginPackage expected = new ResponseLoginPackage(SUCCESS_AUTHORIZATION);
         assertEquals(expected, actual);
 
@@ -163,7 +163,7 @@ public final class AuthorizationDeviceServiceTest {
                 .build();
         when(this.mockedTrackerService.findByImei(anyString())).thenReturn(Optional.of(givenTracker));
 
-        final ResponseLoginPackage actual = this.authorizationDeviceService.authorize(givenPackage, givenContext);
+        final ResponseLoginPackage actual = this.authorizationTrackerService.authorize(givenPackage, givenContext);
         final ResponseLoginPackage expected = new ResponseLoginPackage(ERROR_CHECK_PASSWORD);
         assertEquals(expected, actual);
 
@@ -192,7 +192,7 @@ public final class AuthorizationDeviceServiceTest {
 
         when(this.mockedTrackerService.findByImei(anyString())).thenReturn(empty());
 
-        final ResponseLoginPackage actual = this.authorizationDeviceService.authorize(givenPackage, givenContext);
+        final ResponseLoginPackage actual = this.authorizationTrackerService.authorize(givenPackage, givenContext);
         final ResponseLoginPackage expected = new ResponseLoginPackage(CONNECTION_FAILURE);
         assertEquals(expected, actual);
 
