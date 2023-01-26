@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class StarterPackageHandler extends PackageHandler {
-    public StarterPackageHandler(final RequestLoginPackageHandler nextHandler) {
-        super(null, nextHandler);
+    public StarterPackageHandler() {
+        super(null, null);
     }
 
     @Override

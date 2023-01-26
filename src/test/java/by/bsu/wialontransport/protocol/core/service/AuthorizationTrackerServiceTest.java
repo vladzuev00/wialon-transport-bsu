@@ -99,7 +99,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedDataService, times(1))
                 .findTrackerLastData(this.longArgumentCaptor.capture());
         verify(this.mockedContextAttributeManager, times(1))
-                .putLastData(this.contextArgumentCaptor.capture(), this.dataArgumentCaptor.capture());
+                .putLastExtendedData(this.contextArgumentCaptor.capture(), this.dataArgumentCaptor.capture());
 
         assertEquals(
                 List.of(givenContext, givenContext, givenContext, givenContext),
@@ -141,7 +141,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedDataService, times(1))
                 .findTrackerLastData(this.longArgumentCaptor.capture());
         verify(this.mockedContextAttributeManager, times(0))
-                .putLastData(any(ChannelHandlerContext.class), any(Data.class));
+                .putLastExtendedData(any(ChannelHandlerContext.class), any(Data.class));
 
         assertEquals(List.of(givenContext, givenContext, givenContext), this.contextArgumentCaptor.getAllValues());
         assertEquals(List.of(givenPackage.getImei(), givenPackage.getImei()), this.stringArgumentCaptor.getAllValues());
@@ -178,7 +178,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedDataService, times(0))
                 .findTrackerLastData(anyLong());
         verify(this.mockedContextAttributeManager, times(0))
-                .putLastData(any(ChannelHandlerContext.class), any(Data.class));
+                .putLastExtendedData(any(ChannelHandlerContext.class), any(Data.class));
 
         assertSame(givenContext, this.contextArgumentCaptor.getValue());
         assertEquals(List.of(givenPackage.getImei(), givenPackage.getImei()), this.stringArgumentCaptor.getAllValues());
@@ -207,7 +207,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedDataService, times(0))
                 .findTrackerLastData(anyLong());
         verify(this.mockedContextAttributeManager, times(0))
-                .putLastData(any(ChannelHandlerContext.class), any(Data.class));
+                .putLastExtendedData(any(ChannelHandlerContext.class), any(Data.class));
 
         assertSame(givenContext, this.contextArgumentCaptor.getValue());
         assertEquals(List.of(givenPackage.getImei(), givenPackage.getImei()), this.stringArgumentCaptor.getAllValues());

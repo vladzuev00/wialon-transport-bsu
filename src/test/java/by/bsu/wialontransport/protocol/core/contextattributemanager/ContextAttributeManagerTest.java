@@ -235,7 +235,7 @@ public final class ContextAttributeManagerTest {
                 .height(38)
                 .amountOfSatellites(39)
                 .build();
-        this.contextAttributeManager.putLastData(givenContext, givenData);
+        this.contextAttributeManager.putLastExtendedData(givenContext, givenData);
 
         verify(givenContext, times(1)).channel();
         verify(givenChannel, times(1)).attr(this.attributeKeyDataArgumentCaptor.capture());
@@ -278,7 +278,7 @@ public final class ContextAttributeManagerTest {
                 .build();
         when(givenAttribute.get()).thenReturn(expected);
 
-        final Data actual = this.contextAttributeManager.findLastData(givenContext).orElseThrow();
+        final Data actual = this.contextAttributeManager.findLastExtendedData(givenContext).orElseThrow();
         assertEquals(expected, actual);
 
         verify(givenContext, times(1)).channel();
@@ -301,7 +301,7 @@ public final class ContextAttributeManagerTest {
 
         when(givenAttribute.get()).thenReturn(null);
 
-        final Optional<Data> optionalActual = this.contextAttributeManager.findLastData(givenContext);
+        final Optional<Data> optionalActual = this.contextAttributeManager.findLastExtendedData(givenContext);
         assertTrue(optionalActual.isEmpty());
 
         verify(givenContext, times(1)).channel();

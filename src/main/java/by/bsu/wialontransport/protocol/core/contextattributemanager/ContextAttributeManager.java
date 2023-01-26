@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.contextattributemanager;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.ExtendedData;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,16 +17,16 @@ import static java.util.Optional.ofNullable;
 public final class ContextAttributeManager {
     private static final String NAME_ATTRIBUTE_KEY_TRACKER_IMEI = "tracker_imei";
     private static final String NAME_ATTRIBUTE_KEY_TRACKER = "tracker";
-    private static final String NAME_ATTRIBUTE_KEY_LAST_DATA = "last_data";
+    private static final String NAME_ATTRIBUTE_KEY_LAST_EXTENDED_DATA = "last_extended_data";
 
     private final AttributeKey<String> attributeKeyTrackerImei;
     private final AttributeKey<Tracker> attributeKeyTracker;
-    private final AttributeKey<Data> attributeKeyLastData;
+    private final AttributeKey<ExtendedData> attributeKeyLastExtendedData;
 
     public ContextAttributeManager() {
         this.attributeKeyTrackerImei = valueOf(NAME_ATTRIBUTE_KEY_TRACKER_IMEI);
         this.attributeKeyTracker = valueOf(NAME_ATTRIBUTE_KEY_TRACKER);
-        this.attributeKeyLastData = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA);
+        this.attributeKeyLastExtendedData = valueOf(NAME_ATTRIBUTE_KEY_LAST_EXTENDED_DATA);
     }
 
     public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
@@ -45,12 +45,12 @@ public final class ContextAttributeManager {
         return findAttributeValue(context, this.attributeKeyTracker);
     }
 
-    public void putLastData(final ChannelHandlerContext context, final Data data) {
-        putAttributeValue(context, this.attributeKeyLastData, data);
+    public void putLastExtendedData(final ChannelHandlerContext context, final ExtendedData extendedData) {
+        putAttributeValue(context, this.attributeKeyLastExtendedData, extendedData);
     }
 
-    public Optional<Data> findLastData(final ChannelHandlerContext context) {
-        return findAttributeValue(context, this.attributeKeyLastData);
+    public Optional<ExtendedData> findLastExtendedData(final ChannelHandlerContext context) {
+        return findAttributeValue(context, this.attributeKeyLastExtendedData);
     }
 
     private static <ValueType> Optional<ValueType> findAttributeValue(final ChannelHandlerContext context,
