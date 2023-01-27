@@ -49,7 +49,7 @@ CREATE TABLE tracker_last_data
 
     speed                  INTEGER   NOT NULL,
     course                 INTEGER   NOT NULL,
-    height                 INTEGER   NOT NULL,
+    altitude                 INTEGER   NOT NULL,
     amount_of_satellites   INTEGER   NOT NULL,
 
 	reduction_precision DECIMAL      NOT NULL,

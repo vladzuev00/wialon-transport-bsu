@@ -55,7 +55,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                         .build())
                 .speed(8)
                 .course(9)
-                .height(10)
+                .altitude(10)
                 .amountOfSatellites(11)
                 .reductionPrecision(12.4)
                 .inputs(13)
@@ -87,7 +87,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                         .build())
                 .speed(8)
                 .course(9)
-                .height(10)
+                .altitude(10)
                 .amountOfSatellites(11)
                 .reductionPrecision(12.4)
                 .inputs(13)
@@ -135,7 +135,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                         .build())
                 .speed(8)
                 .course(9)
-                .height(10)
+                .altitude(10)
                 .amountOfSatellites(11)
                 .reductionPrecision(12.4)
                 .inputs(13)
@@ -164,7 +164,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
         assertEquals(expected.getLongitude(), actual.getLongitude());
         assertEquals(expected.getSpeed(), actual.getSpeed());
         assertEquals(expected.getCourse(), actual.getCourse());
-        assertEquals(expected.getHeight(), actual.getHeight());
+        assertEquals(expected.getAltitude(), actual.getAltitude());
         assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
         assertEquals(expected.getReductionPrecision(), actual.getReductionPrecision(), 0.);
         assertEquals(expected.getInputs(), actual.getInputs());

@@ -70,8 +70,8 @@ public class DataEntity extends AbstractEntity<Long> {
     @Column(name = "course")
     private int course;
 
-    @Column(name = "height")
-    private int height;
+    @Column(name = "altitude")
+    private int altitude;
 
     @Column(name = "amount_of_satellites")
     private int amountOfSatellites;
