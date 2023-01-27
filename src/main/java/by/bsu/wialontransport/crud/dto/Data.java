@@ -5,37 +5,31 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@Value
+@AllArgsConstructor
+@Builder
 public class Data implements AbstractDto<Long> {
-    private final Long id;
-    private final LocalDate date;
-    private final LocalTime time;
-    private final Latitude latitude;
-    private final Longitude longitude;
-    private final int speed;
-    private final int course;
+    Long id;
+    LocalDate date;
+    LocalTime time;
+    Latitude latitude;
+    Longitude longitude;
+    int speed;
+    int course;
+    int altitude;
+    int amountOfSatellites;
+    double reductionPrecision;
+    int inputs;
+    int outputs;
+    double[] analogInputs;
+    String driverKeyCode;
 
-    //TODO: rename to altitude
-    private final int height;
-    private final int amountOfSatellites;
-
-    @Builder(builderMethodName = "dataBuilder")
-    public Data(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,
-                final Longitude longitude, final int speed, final int course, final int height,
-                final int amountOfSatellites) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.speed = speed;
-        this.course = course;
-        this.height = height;
-        this.amountOfSatellites = amountOfSatellites;
-    }
+    /**
+     * parameter's name to parameter
+     */
+    Map<String, Parameter> parameters;
 
     @AllArgsConstructor
     @Getter

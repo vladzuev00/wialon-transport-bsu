@@ -31,7 +31,7 @@ public class DataCalculationsEntity extends AbstractEntity<Long> {
     @Column(name = "engine_on_duration_seconds")
     private long engineOnDurationSeconds;
 
-    @ManyToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "data_id")
     @ToString.Exclude
     private DataEntity data;

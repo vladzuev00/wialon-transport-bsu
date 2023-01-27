@@ -14,7 +14,8 @@ public final class DataMapper extends AbstractDataMapper<DataEntity, Data> {
 
     @Override
     protected Data createDto(final DataEntity entity) {
-        return new Data(entity.getId(), entity.getDate(), entity.getTime(), mapLatitude(entity), mapLongitude(entity),
-                entity.getSpeed(), entity.getCourse(), entity.getHeight(), entity.getAmountOfSatellites());
+//        return new Data(entity.getId(), entity.getDate(), entity.getTime(), mapLatitude(entity), mapLongitude(entity),
+//                entity.getSpeed(), entity.getCourse(), entity.getHeight(), entity.getAmountOfSatellites());
+        return null;
     }
 }

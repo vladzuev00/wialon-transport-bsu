@@ -94,7 +94,8 @@ public class DataEntity extends AbstractEntity<Long> {
     private String driverKeyCode;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "extendedData")
+    @Transient
+    //@OneToMany(mappedBy = "extendedData")
     private List<ParameterEntity> parameters;
 
     @ManyToOne(fetch = LAZY)

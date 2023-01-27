@@ -35,7 +35,7 @@ public final class AuthorizationTrackerService {
             final Tracker tracker = optionalTracker.get();
             this.contextAttributeManager.putTracker(context, tracker);
             this.connectionManager.add(context);
-            this.putLastDataIfExist(context, tracker);
+            //this.putLastDataIfExist(context, tracker);
         }
         sendResponse(context, status);
     }
@@ -45,10 +45,10 @@ public final class AuthorizationTrackerService {
         return packagePassword.equals(devicePassword) ? SUCCESS_AUTHORIZATION : ERROR_CHECK_PASSWORD;
     }
 
-    private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
-        final Optional<Data> optionalTrackerLastData = this.dataService.findTrackerLastData(tracker.getId());
-        optionalTrackerLastData.ifPresent(data -> this.contextAttributeManager.putLastExtendedData(context, data));
-    }
+//    private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
+//        final Optional<Data> optionalTrackerLastData = this.dataService.findTrackerLastData(tracker.getId());
+//        optionalTrackerLastData.ifPresent(data -> this.contextAttributeManager.putLastChannelData(context, data));
+//    }
 
     private static void sendResponse(final ChannelHandlerContext context, final Status status) {
         final ResponseLoginPackage responseLoginPackage = new ResponseLoginPackage(status);

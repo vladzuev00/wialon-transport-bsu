@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
-import by.bsu.wialontransport.crud.dto.ExtendedData;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.factory.DataFactory;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
@@ -18,8 +17,9 @@ public final class RequestDataPackageDeserializer implements PackageDeserializer
     public RequestDataPackage deserialize(final String source) {
         try {
             final String extendedDataString = PackageDeserializer.removePrefix(source);
-            final ExtendedData extendedData = this.dataFactory.createAsExtendedData(extendedDataString);
-            return new RequestDataPackage(extendedData);
+            //final ExtendedData extendedData = this.dataFactory.createAsExtendedData(extendedDataString);
+            //return new RequestDataPackage(extendedData);
+            return null;
         } catch (final NotValidMessageException cause) {
             throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
         }

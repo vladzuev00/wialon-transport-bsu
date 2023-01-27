@@ -10,6 +10,6 @@ public final class DataValidator {
     private final DataPropertyValidator propertyValidator;
 
     public boolean isValid(final Data data) {
-
+        return false;
     }
 }

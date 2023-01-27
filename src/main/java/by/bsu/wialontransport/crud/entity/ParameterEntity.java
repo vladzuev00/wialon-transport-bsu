@@ -35,10 +35,10 @@ public class ParameterEntity extends AbstractEntity<Long> {
     @Column(name = "value")
     private String value;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "extended_data_id")
-    @ToString.Exclude
-    private ExtendedDataEntity extendedData;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "extended_data_id")
+//    @ToString.Exclude
+//    private ExtendedDataEntity extendedData;
 
     public enum Type {
         NOT_DEFINED(MIN_VALUE), INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);

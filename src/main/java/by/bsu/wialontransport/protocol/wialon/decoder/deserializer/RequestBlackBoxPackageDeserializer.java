@@ -26,10 +26,10 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
         try {
             final String message = PackageDeserializer.removePrefix(source);
             final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
-            final List<Data> data = stream(dataStrings)
-                    .map(this.dataFactory::create)
-                    .collect(toList());
-            return new RequestBlackBoxPackage(data);
+//            final List<Data> data = stream(dataStrings)
+//                    //.map(this.dataFactory::create)
+//                    .collect(toList());
+            return new RequestBlackBoxPackage(null);
         } catch (final NotValidMessageException cause) {
             throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
         }

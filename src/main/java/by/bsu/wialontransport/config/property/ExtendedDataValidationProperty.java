@@ -6,12 +6,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix = "extended_data.validation")
-@NoArgsConstructor
-@Setter
+@Component
 @Getter
 public class ExtendedDataValidationProperty {
     private int minValidDOP;

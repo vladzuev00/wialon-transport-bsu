@@ -17,15 +17,16 @@ public final class DataParser extends AbstractDataParser<Data, DataComponentsPar
     @Override
     protected Data create(final DataComponentsParser parser) {
         final LocalDateTime dateTime = parser.parseDateTime();
-        return Data.dataBuilder()
-                .date(dateTime.toLocalDate())
-                .time(dateTime.toLocalTime())
-                .latitude(parser.parseLatitude())
-                .longitude(parser.parseLongitude())
-                .speed(parser.parseSpeed())
-                .course(parser.parseCourse())
-                .height(parser.parseAltitude())
-                .amountOfSatellites(parser.parseAmountSatellites())
-                .build();
+//        return Data.dataBuilder()
+//                .date(dateTime.toLocalDate())
+//                .time(dateTime.toLocalTime())
+//                .latitude(parser.parseLatitude())
+//                .longitude(parser.parseLongitude())
+//                .speed(parser.parseSpeed())
+//                .course(parser.parseCourse())
+//                .height(parser.parseAltitude())
+//                .amountOfSatellites(parser.parseAmountSatellites())
+//                .build();
+        return null;
     }
 }

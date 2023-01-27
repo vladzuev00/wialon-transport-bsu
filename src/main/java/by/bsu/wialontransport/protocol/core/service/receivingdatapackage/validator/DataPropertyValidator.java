@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.core.service.receivingdatapackage.valida
 
 import by.bsu.wialontransport.config.property.DataValidationProperty;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.ExtendedData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ public final class DataPropertyValidator {
                 && research.isBefore(maxAllowableDateTime);
     }
 
-    public boolean isContainDOPParameters(final ExtendedData extendedData) {
-        throw new RuntimeException();
-    }
+//    public boolean isContainDOPParameters(final ExtendedData extendedData) {
+//        throw new RuntimeException();
+//    }
 }

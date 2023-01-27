@@ -19,23 +19,24 @@ public final class DataCalculationsRepositoryTest extends AbstractContextTest {
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, height, amount_of_satellites, tracker_id) "
-            + "VALUES(255, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 255)")
+            + "speed, course, height, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
+            + "driver_key_code, tracker_id) "
+            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
     @Sql(statements = "INSERT INTO tracker_last_data_calculations"
-            + "(id, gps_odometer, ignition_on, engine_on_duration_seconds, acceleration, data_id) "
-            + "VALUES(255, 0.1, TRUE, 100, 5.5, 255)")
+            + "(id, gps_odometer, ignition_on, engine_on_duration_seconds, data_id) "
+            + "VALUES(257, 0.1, TRUE, 100, 256)")
     public void dataCalculationsShouldBeFoundById() {
         super.startQueryCount();
-        final DataCalculationsEntity actual = this.repository.findById(255L).orElseThrow();
+        final DataCalculationsEntity actual = this.repository.findById(257L).orElseThrow();
         super.checkQueryCount(1);
 
         final DataCalculationsEntity expected = DataCalculationsEntity.builder()
-                .id(255L)
+                .id(257L)
                 .gpsOdometer(0.1)
                 .ignitionOn(true)
                 .engineOnDurationSeconds(100)
-                .acceleration(5.5)
-                .data(super.entityManager.getReference(DataEntity.class, 255L))
+                .data(super.entityManager.getReference(DataEntity.class, 256L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -45,15 +46,16 @@ public final class DataCalculationsRepositoryTest extends AbstractContextTest {
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, height, amount_of_satellites, tracker_id) "
-            + "VALUES(255, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 255)")
+            + "speed, course, height, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
+            + "driver_key_code, tracker_id) "
+            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
     public void dataCalculationsShouldBeInserted() {
         final DataCalculationsEntity givenDataCalculations = DataCalculationsEntity.builder()
                 .gpsOdometer(0.1)
                 .ignitionOn(true)
                 .engineOnDurationSeconds(100)
-                .acceleration(5.5)
-                .data(super.entityManager.getReference(DataEntity.class, 255L))
+                .data(super.entityManager.getReference(DataEntity.class, 256L))
                 .build();
 
         super.startQueryCount();
