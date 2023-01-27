@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public final class DataParser extends AbstractDataParser<Data, DataComponentsParser> {
+public final class DataParser {
 
     @Override
     protected DataComponentsParser createParser() {

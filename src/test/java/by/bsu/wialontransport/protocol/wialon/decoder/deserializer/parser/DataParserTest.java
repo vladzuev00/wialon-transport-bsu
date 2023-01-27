@@ -2,17 +2,10 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Data.Latitude;
-import by.bsu.wialontransport.crud.dto.Data.Longitude;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static org.junit.Assert.assertEquals;
 
 public final class DataParserTest extends AbstractContextTest {
@@ -48,7 +41,7 @@ public final class DataParserTest extends AbstractContextTest {
 //        assertEquals(expected, actual);
     }
 
-    @Test(expected = NotValidMessageException.class)
+    @Test(expected = NotValidDataException.class)
     public void notValidDataShouldNotBeParsed() {
         //not valid time
         final String givenMessage = "151122;1456434;5544.6025;N;03739.6834;E;100;15;10;177";

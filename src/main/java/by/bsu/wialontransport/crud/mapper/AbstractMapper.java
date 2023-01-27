@@ -36,11 +36,11 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
                 : null;
     }
 
-    public final EntityType mapToEntity(DtoType mapped) {
+    public final EntityType mapToEntity(final DtoType mapped) {
         return !isNull(mapped) ? this.modelMapper.map(mapped, this.entityType) : null;
     }
 
-    public final List<EntityType> mapToEntity(Collection<DtoType> mapped) {
+    public final List<EntityType> mapToEntity(final Collection<DtoType> mapped) {
         return !isNull(mapped)
                 ? mapped.stream()
                 .map(this::mapToEntity)
@@ -52,9 +52,9 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
         return this.modelMapper;
     }
 
-    protected abstract DtoType createDto(EntityType entity);
+    protected abstract DtoType createDto(final EntityType entity);
 
-    protected void mapSpecificFields(DtoType source, EntityType destination) {
+    protected void mapSpecificFields(final DtoType source, final EntityType destination) {
 
     }
 

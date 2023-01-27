@@ -3,49 +3,67 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.compo
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
+import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.exception.NoCallMatchMethodBeforeParsingException;
+import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import static java.lang.Byte.parseByte;
+import static java.lang.Double.parseDouble;
 import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.regex.Pattern.compile;
 
-public class DataComponentsParser {
-    protected static final String REGEX_DATA
+public final class DataComponentsParser {
+    private static final String MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION = "Given data '%s' isn't valid.";
+
+    private static final String REGEX_DATA
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
             + "(\\d+|(NA));"                                       //speed
             + "(\\d+|(NA));"                                       //course
             + "(\\d+|(NA));"                                       //altitude
-            + "(\\d+|(NA))";                                       //amountSatellite
-    public static final Pattern PATTERN_DATA = compile(REGEX_DATA);
+            + "(\\d+|(NA));"                                       //amountSatellite
+            + "((\\d+\\.\\d+)|(NA));"                              //hdop
+            + "(\\d+|(NA));"                                       //inputs
+            + "(\\d+|(NA));"                                       //outputs
+            //NA comes from retranslator
+            + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
+            + "(.*);"                                              //driverKeyCode
+            + "(([^:]+:[123]:[^:]+,?)*)";                          //parameters
+    private static final Pattern PATTERN_DATA = compile(REGEX_DATA);
 
-    public static final int GROUP_NUMBER_DATE_TIME = 1;
+    private static final int GROUP_NUMBER_DATE_TIME = 1;
 
-    public static final int GROUP_NUMBER_LATITUDE = 6;
-    public static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
-    public static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
-    public static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
-    public static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
+    private static final int GROUP_NUMBER_LATITUDE = 6;
+    private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
+    private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
+    private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
+    private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
 
-    public static final int GROUP_NUMBER_LONGITUDE = 13;
-    public static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
-    public static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
-    public static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
-    public static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
+    private static final int GROUP_NUMBER_LONGITUDE = 13;
+    private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
+    private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
+    private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
+    private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
 
-    public static final int GROUP_NUMBER_SPEED = 20;
-    public static final int GROUP_NUMBER_COURSE = 22;
-    public static final int GROUP_NUMBER_ALTITUDE = 24;
-    public static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
+    private static final int GROUP_NUMBER_SPEED = 20;
+    private static final int GROUP_NUMBER_COURSE = 22;
+    private static final int GROUP_NUMBER_ALTITUDE = 24;
+    private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
 
     private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
@@ -64,73 +82,123 @@ public class DataComponentsParser {
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
     private static final int NOT_DEFINED_AMOUNT_SATELLITE = MIN_VALUE;
 
+    private static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
+    private static final int GROUP_NUMBER_INPUTS = 31;
+    private static final int GROUP_NUMBER_OUTPUTS = 33;
+    private static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
+    private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
+    private static final int GROUP_NUMBER_PARAMETERS = 41;
+
+    private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
+    private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
+
+    private static final String NOT_DEFINED_INPUTS_STRING = "NA";
+    private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
+
+    private static final String NOT_DEFINED_OUTPUTS_STRING = "NA";
+    private static final int NOT_DEFINED_OUTPUTS = Integer.MIN_VALUE;
+
+    private static final String NOT_DEFINED_ANALOG_INPUTS_STRING = "NA";
+    private static final String DELIMITER_ANALOG_INPUTS = ",";
+
+    private static final String NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING = "NA";
+    private static final String NOT_DEFINED_DRIVER_KEY_CODE = "not defined";
+
+    private static final String DELIMITER_PARAMETERS = ",";
+
+    private final Matcher matcher;
     private final GeographicCoordinateParser<Latitude> latitudeParser;
     private final GeographicCoordinateParser<Longitude> longitudeParser;
-    private Matcher matcher;
+    private final ParameterParser parameterParser;
 
-    public DataComponentsParser() {
+    public DataComponentsParser(final String source) {
+        this.matcher = PATTERN_DATA.matcher(source);
+        if (!this.matcher.matches()) {
+            throw new NotValidDataException(format(MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION, source));
+        }
         this.latitudeParser = new LatitudeParser();
         this.longitudeParser = new LongitudeParser();
-        this.matcher = null;
+        this.parameterParser = new ParameterParser();
     }
 
-    public final boolean match(final String source) {
-        final Pattern pattern = this.findPattern();
-        this.matcher = pattern.matcher(source);
-        return this.matcher.matches();
-    }
-
-    public final LocalDateTime parseDateTime() {
-        final Matcher matcher = this.getMatcherIfWasInitialized();
-        final String dateTimeGroup = matcher.group(GROUP_NUMBER_DATE_TIME);
+    public LocalDateTime parseDateTime() {
+        final String dateTimeGroup = this.matcher.group(GROUP_NUMBER_DATE_TIME);
         return !dateTimeGroup.equals(NOT_DEFINED_DATE_TIME_STRING)
                 ? parse(dateTimeGroup, DATE_TIME_FORMATTER)
                 : NOT_DEFINED_DATE_TIME;
     }
 
-    public final Latitude parseLatitude() {
+    public Latitude parseLatitude() {
         return this.latitudeParser.parse();
     }
 
-    public final Longitude parseLongitude() {
+    public Longitude parseLongitude() {
         return this.longitudeParser.parse();
     }
 
-    public final int parseSpeed() {
-        final Matcher matcher = this.getMatcherIfWasInitialized();
-        final String speedString = matcher.group(GROUP_NUMBER_SPEED);
+    public int parseSpeed() {
+        final String speedString = this.matcher.group(GROUP_NUMBER_SPEED);
         return !speedString.equals(NOT_DEFINED_SPEED_STRING) ? parseInt(speedString) : NOT_DEFINED_SPEED;
     }
 
-    public final int parseCourse() {
-        final Matcher matcher = this.getMatcherIfWasInitialized();
-        final String courseString = matcher.group(GROUP_NUMBER_COURSE);
+    public int parseCourse() {
+        final String courseString = this.matcher.group(GROUP_NUMBER_COURSE);
         return !courseString.equals(NOT_DEFINED_COURSE_STRING) ? parseInt(courseString) : NOT_DEFINED_COURSE;
     }
 
-    public final int parseAltitude() {
-        final Matcher matcher = this.getMatcherIfWasInitialized();
-        final String altitudeString = matcher.group(GROUP_NUMBER_ALTITUDE);
+    public int parseAltitude() {
+        final String altitudeString = this.matcher.group(GROUP_NUMBER_ALTITUDE);
         return !altitudeString.equals(NOT_DEFINED_ALTITUDE_STRING) ? parseInt(altitudeString) : NOT_DEFINED_ALTITUDE;
     }
 
-    public final int parseAmountSatellites() {
-        final Matcher matcher = this.getMatcherIfWasInitialized();
-        final String amountSatellitesString = matcher.group(GROUP_NUMBER_AMOUNT_SATELLITES);
+    public int parseAmountSatellites() {
+        final String amountSatellitesString = this.matcher.group(GROUP_NUMBER_AMOUNT_SATELLITES);
         return !amountSatellitesString.equals(NOT_DEFINED_AMOUNT_SATELLITE_STRING)
                 ? parseInt(amountSatellitesString)
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
-    protected final Matcher getMatcherIfWasInitialized() {
-        if (this.matcher == null) {
-            throw new NoCallMatchMethodBeforeParsingException();
-        }
-        return this.matcher;
+    public double parseReductionPrecision() {
+        final String reductionPrecisionString = this.matcher.group(GROUP_NUMBER_REDUCTION_PRECISION);
+        return !reductionPrecisionString.equals(NOT_DEFINED_REDUCTION_PRECISION_STRING)
+                ? parseDouble(reductionPrecisionString)
+                : NOT_DEFINED_REDUCTION_PRECISION;
     }
 
-    protected Pattern findPattern() {
-        return PATTERN_DATA;
+    public int parseInputs() {
+        final String inputsString = this.matcher.group(GROUP_NUMBER_INPUTS);
+        return !inputsString.equals(NOT_DEFINED_INPUTS_STRING) ? parseInt(inputsString) : NOT_DEFINED_INPUTS;
+    }
+
+    public int parseOutputs() {
+        final String outputsString = this.matcher.group(GROUP_NUMBER_OUTPUTS);
+        return !outputsString.equals(NOT_DEFINED_OUTPUTS_STRING) ? parseInt(outputsString) : NOT_DEFINED_OUTPUTS;
+    }
+
+    public double[] parseAnalogInputs() {
+        final String analogInputsString = this.matcher.group(GROUP_NUMBER_ANALOG_INPUTS);
+        if (analogInputsString.isEmpty() || analogInputsString.equals(NOT_DEFINED_ANALOG_INPUTS_STRING)) {
+            return new double[0];
+        }
+        return stream(analogInputsString.split(DELIMITER_ANALOG_INPUTS))
+                .mapToDouble(Double::parseDouble)
+                .toArray();
+    }
+
+    public String parseDriverKeyCode() {
+        final String inboundDriverKeyCode = this.matcher.group(GROUP_NUMBER_DRIVER_KEY_CODE);
+        return !inboundDriverKeyCode.equals(NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING)
+                ? inboundDriverKeyCode
+                : NOT_DEFINED_DRIVER_KEY_CODE;
+    }
+
+    public List<Parameter> parseParameters() {
+        final String parametersString = this.matcher.group(GROUP_NUMBER_PARAMETERS);
+        return !parametersString.isEmpty() ?
+                stream(parametersString.split(DELIMITER_PARAMETERS))
+                        .map(this.parameterParser::parse)
+                        .collect(Collectors.toList())
+                : emptyList();
     }
 
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
@@ -153,10 +221,9 @@ public class DataComponentsParser {
         }
 
         public final T parse() {
-            final Matcher matcher = DataComponentsParser.this.getMatcherIfWasInitialized();
-            final String geographicCoordinateString = matcher.group(this.groupNumber);
+            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
             return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
-                    ? this.createDefinedGeographicCoordinate(matcher)
+                    ? this.createDefinedGeographicCoordinate(DataComponentsParser.this.matcher)
                     : this.createNotDefinedGeographicCoordinate();
         }
 
@@ -220,6 +287,30 @@ public class DataComponentsParser {
         @Override
         protected Longitude createNotDefinedGeographicCoordinate() {
             return NOT_DEFINED_LONGITUDE;
+        }
+    }
+
+    private static final class ParameterParser {
+        private static final String DELIMITER_PARAMETER_COMPONENTS = ":";
+        private static final int PARAMETER_NAME_INDEX = 0;
+        private static final int PARAMETER_TYPE_INDEX = 1;
+        private static final int PARAMETER_VALUE_INDEX = 2;
+
+        public Parameter parse(final String source) {
+            final String[] components = source.split(DELIMITER_PARAMETER_COMPONENTS);
+            final String name = components[PARAMETER_NAME_INDEX];
+            final ParameterEntity.Type type = parseType(components);
+            final String value = components[PARAMETER_VALUE_INDEX];
+            return Parameter.builder()
+                    .name(name)
+                    .type(type)
+                    .value(value)
+                    .build();
+        }
+
+        private static ParameterEntity.Type parseType(final String[] components) {
+            final String typeString = components[PARAMETER_TYPE_INDEX];
+            return ParameterEntity.Type.findByValue(parseByte(typeString));
         }
     }
 }

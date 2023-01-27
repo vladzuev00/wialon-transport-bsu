@@ -1,17 +1,13 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.factory.DataFactory;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.blackbox.RequestBlackBoxPackage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +26,7 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
 //                    //.map(this.dataFactory::create)
 //                    .collect(toList());
             return new RequestBlackBoxPackage(null);
-        } catch (final NotValidMessageException cause) {
+        } catch (final NotValidDataException cause) {
             throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
         }
     }

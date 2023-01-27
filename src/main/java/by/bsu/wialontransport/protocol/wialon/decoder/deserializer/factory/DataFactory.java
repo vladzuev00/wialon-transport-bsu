@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.factory;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

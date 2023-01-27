@@ -1,20 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.dto.Data.Latitude;
-import by.bsu.wialontransport.crud.dto.Data.Longitude;
-import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
-import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static org.junit.Assert.assertEquals;
 
 //public final class ExtendedDataParserTest extends AbstractContextTest {

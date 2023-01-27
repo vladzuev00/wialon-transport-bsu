@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.factory.DataFactory;
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.RequestDataPackage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public final class RequestDataPackageDeserializer implements PackageDeserializer
             //final ExtendedData extendedData = this.dataFactory.createAsExtendedData(extendedDataString);
             //return new RequestDataPackage(extendedData);
             return null;
-        } catch (final NotValidMessageException cause) {
+        } catch (final NotValidDataException cause) {
             throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
         }
     }

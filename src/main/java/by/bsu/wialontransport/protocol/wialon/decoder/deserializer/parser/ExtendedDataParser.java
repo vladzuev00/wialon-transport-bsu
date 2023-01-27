@@ -1,10 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components.ExtendedDataComponentsParser;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-
 //@Component
 //public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, ExtendedDataComponentsParser> {
 //
