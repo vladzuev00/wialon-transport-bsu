@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static by.bsu.wialontransport.crud.dto.ExtendedData.extendedDataBuilder;
-
 @Component
 public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, ExtendedDataComponentsParser> {
 
@@ -19,7 +17,7 @@ public final class ExtendedDataParser extends AbstractDataParser<ExtendedData, E
     @Override
     protected ExtendedData create(final ExtendedDataComponentsParser parser) {
         final LocalDateTime dateTime = parser.parseDateTime();
-        return extendedDataBuilder()
+        return ExtendedData.extendedDataBuilder()
                 .date(dateTime.toLocalDate())
                 .time(dateTime.toLocalTime())
                 .latitude(parser.parseLatitude())

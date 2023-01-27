@@ -51,6 +51,13 @@ CREATE TABLE tracker_last_data
     course                 INTEGER   NOT NULL,
     height                 INTEGER   NOT NULL,
     amount_of_satellites   INTEGER   NOT NULL,
+
+	reduction_precision DECIMAL      NOT NULL,
+    inputs              INTEGER      NOT NULL,
+    outputs             INTEGER      NOT NULL,
+    analog_inputs       DOUBLE PRECISION[] NOT NULL,
+    driver_key_code     VARCHAR(256) NOT NULL,
+
     tracker_id             INTEGER   NOT NULL
 );
 
@@ -66,32 +73,18 @@ ALTER TABLE tracker_last_data
     ADD CONSTRAINT longitude_type_should_be_correct
         CHECK (tracker_last_data.longitude_type IN ('E', 'W'));
 
-CREATE TABLE tracker_last_extended_data
-(
-    id                  BIGINT       NOT NULL PRIMARY KEY,
-    reduction_precision DECIMAL      NOT NULL,
-    inputs              INTEGER      NOT NULL,
-    outputs             INTEGER      NOT NULL,
-    analog_inputs       DOUBLE PRECISION[] NOT NULL,
-    driver_key_code     VARCHAR(256) NOT NULL
-);
-
-ALTER TABLE tracker_last_extended_data
-    ADD CONSTRAINT fk_tracker_last_extended_data_to_tracker_last_data FOREIGN KEY (id) REFERENCES tracker_last_data (id)
-        ON DELETE CASCADE;
-
 CREATE TABLE parameters
 (
     id               BIGSERIAL    NOT NULL PRIMARY KEY,
     name             VARCHAR(256) NOT NULL,
     type             VARCHAR(64)  NOT NULL,
     value            VARCHAR(256) NOT NULL,
-    extended_data_id BIGINT       NOT NULL
+    data_id BIGINT       NOT NULL
 );
 
 ALTER TABLE parameters
-    ADD CONSTRAINT fk_parameters_to_tracker_last_extended_data
-        FOREIGN KEY (extended_data_id) REFERENCES tracker_last_extended_data (id)
+    ADD CONSTRAINT fk_parameters_to_tracker_last_data
+        FOREIGN KEY (data_id) REFERENCES tracker_last_data (id)
             ON DELETE CASCADE;
 
 ALTER TABLE parameters
@@ -142,7 +135,6 @@ CREATE TABLE tracker_last_data_calculations(
 	gps_odometer DOUBLE PRECISION NOT NULL,
 	ignition_on BOOLEAN NOT NULL,
 	engine_on_duration_seconds BIGINT NOT NULL,
-	acceleration DOUBLE PRECISION NOT NULL,
 	data_id BIGINT NOT NULL
 );
 
