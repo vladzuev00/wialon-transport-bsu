@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @Builder
-public class DataCalculations {
+public class DataCalculations implements AbstractDto<Long> {
     Long id;
     double gpsOdometer;
     boolean ignitionOn;
