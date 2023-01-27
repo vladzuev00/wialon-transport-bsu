@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.entity.ExtendedDataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

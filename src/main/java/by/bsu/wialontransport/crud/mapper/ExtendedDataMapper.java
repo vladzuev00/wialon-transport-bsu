@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.crud.dto.ExtendedData;
-import by.bsu.wialontransport.crud.entity.ExtendedDataEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

@@ -2,12 +2,16 @@ package by.bsu.wialontransport.crud.entity;
 
 import by.bsu.wialontransport.crud.entity.converter.LatitudeTypeConverter;
 import by.bsu.wialontransport.crud.entity.converter.LongitudeTypeConverter;
+import io.hypersistence.utils.hibernate.type.array.DoubleArrayType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static java.util.Arrays.stream;
 import static javax.persistence.FetchType.LAZY;
@@ -16,11 +20,16 @@ import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
 @Table(name = "tracker_last_data")
-@Inheritance(strategy = JOINED)
+@TypeDef(
+        name = "double-array",
+        typeClass = DoubleArrayType.class
+)
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @ToString(callSuper = true)
+@Builder
 public class DataEntity extends AbstractEntity<Long> {
 
     @Id
@@ -68,26 +77,30 @@ public class DataEntity extends AbstractEntity<Long> {
     @Column(name = "amount_of_satellites")
     private int amountOfSatellites;
 
+    @Column(name = "reduction_precision")
+    private double reductionPrecision;
+
+    @Column(name = "inputs")
+    private int inputs;
+
+    @Column(name = "outputs")
+    private int outputs;
+
+    @Type(type = "double-array")
+    @Column(name = "analog_inputs")
+    private double[] analogInputs;
+
+    @Column(name = "driver_key_code")
+    private String driverKeyCode;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "extendedData")
+    private List<ParameterEntity> parameters;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tracker_id")
     @ToString.Exclude
     private TrackerEntity tracker;
-
-    @Builder(builderMethodName = "dataEntityBuilder")
-    public DataEntity(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,
-                      final Longitude longitude, final int speed, final int course, final int height,
-                      final int amountOfSatellites, final TrackerEntity tracker) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.speed = speed;
-        this.course = course;
-        this.height = height;
-        this.amountOfSatellites = amountOfSatellites;
-        this.tracker = tracker;
-    }
 
     @MappedSuperclass
     @NoArgsConstructor

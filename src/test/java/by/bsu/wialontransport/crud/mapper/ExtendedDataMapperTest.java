@@ -4,7 +4,6 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.ExtendedData;
 import by.bsu.wialontransport.crud.entity.DataEntity;
-import by.bsu.wialontransport.crud.entity.ExtendedDataEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

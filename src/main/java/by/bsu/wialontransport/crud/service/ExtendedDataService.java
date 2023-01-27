@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.crud.dto.ExtendedData;
-import by.bsu.wialontransport.crud.entity.ExtendedDataEntity;
 import by.bsu.wialontransport.crud.mapper.ExtendedDataMapper;
 import by.bsu.wialontransport.crud.repository.ExtendedDataRepository;
 import org.springframework.stereotype.Service;

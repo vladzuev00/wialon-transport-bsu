@@ -7,7 +7,6 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-//TODO: add type of message(as in signum)
 @Entity
 @Table(name = "tracker_last_data_calculations")
 @NoArgsConstructor
@@ -31,9 +30,6 @@ public class DataCalculationsEntity extends AbstractEntity<Long> {
 
     @Column(name = "engine_on_duration_seconds")
     private long engineOnDurationSeconds;
-
-    @Column(name = "acceleration")
-    private double acceleration;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "data_id")

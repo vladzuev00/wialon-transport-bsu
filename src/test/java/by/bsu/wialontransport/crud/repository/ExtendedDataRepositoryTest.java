@@ -3,7 +3,6 @@ package by.bsu.wialontransport.crud.repository;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
-import by.bsu.wialontransport.crud.entity.ExtendedDataEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import java.time.LocalTime;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
-import static org.junit.Assert.*;
 
 public final class ExtendedDataRepositoryTest extends AbstractContextTest {
 
