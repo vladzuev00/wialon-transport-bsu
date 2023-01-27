@@ -16,7 +16,6 @@ import java.util.List;
 import static java.util.Arrays.stream;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
 @Table(name = "tracker_last_data")
@@ -94,8 +93,7 @@ public class DataEntity extends AbstractEntity<Long> {
     private String driverKeyCode;
 
     @ToString.Exclude
-    @Transient
-    //@OneToMany(mappedBy = "extendedData")
+    @OneToMany(mappedBy = "data")
     private List<ParameterEntity> parameters;
 
     @ManyToOne(fetch = LAZY)
