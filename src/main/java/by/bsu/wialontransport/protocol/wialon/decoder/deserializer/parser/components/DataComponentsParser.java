@@ -11,6 +11,8 @@ import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.except
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -24,7 +26,10 @@ import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toMap;
 
 public final class DataComponentsParser {
     private static final String MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION = "Given data '%s' isn't valid.";
@@ -192,13 +197,13 @@ public final class DataComponentsParser {
                 : NOT_DEFINED_DRIVER_KEY_CODE;
     }
 
-    public List<Parameter> parseParameters() {
+    public Map<String, Parameter> parseParameters() {
         final String parametersString = this.matcher.group(GROUP_NUMBER_PARAMETERS);
         return !parametersString.isEmpty() ?
                 stream(parametersString.split(DELIMITER_PARAMETERS))
                         .map(this.parameterParser::parse)
-                        .collect(Collectors.toList())
-                : emptyList();
+                        .collect(toMap(Parameter::getName, identity()))
+                : emptyMap();
     }
 
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {

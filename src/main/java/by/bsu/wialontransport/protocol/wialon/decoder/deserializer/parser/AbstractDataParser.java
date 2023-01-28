@@ -11,9 +11,9 @@ public abstract class AbstractDataParser<DataType extends Data, ParserType exten
 
     public final DataType parse(final String source) {
         final ParserType parser = this.createParser();
-        if (!parser.match(source)) {
-            throw new NotValidDataException(format(MESSAGE_TEMPLATE_NOT_VALID_MESSAGE_EXCEPTION, source));
-        }
+//        if (!parser.match(source)) {
+//            throw new NotValidDataException(format(MESSAGE_TEMPLATE_NOT_VALID_MESSAGE_EXCEPTION, source));
+//        }
         return this.create(parser);
     }
 

@@ -9,24 +9,4 @@ import java.time.LocalDateTime;
 @Component
 public final class DataParser {
 
-    @Override
-    protected DataComponentsParser createParser() {
-        return new DataComponentsParser();
-    }
-
-    @Override
-    protected Data create(final DataComponentsParser parser) {
-        final LocalDateTime dateTime = parser.parseDateTime();
-//        return Data.dataBuilder()
-//                .date(dateTime.toLocalDate())
-//                .time(dateTime.toLocalTime())
-//                .latitude(parser.parseLatitude())
-//                .longitude(parser.parseLongitude())
-//                .speed(parser.parseSpeed())
-//                .course(parser.parseCourse())
-//                .height(parser.parseAltitude())
-//                .amountOfSatellites(parser.parseAmountSatellites())
-//                .build();
-        return null;
-    }
 }
