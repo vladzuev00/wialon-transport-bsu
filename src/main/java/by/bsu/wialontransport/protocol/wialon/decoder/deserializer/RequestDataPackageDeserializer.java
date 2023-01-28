@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public final class RequestDataPackageDeserializer implements PackageDeserializer {
-    private static final String RESPONSE_FAILURE_HANDLING = "#AD#0";
+    private static final String RESPONSE_FAILURE_HANDLING = "#AD#-1";
 
     private final DataParser dataParser;
 
