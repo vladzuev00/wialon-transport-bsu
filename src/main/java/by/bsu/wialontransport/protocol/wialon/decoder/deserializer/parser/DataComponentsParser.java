@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
@@ -10,12 +10,9 @@ import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.except
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.lang.Byte.parseByte;
 import static java.lang.Double.parseDouble;
@@ -25,7 +22,6 @@ import static java.lang.String.format;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;

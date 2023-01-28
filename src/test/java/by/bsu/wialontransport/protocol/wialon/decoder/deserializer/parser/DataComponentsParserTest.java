@@ -1,12 +1,12 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.components;
+package by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser;
 
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 
-import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataComponentsParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 import org.junit.Test;
 
