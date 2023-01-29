@@ -2,9 +2,8 @@ package by.bsu.wialontransport.crud.dto;
 
 import lombok.Value;
 
-//TODO: delete
 @Value
-public class ChannelData {
+public class DataWithCalculations {
     Data data;
-    DataCalculations dataCalculations;
+    DataCalculations calculations;
 }

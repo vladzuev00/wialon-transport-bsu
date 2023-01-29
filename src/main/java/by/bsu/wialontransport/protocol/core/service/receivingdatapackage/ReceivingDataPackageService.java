@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdatapackage;
 
-import by.bsu.wialontransport.crud.dto.ChannelData;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
