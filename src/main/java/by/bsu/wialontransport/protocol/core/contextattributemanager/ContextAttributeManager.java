@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.contextattributemanager;
 
-import by.bsu.wialontransport.crud.dto.DataWithCalculations;
+import by.bsu.wialontransport.crud.dto.DataCalculations;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,16 +17,16 @@ import static java.util.Optional.ofNullable;
 public final class ContextAttributeManager {
     private static final String NAME_ATTRIBUTE_KEY_TRACKER_IMEI = "tracker_imei";
     private static final String NAME_ATTRIBUTE_KEY_TRACKER = "tracker";
-    private static final String NAME_ATTRIBUTE_KEY_LAST_DATA_WITH_CALCULATIONS = "last_data_with_calculations";
+    private static final String NAME_ATTRIBUTE_KEY_LAST_DATA_CALCULATIONS = "last_data_calculations";
 
     private final AttributeKey<String> attributeKeyTrackerImei;
     private final AttributeKey<Tracker> attributeKeyTracker;
-    private final AttributeKey<DataWithCalculations> attributeKeyLastDataWithCalculations;
+    private final AttributeKey<DataCalculations> attributeKeyLastDataCalculations;
 
     public ContextAttributeManager() {
         this.attributeKeyTrackerImei = valueOf(NAME_ATTRIBUTE_KEY_TRACKER_IMEI);
         this.attributeKeyTracker = valueOf(NAME_ATTRIBUTE_KEY_TRACKER);
-        this.attributeKeyLastDataWithCalculations = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA_WITH_CALCULATIONS);
+        this.attributeKeyLastDataCalculations = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA_CALCULATIONS);
     }
 
     public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
@@ -45,13 +45,13 @@ public final class ContextAttributeManager {
         return findAttributeValue(context, this.attributeKeyTracker);
     }
 
-    public void putLastDataWithCalculations(final ChannelHandlerContext context,
-                                            final DataWithCalculations dataWithCalculations) {
-        putAttributeValue(context, this.attributeKeyLastDataWithCalculations, dataWithCalculations);
+    public void putLastDataCalculations(final ChannelHandlerContext context,
+                                        final DataCalculations dataWithCalculations) {
+        putAttributeValue(context, this.attributeKeyLastDataCalculations, dataWithCalculations);
     }
 
-    public Optional<DataWithCalculations> findLastChannelData(final ChannelHandlerContext context) {
-        return findAttributeValue(context, this.attributeKeyLastDataWithCalculations);
+    public Optional<DataCalculations> findLastDataCalculations(final ChannelHandlerContext context) {
+        return findAttributeValue(context, this.attributeKeyLastDataCalculations);
     }
 
     private static <ValueType> Optional<ValueType> findAttributeValue(final ChannelHandlerContext context,

@@ -12,4 +12,5 @@ public class DataCalculations implements AbstractDto<Long> {
     double gpsOdometer;
     boolean ignitionOn;
     long engineOnDurationSeconds;
+    Data data;
 }

@@ -15,7 +15,7 @@ public final class ReceivingDataPackageService {
 
     public void receive(final Data receivedData, final ChannelHandlerContext context) {
         final Optional<ChannelData> optionalPreviousChannelData = this.contextAttributeManager
-                .findLastChannelData(context);
+                .findLastDataCalculations(context);
 
     }
 }

@@ -144,4 +144,4 @@ ALTER TABLE tracker_last_data_calculations
 		    ON DELETE CASCADE;
 
 ALTER TABLE tracker_last_data_calculations
-	ADD CONSTRAINT unique_data_id UNIQUE(data_id);
+	ADD CONSTRAINT data_id_should_be_unique UNIQUE(data_id);
