@@ -14,7 +14,7 @@ public final class DataValidator {
     public boolean isValid(final Data data) {
         return this.propertyValidator.isValidDateTime(data)
                 && this.propertyValidator.isValidAmountOfSatellites(data)
-                && this.propertyValidator.isContainDOPParameters(data);
+                && this.propertyValidator.isValidDOPParameters(data);
     }
 
     public boolean isValid(final Data current, final Data previous) {
@@ -24,7 +24,8 @@ public final class DataValidator {
     public boolean isNeededToBeFixed(final Data current, final Data previous) {
         return this.propertyValidator.isValidDateTime(current)
                 && !(this.propertyValidator.isValidAmountOfSatellites(current)
-                && this.propertyValidator.isContainDOPParameters(research));
+                && this.propertyValidator.isValidDOPParameters(current))
+                && isCorrectOrder(current, previous);
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {
