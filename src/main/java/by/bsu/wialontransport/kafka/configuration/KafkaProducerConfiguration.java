@@ -1,12 +1,16 @@
 package by.bsu.wialontransport.kafka.configuration;
 
-import by.bsu.wialontransport.kafka.property.KafkaProperty;
 import by.bsu.wialontransport.kafka.serializer.AvroGenericRecordSerializer;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.serialization.LongSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
@@ -20,7 +24,31 @@ public final class KafkaProducerConfiguration {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
+    /**
+     * Kafka template for producer, which sends data, which haven't been saved in database yet, to kafka.
+     */
+    @Bean
+    @Autowired
+    public KafkaTemplate<Long, GenericRecord> kafkaTemplateInboundData(
+            @Value("${kafka.topic.inbound-data.producer.batch-size}") final int batchSize,
+            @Value("${kafka.topic.inbound-data.producer.linger-ms}") final int lingerMs,
+            @Value("${kafka.topic.inbound-data.producer.delivery-timeout-ms}") final int deliveryTimeoutMs,
+            @Qualifier("transportableDataSchema") final Schema schema) {
+        return new KafkaTemplate<>(this.createProducerFactory(batchSize, lingerMs, deliveryTimeoutMs, schema));
+    }
 
+    /**
+     * Kafka template for producer, which sends data, which have been saved in database, to kafka.
+     */
+    @Bean
+    @Autowired
+    public KafkaTemplate<Long, GenericRecord> kafkaTemplateSavedData(
+            @Value("${kafka.topic.saved-data.producer.batch-size}") final int batchSize,
+            @Value("${kafka.topic.saved-data.producer.linger-ms}") final int lingerMs,
+            @Value("${kafka.topic.saved-data.producer.delivery-timeout-ms}") final int deliveryTimeoutMs,
+            @Qualifier("transportableMessageSchema") final Schema schema) {
+        return new KafkaTemplate<>(this.createProducerFactory(batchSize, lingerMs, deliveryTimeoutMs, schema));
+    }
 
     private <KeyType, ValueType> ProducerFactory<KeyType, ValueType> createProducerFactory(final int batchSize,
                                                                                            final int lingerMs,
