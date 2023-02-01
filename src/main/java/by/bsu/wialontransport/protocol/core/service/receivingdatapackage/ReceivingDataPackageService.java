@@ -13,9 +13,9 @@ import java.util.Optional;
 public final class ReceivingDataPackageService {
     private final ContextAttributeManager contextAttributeManager;
 
-    public void receive(final Data receivedData, final ChannelHandlerContext context) {
-        final Optional<ChannelData> optionalPreviousChannelData = this.contextAttributeManager
-                .findLastDataCalculations(context);
-
-    }
+//    public void receive(final Data receivedData, final ChannelHandlerContext context) {
+//        final Optional<ChannelData> optionalPreviousChannelData = this.contextAttributeManager
+//                .findLastDataCalculations(context);
+//
+//    }
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public final class RequestPingPackageHandler extends PackageHandler {
     private static final String RESPONSE_PACKAGE = "#AP#";
 
-    public RequestPingPackageHandler(final PackageHandler nextHandler) {
-        super(RequestPingPackage.class, nextHandler);
+    public RequestPingPackageHandler() {
+        super(RequestPingPackage.class, null);
     }
 
     @Override

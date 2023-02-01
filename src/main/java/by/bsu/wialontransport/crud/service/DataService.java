@@ -15,10 +15,4 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
     public DataService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);
     }
-
-    @Transactional(readOnly = true)
-    public Optional<Data> findTrackerLastData(final Long trackerId) {
-        final Optional<DataEntity> optionalFoundEntity = this.repository.findTrackerLastData(trackerId);
-        return optionalFoundEntity.map(super.mapper::mapToDto);
-    }
 }
