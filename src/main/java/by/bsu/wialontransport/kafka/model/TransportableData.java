@@ -9,7 +9,7 @@ import org.apache.avro.reflect.Nullable;
 @AllArgsConstructor
 @Builder
 public class TransportableData {
-
+    //fields from Data:
     @Nullable
     Long id;
 
@@ -25,12 +25,16 @@ public class TransportableData {
     int outputs;
     double[] analogInputs;
     String driverKeyCode;
+
+    //parameters
     double gsmLevel;
     double voltage;
     double cornerAcceleration;
     double accelerationUp;
     double accelerationDown;
     double gpsOdometer;
+
+    //additional calculations
     int ignition;
     long engineTime;
     double shock;

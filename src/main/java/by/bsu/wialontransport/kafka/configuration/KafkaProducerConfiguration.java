@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.kafka.configuration;
 
+import by.bsu.wialontransport.kafka.property.KafkaProperty;
+import by.bsu.wialontransport.kafka.serializer.AvroGenericRecordSerializer;
 import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +11,7 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
 
+import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
 import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 @Configuration
@@ -16,6 +19,8 @@ public final class KafkaProducerConfiguration {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
+
+
 
     private <KeyType, ValueType> ProducerFactory<KeyType, ValueType> createProducerFactory(final int batchSize,
                                                                                            final int lingerMs,
@@ -28,7 +33,7 @@ public final class KafkaProducerConfiguration {
                 BATCH_SIZE_CONFIG, batchSize,
                 LINGER_MS_CONFIG, lingerMs,
                 DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeoutMs,
-                SCHEMA_PROP_NAME, schema);
+                SCHEMA.getName(), schema);
         return new DefaultKafkaProducerFactory<>(configurationProperties);
     }
 }
