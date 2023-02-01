@@ -17,4 +17,6 @@ public class DataValidationProperty {
     private int maxValidAmountSatellite;
     private LocalDateTime minValidDateTime;
     private int deltaSecondsFromNowMaxAllowableValidDateTime;
+    private int minValidDOP;
+    private int maxValidDOP;
 }

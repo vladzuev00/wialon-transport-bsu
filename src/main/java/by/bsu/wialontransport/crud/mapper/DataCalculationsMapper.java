@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.DataCalculations;
 import by.bsu.wialontransport.crud.entity.DataCalculationsEntity;
 import org.modelmapper.ModelMapper;
@@ -19,7 +20,7 @@ public final class DataCalculationsMapper extends AbstractMapper<DataCalculation
                 entity.getGpsOdometer(),
                 entity.isIgnitionOn(),
                 entity.getEngineOnDurationSeconds(),
-                null
+                super.getModelMapper().map(entity.getData(), Data.class)
         );
     }
 }

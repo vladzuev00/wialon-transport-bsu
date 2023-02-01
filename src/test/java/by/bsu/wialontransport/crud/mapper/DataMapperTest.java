@@ -42,7 +42,7 @@ public final class DataMapperTest extends AbstractContextTest {
                 .outputs(32)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(Map.of(
+                .parametersByNames(Map.of(
                         "first-param", new Parameter(256L, "first-param", INTEGER, "44"),
                         "second-param", new Parameter(257L, "second-param", STRING, "text")
                 ))
@@ -114,7 +114,7 @@ public final class DataMapperTest extends AbstractContextTest {
                 .outputs(32)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(Map.of(
+                .parametersByNames(Map.of(
                         "first-param", new Parameter(256L, "first-param", INTEGER, "44"),
                         "second-param", new Parameter(257L, "second-param", STRING, "text")
                 ))

@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdatapackage;
 
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.DataCalculations;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,9 @@ import java.util.Optional;
 public final class ReceivingDataPackageService {
     private final ContextAttributeManager contextAttributeManager;
 
-//    public void receive(final Data receivedData, final ChannelHandlerContext context) {
-//        final Optional<ChannelData> optionalPreviousChannelData = this.contextAttributeManager
-//                .findLastDataCalculations(context);
-//
-//    }
+    public void receive(final Data receivedData, final ChannelHandlerContext context) {
+        final Optional<DataCalculations> optionalLastDataCalculations = this.contextAttributeManager
+                .findLastDataCalculations(context);
+
+    }
 }

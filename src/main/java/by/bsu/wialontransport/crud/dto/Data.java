@@ -7,11 +7,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
 @Builder
-public class Data implements AbstractDto<Long> {
+public final class Data implements AbstractDto<Long> {
     private final Long id;
     private final LocalDate date;
     private final LocalTime time;
@@ -30,30 +31,7 @@ public class Data implements AbstractDto<Long> {
     /**
      * parameter's name to parameter
      */
-    private final Map<String, Parameter> parameters;
-
-    @Builder(builderMethodName = "dataBuilder")
-    public Data(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,
-                final Longitude longitude, final int speed, final int course, final int altitude,
-                final int amountOfSatellites, final double reductionPrecision, final int inputs,
-                final int outputs, final double[] analogInputs, final String driverKeyCode,
-                final Map<String, Parameter> parameters) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.speed = speed;
-        this.course = course;
-        this.altitude = altitude;
-        this.amountOfSatellites = amountOfSatellites;
-        this.reductionPrecision = reductionPrecision;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.analogInputs = analogInputs;
-        this.driverKeyCode = driverKeyCode;
-        this.parameters = parameters;
-    }
+    private final Map<String, Parameter> parametersByNames;
 
     @AllArgsConstructor
     @Getter

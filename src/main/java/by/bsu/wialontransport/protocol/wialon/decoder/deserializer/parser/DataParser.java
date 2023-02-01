@@ -25,7 +25,7 @@ public final class DataParser {
                 .outputs(componentsParser.parseOutputs())
                 .analogInputs(componentsParser.parseAnalogInputs())
                 .driverKeyCode(componentsParser.parseDriverKeyCode())
-                .parameters(componentsParser.parseParameters())
+                .parametersByNames(componentsParser.parseParameters())
                 .build();
     }
 }

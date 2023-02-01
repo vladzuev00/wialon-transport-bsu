@@ -56,7 +56,7 @@ public final class DataParserTest extends AbstractContextTest {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
-                .parameters(Map.of(
+                .parametersByNames(Map.of(
                         "param-name-1", createParameter("param-name-1", INTEGER, "654321"),
                         "param-name-2", createParameter("param-name-2", DOUBLE, "65.4321"),
                         "param-name-3", createParameter("param-name-3", STRING, "param-value")))

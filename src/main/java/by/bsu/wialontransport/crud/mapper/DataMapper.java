@@ -78,7 +78,7 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
     }
 
     private List<ParameterEntity> mapParameters(final Data source) {
-        return source.getParameters()
+        return source.getParametersByNames()
                 .values()
                 .stream()
                 .map(parameter -> super.getModelMapper().map(parameter, ParameterEntity.class))
