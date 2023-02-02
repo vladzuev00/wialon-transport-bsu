@@ -6,13 +6,16 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
 @Builder
-public final class Data implements AbstractDto<Long> {
+public class Data implements AbstractDto<Long> {
     private final Long id;
     private final LocalDate date;
     private final LocalTime time;
@@ -32,6 +35,30 @@ public final class Data implements AbstractDto<Long> {
      * parameter's name to parameter
      */
     private final Map<String, Parameter> parametersByNames;
+    private final DataCalculations dataCalculations;
+
+    public Data(final Data other, final DataCalculations dataCalculations) {
+        this.id = other.id;
+        this.date = other.date;
+        this.time = other.time;
+        this.latitude = other.latitude;
+        this.longitude = other.longitude;
+        this.speed = other.speed;
+        this.course = other.course;
+        this.altitude = other.altitude;
+        this.amountOfSatellites = other.amountOfSatellites;
+        this.reductionPrecision = other.reductionPrecision;
+        this.inputs = other.inputs;
+        this.outputs = other.outputs;
+        this.analogInputs = other.analogInputs;
+        this.driverKeyCode = other.driverKeyCode;
+        this.parametersByNames = other.parametersByNames;
+        this.dataCalculations = dataCalculations;
+    }
+
+    public Optional<DataCalculations> getDataCalculations() {
+        return ofNullable(this.dataCalculations);
+    }
 
     @AllArgsConstructor
     @Getter

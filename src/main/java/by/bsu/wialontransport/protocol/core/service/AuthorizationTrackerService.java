@@ -48,7 +48,7 @@ public final class AuthorizationTrackerService {
     private void putLastDataCalculationsIfExist(final ChannelHandlerContext context, final Tracker tracker) {
         final Optional<DataCalculations> optionalDataCalculations = this.dataCalculationsService
                 .findTrackerLastDataCalculationsByTrackerId(tracker.getId());
-        optionalDataCalculations.ifPresent(data -> this.contextAttributeManager.putLastDataCalculations(context, data));
+        optionalDataCalculations.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
     }
 
     private static void sendResponse(final ChannelHandlerContext context, final Status status) {
