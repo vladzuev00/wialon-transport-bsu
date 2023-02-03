@@ -15,7 +15,7 @@ public class SchemaConfiguration {
     }
 
     @Bean
-    public Schema dataCalculationsSchema() {
+    public Schema dataSchema() {
         return this.reflectData.getSchema(Data.class);
     }
 }

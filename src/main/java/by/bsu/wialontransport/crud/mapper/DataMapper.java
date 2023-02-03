@@ -22,22 +22,23 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
 
     @Override
     protected Data createDto(final DataEntity entity) {
-        return new Data(
-                entity.getId(),
-                entity.getDate(),
-                entity.getTime(),
-                mapLatitude(entity),
-                mapLongitude(entity),
-                entity.getSpeed(),
-                entity.getCourse(),
-                entity.getAltitude(),
-                entity.getAmountOfSatellites(),
-                entity.getReductionPrecision(),
-                entity.getInputs(),
-                entity.getOutputs(),
-                entity.getAnalogInputs(),
-                entity.getDriverKeyCode(),
-                this.mapParameters(entity));
+//        return new Data(
+//                entity.getId(),
+//                entity.getDate(),
+//                entity.getTime(),
+//                mapLatitude(entity),
+//                mapLongitude(entity),
+//                entity.getSpeed(),
+//                entity.getCourse(),
+//                entity.getAltitude(),
+//                entity.getAmountOfSatellites(),
+//                entity.getReductionPrecision(),
+//                entity.getInputs(),
+//                entity.getOutputs(),
+//                entity.getAnalogInputs(),
+//                entity.getDriverKeyCode(),
+//                this.mapParameters(entity));
+        return null;
     }
 
     @Override

@@ -6,9 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 @AllArgsConstructor
 @Getter
@@ -37,6 +34,7 @@ public class Data implements AbstractDto<Long> {
     private final Map<String, Parameter> parametersByNames;
     private final DataCalculations dataCalculations;
 
+    //TODO: remove
     public Data(final Data other, final DataCalculations dataCalculations) {
         this.id = other.id;
         this.date = other.date;

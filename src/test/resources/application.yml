@@ -15,3 +15,34 @@ spring:
   sql:
     init:
       mode: always
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+
+kafka:
+  topic:
+    inbound-data:
+      name: inbound-data
+      partitions-amount: 1
+      replication-factor: 3
+      producer:
+        batch-size: 10
+        linger-ms: 500
+        delivery-timeout-ms: 100000
+      consumer:
+        group-id: inbound-data-group
+        max-poll-records: 400
+        fetch-max-wait-ms: 1000
+        fetch-min-bytes: 10000
+    saved-data:
+      name: saved-data
+      partitions-amount: 1
+      replication-factor: 3
+      producer:
+        batch-size: 10
+        linger-ms: 500
+        delivery-timeout-ms: 100000
+      consumer:
+        group-id: saved-data-group
+        max-poll-records: 400
+        fetch-max-wait-ms: 1000
+        fetch-min-bytes: 10000

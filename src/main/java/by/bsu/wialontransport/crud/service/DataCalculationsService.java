@@ -16,11 +16,4 @@ public class DataCalculationsService
     public DataCalculationsService(final DataCalculationsMapper mapper, final DataCalculationsRepository repository) {
         super(mapper, repository);
     }
-
-    @Transactional(readOnly = true)
-    public Optional<DataCalculations> findTrackerLastDataCalculationsByTrackerId(final Long trackerId) {
-        final Optional<DataCalculationsEntity> optionalDataCalculations = super.repository
-                .findTrackerLastDataCalculationsByTrackerId(trackerId);
-        return optionalDataCalculations.map(super.mapper::mapToDto);
-    }
 }

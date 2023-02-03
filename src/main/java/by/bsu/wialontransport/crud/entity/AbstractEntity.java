@@ -30,9 +30,4 @@ public abstract class AbstractEntity<IdType> {
     public final int hashCode() {
         return hash(this.getId());
     }
-
-    @Override
-    public String toString() {
-        return this.getClass().getName() + "[id = " + this.getId() + "]";
-    }
 }

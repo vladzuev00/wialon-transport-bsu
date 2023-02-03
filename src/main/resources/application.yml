@@ -20,8 +20,8 @@ message:
 
 kafka:
   topic:
-    inbound-messages:
-      name: signum-messages
+    inbound-data:
+      name: inbound-data
       partitions-amount: 1
       replication-factor: 3
       producer:
@@ -29,12 +29,12 @@ kafka:
         linger-ms: 500
         delivery-timeout-ms: 100000
       consumer:
-        group-id: signum-messages-group
+        group-id: inbound-data-group
         max-poll-records: 400
         fetch-max-wait-ms: 1000
         fetch-min-bytes: 10000
-    saved-messages:
-      name: signum-messages-main
+    saved-data:
+      name: saved-data
       partitions-amount: 1
       replication-factor: 3
       producer:
@@ -42,7 +42,7 @@ kafka:
         linger-ms: 500
         delivery-timeout-ms: 100000
       consumer:
-        group-id: signum-messages-main-group
+        group-id: saved-data-group
         max-poll-records: 400
         fetch-max-wait-ms: 1000
         fetch-min-bytes: 10000

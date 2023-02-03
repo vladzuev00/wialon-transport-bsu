@@ -19,8 +19,7 @@ public final class DataCalculationsMapper extends AbstractMapper<DataCalculation
                 entity.getId(),
                 entity.getGpsOdometer(),
                 entity.isIgnitionOn(),
-                entity.getEngineOnDurationSeconds(),
-                super.getModelMapper().map(entity.getData(), Data.class)
+                entity.getEngineOnDurationSeconds()
         );
     }
 }
