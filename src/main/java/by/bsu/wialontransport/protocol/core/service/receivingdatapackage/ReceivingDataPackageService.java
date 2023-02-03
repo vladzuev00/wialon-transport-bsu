@@ -6,55 +6,70 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdatapackage.exception.NoTrackerInContextException;
-import by.bsu.wialontransport.protocol.core.service.receivingdatapackage.validator.DataValidator;
+import by.bsu.wialontransport.protocol.core.service.receivingdatapackage.validator.DataFilter;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 @Service
 @RequiredArgsConstructor
 public final class ReceivingDataPackageService {
     private final ContextAttributeManager contextAttributeManager;
-    private final DataValidator dataValidator;
+    private final DataFilter dataFilter;
     private final DataCalculationsFactory dataCalculationsFactory;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
 
     public void receive(final Data receivedData, final ChannelHandlerContext context) {
         final Tracker tracker = this.findTracker(context);
         final Optional<Data> optionalPreviousData = this.contextAttributeManager.findLastData(context);
-        optionalPreviousData
-                .ifPresentOrElse(previousData -> {
-                            if (this.dataValidator.isValid(receivedData, previousData)) {
-                                final DataCalculations dataCalculations = this.dataCalculationsFactory
-                                        .create(receivedData, previousData);
-                                final Data receivedDataWithCalculations = new Data(receivedData, dataCalculations);
-                                this.contextAttributeManager.putLastData(context, receivedDataWithCalculations);
-                                this.kafkaInboundDataProducer.send(receivedDataWithCalculations, tracker);
-                            } else if (this.dataValidator.isNeededToBeFixed(receivedData, previousData)) {
-                                final Data fixedReceivedData = fixData(receivedData, previousData);
-                                final DataCalculations dataCalculations = this.dataCalculationsFactory
-                                        .create(fixedReceivedData, previousData);
-                                final Data fixedReceivedDataWithCalculations = new Data(fixedReceivedData, dataCalculations);
-                                this.contextAttributeManager.putLastData(context, fixedReceivedDataWithCalculations);
-                                this.kafkaInboundDataProducer.send(fixedReceivedDataWithCalculations, tracker);
-                            }
-                        },
-                        () -> {
-                            if (this.dataValidator.isValid(receivedData)) {
-                                final DataCalculations dataCalculations = this.dataCalculationsFactory
-                                        .create(receivedData);
-                                final Data receivedDataWithCalculations = new Data(receivedData, dataCalculations);
-                                this.contextAttributeManager.putLastData(context, receivedDataWithCalculations);
-                                this.kafkaInboundDataProducer.send(receivedDataWithCalculations, tracker);
-                            }
-                        });
+        final boolean dataShouldBeSkipped = optionalPreviousData
+                .map(previousData -> this.dataFilter.isNeedToBeSkipped(receivedData, previousData))
+                .orElseGet(() -> this.dataFilter.isNeedToBeSkipped(receivedData));
+        if (!dataShouldBeSkipped) {
+            final Optional<Data> optionalNewLastData = optionalPreviousData
+                    .map(previousData -> this.findDataWithCalculationsAndFixIfNotValid(receivedData, previousData))
+                    .or(() -> this.findDataWithCalculationsIfDataIsValid(receivedData));
+            optionalNewLastData.ifPresent(newLastData -> {
+                this.contextAttributeManager.putLastData(context, newLastData);
+                this.kafkaInboundDataProducer.send(newLastData, tracker);
+            });
+        }
     }
 
     private Tracker findTracker(final ChannelHandlerContext context) {
         final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
         return optionalTracker.orElseThrow(NoTrackerInContextException::new);
+    }
+
+    private Data findDataWithCalculationsAndFixIfNotValid(final Data received, final Data previous) {
+        return this.dataFilter.isValid(received, previous)
+                ? this.createDataWithCalculations(received, previous)
+                : this.createFixedDataWithCalculations(received, previous);
+    }
+
+    private Optional<Data> findDataWithCalculationsIfDataIsValid(final Data receivedData) {
+        return this.dataFilter.isValid(receivedData)
+                ? Optional.of(this.createDataWithCalculations(receivedData))
+                : empty();
+    }
+
+    private Data createDataWithCalculations(final Data received) {
+        final DataCalculations dataCalculations = this.dataCalculationsFactory.create(received);
+        return new Data(received, dataCalculations);
+    }
+
+    private Data createDataWithCalculations(final Data received, final Data previous) {
+        final DataCalculations dataCalculations = this.dataCalculationsFactory.create(received, previous);
+        return new Data(received, dataCalculations);
+    }
+
+    private Data createFixedDataWithCalculations(final Data received, final Data previous) {
+        final Data fixedReceivedData = fixData(received, previous);
+        return this.createDataWithCalculations(fixedReceivedData, previous);
     }
 
     private static Data fixData(final Data fixed, final Data previous) {

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public final class DataValidator {
+public final class DataFilter {
     private final DataPropertyValidator propertyValidator;
 
     public boolean isValid(final Data data) {
@@ -21,11 +21,14 @@ public final class DataValidator {
         return this.isValid(current) && isCorrectOrder(current, previous);
     }
 
-    public boolean isNeededToBeFixed(final Data current, final Data previous) {
-        return this.propertyValidator.isValidDateTime(current)
-                && !(this.propertyValidator.isValidAmountOfSatellites(current)
-                && this.propertyValidator.isValidDOPParameters(current))
-                && isCorrectOrder(current, previous);
+    public boolean isNeedToBeSkipped(final Data data) {
+        return !this.propertyValidator.isValidDateTime(data) || !this.propertyValidator.isValidDOPParameters(data);
+    }
+
+    public boolean isNeedToBeSkipped(final Data current, final Data previous) {
+        return !isCorrectOrder(current, previous)
+                || !this.propertyValidator.isValidDateTime(current)
+                || !this.propertyValidator.isValidDOPParameters(current);
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {
