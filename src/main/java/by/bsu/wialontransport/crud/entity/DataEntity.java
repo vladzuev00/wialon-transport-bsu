@@ -101,6 +101,9 @@ public class DataEntity extends AbstractEntity<Long> {
     @ToString.Exclude
     private TrackerEntity tracker;
 
+    @OneToOne(mappedBy = "data")
+    private DataCalculationsEntity calculations;
+
     @MappedSuperclass
     @NoArgsConstructor
     @AllArgsConstructor

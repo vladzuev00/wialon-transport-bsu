@@ -1,8 +1,10 @@
 package by.bsu.wialontransport.protocol.core.service;
 
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.DataCalculations;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataCalculationsService;
+import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
@@ -23,7 +25,7 @@ public final class AuthorizationTrackerService {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;
-    private final DataCalculationsService dataCalculationsService;
+    private final DataService dataService;
 
     public void authorize(final RequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
@@ -35,7 +37,7 @@ public final class AuthorizationTrackerService {
             final Tracker tracker = optionalTracker.get();
             this.contextAttributeManager.putTracker(context, tracker);
             this.connectionManager.add(context);
-            this.putLastDataCalculationsIfExist(context, tracker);
+            this.putLastDataIfExist(context, tracker);
         }
         sendResponse(context, status);
     }
@@ -45,10 +47,9 @@ public final class AuthorizationTrackerService {
         return packagePassword.equals(devicePassword) ? SUCCESS_AUTHORIZATION : ERROR_CHECK_PASSWORD;
     }
 
-    private void putLastDataCalculationsIfExist(final ChannelHandlerContext context, final Tracker tracker) {
-        final Optional<DataCalculations> optionalDataCalculations = this.dataCalculationsService
-                .findTrackerLastDataCalculationsByTrackerId(tracker.getId());
-        optionalDataCalculations.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
+    private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
+        final Optional<Data> optionalLastData = this.dataService.findTrackerLastDataByTrackerId(tracker.getId());
+        optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
     }
 
     private static void sendResponse(final ChannelHandlerContext context, final Status status) {

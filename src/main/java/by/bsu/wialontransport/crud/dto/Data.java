@@ -56,10 +56,6 @@ public class Data implements AbstractDto<Long> {
         this.dataCalculations = dataCalculations;
     }
 
-    public Optional<DataCalculations> getDataCalculations() {
-        return ofNullable(this.dataCalculations);
-    }
-
     @AllArgsConstructor
     @Getter
     @EqualsAndHashCode
