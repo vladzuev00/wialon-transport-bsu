@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.Arrays.stream;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -24,10 +25,9 @@ import static javax.persistence.GenerationType.IDENTITY;
         typeClass = DoubleArrayType.class
 )
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString(callSuper = true)
+@ToString
 @Builder
 public class DataEntity extends AbstractEntity<Long> {
 
@@ -101,8 +101,38 @@ public class DataEntity extends AbstractEntity<Long> {
     @ToString.Exclude
     private TrackerEntity tracker;
 
-    @OneToOne(mappedBy = "data")
+    @OneToOne(mappedBy = "data", cascade = PERSIST)
     private DataCalculationsEntity calculations;
+
+    public DataEntity(final Long id, final LocalDate date, final LocalTime time, final Latitude latitude,
+                      final Longitude longitude, final int speed, final int course, final int altitude,
+                      final int amountOfSatellites, final double reductionPrecision, final int inputs,
+                      final int outputs, final double[] analogInputs, final String driverKeyCode,
+                      final List<ParameterEntity> parameters, final TrackerEntity tracker,
+                      final DataCalculationsEntity calculations) {
+        this.id = id;
+        this.date = date;
+        this.time = time;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.speed = speed;
+        this.course = course;
+        this.altitude = altitude;
+        this.amountOfSatellites = amountOfSatellites;
+        this.reductionPrecision = reductionPrecision;
+        this.inputs = inputs;
+        this.outputs = outputs;
+        this.analogInputs = analogInputs;
+        this.driverKeyCode = driverKeyCode;
+        this.parameters = parameters;
+        this.tracker = tracker;
+        this.setCalculations(calculations);
+    }
+
+    public final void setCalculations(final DataCalculationsEntity calculations) {
+        this.calculations = calculations;
+        calculations.setData(this);
+    }
 
     @MappedSuperclass
     @NoArgsConstructor

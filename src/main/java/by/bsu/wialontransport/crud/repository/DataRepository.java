@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface DataRepository extends JpaRepository<DataEntity, Long> {
 
-    @Query("SELECT e FROM DataEntity e WHERE e.tracker.id = :trackerId")
+    @Query("SELECT e FROM DataEntity e JOIN FETCH e.calculations WHERE e.tracker.id = :trackerId")
     Optional<DataEntity> findTrackerLastDataByTrackerId(final Long trackerId);
 }
