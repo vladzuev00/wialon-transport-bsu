@@ -22,7 +22,6 @@ public final class ParameterMapperTest extends AbstractContextTest {
                 .name("name")
                 .type(INTEGER)
                 .value("44")
-                .data(super.entityManager.getReference(DataEntity.class, 255L))
                 .build();
 
         final Parameter actual = this.mapper.mapToDto(givenEntity);
@@ -61,6 +60,5 @@ public final class ParameterMapperTest extends AbstractContextTest {
         assertEquals(expected.getName(), actual.getName());
         assertSame(expected.getType(), actual.getType());
         assertEquals(expected.getValue(), actual.getValue());
-        assertEquals(expected.getData(), actual.getData());
     }
 }

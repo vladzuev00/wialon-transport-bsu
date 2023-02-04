@@ -101,16 +101,11 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .calculations(DataCalculationsEntity.builder()
-                        .gpsOdometer(0.1)
-                        .ignitionOn(true)
-                        .engineOnDurationSeconds(100)
-                        .build())
                 .build();
 
         super.startQueryCount();
         this.repository.save(givenData);
-        super.checkQueryCount(2);
+        super.checkQueryCount(1);
     }
 
     @Test
