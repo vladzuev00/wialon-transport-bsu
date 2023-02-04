@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString(callSuper = true)
+@ToString
 @Builder
 public class TrackerEntity extends AbstractEntity<Long> {
 
