@@ -17,7 +17,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
     private ParameterRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_last_data"
+    @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
@@ -43,7 +43,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_last_data"
+    @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
@@ -61,7 +61,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
 
         super.startQueryCount();
         this.repository.save(givenParameter);
-        super.checkQueryCount(1);
+        super.checkQueryCount(2);
     }
 
     private static void checkEquals(final ParameterEntity expected, final ParameterEntity actual) {

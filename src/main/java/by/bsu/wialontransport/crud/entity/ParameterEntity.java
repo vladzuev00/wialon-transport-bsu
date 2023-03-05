@@ -8,7 +8,7 @@ import static java.lang.Byte.MIN_VALUE;
 import static java.util.Arrays.stream;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Table(name = "parameters")
@@ -21,8 +21,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class ParameterEntity extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = SEQUENCE, generator = "parameters_id_seq")
+    @SequenceGenerator(name = "parameters_id_seq", sequenceName = "parameters_id_seq")
     private Long id;
 
     @Column(name = "name")

@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.Arrays.stream;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -94,13 +95,23 @@ public class DataEntity extends AbstractEntity<Long> {
     private String driverKeyCode;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "data")
+    @OneToMany(mappedBy = "data", cascade = PERSIST)
     private List<ParameterEntity> parameters;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tracker_id")
     @ToString.Exclude
     private TrackerEntity tracker;
+
+    public void setParameters(final List<ParameterEntity> parameters) {
+        parameters.forEach(parameter -> parameter.setData(this));
+        this.parameters = parameters;
+    }
+
+    public void addParameter(final ParameterEntity parameter) {
+        parameter.setData(this);
+        this.parameters.add(parameter);
+    }
 
     @MappedSuperclass
     @NoArgsConstructor

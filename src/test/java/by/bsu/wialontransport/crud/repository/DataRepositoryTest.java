@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.repository;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
+import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import org.junit.Test;
@@ -11,10 +12,12 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
 
@@ -32,6 +35,8 @@ public final class DataRepositoryTest extends AbstractContextTest {
             + "driver_key_code, tracker_id) "
             + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
             + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
+    @Sql(statements = "INSERT INTO parameters(id, name, type, value, data_id) "
+            + "VALUES(257, 'name', 'INTEGER', '44', 256)")
     public void dataShouldBeFoundById() {
         super.startQueryCount();
         final DataEntity actual = this.repository.findById(256L).orElseThrow();
@@ -62,7 +67,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(emptyList())
+                .parameters(List.of(super.entityManager.getReference(ParameterEntity.class, 257L)))
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
                 .build();
         checkEquals(expected, actual);
@@ -94,13 +99,20 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(emptyList())
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
                 .build();
+        final List<ParameterEntity> givenParameters = List.of(ParameterEntity.builder()
+                .name("name")
+                .type(INTEGER)
+                .value("44")
+                .data(givenData)
+                .build()
+        );
+        givenData.setParameters(givenParameters);
 
         super.startQueryCount();
         this.repository.save(givenData);
-        super.checkQueryCount(2);
+        super.checkQueryCount(4);
     }
 
     @Test

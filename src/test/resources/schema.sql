@@ -107,6 +107,8 @@ CREATE TABLE parameters
     data_id BIGINT       NOT NULL
 );
 
+ALTER SEQUENCE parameters_id_seq INCREMENT 50;
+
 ALTER TABLE parameters
     ADD CONSTRAINT fk_parameters_to_data
         FOREIGN KEY (data_id) REFERENCES data (id)
