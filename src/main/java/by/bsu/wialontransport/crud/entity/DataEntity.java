@@ -14,12 +14,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.Arrays.stream;
-import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
-@Table(name = "tracker_last_data")
+@Table(name = "data")
 @TypeDef(
         name = "double-array",
         typeClass = DoubleArrayType.class
@@ -33,8 +32,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class DataEntity extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = SEQUENCE, generator = "data_id_seq")
+    @SequenceGenerator(name = "data_id_seq", sequenceName = "data_id_seq")
     private Long id;
 
     @Column(name = "date")
@@ -101,9 +101,6 @@ public class DataEntity extends AbstractEntity<Long> {
     @JoinColumn(name = "tracker_id")
     @ToString.Exclude
     private TrackerEntity tracker;
-
-    @OneToOne(mappedBy = "data")
-    private DataCalculationsEntity calculations;
 
     @MappedSuperclass
     @NoArgsConstructor

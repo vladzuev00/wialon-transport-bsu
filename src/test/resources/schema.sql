@@ -1,3 +1,26 @@
+--DROPPING foreign keys
+ALTER TABLE IF EXISTS trackers
+    DROP CONSTRAINT IF EXISTS fk_trackers_to_users;
+
+ALTER TABLE IF EXISTS data
+    DROP CONSTRAINT IF EXISTS fk_data_to_trackers;
+
+ALTER TABLE IF EXISTS parameters
+    DROP CONSTRAINT IF EXISTS fk_parameters_to_data;
+
+ALTER TABLE IF EXISTS trackers_last_data
+    DROP CONSTRAINT IF EXISTS fk_trackers_last_data_to_trackers;
+
+ALTER TABLE IF EXISTS trackers_last_data
+    DROP CONSTRAINT IF EXISTS fk_trackers_last_data_to_data;
+
+--DROPPING tables
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS trackers;
+DROP TABLE IF EXISTS data;
+DROP TABLE IF EXISTS parameters;
+DROP TABLE IF EXISTS trackers_last_data;
+
 CREATE TABLE users
 (
     id                 SERIAL       NOT NULL PRIMARY KEY,
@@ -31,7 +54,7 @@ ALTER TABLE trackers
 ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
 
-CREATE TABLE tracker_last_data
+CREATE TABLE data
 (
     id                     BIGSERIAL NOT NULL PRIMARY KEY,
     date                   DATE      NOT NULL,
@@ -61,17 +84,19 @@ CREATE TABLE tracker_last_data
     tracker_id             INTEGER   NOT NULL
 );
 
-ALTER TABLE tracker_last_data
-    ADD CONSTRAINT fk_tracker_last_data_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
+ALTER SEQUENCE data_id_seq INCREMENT 50;
+
+ALTER TABLE data
+    ADD CONSTRAINT fk_data_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
         ON DELETE CASCADE;
 
-ALTER TABLE tracker_last_data
+ALTER TABLE data
     ADD CONSTRAINT latitude_type_should_be_correct
-        CHECK (tracker_last_data.latitude_type IN ('N', 'S'));
+        CHECK (data.latitude_type IN ('N', 'S'));
 
-ALTER TABLE tracker_last_data
+ALTER TABLE data
     ADD CONSTRAINT longitude_type_should_be_correct
-        CHECK (tracker_last_data.longitude_type IN ('E', 'W'));
+        CHECK (data.longitude_type IN ('E', 'W'));
 
 CREATE TABLE parameters
 (
@@ -83,8 +108,8 @@ CREATE TABLE parameters
 );
 
 ALTER TABLE parameters
-    ADD CONSTRAINT fk_parameters_to_tracker_last_data
-        FOREIGN KEY (data_id) REFERENCES tracker_last_data (id)
+    ADD CONSTRAINT fk_parameters_to_data
+        FOREIGN KEY (data_id) REFERENCES data (id)
             ON DELETE CASCADE;
 
 ALTER TABLE parameters
@@ -93,55 +118,49 @@ ALTER TABLE parameters
 ALTER TABLE parameters
     ADD CONSTRAINT correct_type CHECK (type IN ('INTEGER', 'DOUBLE', 'STRING'));
 
-CREATE TABLE commands
-(
-    id         BIGSERIAL    NOT NULL PRIMARY KEY,
-    message    VARCHAR(512) NOT NULL,
-    tracker_id INTEGER      NOT NULL
+CREATE TABLE trackers_last_data(
+	id SERIAL NOT NULL PRIMARY KEY,
+	tracker_id INTEGER NOT NULL UNIQUE,
+	data_id BIGINT UNIQUE
 );
 
-ALTER TABLE commands
-    ADD CONSTRAINT fk_commands_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
-        ON DELETE CASCADE;
+ALTER TABLE trackers_last_data
+	ADD CONSTRAINT fk_trackers_last_data_to_trackers FOREIGN KEY(tracker_id)
+		REFERENCES trackers(id)
+			ON DELETE CASCADE;
 
-ALTER TABLE commands
-    ADD CONSTRAINT correct_message CHECK (char_length(message) != 0);
+ALTER TABLE trackers_last_data
+	ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY(data_id)
+		REFERENCES data(id);
 
-CREATE TABLE outbound_commands
-(
-    id                  BIGINT      NOT NULL PRIMARY KEY,
-    status              VARCHAR(64) NOT NULL,
-    response_command_id BIGINT
-);
+CREATE OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
+'
+    BEGIN
+        INSERT INTO trackers_last_data(tracker_id)
+        VALUES (NEW.id);
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
 
-ALTER TABLE outbound_commands
-    ADD CONSTRAINT fk_outbound_commands_to_commands
-        FOREIGN KEY (id) REFERENCES commands (id)
-            ON DELETE CASCADE;
+CREATE TRIGGER tr_on_insert_tracker
+    AFTER INSERT
+    ON trackers
+    FOR EACH ROW
+EXECUTE PROCEDURE on_insert_tracker();
 
-ALTER TABLE outbound_commands
-    ADD CONSTRAINT fk2_outbound_commands_to_commands
-        FOREIGN KEY (response_command_id) REFERENCES commands (id);
+CREATE OR REPLACE FUNCTION on_insert_data() RETURNS TRIGGER AS
+'
+    BEGIN
+		UPDATE trackers_last_data
+        SET data_id = NEW.id
+        WHERE trackers_last_data.tracker_id = NEW.tracker_id;
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
 
-ALTER TABLE outbound_commands
-    ADD CONSTRAINT unique_response_command_id UNIQUE (response_command_id);
+CREATE TRIGGER tr_on_insert_data
+    AFTER INSERT
+    ON data
+    FOR EACH ROW
+EXECUTE PROCEDURE on_insert_data();
 
-ALTER TABLE outbound_commands
-    ADD CONSTRAINT correct_status CHECK (status IN
-                                         ('NEW', 'SENT', 'SUCCESS_ANSWERED', 'ERROR_ANSWERED', 'TIMEOUT_NOT_ANSWERED'));
-
-CREATE TABLE tracker_last_data_calculations(
-	id BIGSERIAL NOT NULL PRIMARY KEY,
-	gps_odometer DOUBLE PRECISION NOT NULL,
-	ignition_on BOOLEAN NOT NULL,
-	engine_on_duration_seconds BIGINT NOT NULL,
-	data_id BIGINT NOT NULL
-);
-
-ALTER TABLE tracker_last_data_calculations
-	ADD CONSTRAINT fk_tracker_last_data_calculations_to_tracker_last_data FOREIGN KEY(data_id)
-		REFERENCES tracker_last_data(id)
-		    ON DELETE CASCADE;
-
-ALTER TABLE tracker_last_data_calculations
-	ADD CONSTRAINT data_id_should_be_unique UNIQUE(data_id);

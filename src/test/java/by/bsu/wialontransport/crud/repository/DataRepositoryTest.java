@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.crud.entity.DataCalculationsEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
@@ -25,7 +24,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
     private DataRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_last_data"
+    @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
@@ -33,9 +32,6 @@ public final class DataRepositoryTest extends AbstractContextTest {
             + "driver_key_code, tracker_id) "
             + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
             + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
-    @Sql(statements = "INSERT INTO tracker_last_data_calculations"
-            + "(id, gps_odometer, ignition_on, engine_on_duration_seconds, data_id) "
-            + "VALUES(257, 0.1, TRUE, 100, 256)")
     public void dataShouldBeFoundById() {
         super.startQueryCount();
         final DataEntity actual = this.repository.findById(256L).orElseThrow();
@@ -68,7 +64,6 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .calculations(super.entityManager.getReference(DataCalculationsEntity.class, 257L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -105,11 +100,19 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
         super.startQueryCount();
         this.repository.save(givenData);
-        super.checkQueryCount(1);
+        super.checkQueryCount(2);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_last_data"
+    @Sql(statements = "INSERT INTO data"
+            + "(id, date, time, "
+            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
+            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
+            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
+            + "driver_key_code, tracker_id) "
+            + "VALUES(255, '2019-10-24', '14:39:52', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
+    @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
@@ -117,9 +120,6 @@ public final class DataRepositoryTest extends AbstractContextTest {
             + "driver_key_code, tracker_id) "
             + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
             + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
-    @Sql(statements = "INSERT INTO tracker_last_data_calculations"
-            + "(id, gps_odometer, ignition_on, engine_on_duration_seconds, data_id) "
-            + "VALUES(257, 0.1, TRUE, 100, 256)")
     public void trackerLastDataShouldBeFoundByTrackerId() {
         super.startQueryCount();
         final DataEntity actual = this.repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
@@ -152,7 +152,6 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .calculations(super.entityManager.getReference(DataCalculationsEntity.class, 257L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -182,6 +181,5 @@ public final class DataRepositoryTest extends AbstractContextTest {
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getParameters(), actual.getParameters());
         assertEquals(expected.getTracker(), actual.getTracker());
-        assertEquals(expected.getCalculations(), actual.getCalculations());
     }
 }

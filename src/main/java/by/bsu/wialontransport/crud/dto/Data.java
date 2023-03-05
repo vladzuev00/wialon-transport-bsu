@@ -32,27 +32,6 @@ public class Data implements AbstractDto<Long> {
      * parameter's name to parameter
      */
     private final Map<String, Parameter> parametersByNames;
-    private final DataCalculations dataCalculations;
-
-    //TODO: remove
-    public Data(final Data other, final DataCalculations dataCalculations) {
-        this.id = other.id;
-        this.date = other.date;
-        this.time = other.time;
-        this.latitude = other.latitude;
-        this.longitude = other.longitude;
-        this.speed = other.speed;
-        this.course = other.course;
-        this.altitude = other.altitude;
-        this.amountOfSatellites = other.amountOfSatellites;
-        this.reductionPrecision = other.reductionPrecision;
-        this.inputs = other.inputs;
-        this.outputs = other.outputs;
-        this.analogInputs = other.analogInputs;
-        this.driverKeyCode = other.driverKeyCode;
-        this.parametersByNames = other.parametersByNames;
-        this.dataCalculations = dataCalculations;
-    }
 
     @AllArgsConstructor
     @Getter

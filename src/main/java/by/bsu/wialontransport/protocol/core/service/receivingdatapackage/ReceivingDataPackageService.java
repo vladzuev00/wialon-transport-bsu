@@ -1,13 +1,11 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdatapackage;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.DataCalculations;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdatapackage.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdatapackage.validator.DataFilter;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.blackbox.RequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.RequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.ResponseDataPackage;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +23,6 @@ import static java.util.Optional.empty;
 public final class ReceivingDataPackageService {
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;
-    private final DataCalculationsFactory dataCalculationsFactory;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
 
     public void receive(final RequestDataPackage requestDataPackage, final ChannelHandlerContext context) {
@@ -68,13 +65,15 @@ public final class ReceivingDataPackageService {
     }
 
     private Data createDataWithCalculations(final Data received) {
-        final DataCalculations dataCalculations = this.dataCalculationsFactory.create(received);
-        return new Data(received, dataCalculations);
+        //nal DataCalculations dataCalculations = this.dataCalculationsFactory.create(received);
+        //return new Data(received, dataCalculations);
+        return null;
     }
 
     private Data createDataWithCalculations(final Data received, final Data previous) {
-        final DataCalculations dataCalculations = this.dataCalculationsFactory.create(received, previous);
-        return new Data(received, dataCalculations);
+        //final DataCalculations dataCalculations = this.dataCalculationsFactory.create(received, previous);
+        //return new Data(received, dataCalculations);
+        return null;
     }
 
     private Data createFixedDataWithCalculations(final Data received, final Data previous) {
