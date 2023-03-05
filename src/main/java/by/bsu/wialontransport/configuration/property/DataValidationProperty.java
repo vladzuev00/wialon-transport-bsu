@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class DataValidationProperty {
     private int minValidAmountOfSatellites;
-    private int maxValidAmountSatellite;
+    private int maxValidAmountSatellites;
     private LocalDateTime minValidDateTime;
     private int deltaSecondsFromNowMaxAllowableValidDateTime;
     private int minValidDOP;

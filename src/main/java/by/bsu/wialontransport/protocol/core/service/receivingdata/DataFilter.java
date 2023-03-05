@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.receivingdatapackage.validator;
+package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,20 @@ public final class DataFilter {
         return this.isValid(current) && isCorrectOrder(current, previous);
     }
 
+    public boolean isNeedToBeFix(final Data data) {
+        return this.propertyValidator.isValidDateTime(current)
+                && (!this.propertyValidator.isValidAmountOfSatellites(current)
+                || this.propertyValidator.isValidDOPParameters(current));
+    }
+
     public boolean isNeedToBeSkipped(final Data data) {
-        return !this.propertyValidator.isValidDateTime(data) || !this.propertyValidator.isValidDOPParameters(data);
+        return !this.isValid(data);
     }
 
     public boolean isNeedToBeSkipped(final Data current, final Data previous) {
-        return !isCorrectOrder(current, previous)
-                || !this.propertyValidator.isValidDateTime(current)
-                || !this.propertyValidator.isValidDOPParameters(current);
+        return !this.propertyValidator.isValidDateTime(current)
+                || !this.propertyValidator.isValidDOPParameters(current)
+                || !isCorrectOrder(current, previous);
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {

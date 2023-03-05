@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.receivingdatapackage.validator;
+package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.configuration.property.DataValidationProperty;
 import by.bsu.wialontransport.crud.dto.Data;
@@ -25,15 +25,14 @@ public final class DataPropertyValidator {
 
     public boolean isValidAmountOfSatellites(final Data data) {
         return this.validationProperty.getMinValidAmountOfSatellites() <= data.getAmountOfSatellites()
-                && data.getAmountOfSatellites() <= this.validationProperty.getMaxValidAmountSatellite();
+                && data.getAmountOfSatellites() <= this.validationProperty.getMaxValidAmountSatellites();
     }
 
     public boolean isValidDateTime(final Data data) {
         final LocalDateTime research = LocalDateTime.of(data.getDate(), data.getTime());
-        final LocalDateTime maxAllowableDateTime = now()
-                .plusSeconds(this.validationProperty.getDeltaSecondsFromNowMaxAllowableValidDateTime());
-        return research.isAfter(this.validationProperty.getMinValidDateTime())
-                && research.isBefore(maxAllowableDateTime);
+        final LocalDateTime minAllowableDateTime = this.validationProperty.getMinValidDateTime();
+        final LocalDateTime maxAllowableDateTime = this.findMaxAllowableDateTime();
+        return research.isAfter(minAllowableDateTime) && research.isBefore(maxAllowableDateTime);
     }
 
     public boolean isValidDOPParameters(final Data data) {
@@ -43,6 +42,10 @@ public final class DataPropertyValidator {
         return Stream.of(optionalHDOP, optionalVDOP, optionalPDOP)
                 .map(optionalParameter -> optionalParameter.map(this::isValidDOPParameter))
                 .allMatch(optionalValidationResult -> optionalValidationResult.isPresent() && optionalValidationResult.get());
+    }
+
+    private LocalDateTime findMaxAllowableDateTime() {
+        return now().plusSeconds(this.validationProperty.getDeltaSecondsFromNowMaxAllowableValidDateTime());
     }
 
     private static Optional<Parameter> findDOPParameter(final Data data,

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.receivingdatapackage.exception;
+package by.bsu.wialontransport.protocol.core.service.receivingdata.exception;
 
 public final class NoTrackerInContextException extends RuntimeException {
     public NoTrackerInContextException() {
