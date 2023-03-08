@@ -7,24 +7,22 @@ import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
+import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.data.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static by.bsu.wialontransport.crud.dto.Data.createWithTracker;
+import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractReceivingDataPackageService<
         RequestPackageType extends AbstractRequestDataPackage,
-        ResponsePackageType extends Package
-        > {
+        ResponsePackageType extends Package> {
 
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;
@@ -69,9 +67,8 @@ public abstract class AbstractReceivingDataPackageService<
             final List<Data> receivedData, final Data previousData, final ChannelHandlerContext context) {
         final List<Data> fixedData = new ArrayList<>();
         Data previousValidData = previousData;
-        Optional<Data> optionalNewPreviousValidData;
         for (final Data data : receivedData) {
-            optionalNewPreviousValidData = previousValidData != null
+            final Optional<Data> optionalNewPreviousValidData = previousValidData != null
                     ? this.findNewLastData(data, previousValidData)
                     : this.findNewLastData(data);
             if (optionalNewPreviousValidData.isPresent()) {
@@ -79,7 +76,10 @@ public abstract class AbstractReceivingDataPackageService<
                 previousValidData = optionalNewPreviousValidData.get();
             }
         }
-        return Pair.of(ofNullable(previousValidData), fixedData);
+        final Optional<Data> optionalNewLastData = previousValidData != previousData
+                ? Optional.of(previousValidData)
+                : empty();
+        return Pair.of(optionalNewLastData, fixedData);
     }
 
     private Optional<Data> findNewLastData(final Data receivedData, final Data previousData) {
@@ -129,8 +129,25 @@ public abstract class AbstractReceivingDataPackageService<
         }
 
         private static Map<String, Parameter> fixDOPParameters(final Data fixed, final Data previous) {
-            //TODO: fix
-            return fixed.getParametersByNames();
+            final Set<String> aliasesOfDOPParameters = findAliasesOfDopParameters();
+            final Map<String, Parameter> fixedParametersByNames = new HashMap<>(fixed.getParametersByNames());
+            aliasesOfDOPParameters.forEach(alias -> fixDOPParameterIfExist(
+                    alias, fixedParametersByNames, previous.getParametersByNames())
+            );
+            return fixedParametersByNames;
+        }
+
+        private static Set<String> findAliasesOfDopParameters() {
+            return stream(DOPParameterDictionary.values())
+                    .map(DOPParameterDictionary::getAliases)
+                    .flatMap(Collection::stream)
+                    .collect(toSet());
+        }
+
+        private static void fixDOPParameterIfExist(final String alias,
+                                                   final Map<String, Parameter> fixedParametersByNames,
+                                                   final Map<String, Parameter> previousParametersByNames) {
+            fixedParametersByNames.replace(alias, previousParametersByNames.get(alias));
         }
     }
 }

@@ -3,6 +3,8 @@ package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
 import org.springframework.stereotype.Component;
 
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage.PREFIX;
+
 @Component
 public final class RequestLoginPackageDeserializer implements PackageDeserializer {
     private static final String REGEX_DELIMITER_IMEI_AND_PASSWORD = ";";
@@ -18,7 +20,7 @@ public final class RequestLoginPackageDeserializer implements PackageDeserialize
     }
 
     private static String[] findMessageComponents(String deserialized) {
-        final String message = PackageDeserializer.removePrefix(deserialized);
+        final String message = PackageDeserializer.removePrefix(deserialized, PREFIX);
         return message.split(REGEX_DELIMITER_IMEI_AND_PASSWORD);
     }
 }

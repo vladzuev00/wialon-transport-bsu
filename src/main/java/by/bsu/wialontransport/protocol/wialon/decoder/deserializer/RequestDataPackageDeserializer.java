@@ -8,6 +8,8 @@ import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.Request
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestDataPackage.PREFIX;
+
 @Component
 @RequiredArgsConstructor
 public final class RequestDataPackageDeserializer implements PackageDeserializer {
@@ -18,7 +20,7 @@ public final class RequestDataPackageDeserializer implements PackageDeserializer
     @Override
     public RequestDataPackage deserialize(final String source) {
         try {
-            final String dataString = PackageDeserializer.removePrefix(source);
+            final String dataString = PackageDeserializer.removePrefix(source, PREFIX);
             final Data data = this.dataParser.parse(dataString);
             return new RequestDataPackage(data);
         } catch (final NotValidDataException cause) {

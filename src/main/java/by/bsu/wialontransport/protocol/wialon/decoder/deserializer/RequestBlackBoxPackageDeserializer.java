@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage.PREFIX;
 import static java.util.Arrays.stream;
 
 @Component
@@ -23,7 +24,7 @@ public final class RequestBlackBoxPackageDeserializer implements PackageDeserial
     @Override
     public RequestBlackBoxPackage deserialize(final String source) {
         try {
-            final String message = PackageDeserializer.removePrefix(source);
+            final String message = PackageDeserializer.removePrefix(source, PREFIX);
             final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
             final List<Data> data = stream(dataStrings)
                     .map(this.dataParser::parse)
