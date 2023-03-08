@@ -5,7 +5,9 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class ReceivingBlackBoxPackageService
         extends AbstractReceivingDataPackageService<RequestBlackBoxPackage, ResponseBlackBoxPackage> {
 

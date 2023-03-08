@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.base.AbstractContextTest;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
