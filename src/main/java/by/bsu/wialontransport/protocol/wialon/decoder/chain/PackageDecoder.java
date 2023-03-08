@@ -1,16 +1,16 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.PackageDeserializer;
+import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.AbstractPackageDeserializer;
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.exception.NoSuitablePackageDecoderException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 
 public abstract class PackageDecoder {
     private final PackageDecoder nextDecoder;
     private final String packagePrefix;
-    private final PackageDeserializer packageDeserializer;
+    private final AbstractPackageDeserializer packageDeserializer;
 
     public PackageDecoder(final PackageDecoder nextDecoder, final String packagePrefix,
-                          final PackageDeserializer packageDeserializer) {
+                          final AbstractPackageDeserializer packageDeserializer) {
         this.nextDecoder = nextDecoder;
         this.packagePrefix = packagePrefix;
         this.packageDeserializer = packageDeserializer;
