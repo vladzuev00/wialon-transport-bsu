@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
-import by.bsu.wialontransport.protocol.wialon.decoder.chain.PackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.StarterPackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import io.netty.buffer.ByteBuf;
@@ -19,7 +18,7 @@ public final class WialonDecoder extends ReplayingDecoder<Package> {
             = "Start decoding inbound package: '{}'.";
     private static final char CHARACTER_OF_END_REQUEST_PACKAGE = '\n';
 
-    private final PackageDecoder starterPackageDecoder;
+    private final StarterPackageDecoder starterPackageDecoder;
 
     public WialonDecoder(final StarterPackageDecoder starterPackageDecoder) {
         this.starterPackageDecoder = starterPackageDecoder;
