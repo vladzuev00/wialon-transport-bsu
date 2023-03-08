@@ -63,7 +63,8 @@ public final class RequestDataPackageDeserializerTest extends AbstractContextTes
                                 "param-name-2", createParameter("param-name-2", DOUBLE, "65.4321"),
                                 "param-name-3", createParameter("param-name-3", STRING, "param-value")
                         )
-                ).build()
+                )
+                .build()
         );
         assertEquals(expected, actual);
     }
