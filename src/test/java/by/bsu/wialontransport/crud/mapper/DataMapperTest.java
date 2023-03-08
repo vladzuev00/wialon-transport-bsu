@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.mapper;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
@@ -46,6 +47,12 @@ public final class DataMapperTest extends AbstractContextTest {
                         "first-param", new Parameter(256L, "first-param", INTEGER, "44"),
                         "second-param", new Parameter(257L, "second-param", STRING, "text")
                 ))
+                .tracker(Tracker.builder()
+                        .id(256L)
+                        .imei("11111222223333344444")
+                        .password("password")
+                        .phoneNumber("447336934")
+                        .build())
                 .build();
 
         final DataEntity actual = this.mapper.mapToEntity(givenDto);
@@ -68,6 +75,12 @@ public final class DataMapperTest extends AbstractContextTest {
                         new ParameterEntity(256L, "first-param", INTEGER, "44", null),
                         new ParameterEntity(257L, "second-param", STRING, "text", null)
                 ))
+                .tracker(TrackerEntity.builder()
+                        .id(256L)
+                        .imei("11111222223333344444")
+                        .password("password")
+                        .phoneNumber("447336934")
+                        .build())
                 .build();
 
         assertNotNull(actual);
@@ -95,7 +108,12 @@ public final class DataMapperTest extends AbstractContextTest {
                         new ParameterEntity(256L, "first-param", INTEGER, "44", null),
                         new ParameterEntity(257L, "second-param", STRING, "text", null)
                 ))
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
+                .tracker(TrackerEntity.builder()
+                        .id(256L)
+                        .imei("11111222223333344444")
+                        .password("password")
+                        .phoneNumber("447336934")
+                        .build())
                 .build();
 
         final Data actual = this.mapper.mapToDto(givenEntity);
@@ -118,6 +136,12 @@ public final class DataMapperTest extends AbstractContextTest {
                         "first-param", new Parameter(256L, "first-param", INTEGER, "44"),
                         "second-param", new Parameter(257L, "second-param", STRING, "text")
                 ))
+                .tracker(Tracker.builder()
+                        .id(256L)
+                        .imei("11111222223333344444")
+                        .password("password")
+                        .phoneNumber("447336934")
+                        .build())
                 .build();
         assertEquals(expected, actual);
     }
@@ -138,7 +162,7 @@ public final class DataMapperTest extends AbstractContextTest {
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
-        assertEquals(expected.getTracker(), actual.getTracker());
+        checkEquals(expected.getTracker(), actual.getTracker());
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,
@@ -146,5 +170,13 @@ public final class DataMapperTest extends AbstractContextTest {
         assertTrue(expected.size() == actual.size()
                 && expected.containsAll(actual)
                 && actual.containsAll(expected));
+    }
+
+    private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getImei(), actual.getImei());
+        assertEquals(expected.getPassword(), actual.getPassword());
+        assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
+        assertEquals(expected.getUser(), actual.getUser());
     }
 }

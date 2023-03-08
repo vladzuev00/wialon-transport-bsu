@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 
+import by.bsu.wialontransport.crud.dto.Tracker;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -78,6 +79,12 @@ public final class DataServiceTest extends AbstractContextTest {
                         .type(INTEGER)
                         .value("44")
                         .build()))
+                .tracker(Tracker.builder()
+                        .id(255L)
+                        .imei("11112222333344445555")
+                        .password("password")
+                        .phoneNumber("447336934")
+                        .build())
                 .build();
         assertEquals(expected, actual);
     }

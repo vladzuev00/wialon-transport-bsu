@@ -41,7 +41,7 @@ public class Data implements AbstractDto<Long> {
         return new Data(
                 source.id, source.date, source.time, source.latitude, source.longitude, source.speed, source.course,
                 source.altitude, source.amountOfSatellites, source.reductionPrecision, source.inputs, source.outputs,
-                source.getAnalogInputs(), source.driverKeyCode, source.parametersByNames, source.tracker
+                source.getAnalogInputs(), source.driverKeyCode, source.parametersByNames, tracker
         );
     }
 
