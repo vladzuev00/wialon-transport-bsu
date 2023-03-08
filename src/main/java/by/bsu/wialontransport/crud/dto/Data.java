@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @AllArgsConstructor
 @Getter
@@ -32,6 +35,19 @@ public class Data implements AbstractDto<Long> {
      * parameter's name to parameter
      */
     private final Map<String, Parameter> parametersByNames;
+    private final Tracker tracker;
+
+    public static Data createWithTracker(final Data source, final Tracker tracker) {
+        return new Data(
+                source.id, source.date, source.time, source.latitude, source.longitude, source.speed, source.course,
+                source.altitude, source.amountOfSatellites, source.reductionPrecision, source.inputs, source.outputs,
+                source.getAnalogInputs(), source.driverKeyCode, source.parametersByNames, source.tracker
+        );
+    }
+
+    public Optional<Tracker> findTracker() {
+        return ofNullable(this.tracker);
+    }
 
     @AllArgsConstructor
     @Getter

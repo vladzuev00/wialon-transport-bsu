@@ -19,7 +19,7 @@ public final class KafkaInboundDataProducer {
         this.topicName = topicName;
     }
 
-    public void send(final Data data, final Tracker tracker) {
+    public void send(final Data data) {
         //this.kafkaTemplate.send(new ProducerRecord<>(this.topicName, tracker.getId(), data));
     }
 }

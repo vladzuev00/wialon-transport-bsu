@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.receivingdata;
+package by.bsu.wialontransport.protocol.core.service.receivingdata.filter;
 
 import by.bsu.wialontransport.configuration.property.DataValidationProperty;
 import by.bsu.wialontransport.crud.dto.Data;

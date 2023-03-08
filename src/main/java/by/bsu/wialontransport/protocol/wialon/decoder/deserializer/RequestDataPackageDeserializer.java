@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.RequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestDataPackage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
