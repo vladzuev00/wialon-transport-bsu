@@ -52,11 +52,11 @@ public abstract class AbstractReceivingDataPackageService<
         final List<Data> filteredAndFixedData = optionalNewLastDataAndFilteredAndFixedData.getSecond();
         filteredAndFixedData.forEach(this.kafkaInboundDataProducer::send);
 
-        final ResponsePackageType responsePackage = this.createResponse(receivedData.size());
+        final ResponsePackageType responsePackage = this.createResponse(receivedData);
         context.writeAndFlush(responsePackage);
     }
 
-    protected abstract ResponsePackageType createResponse(final int amountOfReceivedData);
+    protected abstract ResponsePackageType createResponse(final List<Data> receivedData);
 
     private Pair<Optional<Data>, List<Data>> findNewLastDataAndFilteredAndFixedDataWithTracker(
             final List<Data> receivedData, final ChannelHandlerContext context) {
@@ -85,7 +85,7 @@ public abstract class AbstractReceivingDataPackageService<
     private Optional<Data> findNewLastData(final Data receivedData, final Data previousData) {
         if (this.dataFilter.isValid(receivedData, previousData)) {
             return Optional.of(receivedData);
-        } else if (this.dataFilter.isNeedToBeFixed(receivedData)) {
+        } else if (this.dataFilter.isNeedToBeFixed(receivedData, previousData)) {
             return Optional.of(this.dataFixer.fix(receivedData, previousData));
         } else {
             return empty();

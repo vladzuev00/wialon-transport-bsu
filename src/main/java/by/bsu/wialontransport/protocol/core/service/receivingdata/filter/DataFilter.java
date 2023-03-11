@@ -21,25 +21,18 @@ public final class DataFilter {
         return this.isValid(current) && isCorrectOrder(current, previous);
     }
 
-    public boolean isNeedToBeFixed(final Data data) {
-        return this.propertyValidator.isValidDateTime(data)
+    public boolean isNeedToBeFixed(final Data current, final Data previous) {
+        return this.propertyValidator.isValidDateTime(current) && isCorrectOrder(current, previous)
                 && !(
-                this.propertyValidator.isValidAmountOfSatellites(data)
-                        && this.propertyValidator.isValidDOPParameters(data)
+                this.propertyValidator.isValidAmountOfSatellites(current)
+                        && this.propertyValidator.isValidDOPParameters(current)
         );
-    }
-
-    public boolean isShouldToBeSkipped(final Data data) {
-        return !this.propertyValidator.isValidDateTime(data);
-    }
-
-    public boolean isShouldToBeSkipped(final Data current, final Data previous) {
-        return this.isShouldToBeSkipped(current) || !isCorrectOrder(current, previous);
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {
         final LocalDateTime dateTimeOfCurrentData = LocalDateTime.of(current.getDate(), current.getTime());
         final LocalDateTime dateTimeOfPreviousData = LocalDateTime.of(previous.getDate(), previous.getTime());
-        return dateTimeOfCurrentData.isAfter(dateTimeOfPreviousData);
+        return dateTimeOfCurrentData.isEqual(dateTimeOfPreviousData)
+                || dateTimeOfCurrentData.isAfter(dateTimeOfPreviousData);
     }
 }
