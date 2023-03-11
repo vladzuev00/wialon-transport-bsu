@@ -11,10 +11,12 @@ spring:
     bootstrap-servers: 127.0.0.1:9092
 
 
-message:
+data:
   validation:
-    minValidAmountSatellite: 3
-    maxValidAmountSatellite: 999
+    minValidAmountOfSatellites: 3
+    maxValidAmountSatellites: 999
+    minValidDateTime: 2000-01-01 00:00:00
+    deltaSecondsFromNowMaxAllowableValidDateTime: 15
     minValidDOP: 0
     maxValidDOP: 7
 

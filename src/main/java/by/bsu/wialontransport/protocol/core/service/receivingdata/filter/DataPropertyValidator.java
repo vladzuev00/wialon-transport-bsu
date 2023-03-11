@@ -10,13 +10,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
-import static by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary.*;
 import static java.lang.Double.compare;
 import static java.lang.Double.parseDouble;
 import static java.time.LocalDateTime.now;
+import static java.util.Arrays.stream;
 
 @Component
 @RequiredArgsConstructor
@@ -36,12 +35,11 @@ public final class DataPropertyValidator {
     }
 
     public boolean isValidDOPParameters(final Data data) {
-        final Optional<Parameter> optionalHDOP = findDOPParameter(data, HDOP);
-        final Optional<Parameter> optionalVDOP = findDOPParameter(data, VDOP);
-        final Optional<Parameter> optionalPDOP = findDOPParameter(data, PDOP);
-        return Stream.of(optionalHDOP, optionalVDOP, optionalPDOP)
+        return stream(DOPParameterDictionary.values())
+                .map(dictionary -> findDOPParameter(data, dictionary))
                 .map(optionalParameter -> optionalParameter.map(this::isValidDOPParameter))
-                .allMatch(optionalValidationResult -> optionalValidationResult.isPresent() && optionalValidationResult.get());
+                .allMatch(optionalValidationResult ->
+                        optionalValidationResult.isPresent() && optionalValidationResult.get());
     }
 
     private LocalDateTime findMaxAllowableDateTime() {
