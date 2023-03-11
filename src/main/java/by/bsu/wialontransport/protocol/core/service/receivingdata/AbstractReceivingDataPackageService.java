@@ -7,6 +7,7 @@ import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
@@ -31,11 +32,12 @@ public abstract class AbstractReceivingDataPackageService<
 
     public AbstractReceivingDataPackageService(final ContextAttributeManager contextAttributeManager,
                                                final DataFilter dataFilter,
-                                               final KafkaInboundDataProducer kafkaInboundDataProducer) {
+                                               final KafkaInboundDataProducer kafkaInboundDataProducer,
+                                               final DataFixer dataFixer) {
         this.contextAttributeManager = contextAttributeManager;
         this.dataFilter = dataFilter;
         this.kafkaInboundDataProducer = kafkaInboundDataProducer;
-        this.dataFixer = new DataFixer();
+        this.dataFixer = dataFixer;
     }
 
     public final void receive(final RequestPackageType requestPackage, final ChannelHandlerContext context) {
@@ -104,50 +106,5 @@ public abstract class AbstractReceivingDataPackageService<
     private Tracker findTracker(final ChannelHandlerContext context) {
         final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
         return optionalTracker.orElseThrow(NoTrackerInContextException::new);
-    }
-
-    private static final class DataFixer {
-
-        public Data fix(final Data fixed, final Data previous) {
-            return Data.builder()
-                    .id(fixed.getId())
-                    .date(fixed.getDate())
-                    .time(fixed.getTime())
-                    .latitude(previous.getLatitude())
-                    .longitude(previous.getLongitude())
-                    .speed(fixed.getSpeed())
-                    .course(fixed.getCourse())
-                    .altitude(fixed.getAltitude())
-                    .amountOfSatellites(previous.getAmountOfSatellites())
-                    .reductionPrecision(fixed.getReductionPrecision())
-                    .inputs(fixed.getInputs())
-                    .outputs(fixed.getOutputs())
-                    .analogInputs(fixed.getAnalogInputs())
-                    .driverKeyCode(fixed.getDriverKeyCode())
-                    .parametersByNames(fixDOPParameters(fixed, previous))
-                    .build();
-        }
-
-        private static Map<String, Parameter> fixDOPParameters(final Data fixed, final Data previous) {
-            final Set<String> aliasesOfDOPParameters = findAliasesOfDopParameters();
-            final Map<String, Parameter> fixedParametersByNames = new HashMap<>(fixed.getParametersByNames());
-            aliasesOfDOPParameters.forEach(alias -> fixDOPParameterIfExist(
-                    alias, fixedParametersByNames, previous.getParametersByNames())
-            );
-            return fixedParametersByNames;
-        }
-
-        private static Set<String> findAliasesOfDopParameters() {
-            return stream(DOPParameterDictionary.values())
-                    .map(DOPParameterDictionary::getAliases)
-                    .flatMap(Collection::stream)
-                    .collect(toSet());
-        }
-
-        private static void fixDOPParameterIfExist(final String alias,
-                                                   final Map<String, Parameter> fixedParametersByNames,
-                                                   final Map<String, Parameter> previousParametersByNames) {
-            fixedParametersByNames.replace(alias, previousParametersByNames.get(alias));
-        }
     }
 }

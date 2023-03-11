@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public final class ReceivingBlackBoxPackageService
 
     public ReceivingBlackBoxPackageService(final ContextAttributeManager contextAttributeManager,
                                            final DataFilter dataFilter,
-                                           final KafkaInboundDataProducer kafkaInboundDataProducer) {
-        super(contextAttributeManager, dataFilter, kafkaInboundDataProducer);
+                                           final KafkaInboundDataProducer kafkaInboundDataProducer,
+                                           final DataFixer dataFixer) {
+        super(contextAttributeManager, dataFilter, kafkaInboundDataProducer, dataFixer);
     }
 
     @Override
