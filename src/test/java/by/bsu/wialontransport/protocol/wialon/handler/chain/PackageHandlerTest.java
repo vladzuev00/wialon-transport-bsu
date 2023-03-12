@@ -1,6 +1,5 @@
-package by.bsu.wialontransport.protocol.wialon.handler;
+package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
-import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.exception.NoSuitablePackageHandlerException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import io.netty.channel.ChannelHandlerContext;
