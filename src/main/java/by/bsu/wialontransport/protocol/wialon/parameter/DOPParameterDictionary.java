@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.parameter;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,5 +28,29 @@ public enum DOPParameterDictionary {
         return stream(values())
                 .filter(dictionary -> dictionary.isAlias(alias))
                 .findFirst();
+    }
+
+    public String findAnyAlias() {
+        return this.aliases.stream()
+                .findFirst()
+                .orElseThrow(DictionaryDoesNotHaveAnyAliasException::new);
+    }
+
+    private static final class DictionaryDoesNotHaveAnyAliasException extends RuntimeException {
+        public DictionaryDoesNotHaveAnyAliasException() {
+
+        }
+
+        public DictionaryDoesNotHaveAnyAliasException(final String description) {
+            super(description);
+        }
+
+        public DictionaryDoesNotHaveAnyAliasException(final Exception cause) {
+            super(cause);
+        }
+
+        public DictionaryDoesNotHaveAnyAliasException(final String description, final Exception cause) {
+            super(description, cause);
+        }
     }
 }

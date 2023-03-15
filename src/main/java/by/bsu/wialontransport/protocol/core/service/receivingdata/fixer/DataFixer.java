@@ -6,21 +6,18 @@ import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.exceptio
 import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiFunction;
+import java.util.Optional;
 
 import static by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary.findByAlias;
-import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toMap;
 
-//TODO: все не то
 @Component
 public final class DataFixer {
     private static final String MESSAGE_EXCEPTION_PREVIOUS_DATA_DOES_NOT_HAVE_DOP_PARAMETER = "Previous data doesn't "
             + "have DOP parameter - impossible to fix.";
-    private static final String MESSAGE_EXCEPTION_NO_DICTIONARY_FOR_ALIAS = "There is no dictionary for alias '%s'";
 
     public Data fix(final Data fixed, final Data previous) {
         return Data.builder()
@@ -44,49 +41,57 @@ public final class DataFixer {
     }
 
     private static Map<String, Parameter> fixDOPParameters(final Data fixed, final Data previous) {
-        final Map<String, Parameter> fixedParametersByNames = new HashMap<>(fixed.getParametersByNames());
-        stream(DOPParameterDictionary.values())
-                .forEach(dictionary ->
-                        fixDOPParameter(dictionary, fixedParametersByNames, previous.getParametersByNames())
-                );
+        final Map<String, Parameter> fixedParametersByNames
+                = findFixedParametersByNamesWithEntriesOfMissingDOPParameters(fixed);
+        injectDOPParametersFromPrevious(fixedParametersByNames, previous);
         return fixedParametersByNames;
     }
 
-    private static void fixDOPParameter(final DOPParameterDictionary dictionary,
-                                        final Map<String, Parameter> fixedParametersByNames,
-                                        final Map<String, Parameter> previousParametersByNames) {
-        final Parameter previousDOPParameter = previousParametersByNames.entrySet()
+    private static Map<String, Parameter> findFixedParametersByNamesWithEntriesOfMissingDOPParameters(final Data fixed) {
+        final Map<String, Parameter> fixedParametersByNames = new HashMap<>(fixed.getParametersByNames());
+        stream(DOPParameterDictionary.values())
+                .filter(dictionary -> !isExistEntryOfDOPParameter(dictionary, fixedParametersByNames))
+                .forEach(dictionary -> putEntryOfDOPParameter(dictionary, fixedParametersByNames));
+        return fixedParametersByNames;
+    }
+
+    private static boolean isExistEntryOfDOPParameter(final DOPParameterDictionary dictionary,
+                                                      final Map<String, Parameter> parametersByNames) {
+        return parametersByNames.keySet()
+                .stream()
+                .anyMatch(dictionary::isAlias);
+    }
+
+    private static void putEntryOfDOPParameter(final DOPParameterDictionary dictionary,
+                                               final Map<String, Parameter> parametersByNames) {
+        final String name = dictionary.findAnyAlias();
+        parametersByNames.put(name, null);
+    }
+
+    private static void injectDOPParametersFromPrevious(final Map<String, Parameter> fixedParametersByNames,
+                                                        final Data previous) {
+        for (final Entry<String, Parameter> parameterByName : fixedParametersByNames.entrySet()) {
+            final Optional<DOPParameterDictionary> optionalDictionary = findByAlias(parameterByName.getKey());
+            optionalDictionary.ifPresent(
+                    dictionary -> injectPreviousDOPParameterInEntry(dictionary, previous, parameterByName));
+        }
+    }
+
+    private static void injectPreviousDOPParameterInEntry(final DOPParameterDictionary dictionary, final Data previous,
+                                                          final Entry<String, Parameter> entry) {
+        final Parameter injectedDOPParameter = findDOPParameter(dictionary, previous)
+                .orElseThrow(
+                        () -> new DataFixingException(MESSAGE_EXCEPTION_PREVIOUS_DATA_DOES_NOT_HAVE_DOP_PARAMETER)
+                );
+        entry.setValue(injectedDOPParameter);
+    }
+
+    private static Optional<Parameter> findDOPParameter(final DOPParameterDictionary dictionary, final Data data) {
+        return data.getParametersByNames()
+                .entrySet()
                 .stream()
                 .filter(parameterByName -> dictionary.isAlias(parameterByName.getKey()))
                 .map(Entry::getValue)
-                .findFirst()
-                .orElseThrow(() -> new DataFixingException(MESSAGE_EXCEPTION_PREVIOUS_DATA_DOES_NOT_HAVE_DOP_PARAMETER));
-        dictionary.getAliases()
-                .forEach(alias -> fixedParametersByNames.compute(
-                        alias, createFunctionReplacingParameter(previousDOPParameter)
-                ));
-    }
-
-    private static BiFunction<String, Parameter, Parameter> createFunctionReplacingParameter(
-            final Parameter newParameter) {
-        return (alias, oldParameter) -> newParameter;
-    }
-
-    private static Map<DOPParameterDictionary, Parameter> findParametersByDictionaries(
-            final Map<String, Parameter> parametersByNames) {
-        return parametersByNames.entrySet()
-                .stream()
-                .collect(
-                        toMap(
-                                parameterByName -> findDictionaryByAlias(parameterByName.getKey()),
-                                Entry::getValue
-                        )
-                );
-    }
-
-    private static DOPParameterDictionary findDictionaryByAlias(final String alias) {
-        final Optional<DOPParameterDictionary> optionalDOPParameterDictionary = findByAlias(alias);
-        return optionalDOPParameterDictionary.orElseThrow(
-                () -> new DataFixingException(format(MESSAGE_EXCEPTION_NO_DICTIONARY_FOR_ALIAS, alias)));
+                .findFirst();
     }
 }

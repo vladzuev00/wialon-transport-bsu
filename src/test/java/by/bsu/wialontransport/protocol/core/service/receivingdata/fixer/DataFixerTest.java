@@ -17,7 +17,8 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.WESTERN;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.Assert.assertTrue;
 
 public final class DataFixerTest {
     private final DataFixer dataFixer;
@@ -88,7 +89,7 @@ public final class DataFixerTest {
                 .driverKeyCode("driver key code 2")
                 .parametersByNames(Map.of(
                         "122", createDoubleParameter("122", "11"),
-                        "par123", createDoubleParameter("123", "15"),
+                        "par123", createDoubleParameter("123", "14"),
                         "124", createDoubleParameter("par124", "17"),
                         "125", createDoubleParameter("125", "14")
                 ))
@@ -96,7 +97,9 @@ public final class DataFixerTest {
                 .build();
 
         final Data actual = this.dataFixer.fix(givenFixed, givenPrevious);
-        final Data expected = Data.builder()
+
+        //alias as key of map for 123 parameter is chosen randomly so there are two expected objects
+        final Data firstExpected = Data.builder()
                 .id(255L)
                 .date(LocalDate.of(2023, 11, 3))
                 .time(LocalTime.of(19, 28, 0))
@@ -123,17 +126,47 @@ public final class DataFixerTest {
                 .driverKeyCode("driver key code")
                 .parametersByNames(Map.of(
                         "122", createDoubleParameter("122", "11"),
-                        "par123", createDoubleParameter("par123", "14"),
+                        "par123", createDoubleParameter("123", "14"),
+                        "124", createDoubleParameter("par124", "17"),
+                        "125", createDoubleParameter("125", "17")
+                ))
+                .tracker(createTracker())
+                .build();
+        final Data secondExpected = Data.builder()
+                .id(255L)
+                .date(LocalDate.of(2023, 11, 3))
+                .time(LocalTime.of(19, 28, 0))
+                .latitude(Latitude.builder()
+                        .degrees(3)
+                        .minutes(4)
+                        .minuteShare(5)
+                        .type(SOUTH)
+                        .build())
+                .longitude(Longitude.builder()
+                        .degrees(4)
+                        .minutes(6)
+                        .minuteShare(7)
+                        .type(WESTERN)
+                        .build())
+                .speed(7)
+                .course(8)
+                .altitude(9)
+                .amountOfSatellites(15)
+                .reductionPrecision(11)
+                .inputs(12)
+                .outputs(13)
+                .analogInputs(new double[]{0.1, 0.2, 0.3})
+                .driverKeyCode("driver key code")
+                .parametersByNames(Map.of(
+                        "122", createDoubleParameter("122", "11"),
+                        "123", createDoubleParameter("123", "14"),
                         "124", createDoubleParameter("par124", "17"),
                         "125", createDoubleParameter("125", "17")
                 ))
                 .tracker(createTracker())
                 .build();
 
-        System.out.println(actual.getParametersByNames());
-        System.out.println(expected.getParametersByNames());
-
-        assertEquals(expected, actual);
+        assertTrue(actual.equals(firstExpected) || actual.equals(secondExpected));
     }
 
     private static Parameter createDoubleParameter(final String name, final String value) {
