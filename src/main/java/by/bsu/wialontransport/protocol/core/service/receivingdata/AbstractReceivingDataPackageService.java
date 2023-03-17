@@ -1,30 +1,26 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
-import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.data.util.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.dto.Data.createWithTracker;
-import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
-import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractReceivingDataPackageService<
         RequestPackageType extends AbstractRequestDataPackage,
         ResponsePackageType extends Package> {
-
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
@@ -43,16 +39,17 @@ public abstract class AbstractReceivingDataPackageService<
     public final void receive(final RequestPackageType requestPackage, final ChannelHandlerContext context) {
         final List<Data> receivedData = requestPackage.getData();
         final Optional<Data> optionalPreviousData = this.contextAttributeManager.findLastData(context);
-        final Pair<Optional<Data>, List<Data>> optionalNewLastDataAndFilteredAndFixedData = optionalPreviousData
-                .map(previousData -> this.findNewLastDataAndFilteredAndFixedDataWithTracker(
+
+        final List<Data> filteredAndFixedData = optionalPreviousData
+                .map(previousData -> this.findFilteredAndFixedDataWithTracker(
                         receivedData, previousData, context))
-                .orElseGet(() -> this.findNewLastDataAndFilteredAndFixedDataWithTracker(receivedData, context));
+                .orElseGet(() -> this.findFilteredAndFixedDataWithTracker(receivedData, context));
 
-        final Optional<Data> optionalNewLastData = optionalNewLastDataAndFilteredAndFixedData.getFirst();
-        optionalNewLastData.ifPresent(newLastData -> this.contextAttributeManager.putLastData(context, newLastData));
-
-        final List<Data> filteredAndFixedData = optionalNewLastDataAndFilteredAndFixedData.getSecond();
-        filteredAndFixedData.forEach(this.kafkaInboundDataProducer::send);
+        final Optional<Data> optionalNewLastData = findLast(filteredAndFixedData);
+        optionalNewLastData.ifPresent(newLastData -> {
+            this.contextAttributeManager.putLastData(context, newLastData);
+            filteredAndFixedData.forEach(this.kafkaInboundDataProducer::send);
+        });
 
         final ResponsePackageType responsePackage = this.createResponse(receivedData);
         context.writeAndFlush(responsePackage);
@@ -60,31 +57,34 @@ public abstract class AbstractReceivingDataPackageService<
 
     protected abstract ResponsePackageType createResponse(final List<Data> receivedData);
 
-    private Pair<Optional<Data>, List<Data>> findNewLastDataAndFilteredAndFixedDataWithTracker(
-            final List<Data> receivedData, final ChannelHandlerContext context) {
-        return this.findNewLastDataAndFilteredAndFixedDataWithTracker(receivedData, null, context);
+    private List<Data> findFilteredAndFixedDataWithTracker(final List<Data> receivedData,
+                                                           final ChannelHandlerContext context) {
+        return this.findFilteredAndFixedDataWithTracker(receivedData, null, context);
     }
 
-    private Pair<Optional<Data>, List<Data>> findNewLastDataAndFilteredAndFixedDataWithTracker(
-            final List<Data> receivedData, final Data previousData, final ChannelHandlerContext context) {
+    private List<Data> findFilteredAndFixedDataWithTracker(final List<Data> receivedData,
+                                                           final Data previousData,
+                                                           final ChannelHandlerContext context) {
         final List<Data> fixedData = new ArrayList<>();
         Data previousValidData = previousData;
         for (final Data data : receivedData) {
-            final Optional<Data> optionalNewPreviousValidData = previousValidData != null
-                    ? this.findNewLastData(data, previousValidData)
-                    : this.findNewLastData(data);
+            final Optional<Data> optionalNewPreviousValidData = this.findNewLastValidData(data, previousValidData);
             if (optionalNewPreviousValidData.isPresent()) {
-                fixedData.add(injectTracker(optionalNewPreviousValidData.get(), context));
+                fixedData.add(this.injectTracker(optionalNewPreviousValidData.get(), context));
                 previousValidData = optionalNewPreviousValidData.get();
             }
         }
-        final Optional<Data> optionalNewLastData = previousValidData != previousData
-                ? Optional.of(previousValidData)
-                : empty();
-        return Pair.of(optionalNewLastData, fixedData);
+        return fixedData;
     }
 
-    private Optional<Data> findNewLastData(final Data receivedData, final Data previousData) {
+    private Optional<Data> findNewLastValidData(final Data receivedData, final Data previousData) {
+        return previousData != null
+                ? this.findNewLastValidDataInCaseExistingPreviousData(receivedData, previousData)
+                : this.findNewLastValidDataInCaseNotExistingPreviousData(receivedData);
+    }
+
+    private Optional<Data> findNewLastValidDataInCaseExistingPreviousData(final Data receivedData,
+                                                                          final Data previousData) {
         if (this.dataFilter.isValid(receivedData, previousData)) {
             return Optional.of(receivedData);
         } else if (this.dataFilter.isNeedToBeFixed(receivedData, previousData)) {
@@ -94,7 +94,7 @@ public abstract class AbstractReceivingDataPackageService<
         }
     }
 
-    private Optional<Data> findNewLastData(final Data receivedData) {
+    private Optional<Data> findNewLastValidDataInCaseNotExistingPreviousData(final Data receivedData) {
         return this.dataFilter.isValid(receivedData) ? Optional.of(receivedData) : empty();
     }
 
@@ -106,5 +106,9 @@ public abstract class AbstractReceivingDataPackageService<
     private Tracker findTracker(final ChannelHandlerContext context) {
         final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
         return optionalTracker.orElseThrow(NoTrackerInContextException::new);
+    }
+
+    private static Optional<Data> findLast(final List<Data> data) {
+        return !data.isEmpty() ? Optional.of(data.get(data.size() - 1)) : empty();
     }
 }
