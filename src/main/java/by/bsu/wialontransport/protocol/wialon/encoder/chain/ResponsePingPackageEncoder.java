@@ -9,8 +9,8 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.Response
 @Component
 public final class ResponsePingPackageEncoder extends PackageEncoder {
 
-    public ResponsePingPackageEncoder() {
-        super(ResponsePingPackage.class, null);
+    public ResponsePingPackageEncoder(final ResponseDataPackageEncoder nextEncoder) {
+        super(ResponsePingPackage.class, nextEncoder);
     }
 
     @Override

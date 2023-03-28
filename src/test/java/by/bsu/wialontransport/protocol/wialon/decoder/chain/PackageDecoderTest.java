@@ -42,7 +42,7 @@ public final class PackageDecoderTest {
     }
 
     @Test
-    public void packageShouldBeDecodedByHandler() {
+    public void packageShouldBeDecodedByDecoder() {
         final String givenPackage = "#PREFIX#date\r\n";
         final Package givenResultPackage = new Package() {
         };
@@ -60,7 +60,7 @@ public final class PackageDecoderTest {
     }
 
     @Test
-    public void packageShouldBeDecodedByNextHandlerBecauseOfNotSuitablePrefix() {
+    public void packageShouldBeDecodedByNextDecoderBecauseOfNotSuitablePrefix() {
         final String givenPackage = "#CANNOT_DECODE#date\r\n";
         final Package givenResultPackage = new Package() {
         };

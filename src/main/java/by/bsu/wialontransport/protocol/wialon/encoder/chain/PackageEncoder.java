@@ -15,13 +15,16 @@ public abstract class PackageEncoder {
     }
 
     public final String encode(final Package encodedPackage) {
-        final String encodedWithoutPostfix = this.isAbleToEncode(encodedPackage)
-                ? this.encodeIndependentlyWithoutPostfix(encodedPackage)
+        return this.isAbleToEncode(encodedPackage)
+                ? this.encodeIndependently(encodedPackage)
                 : this.delegateToNextEncoder(encodedPackage);
-        return encodedWithoutPostfix + POSTFIX;
     }
 
     protected abstract String encodeIndependentlyWithoutPostfix(final Package encodedPackage);
+
+    private String encodeIndependently(final Package encodedPackage) {
+        return this.encodeIndependentlyWithoutPostfix(encodedPackage) + POSTFIX;
+    }
 
     private boolean isAbleToEncode(final Package encodedPackage) {
         return this.packageType != null && this.packageType.isInstance(encodedPackage);
