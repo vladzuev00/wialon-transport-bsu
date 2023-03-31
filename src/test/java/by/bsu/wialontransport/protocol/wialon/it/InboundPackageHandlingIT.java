@@ -35,14 +35,8 @@ public final class InboundPackageHandlingIT extends AbstractContextTest {
     @Before
     public void startServerAndClient()
             throws Exception {
-        if (!serverWasRan) {
-            final WialonServer server = this.serverFactory.create();
-            new Thread(server::run).start();
-            //TODO: correct
-            SECONDS.sleep(1);  //to give thread starting server time to run it
-            serverWasRan = true;
-        }
-        this.client = new Client(this.serverConfiguration);
+        this.runServerIfWasNotRun();
+        this.client = new Client(this.serverConfiguration.getHost(), this.serverConfiguration.getPort());
     }
 
     @After
@@ -84,15 +78,30 @@ public final class InboundPackageHandlingIT extends AbstractContextTest {
         assertEquals(expected, actual);
     }
 
+
+
+    private void runServerIfWasNotRun()
+            throws InterruptedException {
+        if (!serverWasRan) {
+            new Thread(() -> {
+                try (final WialonServer server = this.serverFactory.create()) {
+                    server.run();
+                }
+            }).start();
+            SECONDS.sleep(1);  //to give thread starting server time to run it
+            serverWasRan = true;
+        }
+    }
+
     private static final class Client implements AutoCloseable {
         private static final char PACKAGE_LAST_CHARACTER = '\n';
 
         private final Socket socket;
         private final ExecutorService executorService;
 
-        public Client(final WialonServerConfiguration serverConfiguration)
+        public Client(final String host, final int port)
                 throws IOException {
-            this.socket = new Socket(serverConfiguration.getHost(), serverConfiguration.getPort());
+            this.socket = new Socket(host, port);
             this.executorService = newSingleThreadExecutor();
         }
 
@@ -111,12 +120,6 @@ public final class InboundPackageHandlingIT extends AbstractContextTest {
 
                 return responseBuilder.toString();
             });
-        }
-
-        public void doResponse(final String response)
-                throws IOException {
-            final OutputStream outputStream = this.socket.getOutputStream();
-            outputStream.write(response.getBytes(UTF_8));
         }
 
         @Override

@@ -17,6 +17,8 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Supplier;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Component
@@ -35,11 +37,11 @@ public final class WialonServerFactory {
                 this.createConnectionProcessLoopGroup(),
                 this.createDataProcessLoopGroup(),
                 this.serverConfiguration.getPort(),
-                this.createDecoder(),
-                this.createReadTimeoutHandler(),
-                this.createEncoder(),
-                this.createHandler(),
-                this.createExceptionHandler()
+                this.createDecoderFactory(),
+                this.createReadTimeoutHandlerFactory(),
+                this.createEncoderFactory(),
+                this.createHandlerFactory(),
+                this.createExceptionHandlerFactory()
         );
     }
 
@@ -53,24 +55,28 @@ public final class WialonServerFactory {
         return new NioEventLoopGroup(amountThreadsToProcessData);
     }
 
-    private WialonDecoder createDecoder() {
-        return new WialonDecoder(this.starterPackageDecoder);
+    private Supplier<WialonDecoder> createDecoderFactory() {
+        return () -> new WialonDecoder(this.starterPackageDecoder);
     }
 
-    private ReadTimeoutHandler createReadTimeoutHandler() {
+    private Supplier<ReadTimeoutHandler> createReadTimeoutHandlerFactory() {
         final int aliveConnectionTimeoutSeconds = this.serverConfiguration.getAliveConnectionTimeoutSeconds();
-        return new ReadTimeoutHandler(aliveConnectionTimeoutSeconds, SECONDS);
+        return () -> new ReadTimeoutHandler(aliveConnectionTimeoutSeconds, SECONDS);
     }
 
-    private WialonEncoder createEncoder() {
-        return new WialonEncoder(this.starterPackageEncoder);
+    private Supplier<WialonEncoder> createEncoderFactory() {
+        return () -> new WialonEncoder(this.starterPackageEncoder);
     }
 
-    private WialonHandler createHandler() {
-        return new WialonHandler(this.starterPackageHandler, this.contextAttributeManager, this.connectionManager);
+    private Supplier<WialonHandler> createHandlerFactory() {
+        return () -> new WialonHandler(
+                this.starterPackageHandler,
+                this.contextAttributeManager,
+                this.connectionManager
+        );
     }
 
-    private WialonExceptionHandler createExceptionHandler() {
-        return new WialonExceptionHandler(this.contextAttributeManager);
+    private Supplier<WialonExceptionHandler> createExceptionHandlerFactory() {
+        return () -> new WialonExceptionHandler(this.contextAttributeManager);
     }
 }

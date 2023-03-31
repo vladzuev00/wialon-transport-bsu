@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.function.Supplier;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,11 +25,11 @@ public final class WialonServer implements AutoCloseable {
     private final EventLoopGroup loopGroupProcessingConnection;
     private final EventLoopGroup loopGroupProcessingData;
     private final int port;
-    private final WialonDecoder decoder;
-    private final ReadTimeoutHandler readTimeoutHandler;
-    private final WialonEncoder encoder;
-    private final WialonHandler requestHandler;
-    private final WialonExceptionHandler exceptionHandler;
+    private final Supplier<WialonDecoder> decoderFactory;
+    private final Supplier<ReadTimeoutHandler> readTimeoutHandlerFactory;
+    private final Supplier<WialonEncoder> encoderFactory;
+    private final Supplier<WialonHandler> requestHandlerFactory;
+    private final Supplier<WialonExceptionHandler> exceptionHandlerFactory;
 
     public void run() {
         try {
@@ -62,8 +63,13 @@ public final class WialonServer implements AutoCloseable {
 
             @Override
             public void initChannel(SocketChannel socketChannel) {
-                socketChannel.pipeline()
-                        .addLast(decoder, readTimeoutHandler, encoder, requestHandler, exceptionHandler);
+                socketChannel.pipeline().addLast(
+                        decoderFactory.get(),
+                        readTimeoutHandlerFactory.get(),
+                        encoderFactory.get(),
+                        requestHandlerFactory.get(),
+                        exceptionHandlerFactory.get()
+                );
             }
 
         };
