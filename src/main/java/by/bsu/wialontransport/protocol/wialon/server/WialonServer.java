@@ -21,8 +21,8 @@ import java.net.InetSocketAddress;
 @Slf4j
 @RequiredArgsConstructor
 public final class WialonServer implements AutoCloseable {
-    private final EventLoopGroup connectionLoopGroup;
-    private final EventLoopGroup dataProcessLoopGroup;
+    private final EventLoopGroup loopGroupProcessingConnection;
+    private final EventLoopGroup loopGroupProcessingData;
     private final int port;
     private final WialonDecoder decoder;
     private final ReadTimeoutHandler readTimeoutHandler;
@@ -33,7 +33,7 @@ public final class WialonServer implements AutoCloseable {
     public void run() {
         try {
             final ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(this.connectionLoopGroup, this.dataProcessLoopGroup)
+            serverBootstrap.group(this.loopGroupProcessingConnection, this.loopGroupProcessingData)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(this.port))
                     .childHandler(this.createChannelInitializer());
@@ -50,8 +50,8 @@ public final class WialonServer implements AutoCloseable {
     @Override
     public void close() {
         try {
-            this.connectionLoopGroup.shutdownGracefully().sync();
-            this.dataProcessLoopGroup.shutdownGracefully().sync();
+            this.loopGroupProcessingConnection.shutdownGracefully().sync();
+            this.loopGroupProcessingData.shutdownGracefully().sync();
         } catch (final InterruptedException cause) {
             throw new WialonServerShutdownException(cause);
         }
