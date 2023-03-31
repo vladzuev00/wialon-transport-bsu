@@ -16,6 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import static java.lang.System.out;
 import static java.util.TimeZone.getTimeZone;
 import static java.util.TimeZone.setDefault;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +48,7 @@ public abstract class AbstractContextTest {
     }
 
     protected final void startQueryCount() {
-        System.out.println("======================= START QUERY COUNTER ====================================");
+        out.println("======================= START QUERY COUNTER ====================================");
         this.queryInterceptor.startQueryCount();
     }
 
@@ -57,7 +58,7 @@ public abstract class AbstractContextTest {
 
     protected final void checkQueryCount(int expected) {
         this.entityManager.flush();
-        System.out.println("======================= FINISH QUERY COUNTER ====================================");
+        out.println("======================= FINISH QUERY COUNTER ====================================");
         assertEquals("wrong count of queries", Long.valueOf(expected), this.getQueryCount());
     }
 

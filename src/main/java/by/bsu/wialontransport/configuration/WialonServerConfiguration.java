@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 @Setter
 @Getter
-public final class WialonServerConfiguration {
+public class WialonServerConfiguration {
     private String host;
     private int port;
     private int amountThreadsToProcessConnection;

@@ -27,6 +27,14 @@ data:
     minValidDOP: 0
     maxValidDOP: 7
 
+wialon:
+  server:
+    host: localhost
+    port: 6001
+    amountThreadsToProcessConnection: 1
+    amountThreadsToProcessData: 10
+    aliveConnectionTimeoutSeconds: 300
+
 kafka:
   topic:
     inbound-data:
