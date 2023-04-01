@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
+import by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
@@ -17,7 +17,7 @@ public final class ReceivingBlackBoxPackageService
 
     public ReceivingBlackBoxPackageService(final ContextAttributeManager contextAttributeManager,
                                            final DataFilter dataFilter,
-                                           final KafkaInboundDataProducer kafkaInboundDataProducer,
+                                           final AbstractKafkaDataProducer kafkaInboundDataProducer,
                                            final DataFixer dataFixer) {
         super(contextAttributeManager, dataFilter, kafkaInboundDataProducer, dataFixer);
     }

@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.kafka.serializer;
+package by.bsu.wialontransport.kafka.producer.serializer;
 
-import by.bsu.wialontransport.kafka.serializer.exception.AvroGenericRecordSerializationException;
+import by.bsu.wialontransport.kafka.producer.serializer.exception.AvroGenericRecordSerializationException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;

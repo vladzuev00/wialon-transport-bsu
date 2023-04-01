@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.kafka.serializer.exception;
+package by.bsu.wialontransport.kafka.producer.serializer.exception;
 
 public final class AvroGenericRecordSerializationException extends RuntimeException {
     public AvroGenericRecordSerializationException() {

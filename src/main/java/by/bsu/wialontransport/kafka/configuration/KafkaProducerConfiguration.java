@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.configuration;
 
-import by.bsu.wialontransport.kafka.serializer.AvroGenericRecordSerializer;
+import by.bsu.wialontransport.kafka.producer.serializer.AvroGenericRecordSerializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
