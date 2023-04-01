@@ -78,7 +78,18 @@ public final class InboundPackageHandlingIT extends AbstractContextTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void pingPackageShouldBeHandled()
+            throws Exception {
+        final String givenRequest = "#P#\r\n";
 
+        final String actual = this.client.doRequest(givenRequest)
+                .get();
+        final String expected = "#AP#\r\n";
+        assertEquals(expected, actual);
+    }
+
+    //TODO: add other tests
 
     private void runServerIfWasNotRun()
             throws InterruptedException {
