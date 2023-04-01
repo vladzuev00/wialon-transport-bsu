@@ -8,8 +8,10 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
+import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.stereotype.Component;
@@ -38,12 +40,18 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
     private final TrackerService trackerService;
+    private final DataService dataService;
+    private final KafkaSavedDataProducer savedDataProducer;
 
-    public KafkaInboundDataConsumer(final TrackerService trackerService) {
+    public KafkaInboundDataConsumer(final TrackerService trackerService,
+                                    final DataService dataService,
+                                    final KafkaSavedDataProducer savedDataProducer) {
         this.latitudeExtractor = new LatitudeExtractor();
         this.longitudeExtractor = new LongitudeExtractor();
         this.parametersByNamesExtractor = new ParametersByNamesExtractor();
         this.trackerService = trackerService;
+        this.dataService = dataService;
+        this.savedDataProducer = savedDataProducer;
     }
 
     @Override
@@ -71,7 +79,8 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     @Override
     protected void processData(final Data data) {
-
+        this.dataService.save(data);
+        this.savedDataProducer.send(data);
     }
 
     @SuppressWarnings("unchecked")
@@ -178,10 +187,11 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
         private static Parameter deserializeParameter(final String serializedParameter) {
             final Matcher matcher = findMatcherOrThrowExceptionIfNotMatch(serializedParameter);
-            final String name = extractName(matcher);
-            final ParameterEntity.Type type = extractType(matcher);
-            final String value = extractValue(matcher);
-            return createParameter(name, type, value);
+            return createParameter(
+                    extractName(matcher),
+                    extractType(matcher),
+                    extractValue(matcher)
+            );
         }
 
         private static Matcher findMatcherOrThrowExceptionIfNotMatch(final String serializedParameter) {
