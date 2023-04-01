@@ -34,7 +34,7 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
 
     @Override
     protected Long findKey(final TransportableData transportableData) {
-        return transportableData.trackerId();
+        return transportableData.getTrackerId();
     }
 
     @Override
