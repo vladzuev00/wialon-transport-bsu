@@ -14,6 +14,8 @@ import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -54,6 +56,17 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         this.savedDataProducer = savedDataProducer;
     }
 
+    @Override
+    @KafkaListener(
+            topics = "${kafka.topic.inbound-data.name}",
+            groupId = "${kafka.topic.inbound-data.consumer.group-id}",
+            containerFactory = "kafkaListenerContainerFactoryInboundData"
+    )
+    public void consume(final ConsumerRecord<Long, GenericRecord> consumerRecord) {
+        super.consume(consumerRecord);
+    }
+
+    //TODO: handle several generic record in one time
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);

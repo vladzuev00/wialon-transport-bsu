@@ -8,7 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
  */
 public abstract class AbstractKafkaConsumer<K, V, DATA> {
 
-    public final void consume(final ConsumerRecord<K, V> consumerRecord) {
+    public void consume(final ConsumerRecord<K, V> consumerRecord) {
         final DATA data = this.mapToData(consumerRecord.value());
         this.processData(data);
     }
