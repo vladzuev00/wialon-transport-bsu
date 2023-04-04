@@ -20,11 +20,15 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
+//TODO: do inner classes for parameters and analog inputs serializers
 public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKafkaProducer<Long, TransportableData, Data> {
     private static final String DELIMITER_SERIALIZED_PARAMETER_PROPERTIES = ",";
     private static final String DELIMITER_SERIALIZED_PARAMETERS = ";";
+
+    private static final String DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
 
     public AbstractKafkaDataProducer(final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                      final String topicName,
@@ -57,7 +61,7 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
                 data.getReductionPrecision(),
                 data.getInputs(),
                 data.getOutputs(),
-                data.getAnalogInputs(),
+                serializeAnalogInputs(data),
                 data.getDriverKeyCode(),
                 serializeParameters(data),
                 findTrackerId(data)
@@ -84,6 +88,7 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
     private static char findLatitudeTypeValue(final Data data) {
         final Latitude latitude = data.getLatitude();
         final DataEntity.Latitude.Type latitudeType = latitude.getType();
+        System.out.println(latitudeType.getValue());
         return latitudeType.getValue();
     }
 
@@ -102,6 +107,7 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
     private static char findLongitudeTypeValue(final Data data) {
         final Longitude longitude = data.getLongitude();
         final DataEntity.Longitude.Type longitudeType = longitude.getType();
+        System.out.println(longitudeType.getValue());
         return longitudeType.getValue();
     }
 
@@ -117,6 +123,12 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
             final Data data, final Function<Data, T> getterGeographicCoordinate, final ToIntFunction<T> getterValue) {
         final T geographicCoordinate = getterGeographicCoordinate.apply(data);
         return getterValue.applyAsInt(geographicCoordinate);
+    }
+
+    private static String serializeAnalogInputs(final Data data) {
+        return stream(data.getAnalogInputs())
+                .mapToObj(Double::toString)
+                .collect(joining(DELIMITER_SERIALIZED_ANALOG_INPUTS));
     }
 
     private static String serializeParameters(final Data data) {

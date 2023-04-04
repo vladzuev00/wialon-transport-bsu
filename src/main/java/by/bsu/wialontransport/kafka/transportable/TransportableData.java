@@ -2,11 +2,15 @@ package by.bsu.wialontransport.kafka.transportable;
 
 import lombok.Value;
 import lombok.experimental.FieldNameConstants;
+import org.apache.avro.reflect.Nullable;
 
 @Value
 @FieldNameConstants
 public class TransportableData {
+
+    @Nullable
     Long id;
+
     long epochSeconds;
     int latitudeDegrees;
     int latitudeMinutes;
@@ -23,7 +27,7 @@ public class TransportableData {
     double reductionPrecision;
     int inputs;
     int outputs;
-    double[] analogInputs;
+    String serializedAnalogInputs;
     String driverKeyCode;
     String serializedParameters;
     Long trackerId;

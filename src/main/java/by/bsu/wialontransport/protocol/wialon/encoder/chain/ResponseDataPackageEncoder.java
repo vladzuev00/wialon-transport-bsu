@@ -14,7 +14,7 @@ public final class ResponseDataPackageEncoder extends PackageEncoder {
     private static final String TEMPLATE_ENCODED_PACKAGE_WITHOUT_POSTFIX = PREFIX + "%d";
 
     public ResponseDataPackageEncoder(final ResponseBlackBoxPackageEncoder nextEncoder) {
-        super(RequestDataPackage.class, nextEncoder);
+        super(ResponseDataPackage.class, nextEncoder);
     }
 
     @Override

@@ -31,7 +31,7 @@ public abstract class AbstractRUDService<
         return this.mapper.mapToDto(updatedEntity);
     }
 
-    public final void delete(final IdType id) {
+    public void delete(final IdType id) {
         checkId(id);
         super.repository.deleteById(id);
     }

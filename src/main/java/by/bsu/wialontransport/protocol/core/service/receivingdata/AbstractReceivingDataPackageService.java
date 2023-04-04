@@ -41,8 +41,7 @@ public abstract class AbstractReceivingDataPackageService<
         final Optional<Data> optionalPreviousData = this.contextAttributeManager.findLastData(context);
 
         final List<Data> filteredAndFixedData = optionalPreviousData
-                .map(previousData -> this.findFilteredAndFixedDataWithTracker(
-                        receivedData, previousData, context))
+                .map(previousData -> this.findFilteredAndFixedDataWithTracker(receivedData, previousData, context))
                 .orElseGet(() -> this.findFilteredAndFixedDataWithTracker(receivedData, context));
 
         final Optional<Data> optionalNewLastData = findLast(filteredAndFixedData);

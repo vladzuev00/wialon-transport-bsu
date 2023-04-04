@@ -19,6 +19,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -41,6 +43,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
     private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
+    private final AnalogInputsExtractor analogInputsExtractor;
     private final TrackerService trackerService;
     private final DataService dataService;
     private final KafkaSavedDataProducer savedDataProducer;
@@ -54,6 +57,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         this.trackerService = trackerService;
         this.dataService = dataService;
         this.savedDataProducer = savedDataProducer;
+        this.analogInputsExtractor = new AnalogInputsExtractor();
     }
 
     @Override
@@ -62,11 +66,10 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactoryInboundData"
     )
-    public void consume(final ConsumerRecord<Long, GenericRecord> consumerRecord) {
-        super.consume(consumerRecord);
+    public void consume(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
+        super.consume(consumerRecords);
     }
 
-    //TODO: handle several generic record in one time
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
@@ -83,17 +86,18 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
                 extractValue(genericRecord, reductionPrecision),
                 extractValue(genericRecord, inputs),
                 extractValue(genericRecord, outputs),
-                extractValue(genericRecord, analogInputs),
-                extractValue(genericRecord, driverKeyCode),
+                this.analogInputsExtractor.extract(genericRecord),
+                //TODO: remove toString()
+                extractValue(genericRecord, driverKeyCode).toString(),
                 this.parametersByNamesExtractor.extract(genericRecord),
                 this.extractTracker(genericRecord)
         );
     }
 
     @Override
-    protected void processData(final Data data) {
-        this.dataService.save(data);
-        this.savedDataProducer.send(data);
+    protected void processData(final List<Data> data) {
+        this.dataService.saveAll(data);
+        this.sendInSavedDataTopic(data);
     }
 
     @SuppressWarnings("unchecked")
@@ -116,6 +120,10 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         );
     }
 
+    private void sendInSavedDataTopic(final List<Data> data) {
+        data.forEach(this.savedDataProducer::send);
+    }
+
     private static abstract class GeographicCoordinateExtractor<T extends GeographicCoordinate> {
         private final String degreesGenericRecordKey;
         private final String minutesGenericRecordKey;
@@ -136,7 +144,8 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
             final int degrees = extractValue(genericRecord, this.degreesGenericRecordKey);
             final int minutes = extractValue(genericRecord, this.minutesGenericRecordKey);
             final int minuteShare = extractValue(genericRecord, this.minuteShareGenericRecordKey);
-            final char typeValue = extractValue(genericRecord, this.typeValueGenericRecordKey);
+            final int typeValueInt = extractValue(genericRecord, this.typeValueGenericRecordKey);
+            final char typeValue = (char) typeValueInt;
             return this.create(degrees, minutes, minuteShare, typeValue);
         }
 
@@ -169,6 +178,20 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         }
     }
 
+    private static final class AnalogInputsExtractor {
+        private static final String REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
+
+        public double[] extract(final GenericRecord genericRecord) {
+            //TODO: remove toString()
+            final String serializedAnalogInputs = extractValue(
+                    genericRecord, TransportableData.Fields.serializedAnalogInputs
+            ).toString();
+            return stream(serializedAnalogInputs.split(REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS))
+                    .mapToDouble(Double::parseDouble)
+                    .toArray();
+        }
+    }
+
     private static final class ParametersByNamesExtractor {
         private static final String REGEX_DELIMITER_SERIALIZED_PARAMETERS = ";";
 
@@ -187,8 +210,9 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         }
 
         private static String[] findSerializedParameters(final GenericRecord genericRecord) {
+            //TODO: remove toString
             final String serializedParametersString = KafkaInboundDataConsumer.extractValue(
-                    genericRecord, serializedParameters);
+                    genericRecord, serializedParameters).toString();
             return serializedParametersString.split(REGEX_DELIMITER_SERIALIZED_PARAMETERS);
         }
 

@@ -22,13 +22,13 @@ public abstract class AbstractCRUDService<
         super(mapper, repository);
     }
 
-    public final DtoType save(final DtoType saved) {
+    public DtoType save(final DtoType saved) {
         final EntityType entityToBeSaved = super.mapper.mapToEntity(saved);
         final EntityType savedEntity = super.repository.save(entityToBeSaved);
         return super.mapper.mapToDto(savedEntity);
     }
 
-    public final List<DtoType> saveAll(Collection<DtoType> saved) {
+    public List<DtoType> saveAll(Collection<DtoType> saved) {
         final List<EntityType> entitiesToBeSaved = super.mapper.mapToEntity(saved);
         final List<EntityType> savedEntities = super.repository.saveAll(entitiesToBeSaved);
         return super.mapper.mapToDto(savedEntities);

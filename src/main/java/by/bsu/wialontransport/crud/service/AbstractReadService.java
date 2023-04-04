@@ -25,19 +25,19 @@ public abstract class AbstractReadService<
     }
 
     @Transactional(readOnly = true)
-    public final Optional<DtoType> findById(final IdType id) {
+    public Optional<DtoType> findById(final IdType id) {
         final Optional<EntityType> optionalEntity = this.repository.findById(id);
         return optionalEntity.map(this.mapper::mapToDto);
     }
 
     @Transactional(readOnly = true)
-    public final List<DtoType> findById(final Collection<IdType> ids) {
+    public List<DtoType> findById(final Collection<IdType> ids) {
         final List<EntityType> foundEntities = this.repository.findAllById(ids);
         return this.mapper.mapToDto(foundEntities);
     }
 
     @Transactional(readOnly = true)
-    public final boolean isExist(final IdType id) {
+    public boolean isExist(final IdType id) {
         return this.repository.existsById(id);
     }
 }
