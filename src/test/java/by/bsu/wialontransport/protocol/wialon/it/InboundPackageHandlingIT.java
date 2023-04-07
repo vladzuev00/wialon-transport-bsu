@@ -66,6 +66,16 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     private static final String NAME_NAMED_PARAMETER_PARAMETER_VALUE = "value";
     private static final String NAME_NAMED_PARAMETER_PARAMETER_DATA = "data";
 
+    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE =
+            "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                    + "5.5,4343.454544334,454.433,1;"
+                    + "keydrivercode;"
+                    //HDOP, VDOP, PDOP
+                    + "122:2:5,123:2:6,124:2:7,"
+                    + "par1:3:str,116:2:0.5"
+                    + "\r\n";
+    private static final String SUCCESS_RESPONSE_DATA_PACKAGE = "#AD#1\r\n";
+
     @Autowired
     private WialonServerConfiguration serverConfiguration;
 
@@ -132,21 +142,11 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     @Transactional(propagation = NOT_SUPPORTED)
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeHandledAsValidWithoutFixing()
+    public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousData()
             throws Exception {
         this.login();
 
-        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:5,123:2:6,124:2:7,"
-                + "par1:3:str,116:2:0.5"
-                + "\r\n";
-
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        this.sendValidRequestDataPackageAndCheckResponse();
 
         waitMessageDelivering();
 
@@ -168,7 +168,7 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
-                .tracker(super.entityManager.getReference(TrackerEntity.class, GIVEN_EXISTING_TRACKER_ID))
+                .tracker(this.findGivenExistingTracker())
                 .build();
         checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
 
@@ -195,9 +195,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -223,9 +222,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -250,9 +248,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -277,9 +274,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -304,9 +300,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -331,9 +326,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -358,9 +352,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -385,9 +378,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -412,9 +404,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -439,9 +430,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -466,9 +456,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -493,9 +482,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -520,9 +508,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -547,9 +534,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -574,9 +560,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -601,9 +586,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "par1:3:str,116:2:0.5"
                 + "\r\n";
 
-        final String actual = this.client.doRequest(givenRequest).get();
-        final String expected = "#AD#1\r\n";
-        assertEquals(expected, actual);
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
         waitMessageDelivering();
 
@@ -611,6 +595,60 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseExistingPreviousData()
+            throws Exception {
+        this.login();
+        this.sendValidRequestDataPackageAndCheckResponse();
+
+        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertEquals(2, dataFromDatabase.size());
+
+        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+        final DataEntity expectedSavedNewestData = DataEntity.builder()
+                .date(LocalDate.of(2022, 11, 15))
+                .time(LocalTime.of(14, 56, 44))
+                .latitude(createLatitude(55, 44, 6026, NORTH))
+                .longitude(createLongitude(37, 39, 6835, EAST))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .reductionPrecision(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(this.findGivenExistingTracker())
+                .build();
+        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+
+        assertEquals(10, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
 
         //TODO: check in kafka
     }
@@ -700,6 +738,28 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         } catch (final NoResultException noResultException) {
             return false;
         }
+    }
+
+    private void sendValidRequestDataPackageAndCheckResponse()
+            throws ExecutionException, InterruptedException {
+        final String response = this.client.doRequest(GIVEN_VALID_REQUEST_DATA_PACKAGE).get();
+        if (!response.equals(SUCCESS_RESPONSE_DATA_PACKAGE)) {
+            throw new IllegalStateException("Response of sending data package isn't success.");
+        }
+    }
+
+    private static DataEntity findNewestData(final List<DataEntity> data) {
+        return data.stream()
+                .max(InboundPackageHandlingIT::compareById)
+                .orElseThrow(() -> new IllegalArgumentException("Impossible to find newest data in empty list."));
+    }
+
+    private static int compareById(final DataEntity first, final DataEntity second) {
+        return (int) (first.getId() - second.getId());
+    }
+
+    private TrackerEntity findGivenExistingTracker() {
+        return super.entityManager.getReference(TrackerEntity.class, GIVEN_EXISTING_TRACKER_ID);
     }
 
     private static final class Client implements AutoCloseable {
