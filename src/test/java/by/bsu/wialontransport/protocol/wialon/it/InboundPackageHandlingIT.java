@@ -400,8 +400,219 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     }
 
     @Test
-    public void dataPackageShouldBeSkippedBecauseOfVDOPParameterDoesNotExistAndThereIsNoPreviousValidDataToFix() {
+    public void dataPackageShouldBeSkippedBecauseOfVDOPParameterDoesNotExistAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
 
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, PDOP
+                + "122:2:5,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfVDOPIsLessThanMinimalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:0,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfVDOPIsMoreThanMaximalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:8,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfVDOPIsNotDoubleAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:1:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfPDOPParameterDoesNotExistAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP
+                + "122:2:5,123:2:6,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfPDOPParameterIsLessThanMinimalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:0,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfPDOPParameterIsMoreThanMaximalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:8,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfPDOPParameterIsNotDoubleAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:1:8,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
     }
 
     private void runServerIfWasNotRun()

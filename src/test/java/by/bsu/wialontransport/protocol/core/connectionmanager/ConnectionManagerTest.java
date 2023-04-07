@@ -208,7 +208,8 @@ public final class ConnectionManagerTest {
                 thirdThreadAddingContextsInConnectionManager
         );
 
-        verify()
+        throw new RuntimeException();
+        //verify()
     }
 
     private static Thread createThreadAddingContextsInConnectionManager(final ConnectionManager connectionManager,
