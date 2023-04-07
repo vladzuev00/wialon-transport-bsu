@@ -22,9 +22,9 @@ data:
   validation:
     minValidAmountOfSatellites: 3
     maxValidAmountSatellites: 999
-    minValidDateTime: 2000-01-01 00:00:00
+    minValidDateTime: 2010-01-01 00:00:00
     deltaSecondsFromNowMaxAllowableValidDateTime: 15
-    minValidDOP: 0
+    minValidDOP: 1
     maxValidDOP: 7
 
 wialon:

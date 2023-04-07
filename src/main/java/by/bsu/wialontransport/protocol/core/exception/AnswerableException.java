@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.core.exception;
 
 public final class AnswerableException extends RuntimeException {
+    //TODO: replace String by some package
     private final String answer;
 
     public AnswerableException(final String answer) {

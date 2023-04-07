@@ -30,7 +30,8 @@ import java.util.concurrent.Future;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
-import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.STRING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -52,6 +53,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     private static final String MESSAGE_EXCEPTION_FAILED_LOGIN = "Login is failed.";
 
     private static final int WAIT_MESSAGE_DELIVERING_IN_SECONDS = 3;
+
+    private static final String HQL_QUERY_TO_FIND_ALL_DATA = "SELECT e FROM DataEntity e";
 
     private static final String HQL_QUERY_TO_FIND_PARAMETERS_AMOUNT = "SELECT COUNT(e) FROM ParameterEntity e";
 
@@ -147,9 +150,7 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
         waitMessageDelivering();
 
-        final List<DataEntity> dataFromDatabase = super.entityManager
-                .createQuery("SELECT e FROM DataEntity e", DataEntity.class)
-                .getResultList();
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(1, dataFromDatabase.size());
 
         final DataEntity actualSavedData = dataFromDatabase.get(0);
@@ -179,6 +180,228 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", actualSavedData));
 
         //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;2;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    //amountOfSatellitesIsMoreThanMaximalAllowable
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;1000;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsLessThanMinimalAllowable()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151105;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsMoreThanMaximalAllowable()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151199;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfHDOPParameterDoesNotExistAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //VDOP, PDOP
+                + "123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfHDOPParameterIsLessThanMinimalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:0.1,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfHDOPParameterIsMoreThanMaximalAllowableAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:8,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfHDOPParameterIsNotDoubleAndThereIsNoPreviousValidDataToFix()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#D#151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        final String actual = this.client.doRequest(givenRequest).get();
+        final String expected = "#AD#1\r\n";
+        assertEquals(expected, actual);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertTrue(dataFromDatabase.isEmpty());
+
+        assertEquals(0, this.findAmountOfParametersInDataBase());
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    public void dataPackageShouldBeSkippedBecauseOfVDOPParameterDoesNotExistAndThereIsNoPreviousValidDataToFix() {
+
     }
 
     private void runServerIfWasNotRun()
@@ -241,6 +464,11 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getTracker().getId(), actual.getTracker().getId());
+    }
+
+    private List<DataEntity> findAllDataFromDataBase() {
+        return super.entityManager.createQuery(HQL_QUERY_TO_FIND_ALL_DATA, DataEntity.class)
+                .getResultList();
     }
 
     private long findAmountOfParametersInDataBase() {
