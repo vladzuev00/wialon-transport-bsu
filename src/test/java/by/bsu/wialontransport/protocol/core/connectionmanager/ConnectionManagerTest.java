@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Arrays.stream;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -152,9 +153,97 @@ public final class ConnectionManagerTest {
         assertTrue(givenContextsByTrackerIds.containsValue(givenContext));
     }
 
+    @Test
+    public void addingConnectionInfoByContextShouldBeThreadSafe()
+            throws Exception {
+        final ConnectionManager givenConnectionManager = this.createConnectionManager();
+
+        final Long firstGivenTrackerId = 255L;
+        final ChannelHandlerContext firstGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                firstGivenTrackerId
+        );
+        final ChannelHandlerContext secondGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                firstGivenTrackerId
+        );
+
+        final Long secondGivenTrackerId = 256L;
+        final ChannelHandlerContext thirdGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                secondGivenTrackerId
+        );
+        final ChannelHandlerContext fourthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                secondGivenTrackerId
+        );
+
+        final Long thirdGivenTrackerId = 257L;
+        final ChannelHandlerContext fifthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                thirdGivenTrackerId
+        );
+        final ChannelHandlerContext sixthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+                thirdGivenTrackerId
+        );
+
+        final Thread firstThreadAddingContextsInConnectionManager = createThreadAddingContextsInConnectionManager(
+                givenConnectionManager,
+                firstGivenContext,
+                secondGivenContext
+        );
+        final Thread secondThreadAddingContextsInConnectionManager = createThreadAddingContextsInConnectionManager(
+                givenConnectionManager,
+                thirdGivenContext,
+                fourthGivenContext
+        );
+        final Thread thirdThreadAddingContextsInConnectionManager = createThreadAddingContextsInConnectionManager(
+                givenConnectionManager,
+                fifthGivenContext,
+                sixthGivenContext
+        );
+        startThreads(
+                firstThreadAddingContextsInConnectionManager,
+                secondThreadAddingContextsInConnectionManager,
+                thirdThreadAddingContextsInConnectionManager
+        );
+        waitUntilFinish(
+                firstThreadAddingContextsInConnectionManager,
+                secondThreadAddingContextsInConnectionManager,
+                thirdThreadAddingContextsInConnectionManager
+        );
+
+        verify()
+    }
+
+    private static Thread createThreadAddingContextsInConnectionManager(final ConnectionManager connectionManager,
+                                                                        final ChannelHandlerContext... contexts) {
+        return new Thread(createTaskAddingContextsInConnectionManager(connectionManager, contexts));
+    }
+
+    private static Runnable createTaskAddingContextsInConnectionManager(final ConnectionManager connectionManager,
+                                                                        final ChannelHandlerContext... contexts) {
+        return () -> addContextsInConnectionManager(connectionManager, contexts);
+    }
+
+    private static void addContextsInConnectionManager(final ConnectionManager connectionManager,
+                                                       final ChannelHandlerContext... contexts) {
+        stream(contexts).forEach(connectionManager::add);
+    }
+
+    private static void startThreads(final Thread... threads) {
+        stream(threads).forEach(Thread::start);
+    }
+
+    private static void waitUntilFinish(final Thread... threads)
+            throws InterruptedException {
+        for (final Thread thread : threads) {
+            thread.join();
+        }
+    }
+
+    private ConnectionManager createConnectionManager() {
+        return new ConnectionManager(this.mockedContextAttributeManager);
+    }
+
     private ConnectionManager createConnectionManager(final Map<Long, ChannelHandlerContext> contextsByTrackerIds)
             throws Exception {
-        final ConnectionManager connectionManager = new ConnectionManager(this.mockedContextAttributeManager);
+        final ConnectionManager connectionManager = this.createConnectionManager();
         final Field fieldContextsByTrackerIds = ConnectionManager.class.getDeclaredField(
                 FIELD_NAME_CONTEXTS_BY_TRACKER_IDS);
         fieldContextsByTrackerIds.setAccessible(true);
@@ -164,5 +253,19 @@ public final class ConnectionManagerTest {
         } finally {
             fieldContextsByTrackerIds.setAccessible(false);
         }
+    }
+
+    private ChannelHandlerContext createContextAssociatedWithTrackerWithGivenId(final Long trackerId) {
+        final Tracker tracker = createTracker(trackerId);
+        final ChannelHandlerContext context = mock(ChannelHandlerContext.class);
+        when(this.mockedContextAttributeManager.findTracker(context))
+                .thenReturn(Optional.of(tracker));
+        return context;
+    }
+
+    private static Tracker createTracker(final Long id) {
+        return Tracker.builder()
+                .id(id)
+                .build();
     }
 }
