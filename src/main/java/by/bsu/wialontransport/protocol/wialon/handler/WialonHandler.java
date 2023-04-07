@@ -15,14 +15,13 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
-//TODO: refactor and do test
 @Slf4j
 public final class WialonHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE
             = "Start handling inbound package: '%s'.";
     private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected.";
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '%s' is disconnected.";
-    private static final String NOT_DEFINED_TRACKER_IMEI_IN_MESSAGE = "not defined imei";
+    private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
     private final StarterPackageHandler starterPackageHandler;
     private final ContextAttributeManager contextAttributeManager;
@@ -45,7 +44,7 @@ public final class WialonHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext context, Throwable exception) {
-        if (exception instanceof DecoderException) {  //exception in decoders are wrapped in DecoderException
+        if (exception instanceof DecoderException) {  //exceptions in decoders are wrapped in DecoderException
             exception = exception.getCause();
         }
         if (exception instanceof final AnswerableException answerableException) {
@@ -56,16 +55,28 @@ public final class WialonHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext context) {
+    public void channelActive(final ChannelHandlerContext context) {
         log.info(MESSAGE_ACTIVE_CHANNEL);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext context) {
-        final Optional<String> optionalTrackerImei = this.contextAttributeManager.findTrackerImei(context);
-        final String trackerImei = optionalTrackerImei.orElse(NOT_DEFINED_TRACKER_IMEI_IN_MESSAGE);
+    public void channelInactive(final ChannelHandlerContext context) {
+        this.logAboutInactiveChannel(context);
+        this.removeConnectionInfoIfTrackerWasAuthorized(context);
+    }
+
+    private void logAboutInactiveChannel(final ChannelHandlerContext context) {
+        final String trackerImei = this.findTrackerImei(context);
         log.info(format(TEMPLATE_MESSAGE_INACTIVE_CHANNEL, trackerImei));
+    }
+
+    private String findTrackerImei(final ChannelHandlerContext context) {
+        final Optional<String> optionalTrackerImei = this.contextAttributeManager.findTrackerImei(context);
+        return optionalTrackerImei.orElse(NOT_DEFINED_TRACKER_IMEI);
+    }
+
+    private void removeConnectionInfoIfTrackerWasAuthorized(final ChannelHandlerContext context) {
         final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
-        optionalTracker.ifPresent(tracker -> this.connectionManager.remove(tracker.getId()));  //if device was authorized
+        optionalTracker.ifPresent(tracker -> this.connectionManager.remove(tracker.getId()));
     }
 }

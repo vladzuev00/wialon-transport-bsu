@@ -1,29 +1,35 @@
 package by.bsu.wialontransport.protocol.core.exception;
 
-public final class AnswerableException extends RuntimeException {
-    //TODO: replace String by some package
-    private final String answer;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 
-    public AnswerableException(final String answer) {
+public final class AnswerableException extends RuntimeException {
+    private final Package answer;
+
+    public AnswerableException(final Package answer) {
         this.answer = answer;
     }
 
-    public AnswerableException(final String answer, final String description) {
+    //TODO: remove
+    public AnswerableException(String a, Exception b){
+        this.answer = null;
+    }
+
+    public AnswerableException(final Package answer, final String description) {
         super(description);
         this.answer = answer;
     }
 
-    public AnswerableException(final String answer, final Exception cause) {
+    public AnswerableException(final Package answer, final Exception cause) {
         super(cause);
         this.answer = answer;
     }
 
-    public AnswerableException(final String answer, final String description, final Exception cause) {
+    public AnswerableException(final Package answer, final String description, final Exception cause) {
         super(description, cause);
         this.answer = answer;
     }
 
-    public String getAnswer() {
+    public Package getAnswer() {
         return this.answer;
     }
 }
