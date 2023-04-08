@@ -3,11 +3,13 @@ package by.bsu.wialontransport.kafka.consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
- * @param <K> - topic's key
- * @param <V> - topic's value
+ * @param <K>    - topic's key
+ * @param <V>    - topic's value(mapped to DATA)
+ * @param <DATA> - processed data
  */
 public abstract class AbstractKafkaConsumer<K, V, DATA> {
 
@@ -24,6 +26,6 @@ public abstract class AbstractKafkaConsumer<K, V, DATA> {
         return consumerRecords.stream()
                 .map(ConsumerRecord::value)
                 .map(this::mapToData)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

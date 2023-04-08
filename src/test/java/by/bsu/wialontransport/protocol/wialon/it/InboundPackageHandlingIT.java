@@ -74,7 +74,7 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                     + "par1:3:str,116:2:0.5"
                     + "\r\n";
     private static final String SUCCESS_RESPONSE_DATA_PACKAGE = "#AD#1\r\n";
-    private static final String FAILED_RESPONSE_DATA_PACKAGE = "#AD#0\r\n";
+    private static final String FAILED_RESPONSE_DATA_PACKAGE = "#AD#-1\r\n";
 
     @Autowired
     private WialonServerConfiguration serverConfiguration;

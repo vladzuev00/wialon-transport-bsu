@@ -19,7 +19,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,8 +28,6 @@ import java.util.regex.Pattern;
 import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.String.format;
-import static java.time.LocalDateTime.ofEpochSecond;
-import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
@@ -72,7 +69,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
-        final LocalDateTime dateTime = extractDateTime(genericRecord);
+        final LocalDateTime dateTime = extractDateTime(genericRecord, epochSeconds);
         return new Data(
                 extractValue(genericRecord, id),
                 dateTime.toLocalDate(),
@@ -87,8 +84,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
                 extractValue(genericRecord, inputs),
                 extractValue(genericRecord, outputs),
                 this.analogInputsExtractor.extract(genericRecord),
-                //TODO: remove toString()
-                extractValue(genericRecord, driverKeyCode).toString(),
+                extractString(genericRecord, driverKeyCode),
                 this.parametersByNamesExtractor.extract(genericRecord),
                 this.extractTracker(genericRecord)
         );
@@ -98,16 +94,6 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     protected void processData(final List<Data> data) {
         this.dataService.saveAll(data);
         this.sendInSavedDataTopic(data);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T extractValue(final GenericRecord genericRecord, final String genericRecordKey) {
-        return (T) genericRecord.get(genericRecordKey);
-    }
-
-    private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
-        final long epochSeconds = extractValue(genericRecord, TransportableData.Fields.epochSeconds);
-        return ofEpochSecond(epochSeconds, 0, UTC);
     }
 
     private Tracker extractTracker(final GenericRecord genericRecord) {
@@ -144,8 +130,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
             final int degrees = extractValue(genericRecord, this.degreesGenericRecordKey);
             final int minutes = extractValue(genericRecord, this.minutesGenericRecordKey);
             final int minuteShare = extractValue(genericRecord, this.minuteShareGenericRecordKey);
-            final int typeValueInt = extractValue(genericRecord, this.typeValueGenericRecordKey);
-            final char typeValue = (char) typeValueInt;
+            final char typeValue = extractChar(genericRecord, typeValueGenericRecordKey);
             return this.create(degrees, minutes, minuteShare, typeValue);
         }
 
@@ -182,10 +167,9 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         private static final String REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
 
         public double[] extract(final GenericRecord genericRecord) {
-            //TODO: remove toString()
-            final String serializedAnalogInputs = extractValue(
+            final String serializedAnalogInputs = extractString(
                     genericRecord, TransportableData.Fields.serializedAnalogInputs
-            ).toString();
+            );
             return stream(serializedAnalogInputs.split(REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS))
                     .mapToDouble(Double::parseDouble)
                     .toArray();
@@ -193,9 +177,9 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     }
 
     private static final class ParametersByNamesExtractor {
-        private static final String REGEX_DELIMITER_SERIALIZED_PARAMETERS = ";";
+        private static final String REGEX_DELIMITER_SERIALIZED_PARAMETERS = ",";
 
-        private static final String REGEX_SERIALIZED_PARAMETER = "^(([a-zA-Z0-9]+),([123]),(.+))$";
+        private static final String REGEX_SERIALIZED_PARAMETER = "^(([a-zA-Z0-9]+):([123]):(.+))$";
         private static final Pattern PATTERN_SERIALIZED_PARAMETER = compile(REGEX_SERIALIZED_PARAMETER);
         private static final int GROUP_NUMBER_NAME = 2;
         private static final int GROUP_NUMBER_TYPE_VALUE = 3;
@@ -210,9 +194,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         }
 
         private static String[] findSerializedParameters(final GenericRecord genericRecord) {
-            //TODO: remove toString
-            final String serializedParametersString = KafkaInboundDataConsumer.extractValue(
-                    genericRecord, serializedParameters).toString();
+            final String serializedParametersString = extractString(genericRecord, serializedParameters);
             return serializedParametersString.split(REGEX_DELIMITER_SERIALIZED_PARAMETERS);
         }
 

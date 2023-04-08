@@ -25,8 +25,8 @@ import static java.util.stream.Collectors.joining;
 
 //TODO: do inner classes for parameters and analog inputs serializers
 public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKafkaProducer<Long, TransportableData, Data> {
-    private static final String DELIMITER_SERIALIZED_PARAMETER_PROPERTIES = ",";
-    private static final String DELIMITER_SERIALIZED_PARAMETERS = ";";
+    private static final String DELIMITER_SERIALIZED_PARAMETER_PROPERTIES = ":";
+    private static final String DELIMITER_SERIALIZED_PARAMETERS = ",";
 
     private static final String DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
 

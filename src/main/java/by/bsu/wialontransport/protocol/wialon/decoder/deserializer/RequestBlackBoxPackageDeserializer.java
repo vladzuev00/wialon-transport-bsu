@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.util.Arrays.stream;
 
+//TODO: do super class for this and DataRequestDataPackageDeserializer for throwing AnswerableException
 @Component
 public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDeserializer {
     private static final String REGEX_DATA_DELIMITER = "\\|";
