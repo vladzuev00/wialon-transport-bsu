@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,8 +57,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
     private static final String HQL_QUERY_TO_FIND_PARAMETERS_AMOUNT = "SELECT COUNT(e) FROM ParameterEntity e";
 
-    private static final String HQL_QUERY_TO_FIND_OUT_EXIST_PARAMETER_WITH_GIVEN_PROPERTIES
-            = "SELECT 1 FROM ParameterEntity e "
+    private static final String HQL_QUERY_TO_FIND_COUNT_PARAMETERS_WITH_GIVEN_PROPERTIES
+            = "SELECT COUNT(e) FROM ParameterEntity e "
             + "WHERE e.name = :name AND e.type = :type AND e.value = :value AND e.data = :data";
     private static final String NAME_NAMED_PARAMETER_PARAMETER_NAME = "name";
     private static final String NAME_NAMED_PARAMETER_PARAMETER_TYPE = "type";
@@ -653,6 +652,66 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         //TODO: check in kafka
     }
 
+    @Test
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    public void dataPackageShouldBeHandledAsValidWithFixingBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableInCaseExistingPreviousData()
+            throws Exception {
+        this.login();
+        this.sendValidRequestDataPackageAndCheckResponse();
+
+        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;2;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String response = this.client.doRequest(givenRequest).get();
+        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertEquals(2, dataFromDatabase.size());
+
+        final DataEntity previousData = findOldestData(dataFromDatabase);
+        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+        final DataEntity expectedSavedNewestData = DataEntity.builder()
+                .date(LocalDate.of(2022, 11, 15))
+                .time(LocalTime.of(14, 56, 44))
+                .latitude(createLatitude(55, 44, 6025, NORTH))
+                .longitude(createLongitude(37, 39, 6834, EAST))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .reductionPrecision(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(this.findGivenExistingTracker())
+                .build();
+        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+
+        assertEquals(10, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+
+        //TODO: check in kafka
+    }
+
     private void runServerIfWasNotRun()
             throws InterruptedException {
         if (!serverWasRan) {
@@ -727,17 +786,17 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
     private boolean isParameterWithGivenPropertiesExistsInDataBase(String name, ParameterEntity.Type type,
                                                                    String value, DataEntity data) {
-        try {
-            super.entityManager.createQuery(HQL_QUERY_TO_FIND_OUT_EXIST_PARAMETER_WITH_GIVEN_PROPERTIES)
-                    .setParameter(NAME_NAMED_PARAMETER_PARAMETER_NAME, name)
-                    .setParameter(NAME_NAMED_PARAMETER_PARAMETER_TYPE, type)
-                    .setParameter(NAME_NAMED_PARAMETER_PARAMETER_VALUE, value)
-                    .setParameter(NAME_NAMED_PARAMETER_PARAMETER_DATA, data)
-                    .getSingleResult();
-            return true;
-        } catch (final NoResultException noResultException) {
-            return false;
-        }
+        return findCountOfParametersWithGivenProperties(name, type, value, data) >= 1;
+    }
+
+    private long findCountOfParametersWithGivenProperties(String name, ParameterEntity.Type type,
+                                                          String value, DataEntity data) {
+        return super.entityManager.createQuery(HQL_QUERY_TO_FIND_COUNT_PARAMETERS_WITH_GIVEN_PROPERTIES, Long.class)
+                .setParameter(NAME_NAMED_PARAMETER_PARAMETER_NAME, name)
+                .setParameter(NAME_NAMED_PARAMETER_PARAMETER_TYPE, type)
+                .setParameter(NAME_NAMED_PARAMETER_PARAMETER_VALUE, value)
+                .setParameter(NAME_NAMED_PARAMETER_PARAMETER_DATA, data)
+                .getSingleResult();
     }
 
     private void sendValidRequestDataPackageAndCheckResponse()
@@ -746,6 +805,12 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         if (!response.equals(SUCCESS_RESPONSE_DATA_PACKAGE)) {
             throw new IllegalStateException("Response of sending data package isn't success.");
         }
+    }
+
+    private static DataEntity findOldestData(final List<DataEntity> data) {
+        return data.stream()
+                .min(InboundPackageHandlingIT::compareById)
+                .orElseThrow(() -> new IllegalArgumentException("Impossible to find oldest data in empty list."));
     }
 
     private static DataEntity findNewestData(final List<DataEntity> data) {
