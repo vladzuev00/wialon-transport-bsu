@@ -9,11 +9,6 @@ public final class AnswerableException extends RuntimeException {
         this.answer = answer;
     }
 
-    //TODO: remove
-    public AnswerableException(String a, Exception b){
-        this.answer = null;
-    }
-
     public AnswerableException(final Package answer, final String description) {
         super(description);
         this.answer = answer;

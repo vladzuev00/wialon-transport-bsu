@@ -6,7 +6,6 @@ import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataPa
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
-
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ import static java.util.Arrays.stream;
 @Component
 public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDeserializer {
     private static final String REGEX_DATA_DELIMITER = "\\|";
-    private static final String RESPONSE_FAILURE_HANDLING = ResponseBlackBoxPackage.PREFIX + "0";
 
     private final DataParser dataParser;
 
@@ -32,7 +30,7 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
             final List<Data> data = this.parseData(message);
             return new RequestBlackBoxPackage(data);
         } catch (final NotValidDataException cause) {
-            throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
+            throw createAnswerableException(cause);
         }
     }
 
@@ -41,5 +39,10 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
         return stream(dataStrings)
                 .map(this.dataParser::parse)
                 .toList();
+    }
+
+    private static AnswerableException createAnswerableException(final NotValidDataException cause) {
+        final ResponseBlackBoxPackage answer = new ResponseBlackBoxPackage(0);
+        return new AnswerableException(answer, cause);
     }
 }

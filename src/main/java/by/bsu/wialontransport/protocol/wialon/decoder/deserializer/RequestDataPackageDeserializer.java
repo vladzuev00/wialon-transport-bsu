@@ -8,10 +8,10 @@ import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.Request
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseDataPackage;
 import org.springframework.stereotype.Component;
 
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
+
 @Component
 public final class RequestDataPackageDeserializer extends AbstractPackageDeserializer {
-    private static final String RESPONSE_FAILURE_HANDLING = ResponseDataPackage.PREFIX + "-1";
-
     private final DataParser dataParser;
 
     public RequestDataPackageDeserializer(final DataParser dataParser) {
@@ -25,7 +25,12 @@ public final class RequestDataPackageDeserializer extends AbstractPackageDeseria
             final Data data = this.dataParser.parse(message);
             return new RequestDataPackage(data);
         } catch (final NotValidDataException cause) {
-            throw new AnswerableException(RESPONSE_FAILURE_HANDLING, cause);
+            throw createAnswerableException(cause);
         }
+    }
+
+    private static AnswerableException createAnswerableException(final NotValidDataException cause) {
+        final ResponseDataPackage answer = new ResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
+        return new AnswerableException(answer, cause);
     }
 }
