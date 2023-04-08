@@ -1,10 +1,14 @@
 package by.bsu.wialontransport.kafka.transportable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.FieldNameConstants;
 import org.apache.avro.reflect.Nullable;
 
 @Value
+@Builder
+@AllArgsConstructor
 @FieldNameConstants
 public class TransportableData {
 
