@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.configuration.property;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

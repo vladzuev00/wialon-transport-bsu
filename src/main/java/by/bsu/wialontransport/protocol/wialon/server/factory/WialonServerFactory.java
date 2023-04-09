@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.server.factory;
 
-import by.bsu.wialontransport.configuration.WialonServerConfiguration;
+import by.bsu.wialontransport.configuration.property.WialonServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.wialon.decoder.WialonDecoder;
@@ -30,7 +30,6 @@ public final class WialonServerFactory {
     private final StarterPackageHandler starterPackageHandler;
     private final ContextAttributeManager contextAttributeManager;
     private final ConnectionManager connectionManager;
-
 
     public WialonServer create() {
         return new WialonServer(

@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.it;
 
 import by.bsu.wialontransport.base.AbstractKafkaContainerTest;
-import by.bsu.wialontransport.configuration.WialonServerConfiguration;
+import by.bsu.wialontransport.configuration.property.WialonServerConfiguration;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
