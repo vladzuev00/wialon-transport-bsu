@@ -27,6 +27,12 @@ data:
     minValidDOP: 0
     maxValidDOP: 7
 
+data-fixing:
+  enable: false
+
+data-filtering:
+  enable: false
+
 kafka:
   topic:
     inbound-data:

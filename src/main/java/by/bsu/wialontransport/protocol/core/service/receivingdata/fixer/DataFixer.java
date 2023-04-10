@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.exception.DataFixingException;
 import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -14,12 +15,24 @@ import java.util.Optional;
 import static by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary.findByAlias;
 import static java.util.Arrays.stream;
 
+//TODO: refactor this and tests
 @Component
 public final class DataFixer {
     private static final String MESSAGE_EXCEPTION_PREVIOUS_DATA_DOES_NOT_HAVE_DOP_PARAMETER = "Previous data doesn't "
             + "have DOP parameter - impossible to fix.";
 
+    private final boolean fixingEnable;
+
+    public DataFixer(@Value("${data-fixing.enable}") final boolean fixingEnable) {
+        this.fixingEnable = fixingEnable;
+    }
+
+    //TODO: refactor tests
     public Data fix(final Data fixed, final Data previous) {
+        return this.fixingEnable ? fixWithGeographicCoordinate(fixed, previous) : fixed;
+    }
+
+    private static Data fixWithGeographicCoordinate(final Data fixed, final Data previous) {
         return Data.builder()
                 .id(fixed.getId())
                 .date(fixed.getDate())

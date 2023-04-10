@@ -165,11 +165,20 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     private static final class AnalogInputsExtractor {
         private static final String REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
+        private static final String SERIALIZED_EMPTY_ANALOG_INPUTS = "";
+        private static final double[] DESERIALIZED_EMPTY_ANALOG_INPUTS = new double[0];
 
+        //TODO: refactor test for this
         public double[] extract(final GenericRecord genericRecord) {
             final String serializedAnalogInputs = extractString(
                     genericRecord, TransportableData.Fields.serializedAnalogInputs
             );
+            return !serializedAnalogInputs.equals(SERIALIZED_EMPTY_ANALOG_INPUTS)
+                    ? deserializeNotEmptyAnalogInputs(serializedAnalogInputs)
+                    : DESERIALIZED_EMPTY_ANALOG_INPUTS;
+        }
+
+        private static double[] deserializeNotEmptyAnalogInputs(final String serializedAnalogInputs) {
             return stream(serializedAnalogInputs.split(REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS))
                     .mapToDouble(Double::parseDouble)
                     .toArray();

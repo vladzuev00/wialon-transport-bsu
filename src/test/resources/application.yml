@@ -27,6 +27,9 @@ data:
     minValidDOP: 1
     maxValidDOP: 7
 
+data-fixing:
+  geographic-coordinate-should-be-fixed: false
+
 wialon:
   server:
     host: localhost

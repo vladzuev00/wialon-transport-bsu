@@ -24,7 +24,7 @@ public final class DataFixerTest {
     private final DataFixer dataFixer;
 
     public DataFixerTest() {
-        this.dataFixer = new DataFixer();
+        this.dataFixer = new DataFixer(false);
     }
 
     @Test
