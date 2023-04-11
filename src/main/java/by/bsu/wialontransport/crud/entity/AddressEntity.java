@@ -23,8 +23,8 @@ public class AddressEntity extends AbstractEntity<Long> {
     @SequenceGenerator(name = "addresses_id_seq", sequenceName = "addresses_id_seq")
     private Long id;
 
-    @Column(name = "boundaries")
-    private Geometry boundaries;
+    @Column(name = "bounding_box")
+    private Geometry boundingBox;
 
     @Column(name = "centerLatitude")
     private double centerLatitude;

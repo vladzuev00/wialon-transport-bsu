@@ -31,7 +31,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
         final AddressEntity expected = AddressEntity.builder()
                 .id(255L)
-                .boundaries(this.createPolygon(1, 2, 3, 4, 5, 6, 6, 7))
+                .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 6, 7))
                 .centerLatitude(53.050286)
                 .centerLongitude(24.873635)
                 .cityName("city")
@@ -43,7 +43,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Test
     public void addressShouldBeSaved() {
         final AddressEntity givenAddress = AddressEntity.builder()
-                .boundaries(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
+                .boundingBox(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
                 .centerLatitude(53.050286)
                 .centerLongitude(24.873635)
                 .cityName("city")
@@ -71,7 +71,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
     private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
         assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getBoundaries(), actual.getBoundaries());
+        assertEquals(expected.getBoundingBox(), actual.getBoundingBox());
         assertEquals(expected.getCenterLatitude(), actual.getCenterLatitude(), 0.);
         assertEquals(expected.getCenterLongitude(), actual.getCenterLongitude(), 0.);
         assertEquals(expected.getCityName(), actual.getCityName());

@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.Geometry;
 @Builder
 public class Address implements AbstractDto<Long> {
     Long id;
-    Geometry boundaries;
+    Geometry boundingBox;
     double centerLatitude;
     double centerLongitude;
     String cityName;

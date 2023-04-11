@@ -24,7 +24,7 @@ public final class AddressMapperTest extends AbstractContextTest {
     public void dtoShouldBeMappedToEntity() {
         final Address givenAddress = Address.builder()
                 .id(255L)
-                .boundaries(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
                 .centerLatitude(5.5)
                 .centerLongitude(4.4)
                 .cityName("city")
@@ -34,7 +34,7 @@ public final class AddressMapperTest extends AbstractContextTest {
         final AddressEntity actual = this.mapper.mapToEntity(givenAddress);
         final AddressEntity expected = AddressEntity.builder()
                 .id(255L)
-                .boundaries(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
                 .centerLatitude(5.5)
                 .centerLongitude(4.4)
                 .cityName("city")
@@ -49,7 +49,7 @@ public final class AddressMapperTest extends AbstractContextTest {
     public void entityShouldBeMappedToDto() {
         final AddressEntity givenEntity = AddressEntity.builder()
                 .id(255L)
-                .boundaries(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
+                .boundingBox(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
                 .centerLatitude(5.5)
                 .centerLongitude(4.4)
                 .cityName("city")
@@ -59,7 +59,7 @@ public final class AddressMapperTest extends AbstractContextTest {
         final Address actual = this.mapper.mapToDto(givenEntity);
         final Address expected = Address.builder()
                 .id(255L)
-                .boundaries(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
+                .boundingBox(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
                 .centerLatitude(5.5)
                 .centerLongitude(4.4)
                 .cityName("city")
@@ -84,7 +84,7 @@ public final class AddressMapperTest extends AbstractContextTest {
 
     private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
         assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getBoundaries(), actual.getBoundaries());
+        assertEquals(expected.getBoundingBox(), actual.getBoundingBox());
         assertEquals(expected.getCenterLatitude(), actual.getCenterLatitude(), 0.);
         assertEquals(expected.getCenterLongitude(), actual.getCenterLongitude(), 0.);
         assertEquals(expected.getCityName(), actual.getCityName());
