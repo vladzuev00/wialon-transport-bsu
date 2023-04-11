@@ -32,10 +32,14 @@ public final class DataFilter {
     }
 
     public boolean isNeedToBeFixed(final Data current, final Data previous) {
-        return this.propertyValidator.isValidDateTime(current) && isCorrectOrder(current, previous)
-                && !(
-                this.propertyValidator.isValidAmountOfSatellites(current)
-                        && this.propertyValidator.isValidDOPParameters(current)
+        return !this.filteringEnable
+                || (
+                this.propertyValidator.isValidDateTime(current)
+                        && isCorrectOrder(current, previous)
+                        && !(
+                        this.propertyValidator.isValidAmountOfSatellites(current)
+                                && this.propertyValidator.isValidDOPParameters(current)
+                )
         );
     }
 

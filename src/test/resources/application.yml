@@ -28,7 +28,10 @@ data:
     maxValidDOP: 7
 
 data-fixing:
-  geographic-coordinate-should-be-fixed: false
+  enable: true
+
+data-filtering:
+  enable: true
 
 wialon:
   server:
