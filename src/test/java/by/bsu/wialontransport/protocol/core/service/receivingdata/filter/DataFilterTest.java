@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
+import static java.time.LocalDateTime.now;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -22,7 +23,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeValidInCaseNotExistingPreviousData() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -54,7 +55,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfDateTimeIsMoreThanMaximalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now().plusHours(1),
+                now().plusHours(1),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -70,7 +71,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfAmountOfSatellitesIsLessThanMinimalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 2,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -86,7 +87,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 1000,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -102,7 +103,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfHDOPParameterAbsents() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "123", createDoubleParameter("123", "5"),
@@ -117,7 +118,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfHDOPParameterIsLessThanMinimalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "-0.01"),
@@ -133,7 +134,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfHDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "7.01"),
@@ -149,7 +150,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfVDOPParameterAbsents() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -164,7 +165,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfVDOPParameterIsLessThanMinimalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -180,7 +181,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfVDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -196,7 +197,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfPDOPParameterAbsents() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -211,7 +212,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfPDOPParameterIsLessThanMinimalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -227,7 +228,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeValidBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -243,7 +244,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeValidInCaseExistingPreviousData() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -253,7 +254,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 9,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -268,7 +269,7 @@ public final class DataFilterTest extends AbstractContextTest {
 
     @Test
     public void dataShouldNotBeValidBecauseOfIncorrectOrder() {
-        final LocalDateTime givenDateTimePreviousData = LocalDateTime.now();
+        final LocalDateTime givenDateTimePreviousData = now();
         final Data givenPreviousData = createData(
                 givenDateTimePreviousData,
                 10,
@@ -296,7 +297,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfAmountOfSatellitesIsLessThanMinimalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -306,7 +307,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 2,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -322,7 +323,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -332,7 +333,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 1000,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -348,7 +349,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfHDOPParameterAbsents() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -358,7 +359,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "123", createDoubleParameter("123", "5"),
@@ -373,7 +374,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfHDOPParameterIsLessThanMinimalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -383,7 +384,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "-0.01"),
@@ -399,7 +400,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfHDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -409,7 +410,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "7.01"),
@@ -425,7 +426,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfVDOPParameterAbsents() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -435,7 +436,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "7"),
@@ -450,7 +451,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfVDOPParameterIsLessThanMinimalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -460,7 +461,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -476,7 +477,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfVDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -486,7 +487,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -502,7 +503,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfPDOPParameterAbsents() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -512,7 +513,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -527,7 +528,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfPDOPParameterIsLessThanMinimalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -537,7 +538,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -553,7 +554,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldBeNeededToBeFixedBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -563,7 +564,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now(),
+                now(),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -579,7 +580,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfDateTimeIsLessThanMinimalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -605,7 +606,7 @@ public final class DataFilterTest extends AbstractContextTest {
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfDateTimeIsMoreThanMaximalAllowable() {
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -615,7 +616,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final Data givenCurrentData = createData(
-                LocalDateTime.now().plusHours(1),
+                now().plusHours(1),
                 10,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
@@ -630,9 +631,9 @@ public final class DataFilterTest extends AbstractContextTest {
 
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfNotCorrectOrder() {
-        final LocalDateTime givenDateTimePreviousData = LocalDateTime.now();
+        final LocalDateTime givenDateTimePreviousData = now();
         final Data givenPreviousData = createData(
-                LocalDateTime.now(),
+                now(),
                 3,
                 Map.of(
                         "122", createDoubleParameter("122", "4"),
