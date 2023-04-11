@@ -42,7 +42,17 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
     @Test
     public void addressShouldBeSaved() {
-        throw new RuntimeException();
+        final AddressEntity givenAddress = AddressEntity.builder()
+                .boundaries(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
+                .centerLatitude(53.050286)
+                .centerLongitude(24.873635)
+                .cityName("city")
+                .countryName("country")
+                .build();
+
+        super.startQueryCount();
+        this.repository.save(givenAddress);
+        super.checkQueryCount(2);
     }
 
     private Geometry createPolygon(final double firstX, final double firstY,
