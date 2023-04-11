@@ -160,6 +160,8 @@ CREATE TABLE addresses(
 	country_name VARCHAR(256) NOT NULL
 );
 
+ALTER SEQUENCE addresses_id_seq INCREMENT 50;
+
 CREATE OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
 '
     BEGIN
