@@ -59,6 +59,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-spatial</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.hypersistence</groupId>
       <artifactId>hypersistence-utils-hibernate-55</artifactId>
       <version>3.0.1</version>

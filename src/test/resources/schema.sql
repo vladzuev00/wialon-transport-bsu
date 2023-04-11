@@ -28,8 +28,6 @@ DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
 
-CREATE EXTENSION postgis;
-
 CREATE TABLE users
 (
     id                 SERIAL       NOT NULL PRIMARY KEY,
@@ -62,6 +60,17 @@ ALTER TABLE trackers
 
 ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
+
+CREATE TABLE addresses(
+	id BIGSERIAL PRIMARY KEY,
+	boundaries GEOMETRY NOT NULL,
+	center_latitude DOUBLE PRECISION NOT NULL,
+	center_longitude DOUBLE PRECISION NOT NULL,
+	city_name VARCHAR(256) NOT NULL,
+	country_name VARCHAR(256) NOT NULL
+);
+
+ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 
 CREATE TABLE data
 (
@@ -150,17 +159,6 @@ ALTER TABLE trackers_last_data
 ALTER TABLE trackers_last_data
 	ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY(data_id)
 		REFERENCES data(id);
-
-CREATE TABLE addresses(
-	id BIGSERIAL PRIMARY KEY,
-	boundaries GEOMETRY NOT NULL,
-	center_latitude DOUBLE PRECISION NOT NULL,
-	center_longitude DOUBLE PRECISION NOT NULL,
-	city_name VARCHAR(256) NOT NULL,
-	country_name VARCHAR(256) NOT NULL
-);
-
-ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 
 CREATE OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
 '
