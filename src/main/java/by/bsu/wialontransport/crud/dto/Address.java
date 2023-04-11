@@ -1,8 +1,10 @@
 package by.bsu.wialontransport.crud.dto;
 
+import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
 
-public final class Address implements AbstractDto<Long> {
+@Value
+public class Address implements AbstractDto<Long> {
     Long id;
     Geometry boundaries;
     double centerLatitude;
