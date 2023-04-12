@@ -1,13 +1,16 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.junit.Test;
+import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -25,6 +28,9 @@ public final class DataMapperTest extends AbstractContextTest {
 
     @Autowired
     private DataMapper mapper;
+
+    @Autowired
+    private GeometryFactory geometryFactory;
 
     @Test
     public void dtoShouldBeMappedToEntity() {
@@ -53,6 +59,13 @@ public final class DataMapperTest extends AbstractContextTest {
                         .password("password")
                         .phoneNumber("447336934")
                         .build())
+                .address(Address.builder()
+                        .id(257L)
+                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(this.createPoint(5.5, 6.6))
+                        .cityName("city")
+                        .countryName("country")
+                        .build())
                 .build();
 
         final DataEntity actual = this.mapper.mapToEntity(givenDto);
@@ -80,6 +93,13 @@ public final class DataMapperTest extends AbstractContextTest {
                         .imei("11111222223333344444")
                         .password("password")
                         .phoneNumber("447336934")
+                        .build())
+                .address(AddressEntity.builder()
+                        .id(257L)
+                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(this.createPoint(5.5, 6.6))
+                        .cityName("city")
+                        .countryName("country")
                         .build())
                 .build();
 
@@ -114,6 +134,13 @@ public final class DataMapperTest extends AbstractContextTest {
                         .password("password")
                         .phoneNumber("447336934")
                         .build())
+                .address(AddressEntity.builder()
+                        .id(257L)
+                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(this.createPoint(5.5, 6.6))
+                        .cityName("city")
+                        .countryName("country")
+                        .build())
                 .build();
 
         final Data actual = this.mapper.mapToDto(givenEntity);
@@ -142,6 +169,13 @@ public final class DataMapperTest extends AbstractContextTest {
                         .password("password")
                         .phoneNumber("447336934")
                         .build())
+                .address(Address.builder()
+                        .id(257L)
+                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(this.createPoint(5.5, 6.6))
+                        .cityName("city")
+                        .countryName("country")
+                        .build())
                 .build();
         assertEquals(expected, actual);
     }
@@ -163,6 +197,7 @@ public final class DataMapperTest extends AbstractContextTest {
         assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
         checkEquals(expected.getTracker(), actual.getTracker());
+        checkEquals(expected.getAddress(), actual.getAddress());
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,
@@ -178,5 +213,32 @@ public final class DataMapperTest extends AbstractContextTest {
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
+    }
+
+    private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getBoundingBox(), actual.getBoundingBox());
+        assertEquals(expected.getCenter(), actual.getCenter());
+        assertEquals(expected.getCityName(), actual.getCityName());
+        assertEquals(expected.getCountryName(), actual.getCountryName());
+    }
+
+    private Point createPoint(final double longitude, final double latitude) {
+        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
+        return this.geometryFactory.createPoint(coordinate);
+    }
+
+    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
+                                   final double secondLongitude, final double secondLatitude,
+                                   final double thirdLongitude, final double thirdLatitude,
+                                   final double fourthLongitude, final double fourthLatitude) {
+        return this.geometryFactory.createPolygon(new Coordinate[]{
+                        new CoordinateXY(firstLongitude, firstLatitude),
+                        new CoordinateXY(secondLongitude, secondLatitude),
+                        new CoordinateXY(thirdLongitude, thirdLatitude),
+                        new CoordinateXY(fourthLongitude, fourthLatitude),
+                        new CoordinateXY(firstLongitude, firstLatitude)
+                }
+        );
     }
 }

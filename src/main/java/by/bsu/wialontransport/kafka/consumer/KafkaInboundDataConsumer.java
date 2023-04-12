@@ -70,24 +70,25 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord, epochSeconds);
-        return new Data(
-                extractValue(genericRecord, id),
-                dateTime.toLocalDate(),
-                dateTime.toLocalTime(),
-                this.latitudeExtractor.extract(genericRecord),
-                this.longitudeExtractor.extract(genericRecord),
-                extractValue(genericRecord, speed),
-                extractValue(genericRecord, course),
-                extractValue(genericRecord, altitude),
-                extractValue(genericRecord, amountOfSatellites),
-                extractValue(genericRecord, reductionPrecision),
-                extractValue(genericRecord, inputs),
-                extractValue(genericRecord, outputs),
-                this.analogInputsExtractor.extract(genericRecord),
-                extractString(genericRecord, driverKeyCode),
-                this.parametersByNamesExtractor.extract(genericRecord),
-                this.extractTracker(genericRecord)
-        );
+//        return new Data(
+//                extractValue(genericRecord, id),
+//                dateTime.toLocalDate(),
+//                dateTime.toLocalTime(),
+//                this.latitudeExtractor.extract(genericRecord),
+//                this.longitudeExtractor.extract(genericRecord),
+//                extractValue(genericRecord, speed),
+//                extractValue(genericRecord, course),
+//                extractValue(genericRecord, altitude),
+//                extractValue(genericRecord, amountOfSatellites),
+//                extractValue(genericRecord, reductionPrecision),
+//                extractValue(genericRecord, inputs),
+//                extractValue(genericRecord, outputs),
+//                this.analogInputsExtractor.extract(genericRecord),
+//                extractString(genericRecord, driverKeyCode),
+//                this.parametersByNamesExtractor.extract(genericRecord),
+//                this.extractTracker(genericRecord)
+//        );
+        return null;
     }
 
     @Override

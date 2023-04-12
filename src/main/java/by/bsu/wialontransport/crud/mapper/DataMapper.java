@@ -1,11 +1,11 @@
 package by.bsu.wialontransport.crud.mapper;
 
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -40,8 +40,9 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
                 entity.getAnalogInputs(),
                 entity.getDriverKeyCode(),
                 this.mapParameters(entity),
-                this.mapTracker(entity)
-                );
+                this.mapTracker(entity),
+                this.mapAddress(entity)
+        );
     }
 
     @Override
@@ -90,6 +91,12 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
     }
 
     private Tracker mapTracker(final DataEntity source) {
-        return super.getModelMapper().map(source.getTracker(), Tracker.class);
+        return super.getModelMapper()
+                .map(source.getTracker(), Tracker.class);
+    }
+
+    private Address mapAddress(final DataEntity source) {
+        return super.getModelMapper()
+                .map(source.getAddress(), Address.class);
     }
 }
