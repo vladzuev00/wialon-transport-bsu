@@ -14,7 +14,8 @@ public final class AddressMapper extends AbstractMapper<AddressEntity, Address> 
 
     @Override
     protected Address createDto(final AddressEntity entity) {
-        return new Address(entity.getId(),
+        return new Address(
+                entity.getId(),
                 entity.getBoundingBox(),
                 entity.getCenter(),
                 entity.getCityName(),
