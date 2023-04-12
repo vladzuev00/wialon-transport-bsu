@@ -52,7 +52,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    public void a() {
+    public void addressesShouldBeFoundByGpsCoordinates() {
         throw new RuntimeException();
     }
 
