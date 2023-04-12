@@ -103,6 +103,11 @@ public class DataEntity extends AbstractEntity<Long> {
     @ToString.Exclude
     private TrackerEntity tracker;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "address_id")
+    @ToString.Exclude
+    private AddressEntity address;
+
     public void setParameters(final List<ParameterEntity> parameters) {
         parameters.forEach(parameter -> parameter.setData(this));
         this.parameters = parameters;

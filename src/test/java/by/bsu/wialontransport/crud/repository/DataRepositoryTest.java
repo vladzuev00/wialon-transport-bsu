@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
@@ -28,14 +29,18 @@ public final class DataRepositoryTest extends AbstractContextTest {
     private DataRepository repository;
 
     @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
             + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id) "
+            + "driver_key_code, tracker_id, address_id) "
             + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
     @Sql(statements = "INSERT INTO parameters(id, name, type, value, data_id) "
             + "VALUES(257, 'name', 'INTEGER', '44', 256)")
     public void dataShouldBeFoundById() {
@@ -70,11 +75,16 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .driverKeyCode("driver key code")
                 .parameters(List.of(super.entityManager.getReference(ParameterEntity.class, 257L)))
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
+                .address(super.entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     public void dataShouldBeInserted() {
         final DataEntity givenData = DataEntity.builder()
                 .date(LocalDate.of(2019, 10, 24))
@@ -101,6 +111,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
+                .address(super.entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         final List<ParameterEntity> givenParameters = List.of(ParameterEntity.builder()
                 .name("name")
@@ -117,22 +128,26 @@ public final class DataRepositoryTest extends AbstractContextTest {
     }
 
     @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
             + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id) "
+            + "driver_key_code, tracker_id, address_id) "
             + "VALUES(255, '2019-10-24', '14:39:52', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
             + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
             + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id) "
+            + "driver_key_code, tracker_id, address_id) "
             + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255)")
+            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
     public void trackerLastDataShouldBeFoundByTrackerId() {
         super.startQueryCount();
         final DataEntity actual = this.repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
@@ -165,6 +180,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
                 .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
+                .address(super.entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -194,5 +210,6 @@ public final class DataRepositoryTest extends AbstractContextTest {
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getParameters(), actual.getParameters());
         assertEquals(expected.getTracker(), actual.getTracker());
+        assertEquals(expected.getAddress(), actual.getAddress());
     }
 }
