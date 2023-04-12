@@ -9,9 +9,9 @@ spring:
           generate_statistics: true
           jdbc:
             batch_size: 2
-          dialect: org.hibernate.dialect.PostgreSQLDialect
+          dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
     show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
   sql:
     init:
       mode: always
@@ -28,10 +28,10 @@ data:
     maxValidDOP: 7
 
 data-fixing:
-  enable: true
+  enable: false
 
 data-filtering:
-  enable: true
+  enable: false
 
 wialon:
   server:

@@ -62,6 +62,10 @@ kafka:
         fetch-max-wait-ms: 1000
         fetch-min-bytes: 10000
 
+geocoding:
+  url:
+    format: https://nominatim.openstreetmap.org/reverse?format=json&lat=%f&lon=%f&zoom=18&accept-language=ru
+
 
 
 

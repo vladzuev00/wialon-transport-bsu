@@ -5,6 +5,12 @@ ALTER TABLE IF EXISTS trackers
 ALTER TABLE IF EXISTS data
     DROP CONSTRAINT IF EXISTS fk_data_to_trackers;
 
+ALTER TABLE IF EXISTS data
+    DROP CONSTRAINT IF EXISTS fk_data_to_addresses;
+
+ALTER TABLE IF EXISTS data
+    DROP CONSTRAINT IF EXISTS address_id_should_be_unique;
+
 ALTER TABLE IF EXISTS parameters
     DROP CONSTRAINT IF EXISTS fk_parameters_to_data;
 
@@ -20,6 +26,7 @@ DROP TABLE IF EXISTS trackers;
 DROP TABLE IF EXISTS data;
 DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS trackers_last_data;
+DROP TABLE IF EXISTS addresses;
 
 CREATE TABLE users
 (
@@ -54,6 +61,17 @@ ALTER TABLE trackers
 ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
 
+CREATE TABLE addresses(
+	id BIGSERIAL PRIMARY KEY,
+	boundaries GEOMETRY NOT NULL,
+	center_latitude DOUBLE PRECISION NOT NULL,
+	center_longitude DOUBLE PRECISION NOT NULL,
+	city_name VARCHAR(256) NOT NULL,
+	country_name VARCHAR(256) NOT NULL
+);
+
+ALTER SEQUENCE addresses_id_seq INCREMENT 50;
+
 CREATE TABLE data
 (
     id                     BIGSERIAL NOT NULL PRIMARY KEY,
@@ -81,7 +99,8 @@ CREATE TABLE data
     analog_inputs       DOUBLE PRECISION[] NOT NULL,
     driver_key_code     VARCHAR(256) NOT NULL,
 
-    tracker_id             INTEGER   NOT NULL
+    tracker_id             INTEGER   NOT NULL,
+    address_id BIGINT NOT NULL
 );
 
 ALTER SEQUENCE data_id_seq INCREMENT 50;
@@ -97,6 +116,12 @@ ALTER TABLE data
 ALTER TABLE data
     ADD CONSTRAINT longitude_type_should_be_correct
         CHECK (data.longitude_type IN ('E', 'W'));
+
+ALTER TABLE data
+	ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY(address_id) REFERENCES addresses(id);
+
+ALTER TABLE data
+	ADD CONSTRAINT address_id_should_be_unique UNIQUE(address_id);
 
 CREATE TABLE parameters
 (

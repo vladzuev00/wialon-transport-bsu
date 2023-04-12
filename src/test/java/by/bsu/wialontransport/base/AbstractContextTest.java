@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.base;
 
-import by.bsu.wialontransport.crud.entity.AbstractEntity;
 import com.yannbriancon.interceptor.HibernateQueryInterceptor;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -17,16 +16,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static java.lang.System.out;
 import static java.util.TimeZone.getTimeZone;
 import static java.util.TimeZone.setDefault;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
+import static org.testcontainers.utility.DockerImageName.parse;
 
 @Transactional
 @RunWith(SpringRunner.class)
@@ -34,7 +28,8 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(initializers = {AbstractContextTest.DBContainerInitializer.class})
 public abstract class AbstractContextTest {
     @SuppressWarnings("resource")
-    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
+    public static PostgreSQLContainer<?> postgreSQLContainer
+            = new PostgreSQLContainer<>(parse("mdillon/postgis:9.5").asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("integration-tests-db")
             .withUsername("sa")
             .withPassword("sa");

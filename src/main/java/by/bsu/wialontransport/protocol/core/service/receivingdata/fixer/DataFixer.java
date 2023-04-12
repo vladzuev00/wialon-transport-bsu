@@ -15,7 +15,6 @@ import java.util.Optional;
 import static by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary.findByAlias;
 import static java.util.Arrays.stream;
 
-//TODO: refactor this and tests
 @Component
 public final class DataFixer {
     private static final String MESSAGE_EXCEPTION_PREVIOUS_DATA_DOES_NOT_HAVE_DOP_PARAMETER = "Previous data doesn't "
@@ -27,12 +26,11 @@ public final class DataFixer {
         this.fixingEnable = fixingEnable;
     }
 
-    //TODO: refactor tests
     public Data fix(final Data fixed, final Data previous) {
-        return this.fixingEnable ? fixWithGeographicCoordinate(fixed, previous) : fixed;
+        return this.fixingEnable ? doFix(fixed, previous) : fixed;
     }
 
-    private static Data fixWithGeographicCoordinate(final Data fixed, final Data previous) {
+    private static Data doFix(final Data fixed, final Data previous) {
         return Data.builder()
                 .id(fixed.getId())
                 .date(fixed.getDate())
