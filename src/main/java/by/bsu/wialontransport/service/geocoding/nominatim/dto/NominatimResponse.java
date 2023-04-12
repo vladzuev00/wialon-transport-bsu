@@ -7,25 +7,25 @@ import lombok.Value;
 public class NominatimResponse {
     double centerLatitude;
     double centerLongitude;
-    NominatimAddressResponse address;
-    double[] boundingBoxCoordinate;
+    NominatimResponseAddress address;
+    double[] boundingBoxCoordinates;
 
     public NominatimResponse(@JsonProperty("lat") final double centerLatitude,
                              @JsonProperty("lot") final double centerLongitude,
-                             @JsonProperty("address") final NominatimAddressResponse address,
-                             @JsonProperty("boundingbox") final double[] boundingBoxCoordinate) {
+                             @JsonProperty("address") final NominatimResponseAddress address,
+                             @JsonProperty("boundingbox") final double[] boundingBoxCoordinates) {
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
         this.address = address;
-        this.boundingBoxCoordinate = boundingBoxCoordinate;
+        this.boundingBoxCoordinates = boundingBoxCoordinates;
     }
 
     @Value
-    public static class NominatimAddressResponse {
+    public static class NominatimResponseAddress {
         String cityName;
         String countryName;
 
-        public NominatimAddressResponse(@JsonProperty("city") final String cityName,
+        public NominatimResponseAddress(@JsonProperty("city") final String cityName,
                                         @JsonProperty("country") final String countryName) {
             this.cityName = cityName;
             this.countryName = countryName;
