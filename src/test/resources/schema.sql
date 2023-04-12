@@ -28,6 +28,8 @@ DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
 
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 CREATE TABLE users
 (
     id                 SERIAL       NOT NULL PRIMARY KEY,
@@ -63,14 +65,15 @@ ALTER TABLE trackers
 
 CREATE TABLE addresses(
 	id BIGSERIAL PRIMARY KEY,
-	boundaries GEOMETRY NOT NULL,
-	center_latitude DOUBLE PRECISION NOT NULL,
-	center_longitude DOUBLE PRECISION NOT NULL,
+    bounding_box GEOMETRY NOT NULL,
+	center GEOMETRY(POINT, 4326) NOT NULL,
 	city_name VARCHAR(256) NOT NULL,
 	country_name VARCHAR(256) NOT NULL
 );
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
+
+CREATE INDEX ON addresses using GIST(bounding_box);
 
 CREATE TABLE data
 (
@@ -119,9 +122,6 @@ ALTER TABLE data
 
 ALTER TABLE data
 	ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY(address_id) REFERENCES addresses(id);
-
-ALTER TABLE data
-	ADD CONSTRAINT address_id_should_be_unique UNIQUE(address_id);
 
 CREATE TABLE parameters
 (

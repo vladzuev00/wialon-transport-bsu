@@ -1,11 +1,12 @@
-package by.bsu.wialontransport.service.geocoding.nominatim;
+package by.bsu.wialontransport.service.geocoding.component.nominatim;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.service.geocoding.GeocodingService;
+import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
 import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
-import by.bsu.wialontransport.service.geocoding.nominatim.dto.NominatimResponse;
-import by.bsu.wialontransport.service.geocoding.nominatim.dto.NominatimResponse.NominatimResponseAddress;
+import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
+import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Order;
 import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-import static java.lang.CharSequence.compare;
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static org.springframework.http.HttpEntity.EMPTY;
@@ -24,7 +24,8 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
-public final class NominatimGeocodingService implements GeocodingService {
+@Order(2)
+public final class NominatimGeocodingService implements GeocodingChainComponent {
     private final String urlTemplate;
     private final RestTemplate restTemplate;
     private final ResponseToAddressMapper responseToAddressMapper;

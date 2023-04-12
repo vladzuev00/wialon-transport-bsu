@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.geocoding.nominatim.dto;
+package by.bsu.wialontransport.service.geocoding.component.nominatim.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;

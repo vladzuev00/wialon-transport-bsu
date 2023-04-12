@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
-    @Query(value = "select * from geocoding where st_intersects(ST_BUFFER(st_setsrid(ST_POINT(?2, ?1), 4326), 0.000002, 8), boundaries)  AND language = ?3",
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name "
+            + "FROM addresses WHERE ST_INTERSECTS(bounding_box, ST_SETSRID(ST_POINT(:longitude, :latitude), 4326))",
             nativeQuery = true)
-    List<AddressEntity> findByGpsCoordinateAndLanguage(float latitude, float longitude, String language);
+    List<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
 }
