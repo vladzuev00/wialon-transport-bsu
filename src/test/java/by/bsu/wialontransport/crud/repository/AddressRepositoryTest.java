@@ -7,7 +7,10 @@ import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
 
@@ -52,8 +55,49 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 5 0, 2.5 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     public void addressesShouldBeFoundByGpsCoordinates() {
-        throw new RuntimeException();
+        final double givenLatitude = 2.5;
+        final double givenLongitude = 4;
+
+        final List<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
+        final List<Long> actualIds = actual.stream()
+                .map(AddressEntity::getId)
+                .toList();
+        final List<Long> expectedIds = List.of(255L, 257L);
+        assertEquals(expectedIds, actualIds);
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 5 0, 2.5 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    public void addressesShouldNotBeFoundByGpsCoordinates() {
+        final double givenLatitude = 5.;
+        final double givenLongitude = 5.;
+
+        final List<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
+        assertTrue(actual.isEmpty());
     }
 
     private Point createPoint(final double longitude, final double latitude) {
