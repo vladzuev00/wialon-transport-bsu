@@ -6,10 +6,7 @@ import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
 import by.bsu.wialontransport.service.geocoding.nominatim.dto.NominatimResponse;
 import by.bsu.wialontransport.service.geocoding.nominatim.dto.NominatimResponse.NominatimResponseAddress;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.CoordinateXY;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -19,7 +16,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+import static java.lang.CharSequence.compare;
 import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
@@ -28,18 +27,22 @@ import static org.springframework.http.HttpStatus.OK;
 public final class NominatimGeocodingService implements GeocodingService {
     private final String urlTemplate;
     private final RestTemplate restTemplate;
+    private final ResponseToAddressMapper responseToAddressMapper;
 
     public NominatimGeocodingService(@Value("${geocoding.url.format}") final String urlTemplate,
                                      final RestTemplate restTemplate,
                                      final GeometryFactory geometryFactory) {
         this.urlTemplate = urlTemplate;
         this.restTemplate = restTemplate;
+        this.responseToAddressMapper = new ResponseToAddressMapper(geometryFactory);
     }
 
     @Override
     public Optional<Address> receive(final double latitude, final double longitude) {
         final NominatimResponse response = this.doRequest(latitude, longitude);
-
+        return response != null
+                ? Optional.of(this.responseToAddressMapper.map(response))
+                : empty();
     }
 
     private NominatimResponse doRequest(final double latitude, final double longitude) {
@@ -79,8 +82,7 @@ public final class NominatimGeocodingService implements GeocodingService {
             final NominatimResponseAddress address = response.getAddress();
             return Address.builder()
                     .boundingBox(this.mapBoundingBox(response))
-                    .centerLatitude(response.getCenterLatitude())
-                    .centerLongitude(response.getCenterLongitude())
+                    .center(this.mapCenter(response))
                     .cityName(address.getCityName())
                     .countryName(address.getCountryName())
                     .build();
@@ -135,6 +137,14 @@ public final class NominatimGeocodingService implements GeocodingService {
                     rightBottomCoordinate,
                     leftBottomCoordinate
             });
+        }
+
+        private Point mapCenter(final NominatimResponse response) {
+            final CoordinateXY coordinate = new CoordinateXY(
+                    response.getCenterLatitude(),
+                    response.getCenterLongitude()
+            );
+            return this.geometryFactory.createPoint(coordinate);
         }
     }
 }

@@ -2,6 +2,7 @@ package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 
@@ -26,11 +27,8 @@ public class AddressEntity extends AbstractEntity<Long> {
     @Column(name = "bounding_box")
     private Geometry boundingBox;
 
-    @Column(name = "centerLatitude")
-    private double centerLatitude;
-
-    @Column(name = "centerLongitude")
-    private double centerLongitude;
+    @Column(name = "center")
+    private Point center;
 
     @Column(name = "cityName")
     private String cityName;

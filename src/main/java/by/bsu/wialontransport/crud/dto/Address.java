@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 
 @Value
 @AllArgsConstructor
@@ -11,8 +12,7 @@ import org.locationtech.jts.geom.Geometry;
 public class Address implements AbstractDto<Long> {
     Long id;
     Geometry boundingBox;
-    double centerLatitude;
-    double centerLongitude;
+    Point center;
     String cityName;
     String countryName;
 }
