@@ -7,6 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
+import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
+import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.WESTERN;
+import static java.lang.Math.abs;
+import static java.lang.Math.signum;
+
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
@@ -48,6 +53,9 @@ public class Data implements AbstractDto<Long> {
     @EqualsAndHashCode
     @ToString
     public static abstract class GeographicCoordinate {
+        private static final double MINUTES_DIVIDER_TO_FIND_DOUBLE_VALUE = 60.;
+        private static final double MINUTE_SHARE_DIVIDER_TO_FIND_DOUBLE_VALUE = 3600.;
+
         private final int degrees;
         private final int minutes;
         private final int minuteShare;
@@ -57,6 +65,16 @@ public class Data implements AbstractDto<Long> {
             this.minutes = other.minutes;
             this.minuteShare = other.minuteShare;
         }
+
+        public double findDoubleValue() {
+            return (signum(this.degrees)
+                            * (abs(this.degrees)
+                                    + this.minutes / MINUTES_DIVIDER_TO_FIND_DOUBLE_VALUE
+                                    + this.minuteShare / MINUTE_SHARE_DIVIDER_TO_FIND_DOUBLE_VALUE)
+            ) * (this.signShouldBeInvertedToFindDoubleValue() ? -1 : 1);
+        }
+
+        protected abstract boolean signShouldBeInvertedToFindDoubleValue();
     }
 
     @Getter
@@ -76,6 +94,11 @@ public class Data implements AbstractDto<Long> {
             super(other);
             this.type = other.type;
         }
+
+        @Override
+        protected boolean signShouldBeInvertedToFindDoubleValue() {
+            return this.type == SOUTH;
+        }
     }
 
     @Getter
@@ -94,6 +117,11 @@ public class Data implements AbstractDto<Long> {
         public Longitude(final Longitude other) {
             super(other);
             this.type = other.type;
+        }
+
+        @Override
+        protected boolean signShouldBeInvertedToFindDoubleValue() {
+            return this.type == WESTERN;
         }
     }
 }

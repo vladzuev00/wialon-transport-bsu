@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.kafka.consumer;
 
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
@@ -13,8 +14,10 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -35,26 +38,27 @@ import static java.util.stream.Collectors.toMap;
 
 @Component
 public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
-    private static final String EXCEPTION_MESSAGE_NO_TRACKER_WITH_GIVEN_ID = "Tracker with id '%d' doesn't exist.";
-
     private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
     private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
     private final AnalogInputsExtractor analogInputsExtractor;
     private final TrackerService trackerService;
     private final DataService dataService;
+    private final GeocodingService geocodingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final TrackerService trackerService,
                                     final DataService dataService,
+                                    @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         this.latitudeExtractor = new LatitudeExtractor();
         this.longitudeExtractor = new LongitudeExtractor();
         this.parametersByNamesExtractor = new ParametersByNamesExtractor();
+        this.analogInputsExtractor = new AnalogInputsExtractor();
         this.trackerService = trackerService;
         this.dataService = dataService;
+        this.geocodingService = geocodingService;
         this.savedDataProducer = savedDataProducer;
-        this.analogInputsExtractor = new AnalogInputsExtractor();
     }
 
     @Override
@@ -69,26 +73,28 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
-        final LocalDateTime dateTime = extractDateTime(genericRecord, epochSeconds);
-//        return new Data(
-//                extractValue(genericRecord, id),
-//                dateTime.toLocalDate(),
-//                dateTime.toLocalTime(),
-//                this.latitudeExtractor.extract(genericRecord),
-//                this.longitudeExtractor.extract(genericRecord),
-//                extractValue(genericRecord, speed),
-//                extractValue(genericRecord, course),
-//                extractValue(genericRecord, altitude),
-//                extractValue(genericRecord, amountOfSatellites),
-//                extractValue(genericRecord, reductionPrecision),
-//                extractValue(genericRecord, inputs),
-//                extractValue(genericRecord, outputs),
-//                this.analogInputsExtractor.extract(genericRecord),
-//                extractString(genericRecord, driverKeyCode),
-//                this.parametersByNamesExtractor.extract(genericRecord),
-//                this.extractTracker(genericRecord)
-//        );
-        return null;
+        final LocalDateTime dateTime = extractDateTime(genericRecord);
+        final Latitude latitude = this.latitudeExtractor.extract(genericRecord);
+        final Longitude longitude = this.longitudeExtractor.extract(genericRecord);
+        return new Data(
+                extractId(genericRecord),
+                dateTime.toLocalDate(),
+                dateTime.toLocalTime(),
+                latitude,
+                longitude,
+                extractSpeed(genericRecord),
+                extractCourse(genericRecord),
+                extractAltitude(genericRecord),
+                extractAmountOfSatellites(genericRecord),
+                extractReductionPrecision(genericRecord),
+                extractInputs(genericRecord),
+                extractOutputs(genericRecord),
+                this.analogInputsExtractor.extract(genericRecord),
+                extractDriverKeyCode(genericRecord),
+                this.parametersByNamesExtractor.extract(genericRecord),
+                this.extractTracker(genericRecord),
+                this.findAddress(latitude, longitude)
+        );
     }
 
     @Override
@@ -97,12 +103,65 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         this.sendInSavedDataTopic(data);
     }
 
+    private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
+        return extractDateTime(genericRecord, epochSeconds);
+    }
+
+    private static Long extractId(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, id);
+    }
+
+    private static int extractSpeed(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, speed);
+    }
+
+    private static int extractCourse(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, course);
+    }
+
+    private static int extractAltitude(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, altitude);
+    }
+
+    private static int extractAmountOfSatellites(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, amountOfSatellites);
+    }
+
+    private static double extractReductionPrecision(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, reductionPrecision);
+    }
+
+    private static int extractInputs(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, inputs);
+    }
+
+    private static int extractOutputs(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, outputs);
+    }
+
+    private static String extractDriverKeyCode(final GenericRecord genericRecord) {
+        return extractString(genericRecord, driverKeyCode);
+    }
+
     private Tracker extractTracker(final GenericRecord genericRecord) {
         final Long extractedTrackerId = extractValue(genericRecord, trackerId);
         final Optional<Tracker> optionalTracker = this.trackerService.findById(extractedTrackerId);
         return optionalTracker.orElseThrow(
                 () -> new DataConsumingException(
-                        format(EXCEPTION_MESSAGE_NO_TRACKER_WITH_GIVEN_ID, extractedTrackerId)
+                        format("Tracker with id '%d' doesn't exist.", extractedTrackerId)
+                )
+        );
+    }
+
+    private Address findAddress(final Latitude latitude, final Longitude longitude) {
+        final Optional<Address> optionalAddress = this.geocodingService.receive(latitude, longitude);
+        return optionalAddress.orElseThrow(
+                () -> new DataConsumingException(
+                        format(
+                                "Impossible to find address by latitude='%s' and longitude='%s'",
+                                latitude,
+                                longitude
+                        )
                 )
         );
     }
