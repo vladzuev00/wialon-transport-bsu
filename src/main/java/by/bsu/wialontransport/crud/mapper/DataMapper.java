@@ -4,14 +4,18 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -54,49 +58,69 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
 
     private static Data.Latitude mapLatitude(final DataEntity source) {
         final DataEntity.Latitude mappedLatitude = source.getLatitude();
-        return new Data.Latitude(mappedLatitude.getDegrees(), mappedLatitude.getMinutes(),
-                mappedLatitude.getMinuteShare(), mappedLatitude.getType());
+        return new Data.Latitude(
+                mappedLatitude.getDegrees(),
+                mappedLatitude.getMinutes(),
+                mappedLatitude.getMinuteShare(),
+                mappedLatitude.getType()
+        );
     }
 
     private static Data.Longitude mapLongitude(final DataEntity source) {
         final DataEntity.Longitude mappedLongitude = source.getLongitude();
-        return new Data.Longitude(mappedLongitude.getDegrees(), mappedLongitude.getMinutes(),
-                mappedLongitude.getMinuteShare(), mappedLongitude.getType());
+        return new Data.Longitude(
+                mappedLongitude.getDegrees(),
+                mappedLongitude.getMinutes(),
+                mappedLongitude.getMinuteShare(),
+                mappedLongitude.getType()
+        );
     }
 
     private Map<String, Parameter> mapParameters(final DataEntity source) {
         final List<ParameterEntity> mappedEntities = source.getParameters();
-        return mappedEntities.stream()
-                .collect(toMap(ParameterEntity::getName, mapped -> super.getModelMapper().map(mapped, Parameter.class)));
+        final List<Parameter> mappedDtos = super.mapCollectionPropertyIfLoadedOrElseNull(
+                mappedEntities, Parameter.class, ArrayList::new
+        );
+        return mappedDtos != null
+                ? mappedDtos.stream().collect(toMap(Parameter::getName, identity()))
+                : null;
     }
 
     private static DataEntity.Latitude mapLatitude(final Data source) {
         final Data.Latitude mappedLatitude = source.getLatitude();
-        return new DataEntity.Latitude(mappedLatitude.getDegrees(), mappedLatitude.getMinutes(),
-                mappedLatitude.getMinuteShare(), mappedLatitude.getType());
+        return new DataEntity.Latitude(
+                mappedLatitude.getDegrees(),
+                mappedLatitude.getMinutes(),
+                mappedLatitude.getMinuteShare(),
+                mappedLatitude.getType()
+        );
     }
 
     private static DataEntity.Longitude mapLongitude(final Data source) {
         final Data.Longitude mappedLongitude = source.getLongitude();
-        return new DataEntity.Longitude(mappedLongitude.getDegrees(), mappedLongitude.getMinutes(),
-                mappedLongitude.getMinuteShare(), mappedLongitude.getType());
+        return new DataEntity.Longitude(
+                mappedLongitude.getDegrees(),
+                mappedLongitude.getMinutes(),
+                mappedLongitude.getMinuteShare(),
+                mappedLongitude.getType()
+        );
     }
 
     private List<ParameterEntity> mapParameters(final Data source) {
         return source.getParametersByNames()
                 .values()
                 .stream()
-                .map(parameter -> super.getModelMapper().map(parameter, ParameterEntity.class))
+                .map(parameter -> super.mapProperty(parameter, ParameterEntity.class))
                 .collect(toList());
     }
 
     private Tracker mapTracker(final DataEntity source) {
-        return super.getModelMapper()
-                .map(source.getTracker(), Tracker.class);
+        final TrackerEntity tracker = source.getTracker();
+        return super.mapPropertyIfLoadedOrElseNull(tracker, Tracker.class);
     }
 
     private Address mapAddress(final DataEntity source) {
-        return super.getModelMapper()
-                .map(source.getAddress(), Address.class);
+        final AddressEntity address = source.getAddress();
+        return super.mapPropertyIfLoadedOrElseNull(address, Address.class);
     }
 }

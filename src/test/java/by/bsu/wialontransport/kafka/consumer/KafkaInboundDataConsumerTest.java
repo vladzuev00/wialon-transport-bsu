@@ -57,11 +57,11 @@ public final class KafkaInboundDataConsumerTest {
 
     @Before
     public void initializeConsumer() {
-        this.consumer = new KafkaInboundDataConsumer(
-                this.mockedTrackerService,
-                this.mockedDataService,
-                this.mockedKafkaSavedDataProducer
-        );
+//        this.consumer = new KafkaInboundDataConsumer(
+//                this.mockedTrackerService,
+//                this.mockedDataService,
+//                this.mockedKafkaSavedDataProducer
+//        );
     }
 
     @Test

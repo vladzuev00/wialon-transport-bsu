@@ -144,13 +144,17 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     }
 
     private Tracker extractTracker(final GenericRecord genericRecord) {
-        final Long extractedTrackerId = extractValue(genericRecord, trackerId);
+        final Long extractedTrackerId = extractTrackerId(genericRecord);
         final Optional<Tracker> optionalTracker = this.trackerService.findById(extractedTrackerId);
         return optionalTracker.orElseThrow(
                 () -> new DataConsumingException(
                         format("Tracker with id '%d' doesn't exist.", extractedTrackerId)
                 )
         );
+    }
+
+    private static Long extractTrackerId(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, trackerId);
     }
 
     private Address findAddress(final Latitude latitude, final Longitude longitude) {
@@ -187,14 +191,30 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         }
 
         public final T extract(final GenericRecord genericRecord) {
-            final int degrees = extractValue(genericRecord, this.degreesGenericRecordKey);
-            final int minutes = extractValue(genericRecord, this.minutesGenericRecordKey);
-            final int minuteShare = extractValue(genericRecord, this.minuteShareGenericRecordKey);
-            final char typeValue = extractChar(genericRecord, typeValueGenericRecordKey);
+            final int degrees = this.extractDegrees(genericRecord);
+            final int minutes = this.extractMinutes(genericRecord);
+            final int minuteShare = this.extractMinuteShare(genericRecord);
+            final char typeValue = this.extractTypeValue(genericRecord);
             return this.create(degrees, minutes, minuteShare, typeValue);
         }
 
         protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
+
+        private int extractDegrees(final GenericRecord genericRecord) {
+            return extractValue(genericRecord, this.degreesGenericRecordKey);
+        }
+
+        private int extractMinutes(final GenericRecord genericRecord) {
+            return extractValue(genericRecord, this.minutesGenericRecordKey);
+        }
+
+        private int extractMinuteShare(final GenericRecord genericRecord) {
+            return extractValue(genericRecord, this.minuteShareGenericRecordKey);
+        }
+
+        private char extractTypeValue(final GenericRecord genericRecord) {
+            return extractChar(genericRecord, this.typeValueGenericRecordKey);
+        }
     }
 
     private static final class LatitudeExtractor extends GeographicCoordinateExtractor<Latitude> {
@@ -230,9 +250,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
         //TODO: refactor test for this
         public double[] extract(final GenericRecord genericRecord) {
-            final String serializedAnalogInputs = extractString(
-                    genericRecord, TransportableData.Fields.serializedAnalogInputs
-            );
+            final String serializedAnalogInputs = extractSerializedAnalogInputs(genericRecord);
             return !serializedAnalogInputs.equals(SERIALIZED_EMPTY_ANALOG_INPUTS)
                     ? deserializeNotEmptyAnalogInputs(serializedAnalogInputs)
                     : DESERIALIZED_EMPTY_ANALOG_INPUTS;
@@ -242,6 +260,10 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
             return stream(serializedAnalogInputs.split(REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS))
                     .mapToDouble(Double::parseDouble)
                     .toArray();
+        }
+
+        private static String extractSerializedAnalogInputs(final GenericRecord genericRecord) {
+            return extractString(genericRecord, serializedAnalogInputs);
         }
     }
 
@@ -263,8 +285,12 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         }
 
         private static String[] findSerializedParameters(final GenericRecord genericRecord) {
-            final String serializedParametersString = extractString(genericRecord, serializedParameters);
+            final String serializedParametersString = extractSerializedParameters(genericRecord);
             return serializedParametersString.split(REGEX_DELIMITER_SERIALIZED_PARAMETERS);
+        }
+
+        private static String extractSerializedParameters(final GenericRecord genericRecord) {
+            return extractString(genericRecord, serializedParameters);
         }
 
         private static Map<String, Parameter> deserializeToParametersByNames(final String[] serializedParameters) {

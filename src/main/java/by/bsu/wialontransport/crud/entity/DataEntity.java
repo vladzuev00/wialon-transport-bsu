@@ -103,7 +103,7 @@ public class DataEntity extends AbstractEntity<Long> {
     @ToString.Exclude
     private TrackerEntity tracker;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = PERSIST)
     @JoinColumn(name = "address_id")
     @ToString.Exclude
     private AddressEntity address;
