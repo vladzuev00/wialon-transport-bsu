@@ -14,6 +14,11 @@ public final class UserMapper extends AbstractMapper<UserEntity, User> {
 
     @Override
     protected User createDto(final UserEntity entity) {
-        return new User(entity.getId(), entity.getEmail(), entity.getPassword(), entity.getRole());
+        return new User(
+                entity.getId(),
+                entity.getEmail(),
+                entity.getPassword(),
+                entity.getRole()
+        );
     }
 }

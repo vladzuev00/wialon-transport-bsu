@@ -14,6 +14,11 @@ public final class ParameterMapper extends AbstractMapper<ParameterEntity, Param
 
     @Override
     protected Parameter createDto(final ParameterEntity entity) {
-        return new Parameter(entity.getId(), entity.getName(), entity.getType(), entity.getValue());
+        return new Parameter(
+                entity.getId(),
+                entity.getName(),
+                entity.getType(),
+                entity.getValue()
+        );
     }
 }

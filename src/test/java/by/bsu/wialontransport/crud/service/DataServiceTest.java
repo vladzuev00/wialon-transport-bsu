@@ -1,15 +1,11 @@
 package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
-
-import by.bsu.wialontransport.crud.dto.Tracker;
 import org.junit.Test;
-import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -28,9 +24,6 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Autowired
     private DataService dataService;
-
-    @Autowired
-    private GeometryFactory geometryFactory;
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
@@ -88,19 +81,8 @@ public final class DataServiceTest extends AbstractContextTest {
                         .type(INTEGER)
                         .value("44")
                         .build()))
-                .tracker(Tracker.builder()
-                        .id(255L)
-                        .imei("11112222333344445555")
-                        .password("password")
-                        .phoneNumber("447336934")
-                        .build())
-                .address(Address.builder()
-                        .id(258L)
-                        .boundingBox(this.createPolygon(2.5,0, 2.5, 2.5, 5, 2.5, 5, 0))
-                        .center(this.createPoint(53.050286, 24.873635))
-                        .cityName("city")
-                        .countryName("country")
-                        .build())
+                .tracker(null)
+                .address(null)
                 .build();
         assertEquals(expected, actual);
     }
@@ -109,24 +91,5 @@ public final class DataServiceTest extends AbstractContextTest {
     public void trackerLastDataShouldNotBeFoundByTrackerId() {
         final Optional<Data> optionalActual = this.dataService.findTrackerLastDataByTrackerId(255L);
         assertTrue(optionalActual.isEmpty());
-    }
-
-    private Point createPoint(final double longitude, final double latitude) {
-        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
-        return this.geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude,
-                                   final double fourthLongitude, final double fourthLatitude) {
-        return this.geometryFactory.createPolygon(new Coordinate[]{
-                        new CoordinateXY(firstLongitude, firstLatitude),
-                        new CoordinateXY(secondLongitude, secondLatitude),
-                        new CoordinateXY(thirdLongitude, thirdLatitude),
-                        new CoordinateXY(fourthLongitude, fourthLatitude),
-                        new CoordinateXY(firstLongitude, firstLatitude)
-                }
-        );
     }
 }
