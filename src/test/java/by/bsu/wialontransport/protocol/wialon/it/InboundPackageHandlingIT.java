@@ -10,15 +10,15 @@ import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.protocol.wialon.server.WialonServer;
 import by.bsu.wialontransport.protocol.wialon.server.factory.WialonServerFactory;
+import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
+import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -43,10 +43,10 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
@@ -164,6 +164,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
     public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
             throws Exception {
         this.login();
@@ -179,8 +180,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final DataEntity expectedSavedData = DataEntity.builder()
                 .date(LocalDate.of(2022, 11, 15))
                 .time(LocalTime.of(14, 56, 43))
-                .latitude(createLatitude(53, 53, 6025, NORTH))
-                .longitude(createLongitude(27, 39, 6834, EAST))
+                .latitude(createLatitude(55, 44, 6025, NORTH))
+                .longitude(createLongitude(37, 39, 6834, EAST))
                 .speed(100)
                 .course(15)
                 .altitude(10)
@@ -203,6 +204,65 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", actualSavedData));
 
         verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        //TODO: check in kafka
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromAPI()
+            throws Exception {
+        this.login();
+
+        when(this.mockedRestTemplate.exchange(
+                        anyString(),
+                        same(GET),
+                        same(EMPTY),
+                        any(ParameterizedTypeReference.class)
+                )
+        ).thenReturn(ok(new NominatimResponse(57.406944, 37.54833, new NominatimResponseAddress("city", "country"), new double[]{55.506944, 59.506944, 37.54833, 41.54833})));
+
+        this.sendValidRequestDataPackageAndCheckResponse();
+
+        waitMessageDelivering();
+
+        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+        assertEquals(1, dataFromDatabase.size());
+
+        final DataEntity actualSavedData = dataFromDatabase.get(0);
+        final DataEntity expectedSavedData = DataEntity.builder()
+                .date(LocalDate.of(2022, 11, 15))
+                .time(LocalTime.of(14, 56, 43))
+                .latitude(createLatitude(55, 44, 6025, NORTH))
+                .longitude(createLongitude(37, 39, 6834, EAST))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .reductionPrecision(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(createTracker(GIVEN_EXISTING_TRACKER_ID))
+                .address(createAddress(1L))
+                .build();
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", actualSavedData));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", actualSavedData));
+
+        verify(this.mockedRestTemplate, times(1))
                 .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
         //TODO: check in kafka
@@ -1430,8 +1490,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertEquals(expected.getInputs(), actual.getInputs());
         assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-        assertEquals(expected.getTracker(), actual.getTracker());
-        assertEquals(expected.getAddress(), actual.getAddress());
+        assertEquals(expected.getTracker().getId(), actual.getTracker().getId());
+        assertEquals(expected.getAddress().getId(), actual.getAddress().getId());
     }
 
     private List<DataEntity> findAllDataFromDataBase() {
