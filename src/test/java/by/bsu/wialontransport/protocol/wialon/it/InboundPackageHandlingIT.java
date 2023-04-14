@@ -2,6 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.it;
 
 import by.bsu.wialontransport.base.AbstractKafkaContainerTest;
 import by.bsu.wialontransport.configuration.property.WialonServerConfiguration;
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
 import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
@@ -13,8 +14,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,10 +42,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpEntity.EMPTY;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
-public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
+public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     private static boolean serverWasRan = false;
 
     private static final Long GIVEN_EXISTING_TRACKER_ID = 255L;
@@ -81,6 +93,9 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
     @Autowired
     private WialonServerFactory serverFactory;
+
+    @MockBean
+    private RestTemplate mockedRestTemplate;
 
     private Client client;
 
@@ -139,10 +154,17 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousData()
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
             throws Exception {
         this.login();
 
@@ -157,8 +179,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final DataEntity expectedSavedData = DataEntity.builder()
                 .date(LocalDate.of(2022, 11, 15))
                 .time(LocalTime.of(14, 56, 43))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
+                .latitude(createLatitude(53, 53, 6025, NORTH))
+                .longitude(createLongitude(27, 39, 6834, EAST))
                 .speed(100)
                 .course(15)
                 .altitude(10)
@@ -168,7 +190,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
+                .tracker(createTracker(GIVEN_EXISTING_TRACKER_ID))
+                .address(createAddress(258L))
                 .build();
         checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
 
@@ -178,6 +201,9 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", actualSavedData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", actualSavedData));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
         //TODO: check in kafka
     }
@@ -1404,7 +1430,8 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertEquals(expected.getInputs(), actual.getInputs());
         assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-        assertEquals(expected.getTracker().getId(), actual.getTracker().getId());
+        assertEquals(expected.getTracker(), actual.getTracker());
+        assertEquals(expected.getAddress(), actual.getAddress());
     }
 
     private List<DataEntity> findAllDataFromDataBase() {
@@ -1458,6 +1485,18 @@ public final class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
     private TrackerEntity findGivenExistingTracker() {
         return super.entityManager.getReference(TrackerEntity.class, GIVEN_EXISTING_TRACKER_ID);
+    }
+
+    private static TrackerEntity createTracker(final Long id) {
+        return TrackerEntity.builder()
+                .id(id)
+                .build();
+    }
+
+    private static AddressEntity createAddress(final Long id) {
+        return AddressEntity.builder()
+                .id(id)
+                .build();
     }
 
     private static final class Client implements AutoCloseable {

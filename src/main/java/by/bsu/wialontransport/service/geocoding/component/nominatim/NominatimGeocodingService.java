@@ -30,7 +30,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
     private final RestTemplate restTemplate;
     private final ResponseToAddressMapper responseToAddressMapper;
 
-    public NominatimGeocodingService(@Value("${geocoding.url.format}") final String urlTemplate,
+    public NominatimGeocodingService(@Value("${geocoding.url.template}") final String urlTemplate,
                                      final RestTemplate restTemplate,
                                      final GeometryFactory geometryFactory) {
         this.urlTemplate = urlTemplate;
