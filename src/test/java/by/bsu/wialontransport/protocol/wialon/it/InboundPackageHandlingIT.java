@@ -226,7 +226,17 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                         same(EMPTY),
                         any(ParameterizedTypeReference.class)
                 )
-        ).thenReturn(ok(new NominatimResponse(57.406944, 37.54833, new NominatimResponseAddress("city", "country"), new double[]{55.506944, 59.506944, 37.54833, 41.54833})));
+        ).thenReturn(
+                ok(
+                        createNominatimResponse(
+                                57.406944,
+                                37.54833,
+                                "city",
+                                "country",
+                                new double[]{55.506944, 59.506944, 37.54833, 41.54833}
+                        )
+                )
+        );
 
         this.sendValidRequestDataPackageAndCheckResponse();
 
@@ -1557,6 +1567,18 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         return AddressEntity.builder()
                 .id(id)
                 .build();
+    }
+
+    private static NominatimResponse createNominatimResponse(final double centerLatitude, final double centerLongitude,
+                                                             final String cityName, final String countryName,
+                                                             final double[] boundingBoxCoordinates) {
+        final NominatimResponseAddress address = new NominatimResponseAddress(cityName, countryName);
+        return new NominatimResponse(
+                centerLatitude,
+                centerLongitude,
+                address,
+                boundingBoxCoordinates
+        );
     }
 
     private static final class Client implements AutoCloseable {

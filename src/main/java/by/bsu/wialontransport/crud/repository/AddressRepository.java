@@ -12,4 +12,5 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             + "FROM addresses WHERE ST_INTERSECTS(bounding_box, ST_SETSRID(ST_POINT(:longitude, :latitude), 4326))",
             nativeQuery = true)
     List<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
+
 }
