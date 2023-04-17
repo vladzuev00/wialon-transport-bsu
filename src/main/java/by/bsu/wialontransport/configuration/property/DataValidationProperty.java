@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.configuration.property;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +12,12 @@ import java.time.LocalDateTime;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "data.validation")
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
+@ToString
+@Builder
 public class DataValidationProperty {
     private int minValidAmountOfSatellites;
     private int maxValidAmountSatellites;

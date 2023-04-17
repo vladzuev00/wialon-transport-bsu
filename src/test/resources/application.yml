@@ -28,10 +28,10 @@ data:
     maxValidDOP: 7
 
 data-fixing:
-  enable: false
+  enable: true
 
 data-filtering:
-  enable: false
+  enable: true
 
 wialon:
   server:

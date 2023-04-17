@@ -304,7 +304,6 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         //TODO: check in kafka
     }
 
-    //amountOfSatellitesIsMoreThanMaximalAllowable
     @Test
     public void dataPackageShouldBeSkippedBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableAndThereIsNoPreviousValidDataToFix()
             throws Exception {

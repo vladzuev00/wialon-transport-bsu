@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.configuration.property;
 
 import org.junit.Test;
 
-public final class DataValidationPropertyTest {
+public class WialonServerConfigurationTest {
 
     @Test
     public void a() {

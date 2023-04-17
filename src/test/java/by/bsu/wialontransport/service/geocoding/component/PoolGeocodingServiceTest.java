@@ -13,10 +13,10 @@ import java.util.Optional;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class RepeatedGeocodingServiceTest extends AbstractContextTest {
+public final class PoolGeocodingServiceTest extends AbstractContextTest {
 
     @Autowired
-    private RepeatedGeocodingService repeatedGeocodingService;
+    private PoolGeocodingService poolGeocodingService;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -38,7 +38,7 @@ public final class RepeatedGeocodingServiceTest extends AbstractContextTest {
         final double givenLatitude = 2.5;
         final double givenLongitude = 4;
 
-        final Optional<Address> optionalActual = this.repeatedGeocodingService.receive(
+        final Optional<Address> optionalActual = this.poolGeocodingService.receive(
                 givenLatitude, givenLongitude
         );
         assertTrue(optionalActual.isPresent());
@@ -81,7 +81,7 @@ public final class RepeatedGeocodingServiceTest extends AbstractContextTest {
         final double givenLatitude = 5.5;
         final double givenLongitude = 5.;
 
-        final Optional<Address> optionalActual = this.repeatedGeocodingService.receive(
+        final Optional<Address> optionalActual = this.poolGeocodingService.receive(
                 givenLatitude, givenLongitude
         );
         assertFalse(optionalActual.isPresent());
