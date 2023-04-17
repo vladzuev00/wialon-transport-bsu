@@ -9,13 +9,11 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.crud.repository.AddressRepository;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
-import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -30,6 +28,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
 import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.String.format;
@@ -46,11 +45,13 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     private final AnalogInputsExtractor analogInputsExtractor;
     private final TrackerService trackerService;
     private final DataService dataService;
+    private final AddressService addressService;
     private final GeocodingService geocodingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final TrackerService trackerService,
                                     final DataService dataService,
+                                    final AddressService addressService,
                                     @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         this.latitudeExtractor = new LatitudeExtractor();
@@ -59,6 +60,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         this.analogInputsExtractor = new AnalogInputsExtractor();
         this.trackerService = trackerService;
         this.dataService = dataService;
+        this.addressService = addressService;
         this.geocodingService = geocodingService;
         this.savedDataProducer = savedDataProducer;
     }
@@ -101,8 +103,9 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     @Override
     protected void processData(final List<Data> data) {
-        this.dataService.saveAll(data);
-        this.sendInSavedDataTopic(data);
+        final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
+        this.dataService.saveAll(findDataWithSavedAddresses);
+        this.sendInSavedDataTopic(findDataWithSavedAddresses);
     }
 
     private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
@@ -174,6 +177,27 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     private void sendInSavedDataTopic(final List<Data> data) {
         data.forEach(this.savedDataProducer::send);
+    }
+
+    private List<Data> findDataWithSavedAddresses(final List<Data> source) {
+        return source.stream()
+                .map(data -> {
+                    if (isDataAddressNew(data)) {
+                        return createWithAddress(data, this.addressService.save(data.getAddress()));
+                    } else {
+                        return data;
+                    }
+                })
+                .toList();
+    }
+
+    private static boolean isDataAddressNew(final Data data) {
+        final Address address = data.getAddress();
+        return isNewAddress(address);
+    }
+
+    private static boolean isNewAddress(final Address address) {
+        return address.getId() == null;
     }
 
     private static abstract class GeographicCoordinateExtractor<T extends GeographicCoordinate> {

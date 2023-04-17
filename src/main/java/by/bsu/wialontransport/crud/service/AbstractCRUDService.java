@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.AbstractDto;
 import by.bsu.wialontransport.crud.entity.AbstractEntity;
 import by.bsu.wialontransport.crud.mapper.AbstractMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;

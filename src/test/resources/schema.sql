@@ -202,4 +202,3 @@ CREATE TRIGGER tr_on_insert_data
     ON data
     FOR EACH ROW
     EXECUTE PROCEDURE on_insert_data();
-

@@ -1,6 +1,10 @@
 package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
+import org.hibernate.annotations.SQLInsert;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.spatial.JTSGeometryType;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
@@ -10,6 +14,10 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Table(name = "addresses")
+@TypeDef(
+        name = "geometry-type",
+        typeClass = JTSGeometryType.class
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -30,9 +38,9 @@ public class AddressEntity extends AbstractEntity<Long> {
     @Column(name = "center")
     private Point center;
 
-    @Column(name = "cityName")
+    @Column(name = "city_name")
     private String cityName;
 
-    @Column(name = "countryName")
+    @Column(name = "country_name")
     private String countryName;
 }
