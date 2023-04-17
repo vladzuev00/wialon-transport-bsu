@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.configuration.property;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
