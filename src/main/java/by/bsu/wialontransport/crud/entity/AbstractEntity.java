@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.crud.entity;
 
+import org.hibernate.Hibernate;
+
 import java.util.Objects;
 
 import static java.util.Objects.hash;
@@ -11,7 +13,7 @@ public abstract class AbstractEntity<IdType> {
     public abstract IdType getId();
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "EqualsWhichDoesntCheckParameterClass"})
     public final boolean equals(final Object otherObject) {
         if (this == otherObject) {
             return true;
@@ -19,7 +21,7 @@ public abstract class AbstractEntity<IdType> {
         if (otherObject == null) {
             return false;
         }
-        if (this.getClass() != otherObject.getClass()) {
+        if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
         final AbstractEntity<IdType> other = (AbstractEntity<IdType>) otherObject;
