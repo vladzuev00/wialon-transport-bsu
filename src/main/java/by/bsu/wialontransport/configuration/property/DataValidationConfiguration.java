@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class DataValidationProperty {
+public class DataValidationConfiguration {
     private int minValidAmountOfSatellites;
     private int maxValidAmountSatellites;
 

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdata.filter;
 
-import by.bsu.wialontransport.configuration.property.DataValidationProperty;
+import by.bsu.wialontransport.configuration.property.DataValidationConfiguration;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.protocol.wialon.parameter.DOPParameterDictionary;
@@ -20,7 +20,7 @@ import static java.util.Arrays.stream;
 @Component
 @RequiredArgsConstructor
 public final class DataPropertyValidator {
-    private final DataValidationProperty validationProperty;
+    private final DataValidationConfiguration validationProperty;
 
     public boolean isValidAmountOfSatellites(final Data data) {
         return this.validationProperty.getMinValidAmountOfSatellites() <= data.getAmountOfSatellites()

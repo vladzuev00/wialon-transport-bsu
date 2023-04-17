@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 
-public final class DataValidationPropertyTest extends AbstractContextTest {
+public final class DataValidationConfigurationTest extends AbstractContextTest {
 
     @Autowired
-    private DataValidationProperty property;
+    private DataValidationConfiguration configuration;
 
     @Test
-    public void propertyShouldBeInitialized() {
-        final DataValidationProperty expected = DataValidationProperty.builder()
+    public void configurationShouldBeInitialized() {
+        final DataValidationConfiguration expected = DataValidationConfiguration.builder()
                 .minValidAmountOfSatellites(3)
                 .maxValidAmountSatellites(999)
                 .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
@@ -23,6 +23,6 @@ public final class DataValidationPropertyTest extends AbstractContextTest {
                 .minValidDOP(1)
                 .maxValidDOP(7)
                 .build();
-        assertEquals(expected, this.property);
+        assertEquals(expected, this.configuration);
     }
 }

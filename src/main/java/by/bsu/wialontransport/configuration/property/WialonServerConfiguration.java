@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.configuration.property;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +9,12 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "wialon.server")
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
+@ToString
+@Builder
 public class WialonServerConfiguration {
     private String host;
     private int port;
