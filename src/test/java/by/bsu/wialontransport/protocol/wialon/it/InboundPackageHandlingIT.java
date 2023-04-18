@@ -663,14 +663,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitDataDeliveringAndReturnDeliveredOrNot();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -689,26 +687,35 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitDataDeliveringAndReturnDeliveredOrNot();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
     public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackage();
 
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+        this.sendValidRequestDataPackage();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+        this.savedDataConsumer.reset();
+
+        final String givenRequest = "#D#151122;145644;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 //HDOP, VDOP, PDOP
@@ -718,7 +725,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitDataDeliveringAndReturnDeliveredOrNot();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -727,8 +734,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final DataEntity expectedSavedNewestData = DataEntity.builder()
                 .date(LocalDate.of(2022, 11, 15))
                 .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6026, NORTH))
-                .longitude(createLongitude(37, 39, 6835, EAST))
+                .latitude(createLatitude(55, 44, 6025, NORTH))
+                .longitude(createLongitude(37, 39, 6834, EAST))
                 .speed(100)
                 .course(15)
                 .altitude(10)
@@ -739,6 +746,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
                 .tracker(this.findGivenExistingTracker())
+                .address(createAddress(258L))
                 .build();
         checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
 
@@ -750,17 +758,44 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
 
-        //TODO: check in kafka
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
+                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, "
+                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, "
+                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, "
+                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
+                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"6:122:2:4,7:123:2:5,8:124:2:6,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
     public void dataPackageShouldBeHandledAsValidWithFixingBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
+
         this.sendValidRequestDataPackage();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+        this.savedDataConsumer.reset();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;2;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -772,7 +807,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitDataDeliveringAndReturnDeliveredOrNot();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -794,6 +829,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
                 .tracker(this.findGivenExistingTracker())
+                .address(createAddress(258L))
                 .build();
         checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
 
@@ -810,17 +846,43 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
 
-        //TODO: check in kafka
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"6:122:2:5,7:123:2:6,8:124:2:7,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
     public void dataPackageShouldBeHandledAsValidWithFixingBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
+
         this.sendValidRequestDataPackage();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+        this.savedDataConsumer.reset();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;1000;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -832,7 +894,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitDataDeliveringAndReturnDeliveredOrNot();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -854,6 +916,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
                 .tracker(this.findGivenExistingTracker())
+                .address(createAddress(258L))
                 .build();
         checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
 
@@ -870,7 +933,22 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
 
-        //TODO: check in kafka
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
+                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
+                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", \"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"6:122:2:5,7:123:2:6,8:124:2:7,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
     @Test
