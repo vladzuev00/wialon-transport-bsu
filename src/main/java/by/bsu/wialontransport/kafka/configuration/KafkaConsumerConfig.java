@@ -49,6 +49,28 @@ public class KafkaConsumerConfig {
         return createKafkaListenerContainerFactory(consumerFactoryInboundData);
     }
 
+    /**
+     * Kafka factory of consumer, which consumes data from kafka, which have been saved in database.
+     */
+    @Bean
+    @Autowired
+    public ConsumerFactory<Long, GenericRecord> consumerFactorySavedData(
+            @Value("${kafka.topic.saved-data.consumer.group-id}") final String groupId,
+            @Value("${kafka.topic.saved-data.consumer.max-poll-records}") final int maxPollRecords,
+            @Value("${kafka.topic.saved-data.consumer.fetch-max-wait-ms}") final int fetchMaxWaitMs,
+            @Value("${kafka.topic.saved-data.consumer.fetch-min-bytes}") final int fetchMinBytes,
+            @Qualifier("transportableDataSchema") final Schema schema) {
+        return this.createConsumerFactory(groupId, maxPollRecords, fetchMaxWaitMs, fetchMinBytes, schema);
+    }
+
+    @Bean
+    @Autowired
+    public ConcurrentKafkaListenerContainerFactory<Long, GenericRecord> kafkaListenerContainerFactorySaveData(
+            @Qualifier("consumerFactorySavedData")
+            final ConsumerFactory<Long, GenericRecord> consumerFactorySavedData) {
+        return createKafkaListenerContainerFactory(consumerFactorySavedData);
+    }
+
     private <KeyType, ValueType> ConsumerFactory<KeyType, ValueType> createConsumerFactory(final String groupId,
                                                                                            final int maxPollRecords,
                                                                                            final int fetchMaxWaitMs,

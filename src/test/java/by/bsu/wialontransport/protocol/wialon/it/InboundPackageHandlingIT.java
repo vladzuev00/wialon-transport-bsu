@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.it;
 
-import by.bsu.wialontransport.base.AbstractKafkaContainerTest;
+import by.bsu.wialontransport.base.kafka.AbstractKafkaContainerTest;
+import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.configuration.property.WialonServerConfiguration;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
@@ -18,7 +19,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -63,7 +63,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
     private static final String MESSAGE_EXCEPTION_FAILED_LOGIN = "Login is failed.";
 
-    private static final int WAIT_MESSAGE_DELIVERING_IN_SECONDS = 3;
+    private static final int WAIT_MESSAGE_DELIVERING_IN_SECONDS = 6;
 
     private static final String HQL_QUERY_TO_FIND_ALL_DATA = "SELECT e FROM DataEntity e";
 
@@ -97,6 +97,9 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     @MockBean
     private RestTemplate mockedRestTemplate;
 
+    @Autowired
+    private TestKafkaSavedDataConsumer savedDataConsumer;
+
     private Client client;
 
     @Before
@@ -110,6 +113,11 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void closeClient()
             throws IOException {
         this.client.close();
+    }
+
+    @After
+    public void resetSavedDataConsumer() {
+        this.savedDataConsumer.reset();
     }
 
     @Test
@@ -168,10 +176,9 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
             throws Exception {
         this.login();
+        this.sendValidRequestDataPackage();
 
-        this.sendValidRequestDataPackageAndCheckResponse();
-
-        waitMessageDelivering();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(1, dataFromDatabase.size());
@@ -206,7 +213,20 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         verify(this.mockedRestTemplate, times(0))
                 .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
-        //TODO: check in kafka
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d, leaderEpoch = \\d, "
+                + "offset = \\d, CreateTime = \\d+, serialized key size = 8, serialized value size = 137, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
+                + "value = \\{\"id\": \\d+, \"epochSeconds\": \\d+, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
+                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
+                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"1:122:2:5,2:123:2:6,3:124:2:7,4:par1:3:str,5:116:2:0\\.5\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
     @Test
@@ -238,9 +258,9 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 )
         );
 
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
-        waitMessageDelivering();
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(1, dataFromDatabase.size());
@@ -275,7 +295,20 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         verify(this.mockedRestTemplate, times(1))
                 .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
-        //TODO: check in kafka
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d, leaderEpoch = \\d, "
+                + "offset = \\d, CreateTime = \\d+, serialized key size = 8, serialized value size = 137, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
+                + "value = \\{\"id\": \\d+, \"epochSeconds\": \\d+, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
+                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
+                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"1:122:2:5,2:123:2:6,3:124:2:7,4:par1:3:str,5:116:2:0\\.5\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
     @Test
@@ -294,14 +327,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -320,14 +351,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -346,14 +375,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -372,14 +399,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -398,14 +423,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -424,14 +447,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -450,14 +471,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -476,14 +495,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -502,14 +519,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -528,14 +543,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -554,14 +567,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -580,14 +591,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -606,14 +615,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -632,14 +639,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        assertFalse(this.waitDataDeliveringAndReturnDeliveredOrNot());
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
 
         assertEquals(0, this.findAmountOfParametersInDataBase());
-
-        //TODO: check in kafka
     }
 
     @Test
@@ -658,7 +663,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
@@ -684,7 +689,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertTrue(dataFromDatabase.isEmpty());
@@ -701,7 +706,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeHandledAsValidWithoutFixingInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -713,7 +718,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -755,7 +760,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeHandledAsValidWithFixingBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;2;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -767,7 +772,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -815,7 +820,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeHandledAsValidWithFixingBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;1000;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -827,7 +832,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -875,7 +880,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeSkippedBecauseOfDateTimeIsLessThanMinimalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151100;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -887,7 +892,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(1, dataFromDatabase.size());
@@ -909,7 +914,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeSkippedBecauseOfDateTimeIsMoreThanMaximalAllowableInCaseExistingPreviousData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151199;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -921,7 +926,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(1, dataFromDatabase.size());
@@ -943,7 +948,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterDoesNotExistInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -955,7 +960,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1003,7 +1008,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1015,7 +1020,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1063,7 +1068,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1075,7 +1080,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1123,7 +1128,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1135,7 +1140,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1183,7 +1188,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterDoesNotExistInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1195,7 +1200,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1243,7 +1248,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1255,7 +1260,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1303,7 +1308,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1315,7 +1320,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1363,7 +1368,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
             throws Exception {
         this.login();
-        this.sendValidRequestDataPackageAndCheckResponse();
+        this.sendValidRequestDataPackage();
 
         final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
@@ -1375,7 +1380,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(2, dataFromDatabase.size());
@@ -1432,7 +1437,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         final String response = this.client.doRequest(givenRequest).get();
         assertEquals(FAILED_RESPONSE_DATA_PACKAGE, response);
 
-        waitMessageDelivering();
+        waitDataDeliveringAndReturnDeliveredOrNot();
 
         final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
         assertEquals(0, dataFromDatabase.size());
@@ -1461,9 +1466,11 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         }
     }
 
-    private static void waitMessageDelivering()
+    private boolean waitDataDeliveringAndReturnDeliveredOrNot()
             throws InterruptedException {
-        SECONDS.sleep(WAIT_MESSAGE_DELIVERING_IN_SECONDS);
+        return this.savedDataConsumer
+                .getCountDownLatch()
+                .await(WAIT_MESSAGE_DELIVERING_IN_SECONDS, SECONDS);
     }
 
     private static Latitude createLatitude(final int degrees, final int minutes, final int minuteShare,
@@ -1528,7 +1535,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .getSingleResult();
     }
 
-    private void sendValidRequestDataPackageAndCheckResponse()
+    private void sendValidRequestDataPackage()
             throws ExecutionException, InterruptedException {
         final String response = this.client.doRequest(GIVEN_VALID_REQUEST_DATA_PACKAGE).get();
         if (!response.equals(SUCCESS_RESPONSE_DATA_PACKAGE)) {

@@ -104,8 +104,8 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     @Override
     protected void processData(final List<Data> data) {
         final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
-        this.dataService.saveAll(findDataWithSavedAddresses);
-        this.sendInSavedDataTopic(findDataWithSavedAddresses);
+        final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
+        this.sendInSavedDataTopic(savedData);
     }
 
     private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {

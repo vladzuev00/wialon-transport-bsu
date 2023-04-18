@@ -1,5 +1,6 @@
-package by.bsu.wialontransport.base;
+package by.bsu.wialontransport.base.kafka;
 
+import by.bsu.wialontransport.base.AbstractContextTest;
 import org.junit.ClassRule;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
