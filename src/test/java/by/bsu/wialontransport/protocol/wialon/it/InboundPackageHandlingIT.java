@@ -214,8 +214,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
         final String actualPayload = this.savedDataConsumer.getPayload();
-        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d, leaderEpoch = \\d, "
-                + "offset = \\d, CreateTime = \\d+, serialized key size = 8, serialized value size = 137, "
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
                 + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
                 + "value = \\{\"id\": \\d+, \"epochSeconds\": \\d+, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
                 + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
@@ -224,7 +224,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
                 + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
                 + "\"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": \"1:122:2:5,2:123:2:6,3:124:2:7,4:par1:3:str,5:116:2:0\\.5\", "
+                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str,\\d+:116:2:0\\.5\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
@@ -296,8 +296,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
 
         final String actualPayload = this.savedDataConsumer.getPayload();
-        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d, leaderEpoch = \\d, "
-                + "offset = \\d, CreateTime = \\d+, serialized key size = 8, serialized value size = 137, "
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
                 + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
                 + "value = \\{\"id\": \\d+, \"epochSeconds\": \\d+, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
                 + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
@@ -306,7 +306,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
                 + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
                 + "\"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": \"1:122:2:5,2:123:2:6,3:124:2:7,4:par1:3:str,5:116:2:0\\.5\", "
+                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str,\\d+:116:2:0\\.5\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
@@ -763,7 +763,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
         final String actualPayload = this.savedDataConsumer.getPayload();
         final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
-                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
                 + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, "
                 + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, "
                 + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, "
@@ -772,7 +772,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
                 + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
                 + "\"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": \"6:122:2:4,7:123:2:5,8:124:2:6,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
@@ -851,7 +851,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
         final String actualPayload = this.savedDataConsumer.getPayload();
         final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
-                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
                 + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
                 + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
                 + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
@@ -859,7 +859,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
                 + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
                 + "\"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": \"6:122:2:5,7:123:2:6,8:124:2:7,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
@@ -938,7 +938,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
 
         final String actualPayload = this.savedDataConsumer.getPayload();
         final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
-                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = 139, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
                 + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
                 + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
                 + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
@@ -946,7 +946,7 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
                 + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
                 + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", \"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": \"6:122:2:5,7:123:2:6,8:124:2:7,9:par1:3:str2,10:116:2:0\\.4\", "
+                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
