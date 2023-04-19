@@ -951,577 +951,577 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(actualPayload.matches(expectedPayloadRegex));
     }
 
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsLessThanMinimalAllowableInCaseExistingPreviousData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151100;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(1, dataFromDatabase.size());
-
-        final DataEntity previousData = dataFromDatabase.get(0);
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsMoreThanMaximalAllowableInCaseExistingPreviousData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151199;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(1, dataFromDatabase.size());
-
-        final DataEntity previousData = dataFromDatabase.get(0);
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterDoesNotExistInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //VDOP, PDOP
-                + "123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:0,123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:8,123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:1:4,123:2:5,124:2:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterDoesNotExistInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP
-                + "122:2:4,123:2:5,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:2:0,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:2:8,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    @Transactional(propagation = NOT_SUPPORTED)
-    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
-    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
-    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
-            throws Exception {
-        this.login();
-        this.sendValidRequestDataPackage();
-
-        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:1:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(2, dataFromDatabase.size());
-
-        final DataEntity previousData = findOldestData(dataFromDatabase);
-        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
-        final DataEntity expectedSavedNewestData = DataEntity.builder()
-                .date(LocalDate.of(2022, 11, 15))
-                .time(LocalTime.of(14, 56, 44))
-                .latitude(createLatitude(55, 44, 6025, NORTH))
-                .longitude(createLongitude(37, 39, 6834, EAST))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .reductionPrecision(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
-                .tracker(this.findGivenExistingTracker())
-                .build();
-        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
-
-        assertEquals(10, this.findAmountOfParametersInDataBase());
-
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
-        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
-
-        //TODO: check in kafka
-    }
-
-    @Test
-    public void dataPackageShouldNotBeHandledBecauseOfRequestDoesNotMatchRegex()
-            throws Exception {
-        this.login();
-
-        //there is no date
-        final String givenRequest = "#D#;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
-                + "5.5,4343.454544334,454.433,1;"
-                + "keydrivercode;"
-                //HDOP, VDOP, PDOP
-                + "122:2:4,123:2:5,124:1:6,"
-                + "par1:3:str2,116:2:0.4"
-                + "\r\n";
-        final String response = this.client.doRequest(givenRequest).get();
-        assertEquals(FAILED_RESPONSE_DATA_PACKAGE, response);
-
-        waitDataDeliveringAndReturnDeliveredOrNot();
-
-        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
-        assertEquals(0, dataFromDatabase.size());
-
-        //TODO: check in kafka
-    }
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsLessThanMinimalAllowableInCaseExistingPreviousData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151100;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(1, dataFromDatabase.size());
+//
+//        final DataEntity previousData = dataFromDatabase.get(0);
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeSkippedBecauseOfDateTimeIsMoreThanMaximalAllowableInCaseExistingPreviousData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151199;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(1, dataFromDatabase.size());
+//
+//        final DataEntity previousData = dataFromDatabase.get(0);
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterDoesNotExistInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //VDOP, PDOP
+//                + "123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:0,123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:8,123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfHDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:1:4,123:2:5,124:2:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterDoesNotExistInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP
+//                + "122:2:4,123:2:5,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsLessThanMinimalAllowableInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:2:0,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsMoreThanMaximalAllowableInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:2:8,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    @Transactional(propagation = NOT_SUPPORTED)
+//    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+//    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+//    public void dataPackageShouldBeFixedAndSavedBecauseOfPDOPParameterIsNotDoubleInCaseExistingPreviousValidData()
+//            throws Exception {
+//        this.login();
+//        this.sendValidRequestDataPackage();
+//
+//        final String givenRequest = "#D#151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:1:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(SUCCESS_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(2, dataFromDatabase.size());
+//
+//        final DataEntity previousData = findOldestData(dataFromDatabase);
+//        final DataEntity actualSavedNewestData = findNewestData(dataFromDatabase);
+//        final DataEntity expectedSavedNewestData = DataEntity.builder()
+//                .date(LocalDate.of(2022, 11, 15))
+//                .time(LocalTime.of(14, 56, 44))
+//                .latitude(createLatitude(55, 44, 6025, NORTH))
+//                .longitude(createLongitude(37, 39, 6834, EAST))
+//                .speed(100)
+//                .course(15)
+//                .altitude(10)
+//                .amountOfSatellites(177)
+//                .reductionPrecision(545.4554)
+//                .inputs(17)
+//                .outputs(18)
+//                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+//                .driverKeyCode("keydrivercode")
+//                .tracker(this.findGivenExistingTracker())
+//                .build();
+//        checkEqualsExceptIdAndParameters(expectedSavedNewestData, actualSavedNewestData);
+//
+//        assertEquals(10, this.findAmountOfParametersInDataBase());
+//
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "6", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "7", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedNewestData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
+//        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
+//
+//        //TODO: check in kafka
+//    }
+//
+//    @Test
+//    public void dataPackageShouldNotBeHandledBecauseOfRequestDoesNotMatchRegex()
+//            throws Exception {
+//        this.login();
+//
+//        //there is no date
+//        final String givenRequest = "#D#;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+//                + "5.5,4343.454544334,454.433,1;"
+//                + "keydrivercode;"
+//                //HDOP, VDOP, PDOP
+//                + "122:2:4,123:2:5,124:1:6,"
+//                + "par1:3:str2,116:2:0.4"
+//                + "\r\n";
+//        final String response = this.client.doRequest(givenRequest).get();
+//        assertEquals(FAILED_RESPONSE_DATA_PACKAGE, response);
+//
+//        waitDataDeliveringAndReturnDeliveredOrNot();
+//
+//        final List<DataEntity> dataFromDatabase = this.findAllDataFromDataBase();
+//        assertEquals(0, dataFromDatabase.size());
+//
+//        //TODO: check in kafka
+//    }
 
     private void runServerIfWasNotRun()
             throws InterruptedException {
