@@ -215,7 +215,7 @@ public final class ContextAttributeManagerTest {
         when(givenChannel.attr(any(AttributeKey.class))).thenReturn(givenAttribute);
 
         final Data givenData = Data.builder()
-                .date(LocalDate.of(20212, 11, 15))
+                .date(LocalDate.of(2022, 11, 15))
                 .time(LocalTime.of(15, 44, 22))
                 .latitude(Latitude.builder()
                         .degrees(30)

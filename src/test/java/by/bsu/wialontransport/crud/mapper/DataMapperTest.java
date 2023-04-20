@@ -32,6 +32,7 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.STRING;
 import static java.util.Collections.emptyList;
 import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mockStatic;
 
 public final class DataMapperTest extends AbstractContextTest {
@@ -197,13 +198,13 @@ public final class DataMapperTest extends AbstractContextTest {
         final AddressEntity givenAddress = new AddressEntity();
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
             mockedStatic
-                    .when(() -> isInitialized(givenParameters))
+                    .when(() -> isInitialized(same(givenParameters)))
                     .thenReturn(false);
             mockedStatic
-                    .when(() -> isInitialized(givenTracker))
+                    .when(() -> isInitialized(same(givenTracker)))
                     .thenReturn(false);
             mockedStatic
-                    .when(() -> isInitialized(givenAddress))
+                    .when(() -> isInitialized(same(givenAddress)))
                     .thenReturn(false);
 
             final DataEntity givenEntity = DataEntity.builder()
