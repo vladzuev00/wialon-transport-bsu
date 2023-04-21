@@ -55,7 +55,7 @@ public class ParameterEntity extends AbstractEntity<Long> {
         }
 
         public static Type findByValue(byte value) {
-            return stream(Type.values())
+            return stream(values())
                     .filter(type -> type.value == value)
                     .findAny()
                     .orElse(NOT_DEFINED);
