@@ -10,7 +10,9 @@ import java.time.LocalTime;
 import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
 import static by.bsu.wialontransport.crud.dto.Data.createWithTracker;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
+import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
+import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.WESTERN;
 import static org.junit.Assert.assertEquals;
 
 public final class DataTest {
@@ -121,13 +123,49 @@ public final class DataTest {
         assertEquals(expected, actual);
     }
 
-    private static Address createAddress(Long id) {
+    @Test
+    public void latitudeWithTypeSouthShouldBeConvertedToDouble() {
+        final Latitude givenLatitude = new Latitude(44, 45, 46, SOUTH);
+
+        final double actual = givenLatitude.findDoubleValue();
+        final double expected = -44.76277777777778;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void latitudeWithTypeNorthShouldBeConvertedToDouble() {
+        final Latitude givenLatitude = new Latitude(44, 45, 46, NORTH);
+
+        final double actual = givenLatitude.findDoubleValue();
+        final double expected = 44.76277777777778;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void longitudeWithTypeWesternShouldBeConvertedToDouble() {
+        final Longitude givenLongitude = new Longitude(44, 45, 46, WESTERN);
+
+        final double actual = givenLongitude.findDoubleValue();
+        final double expected = -44.76277777777778;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void longitudeWithTypeEastShouldBeConverted() {
+        final Longitude givenLongitude = new Longitude(44, 45, 46, EAST);
+
+        final double actual = givenLongitude.findDoubleValue();
+        final double expected = 44.76277777777778;
+        assertEquals(expected, actual, 0.);
+    }
+
+    private static Address createAddress(final Long id) {
         return Address.builder()
                 .id(id)
                 .build();
     }
 
-    private static Tracker createTracker(Long id) {
+    private static Tracker createTracker(final Long id) {
         return Tracker.builder()
                 .id(id)
                 .build();

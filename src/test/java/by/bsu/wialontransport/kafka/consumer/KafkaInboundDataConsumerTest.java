@@ -7,11 +7,13 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.apache.avro.generic.GenericRecord;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +49,12 @@ public final class KafkaInboundDataConsumerTest {
     @Mock
     private KafkaSavedDataProducer mockedKafkaSavedDataProducer;
 
+    @Mock
+    private AddressService mockedAddressService;
+
+    @Mock
+    private GeocodingService mockedGeocodingService;
+
     @Captor
     private ArgumentCaptor<List<Data>> listOfDataArgumentCaptor;
 
@@ -57,11 +65,13 @@ public final class KafkaInboundDataConsumerTest {
 
     @Before
     public void initializeConsumer() {
-//        this.consumer = new KafkaInboundDataConsumer(
-//                this.mockedTrackerService,
-//                this.mockedDataService,
-//                this.mockedKafkaSavedDataProducer
-//        );
+        this.consumer = new KafkaInboundDataConsumer(
+                this.mockedTrackerService,
+                this.mockedDataService,
+                this.mockedAddressService,
+                this.mockedGeocodingService,
+                this.mockedKafkaSavedDataProducer
+        );
     }
 
     @Test
