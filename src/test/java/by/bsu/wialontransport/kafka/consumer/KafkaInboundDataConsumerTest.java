@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.kafka.consumer;
 
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
@@ -35,6 +36,7 @@ import static by.bsu.wialontransport.kafka.transportable.TransportableData.Field
 import static java.time.ZoneOffset.UTC;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,6 +62,9 @@ public final class KafkaInboundDataConsumerTest {
 
     @Captor
     private ArgumentCaptor<Data> dataArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Address> addressArgumentCaptor;
 
     private KafkaInboundDataConsumer consumer;
 
@@ -104,6 +109,10 @@ public final class KafkaInboundDataConsumerTest {
 
         when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
 
+        final Address givenAddress = createAddress(258L);
+        when(this.mockedGeocodingService.receive(givenLatitude, givenLongitude))
+                .thenReturn(Optional.of(givenAddress));
+
         final Data actual = this.consumer.mapToData(givenGenericRecord);
 
         final double[] expectedAnalogInputs = new double[]{5.5, 4343.454544334, 454.433, 1};
@@ -129,6 +138,7 @@ public final class KafkaInboundDataConsumerTest {
                 .driverKeyCode(givenDriverKeyCode)
                 .parametersByNames(expectedParametersByNames)
                 .tracker(givenTracker)
+                .address(givenAddress)
                 .build();
         assertEquals(expected, actual);
     }
@@ -164,19 +174,146 @@ public final class KafkaInboundDataConsumerTest {
         this.consumer.mapToData(givenGenericRecord);
     }
 
+    @Test(expected = DataConsumingException.class)
+    public void genericRecordShouldNotBeMappedToDataBecauseOfGeocodingServiceDoNotFindAddress() {
+        final Long givenId = 255L;
+
+        final LocalDateTime givenDateTime = LocalDateTime.of(
+                2023, 4, 8, 18, 25, 2);
+        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
+
+        final Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
+        final Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
+        final int givenSpeed = 50;
+        final int givenCourse = 51;
+        final int givenAltitude = 52;
+        final int givenAmountOfSatellites = 53;
+        final double givenReductionPrecision = 0.5;
+        final int givenInputs = 54;
+        final int givenOutputs = 55;
+        final String givenDriverKeyCode = "driver-key-code";
+
+        final Long givenTrackerId = 256L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
+
+        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
+                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
+                givenReductionPrecision, givenInputs, givenOutputs, "5.5,4343.454544334,454.433,1",
+                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
+        );
+
+        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
+
+        when(this.mockedGeocodingService.receive(givenLatitude, givenLongitude)).thenReturn(empty());
+
+        this.consumer.mapToData(givenGenericRecord);
+    }
+
+    @Test
+    public void genericRecordWithEmptyAnalogInputsShouldBeMappedToData() {
+        final Long givenId = 255L;
+
+        final LocalDateTime givenDateTime = LocalDateTime.of(
+                2023, 4, 8, 18, 25, 2);
+        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
+
+        final Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
+        final Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
+        final int givenSpeed = 50;
+        final int givenCourse = 51;
+        final int givenAltitude = 52;
+        final int givenAmountOfSatellites = 53;
+        final double givenReductionPrecision = 0.5;
+        final int givenInputs = 54;
+        final int givenOutputs = 55;
+        final String givenDriverKeyCode = "driver-key-code";
+
+        final Long givenTrackerId = 256L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
+
+        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
+                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
+                givenReductionPrecision, givenInputs, givenOutputs, "",
+                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
+        );
+
+        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
+
+        final Address givenAddress = createAddress(258L);
+        when(this.mockedGeocodingService.receive(givenLatitude, givenLongitude))
+                .thenReturn(Optional.of(givenAddress));
+
+        final Data actual = this.consumer.mapToData(givenGenericRecord);
+
+        final double[] expectedAnalogInputs = new double[]{};
+        final Map<String, Parameter> expectedParametersByNames = Map.of(
+                "122", createParameter("122", STRING, "str"),
+                "123", createParameter("123", DOUBLE, "6"),
+                "124", createParameter("124", INTEGER, "7")
+        );
+        final Data expected = Data.builder()
+                .id(givenId)
+                .date(givenDateTime.toLocalDate())
+                .time(givenDateTime.toLocalTime())
+                .latitude(givenLatitude)
+                .longitude(givenLongitude)
+                .speed(givenSpeed)
+                .course(givenCourse)
+                .altitude(givenAltitude)
+                .amountOfSatellites(givenAmountOfSatellites)
+                .reductionPrecision(givenReductionPrecision)
+                .inputs(givenInputs)
+                .outputs(givenOutputs)
+                .analogInputs(expectedAnalogInputs)
+                .driverKeyCode(givenDriverKeyCode)
+                .parametersByNames(expectedParametersByNames)
+                .tracker(givenTracker)
+                .address(givenAddress)
+                .build();
+        assertEquals(expected, actual);
+    }
+
     @Test
     public void dataShouldBeProcessed() {
-        final List<Data> givenData = List.of(createData(255L), createData(256L));
+        final List<Data> givenData = List.of(
+                createData(),
+                createData(),
+                createDataWithAddress(258L),
+                createDataWithAddress(260L)
+        );
+
+        final Address firstGivenNewSavedAddress = createAddress(261L);
+        final Address secondGivenNewSavedAddress = createAddress(262L);
+        when(this.mockedAddressService.save(any(Address.class)))
+                .thenReturn(firstGivenNewSavedAddress)
+                .thenReturn(secondGivenNewSavedAddress);
+
+        final List<Data> expectedNotSavedDataWithSavedAddress = List.of(
+                createDataWithAddress(261L),
+                createDataWithAddress(262L),
+                createDataWithAddress(258L),
+                createDataWithAddress(260L)
+        );
+        final List<Data> givenSavedData = List.of(
+                createDataWithAddress(250L, 261L),
+                createDataWithAddress(251L, 262L),
+                createDataWithAddress(252L, 258L),
+                createDataWithAddress(253L, 260L)
+        );
+        when(this.mockedDataService.saveAll(expectedNotSavedDataWithSavedAddress)).thenReturn(givenSavedData);
 
         this.consumer.processData(givenData);
 
+        verify(this.mockedAddressService, times(2))
+                .save(this.addressArgumentCaptor.capture());
         verify(this.mockedDataService, times(1))
                 .saveAll(this.listOfDataArgumentCaptor.capture());
-        verify(this.mockedKafkaSavedDataProducer, times(givenData.size()))
+        verify(this.mockedKafkaSavedDataProducer, times(givenSavedData.size()))
                 .send(this.dataArgumentCaptor.capture());
 
-        assertEquals(givenData, this.listOfDataArgumentCaptor.getValue());
-        assertEquals(givenData, this.dataArgumentCaptor.getAllValues());
+        assertTrue(this.addressArgumentCaptor.getAllValues().stream().allMatch(address -> address.getId() == null));
+        assertEquals(expectedNotSavedDataWithSavedAddress, this.listOfDataArgumentCaptor.getValue());
+        assertEquals(givenSavedData, this.dataArgumentCaptor.getAllValues());
     }
 
     private static Latitude createLatitude(final int degrees, final int minutes, final int minuteShare,
@@ -253,8 +390,27 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
+    private static Data createData() {
+        return createData(null);
+    }
+
+    private static Data createDataWithAddress(final Long addressId) {
+        return createDataWithAddress(null, addressId);
+    }
+
     private static Data createData(final Long id) {
+        return createDataWithAddress(id, null);
+    }
+
+    private static Data createDataWithAddress(final Long id, final Long addressId) {
         return Data.builder()
+                .id(id)
+                .address(createAddress(addressId))
+                .build();
+    }
+
+    private static Address createAddress(final Long id) {
+        return Address.builder()
                 .id(id)
                 .build();
     }

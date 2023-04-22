@@ -181,14 +181,18 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
 
     private List<Data> findDataWithSavedAddresses(final List<Data> source) {
         return source.stream()
-                .map(data -> {
-                    if (isDataAddressNew(data)) {
-                        return createWithAddress(data, this.addressService.save(data.getAddress()));
-                    } else {
-                        return data;
-                    }
-                })
+                .map(this::mapToDataWithSavedAddressIfAddressIsNew)
                 .toList();
+    }
+
+    private Data mapToDataWithSavedAddressIfAddressIsNew(final Data data) {
+        return isDataAddressNew(data) ? this.mapToDataWithSavedAddress(data) : data;
+    }
+
+    private Data mapToDataWithSavedAddress(final Data dataWithNewAddress) {
+        final Address newAddress = dataWithNewAddress.getAddress();
+        final Address savedAddress = this.addressService.save(newAddress);
+        return createWithAddress(dataWithNewAddress, savedAddress);
     }
 
     private static boolean isDataAddressNew(final Data data) {
@@ -274,7 +278,6 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         private static final String SERIALIZED_EMPTY_ANALOG_INPUTS = "";
         private static final double[] DESERIALIZED_EMPTY_ANALOG_INPUTS = new double[0];
 
-        //TODO: refactor test for this
         public double[] extract(final GenericRecord genericRecord) {
             final String serializedAnalogInputs = extractSerializedAnalogInputs(genericRecord);
             return !serializedAnalogInputs.equals(SERIALIZED_EMPTY_ANALOG_INPUTS)
