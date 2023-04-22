@@ -55,7 +55,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfDateTimeIsLessThanMinimalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfDateTimeIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 LocalDateTime.of(1900, 1, 1, 1, 1, 1),
@@ -72,7 +72,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfDateTimeIsMoreThanMaximalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfDateTimeIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now().plusHours(1),
@@ -89,7 +89,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfAmountOfSatellitesIsLessThanMinimalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfAmountOfSatellitesIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -106,7 +106,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -123,7 +123,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfHDOPParameterAbsents() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfHDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -139,7 +139,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfHDOPParameterIsLessThanMinimalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfHDOPParameterIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -156,7 +156,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfHDOPParameterIsMoreThanMaximalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfHDOPParameterIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -173,7 +173,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfVDOPParameterAbsents() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfVDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -189,7 +189,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfVDOPParameterIsLessThanMinimalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfVDOPParameterIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -206,7 +206,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfVDOPParameterIsMoreThanMaximalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfVDOPParameterIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -223,7 +223,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfPDOPParameterAbsents() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfPDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -239,7 +239,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfPDOPParameterIsLessThanMinimalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfPDOPParameterIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -256,7 +256,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
+    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
                 now(),
@@ -300,7 +300,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidBecauseOfIncorrectOrder() {
+    public void dataShouldNotBeValidInCaseExistingPreviousDataBecauseOfIncorrectOrder() {
         final DataFilter givenFilter = this.createFilter(true);
         final LocalDateTime givenDateTimePreviousData = now();
         final Data givenPreviousData = createData(
