@@ -1724,6 +1724,9 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.5", previousData));
         assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedNewestData));
 
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
         final String actualPayload = this.savedDataConsumer.getPayload();
         final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
                 + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
