@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Optional.ofNullable;
 
-//TODO: do test to check threadsafe
 @Component
 public final class ConnectionManager {
     private final ContextAttributeManager contextAttributeManager;

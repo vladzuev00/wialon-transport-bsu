@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
@@ -209,8 +208,24 @@ public final class ConnectionManagerTest {
                 thirdThreadAddingContextsInConnectionManager
         );
 
-        throw new RuntimeException();
-        //verify()
+        final ChannelHandlerContext firstNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
+                firstGivenContext, secondGivenContext
+        );
+        final ChannelHandlerContext secondNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
+                thirdGivenContext, fourthGivenContext
+        );
+        final ChannelHandlerContext thirdNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
+                fifthGivenContext, sixthGivenContext
+        );
+
+        final Map<Long, ChannelHandlerContext> expectedContextsByTrackerIds = Map.of(
+                firstGivenTrackerId, firstNotClosedContext,
+                secondGivenTrackerId, secondNotClosedContext,
+                thirdGivenTrackerId, thirdNotClosedContext
+        );
+        final Map<Long, ChannelHandlerContext> actualContextsByTrackersIds
+                = findContextsByTrackerIds(givenConnectionManager);
+        assertEquals(expectedContextsByTrackerIds, actualContextsByTrackersIds);
     }
 
     private static Thread createThreadAddingContextsInConnectionManager(final ConnectionManager connectionManager,
@@ -269,5 +284,30 @@ public final class ConnectionManagerTest {
         return Tracker.builder()
                 .id(id)
                 .build();
+    }
+
+    private static ChannelHandlerContext verifyOneContextWasClosedAndReturnNotClosed(final ChannelHandlerContext first,
+                                                                                     final ChannelHandlerContext second) {
+        try {
+            verify(first, times(1)).close();
+            return second;
+        } catch (final AssertionError assertionError) {
+            verify(second, times(1)).close();
+            return first;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<Long, ChannelHandlerContext> findContextsByTrackerIds(final ConnectionManager connectionManager)
+            throws Exception {
+        final Field fieldContextsByTrackerIds = ConnectionManager.class.getDeclaredField(
+                FIELD_NAME_CONTEXTS_BY_TRACKER_IDS
+        );
+        fieldContextsByTrackerIds.setAccessible(true);
+        try {
+            return (Map<Long, ChannelHandlerContext>) fieldContextsByTrackerIds.get(connectionManager);
+        } finally {
+            fieldContextsByTrackerIds.setAccessible(false);
+        }
     }
 }
