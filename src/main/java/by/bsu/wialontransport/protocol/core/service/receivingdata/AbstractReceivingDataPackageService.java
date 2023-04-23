@@ -69,7 +69,8 @@ public abstract class AbstractReceivingDataPackageService<
         for (final Data data : receivedData) {
             final Optional<Data> optionalNewPreviousValidData = this.findNewLastValidData(data, previousValidData);
             if (optionalNewPreviousValidData.isPresent()) {
-                fixedData.add(this.injectTracker(optionalNewPreviousValidData.get(), context));
+                final Data dataWithTracker = this.injectTracker(optionalNewPreviousValidData.get(), context);
+                fixedData.add(dataWithTracker);
                 previousValidData = optionalNewPreviousValidData.get();
             }
         }
@@ -87,7 +88,8 @@ public abstract class AbstractReceivingDataPackageService<
         if (this.dataFilter.isValid(receivedData, previousData)) {
             return Optional.of(receivedData);
         } else if (this.dataFilter.isNeedToBeFixed(receivedData, previousData)) {
-            return Optional.of(this.dataFixer.fix(receivedData, previousData));
+            final Data fixedReceivedData = this.dataFixer.fix(receivedData, previousData);
+            return Optional.of(fixedReceivedData);
         } else {
             return empty();
         }
