@@ -623,7 +623,7 @@ public final class DataFilterTest extends AbstractContextTest {
 
     @Test
     public void dataShouldNotBeNeededToBeFixedDespiteOfVDOPParameterAbsentsBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(true);
+        final DataFilter givenFilter = this.createFilter(false);
         final Data givenPreviousData = createData(
                 now(),
                 3,
@@ -836,7 +836,7 @@ public final class DataFilterTest extends AbstractContextTest {
 
     @Test
     public void dataShouldNotBeNeededToBeFixedDespiteOfPDOPParameterIsLessThanMinimalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(true);
+        final DataFilter givenFilter = this.createFilter(false);
         final Data givenPreviousData = createData(
                 now(),
                 3,
@@ -888,10 +888,9 @@ public final class DataFilterTest extends AbstractContextTest {
         assertTrue(actual);
     }
 
-    //TODO: start from this
     @Test
-    public void dataShouldNotBeNeededToBeFixedBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
-        final DataFilter givenFilter = this.createFilter(true);
+    public void dataShouldNotBeNeededToBeFixedDespiteOfPDOPParameterIsMoreThanMaximalAllowableBecauseOfFilteringIsNotEnabled() {
+        final DataFilter givenFilter = this.createFilter(false);
         final Data givenPreviousData = createData(
                 now(),
                 3,
@@ -913,11 +912,13 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertTrue(actual);
+        assertFalse(actual);
     }
 
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfDateTimeIsLessThanMinimalAllowable() {
+        final DataFilter givenFilter = this.createFilter(true);
+
         final Data givenPreviousData = createData(
                 now(),
                 3,
@@ -938,12 +939,14 @@ public final class DataFilterTest extends AbstractContextTest {
                 )
         );
 
-//        final boolean actual = this.dataFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-//        assertFalse(actual);
+        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
+        assertFalse(actual);
     }
 
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfDateTimeIsMoreThanMaximalAllowable() {
+        final DataFilter givenFilter = this.createFilter(true);
+
         final Data givenPreviousData = createData(
                 now(),
                 3,
@@ -964,12 +967,14 @@ public final class DataFilterTest extends AbstractContextTest {
                 )
         );
 
-//        final boolean actual = this.dataFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-//        assertFalse(actual);
+        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
+        assertFalse(actual);
     }
 
     @Test
     public void dataShouldNotBeNeededToBeFixedBecauseOfNotCorrectOrder() {
+        final DataFilter givenFilter = this.createFilter(true);
+
         final LocalDateTime givenDateTimePreviousData = now();
         final Data givenPreviousData = createData(
                 now(),
@@ -991,8 +996,8 @@ public final class DataFilterTest extends AbstractContextTest {
                 )
         );
 
-//        final boolean actual = this.dataFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-//        assertFalse(actual);
+        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
+        assertFalse(actual);
     }
 
     private DataFilter createFilter(final boolean filteringEnable) {

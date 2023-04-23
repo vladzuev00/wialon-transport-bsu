@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-//TODO: refactor tests
 @Component
 public final class DataFilter {
     private final DataPropertyValidator propertyValidator;
@@ -45,8 +44,7 @@ public final class DataFilter {
         return isNotEarlier(dateTimeOfCurrentData, dateTimeOfPreviousData);
     }
 
-    //TODO: rename 'from' to 'относительный'
-    private static boolean isNotEarlier(final LocalDateTime research, final LocalDateTime from) {
-        return research.isEqual(from) || research.isAfter(from);
+    private static boolean isNotEarlier(final LocalDateTime research, final LocalDateTime relativeDateTime) {
+        return research.isEqual(relativeDateTime) || research.isAfter(relativeDateTime);
     }
 }
