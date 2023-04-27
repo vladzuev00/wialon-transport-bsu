@@ -18,10 +18,11 @@ public final class DataFilter {
     }
 
     public boolean isValid(final Data data) {
-        return this.filteringEnable
-                && this.propertyValidator.isValidDateTime(data)
-                && this.propertyValidator.isValidAmountOfSatellites(data)
-                && this.propertyValidator.isValidDOPParameters(data);
+        return !this.filteringEnable
+                ||
+                this.propertyValidator.isValidDateTime(data)
+                        && this.propertyValidator.isValidAmountOfSatellites(data)
+                        && this.propertyValidator.isValidDOPParameters(data);
     }
 
     public boolean isValid(final Data current, final Data previous) {
@@ -29,13 +30,14 @@ public final class DataFilter {
     }
 
     public boolean isNeedToBeFixed(final Data current, final Data previous) {
-        return this.filteringEnable
-                && this.propertyValidator.isValidDateTime(current)
-                && isCorrectOrder(current, previous)
-                && !(
+        return !this.filteringEnable
+                ||
+                this.propertyValidator.isValidDateTime(current)
+                        && isCorrectOrder(current, previous)
+                        && !(
                         this.propertyValidator.isValidAmountOfSatellites(current)
                                 && this.propertyValidator.isValidDOPParameters(current)
-        );
+                );
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {
