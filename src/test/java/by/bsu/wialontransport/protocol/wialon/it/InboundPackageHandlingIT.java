@@ -33,14 +33,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.STRING;
+import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.IntStream.range;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -87,6 +90,8 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                     + "\r\n";
     private static final String SUCCESS_RESPONSE_DATA_PACKAGE = "#AD#1\r\n";
     private static final String FAILED_RESPONSE_DATA_PACKAGE = "#AD#-1\r\n";
+
+    private static final String TEMPLATE_RESPONSE_BLACK_BOX_PACKAGE = "#AB#%d\r\n";
 
     @Autowired
     private WialonServerConfiguration serverConfiguration;
@@ -1764,6 +1769,1890 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
         assertEquals(0, dataFromDatabase.size());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void blackBoxPackageShouldBeHandledSuccessfullyInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build(),
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(10, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(1)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,"
+                + "\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", \"trackerId\": 255}\\) \\|\\| "
+                + "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, offset = \\d+, "
+                + "CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,"
+                + "\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", \"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfDateTimeIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151109;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfDateTimeIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151199;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;2;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;1000;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfHDOPParameterDoesNotExistInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //VDOP, PDOP
+                + "123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfHDOPParameterIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:0,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfHDOPParameterIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:8,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfTypeOfHDOPParameterIsNotDoubleInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:1:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfVDOPParameterDoesNotExistInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, PDOP
+                + "122:1:4,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfVDOPParameterIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:0,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfVDOPParameterIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:8,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfTypeOfVDOPParameterIsNotDoubleInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:1:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfPDOPParameterDoesNotExistInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP
+                + "122:2:4,123:2:5,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfPDOPParameterIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:0,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfPDOPParameterIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:8,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void firstDataShouldBeSkippedInBlackBoxPackageBecauseOfPDOPParameterIsNotDoubleInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:1:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6027, NORTH))
+                        .longitude(createLongitude(37, 39, 6836, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void secondDataShouldBeSkippedInBlackBoxPackageBecauseOfDateTimeIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151100;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void secondDataShouldBeSkippedInBlackBoxPackageBecauseOfDateTimeIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151199;145645;5544.6027;N;03739.6836;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(5, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
+                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void secondDataShouldBeFixedInBlackBoxPackageBecauseOfAmountOfSatellitesIsLessThanMinimalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;2;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build(),
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(10, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(1)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, "
+                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
+                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\) \\|\\| ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, "
+                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, "
+                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, "
+                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
+                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @Transactional(propagation = NOT_SUPPORTED)
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name) "
+            + "VALUES(258, "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+    @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)
+    @Sql(statements = "ALTER SEQUENCE addresses_id_seq RESTART WITH 1", executionPhase = AFTER_TEST_METHOD)
+    public void secondDataShouldBeFixedInBlackBoxPackageBecauseOfAmountOfSatellitesIsMoreThanMaximalAllowableInCaseNotExistingPreviousData()
+            throws Exception {
+        this.login();
+
+        final String givenRequest = "#B#"
+                + "151122;145644;5544.6026;N;03739.6835;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "|"
+                + "151122;145645;5544.6027;N;03739.6836;E;100;15;10;1000;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                //HDOP, VDOP, PDOP
+                + "122:2:4,123:2:5,124:2:6,"
+                + "par1:3:str2,116:2:0.4"
+                + "\r\n";
+        final String actualResponse = this.client.doRequest(givenRequest).get();
+        final String expectedResponse = createResponseBlackBoxPackage(2);
+        assertEquals(expectedResponse, actualResponse);
+
+        assertTrue(this.waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualSavedData = this.findAllDataFromDataBase();
+        final List<DataEntity> expectedSavedData = List.of(
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build(),
+                DataEntity.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 45))
+                        .latitude(createLatitude(55, 44, 6026, NORTH))
+                        .longitude(createLongitude(37, 39, 6835, EAST))
+                        .speed(100)
+                        .course(15)
+                        .altitude(10)
+                        .amountOfSatellites(177)
+                        .reductionPrecision(545.4554)
+                        .inputs(17)
+                        .outputs(18)
+                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                        .driverKeyCode("keydrivercode")
+                        .tracker(this.findGivenExistingTracker())
+                        .address(createAddress(258L))
+                        .build()
+        );
+        checkEqualsExceptIdAndParameters(expectedSavedData, actualSavedData);
+
+        assertEquals(10, this.findAmountOfParametersInDataBase());
+
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("122", DOUBLE, "4", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("123", DOUBLE, "5", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("124", DOUBLE, "6", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("par1", STRING, "str2", actualSavedData.get(1)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(0)));
+        assertTrue(this.isParameterWithGivenPropertiesExistsInDataBase("116", DOUBLE, "0.4", actualSavedData.get(1)));
+
+        verify(this.mockedRestTemplate, times(0))
+                .exchange(anyString(), same(GET), same(EMPTY), any(ParameterizedTypeReference.class));
+
+        final String actualPayload = this.savedDataConsumer.getPayload();
+        final String expectedPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, "
+                + "offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
+                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
+                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, "
+                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
+                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\) \\|\\| ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, "
+                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, "
+                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, "
+                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
+                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualPayload.matches(expectedPayloadRegex));
+    }
+
     private void runServerIfWasNotRun()
             throws InterruptedException {
         if (!serverWasRan) {
@@ -1810,6 +3699,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 .minuteShare(minuteShare)
                 .type(type)
                 .build();
+    }
+
+    private static void checkEqualsExceptIdAndParameters(final List<DataEntity> expected,
+                                                         final List<DataEntity> actual) {
+        assertEquals(expected.size(), actual.size());
+        range(0, expected.size()).forEach(i -> checkEqualsExceptIdAndParameters(expected.get(i), actual.get(i)));
     }
 
     private static void checkEqualsExceptIdAndParameters(final DataEntity expected, final DataEntity actual) {
@@ -1904,6 +3799,10 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 address,
                 boundingBoxCoordinates
         );
+    }
+
+    private static String createResponseBlackBoxPackage(final int amountOfFixedPackages) {
+        return format(TEMPLATE_RESPONSE_BLACK_BOX_PACKAGE, amountOfFixedPackages);
     }
 
     private static final class Client implements AutoCloseable {

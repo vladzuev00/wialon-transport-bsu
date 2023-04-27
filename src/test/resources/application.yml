@@ -53,7 +53,7 @@ kafka:
         delivery-timeout-ms: 100000
       consumer:
         group-id: inbound-data-group
-        max-poll-records: 400
+        max-poll-records: 2
         fetch-max-wait-ms: 1000
         fetch-min-bytes: 10000
     saved-data:
