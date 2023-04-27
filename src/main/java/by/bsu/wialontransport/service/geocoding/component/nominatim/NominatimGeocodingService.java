@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.service.geocoding.component.nominatim;
 
 import by.bsu.wialontransport.crud.dto.Address;
+import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
 import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
@@ -23,19 +24,23 @@ import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
+//TODO: refactor it and tests
 @Service
 @Order(2)
 public final class NominatimGeocodingService implements GeocodingChainComponent {
     private final String urlTemplate;
     private final RestTemplate restTemplate;
     private final ResponseToAddressMapper responseToAddressMapper;
+    private final AddressService addressService;
 
     public NominatimGeocodingService(@Value("${geocoding.url.template}") final String urlTemplate,
                                      final RestTemplate restTemplate,
-                                     final GeometryFactory geometryFactory) {
+                                     final GeometryFactory geometryFactory,
+                                     final AddressService addressService) {
         this.urlTemplate = urlTemplate;
         this.restTemplate = restTemplate;
         this.responseToAddressMapper = new ResponseToAddressMapper(geometryFactory);
+        this.addressService = addressService;
     }
 
     @Override
@@ -43,6 +48,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
         final NominatimResponse response = this.doRequest(latitude, longitude);
         return response != null
                 ? Optional.of(this.responseToAddressMapper.map(response))
+                .map(address -> this.addressService.findAddressByBoundingBox(address.getBoundingBox()).orElse(address))
                 : empty();
     }
 
