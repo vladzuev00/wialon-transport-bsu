@@ -7,8 +7,9 @@ import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
+import java.util.Optional;
 
+import static java.util.Arrays.copyOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,9 +23,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(255, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
+            + ")")
     public void addressShouldBeFoundById() {
         super.startQueryCount();
         final AddressEntity actual = this.repository.findById(255L).orElseThrow();
@@ -36,6 +39,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
                 .center(this.createPoint(53.050286, 24.873635))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
                 .build();
         checkEquals(expected, actual);
     }
@@ -47,6 +51,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
                 .center(this.createPoint(53.050287, 24.873636))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
                 .build();
 
         super.startQueryCount();
@@ -56,48 +61,118 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 5 0, 2.5 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
+            + ")")
     public void addressesShouldBeFoundByGpsCoordinates() {
         final double givenLatitude = 2.5;
-        final double givenLongitude = 4;
+        final double givenLongitude = 2.5;
 
-        final List<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
-        final List<Long> actualIds = actual.stream()
-                .map(AddressEntity::getId)
-                .toList();
-        final List<Long> expectedIds = List.of(255L, 257L);
-        assertEquals(expectedIds, actualIds);
+        final Optional<AddressEntity> optionalActual = this.repository.findByGpsCoordinates(
+                givenLatitude, givenLongitude
+        );
+        final long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        final long expectedId = 255;
+        assertEquals(expectedId, actualId);
     }
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 5 0, 2.5 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
+            + ")")
     public void addressesShouldNotBeFoundByGpsCoordinates() {
-        final double givenLatitude = 5.;
-        final double givenLongitude = 5.;
+        final double givenLatitude = 20.;
+        final double givenLongitude = 20.;
 
-        final List<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
+        final Optional<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
         assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
+            + ")")
+    public void addressShouldBeFoundByGeometry() {
+        final Geometry givenGeometry = this.createPolygon(
+                10, 15, 15, 16, 16, 17
+        );
+
+        final Optional<AddressEntity> optionalActual = this.repository.findAddressByGeometry(givenGeometry);
+        final long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        final long expectedId = 257;
+        assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10.1 15, 15 16, 16 17, 10.1 15))', 4326)"
+            + ")")
+    public void addressShouldNotBeFoundByGeometry() {
+        final Geometry givenGeometry = this.createPolygon(
+                10, 15, 15, 16, 16, 17
+        );
+
+        final Optional<AddressEntity> optionalActual = this.repository.findAddressByGeometry(givenGeometry);
+        assertTrue(optionalActual.isEmpty());
     }
 
     private Point createPoint(final double longitude, final double latitude) {
@@ -107,16 +182,30 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
     private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
                                    final double secondLongitude, final double secondLatitude,
+                                   final double thirdLongitude, final double thirdLatitude) {
+        return this.createPolygon(
+                new CoordinateXY(firstLongitude, firstLatitude),
+                new CoordinateXY(secondLongitude, secondLatitude),
+                new CoordinateXY(thirdLongitude, thirdLatitude)
+        );
+    }
+
+    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
+                                   final double secondLongitude, final double secondLatitude,
                                    final double thirdLongitude, final double thirdLatitude,
                                    final double fourthLongitude, final double fourthLatitude) {
-        return this.geometryFactory.createPolygon(new Coordinate[]{
-                        new CoordinateXY(firstLongitude, firstLatitude),
-                        new CoordinateXY(secondLongitude, secondLatitude),
-                        new CoordinateXY(thirdLongitude, thirdLatitude),
-                        new CoordinateXY(fourthLongitude, fourthLatitude),
-                        new CoordinateXY(firstLongitude, firstLatitude)
-                }
+        return this.createPolygon(
+                new CoordinateXY(firstLongitude, firstLatitude),
+                new CoordinateXY(secondLongitude, secondLatitude),
+                new CoordinateXY(thirdLongitude, thirdLatitude),
+                new CoordinateXY(fourthLongitude, fourthLatitude)
         );
+    }
+
+    private Geometry createPolygon(final CoordinateXY... coordinates) {
+        final CoordinateXY[] boundedCoordinates = copyOf(coordinates, coordinates.length + 1);
+        boundedCoordinates[boundedCoordinates.length - 1] = coordinates[0];
+        return this.geometryFactory.createPolygon(boundedCoordinates);
     }
 
     private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {

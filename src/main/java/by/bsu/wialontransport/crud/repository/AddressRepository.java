@@ -5,18 +5,17 @@ import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name "
-            + "FROM addresses WHERE ST_INTERSECTS(bounding_box, ST_SETSRID(ST_POINT(:longitude, :latitude), 4326))",
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
+            + "FROM addresses WHERE ST_Intersects(geometry, ST_SetSRID(ST_Point(:longitude, :latitude), 4326))",
             nativeQuery = true)
-    List<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
+    Optional<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
 
-    //TODO: tests
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name "
-            + "FROM addresses WHERE ST_EQUALS(addresses.bounding_box, :boundingBox)", nativeQuery = true)
-    Optional<AddressEntity> findAddressByBoundingBox(final Geometry boundingBox);
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
+            + "FROM addresses WHERE ST_Equals(addresses.geometry, :geometry)",
+            nativeQuery = true)
+    Optional<AddressEntity> findAddressByGeometry(final Geometry geometry);
 }

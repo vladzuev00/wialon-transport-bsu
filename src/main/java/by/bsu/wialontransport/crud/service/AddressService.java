@@ -20,13 +20,14 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public List<Address> findByGpsCoordinates(final double latitude, final double longitude) {
-        final List<AddressEntity> foundEntities = super.repository.findByGpsCoordinates(latitude, longitude);
-        return super.mapper.mapToDto(foundEntities);
+//        final List<AddressEntity> foundEntities = super.repository.findByGpsCoordinates(latitude, longitude);
+//        return super.mapper.mapToDto(foundEntities);
+        return null;
     }
 
     @Transactional(readOnly = true)
     public Optional<Address> findAddressByBoundingBox(final Geometry boundingBox) {
-        final Optional<AddressEntity> optionalEntity = super.repository.findAddressByBoundingBox(boundingBox);
+        final Optional<AddressEntity> optionalEntity = super.repository.findAddressByGeometry(boundingBox);
         return optionalEntity.map(super.mapper::mapToDto);
     }
 }

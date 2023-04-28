@@ -1,8 +1,7 @@
 package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
-import org.hibernate.annotations.SQLInsert;
-import org.hibernate.annotations.Type;
+
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.spatial.JTSGeometryType;
 import org.locationtech.jts.geom.Geometry;
@@ -43,4 +42,7 @@ public class AddressEntity extends AbstractEntity<Long> {
 
     @Column(name = "country_name")
     private String countryName;
+
+    @Column(name = "geometry")
+    private Geometry geometry;
 }

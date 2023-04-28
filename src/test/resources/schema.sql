@@ -77,7 +77,8 @@ CREATE TABLE addresses
     bounding_box GEOMETRY     NOT NULL,
     center       GEOMETRY(POINT, 4326) NOT NULL,
     city_name    VARCHAR(256) NOT NULL,
-    country_name VARCHAR(256) NOT NULL
+    country_name VARCHAR(256) NOT NULL,
+    geometry     GEOMETRY     NOT NULL
 );
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
