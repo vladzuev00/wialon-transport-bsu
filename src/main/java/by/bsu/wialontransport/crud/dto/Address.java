@@ -15,4 +15,5 @@ public class Address implements AbstractDto<Long> {
     Point center;
     String cityName;
     String countryName;
+    Geometry geometry;
 }

@@ -19,7 +19,8 @@ public final class AddressMapper extends AbstractMapper<AddressEntity, Address> 
                 entity.getBoundingBox(),
                 entity.getCenter(),
                 entity.getCityName(),
-                entity.getCountryName()
+                entity.getCountryName(),
+                entity.getGeometry()
         );
     }
 }

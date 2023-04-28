@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static java.util.Arrays.copyOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public final class AddressMapperTest extends AbstractContextTest {
 
@@ -25,6 +27,7 @@ public final class AddressMapperTest extends AbstractContextTest {
                 .center(this.createPoint(4.4, 5.5))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
                 .build();
 
         final AddressEntity actual = this.mapper.mapToEntity(givenAddress);
@@ -34,9 +37,10 @@ public final class AddressMapperTest extends AbstractContextTest {
                 .center(this.createPoint(4.4, 5.5))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
                 .build();
 
-        assert actual != null;
+        assertNotNull(actual);
         checkEquals(expected, actual);
     }
 
@@ -48,6 +52,7 @@ public final class AddressMapperTest extends AbstractContextTest {
                 .center(this.createPoint(5.5, 6.6))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(2, 3, 4, 5, 6, 7))
                 .build();
 
         final Address actual = this.mapper.mapToDto(givenEntity);
@@ -57,6 +62,7 @@ public final class AddressMapperTest extends AbstractContextTest {
                 .center(this.createPoint(5.5, 6.6))
                 .cityName("city")
                 .countryName("country")
+                .geometry(this.createPolygon(2, 3, 4, 5, 6, 7))
                 .build();
         assertEquals(expected, actual);
     }
@@ -66,18 +72,32 @@ public final class AddressMapperTest extends AbstractContextTest {
         return this.geometryFactory.createPoint(coordinate);
     }
 
-    private Geometry createPolygon(final double firstX, final double firstY,
-                                   final double secondX, final double secondY,
-                                   final double thirdX, final double thirdY,
-                                   final double fourthX, final double fourthY) {
-        return this.geometryFactory.createPolygon(new Coordinate[]{
-                        new CoordinateXY(firstX, firstY),
-                        new CoordinateXY(secondX, secondY),
-                        new CoordinateXY(thirdX, thirdY),
-                        new CoordinateXY(fourthX, fourthY),
-                        new CoordinateXY(firstX, firstY)
-                }
+    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
+                                   final double secondLongitude, final double secondLatitude,
+                                   final double thirdLongitude, final double thirdLatitude) {
+        return this.createPolygon(
+                new CoordinateXY(firstLongitude, firstLatitude),
+                new CoordinateXY(secondLongitude, secondLatitude),
+                new CoordinateXY(thirdLongitude, thirdLatitude)
         );
+    }
+
+    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
+                                   final double secondLongitude, final double secondLatitude,
+                                   final double thirdLongitude, final double thirdLatitude,
+                                   final double fourthLongitude, final double fourthLatitude) {
+        return this.createPolygon(
+                new CoordinateXY(firstLongitude, firstLatitude),
+                new CoordinateXY(secondLongitude, secondLatitude),
+                new CoordinateXY(thirdLongitude, thirdLatitude),
+                new CoordinateXY(fourthLongitude, fourthLatitude)
+        );
+    }
+
+    private Geometry createPolygon(final CoordinateXY... coordinates) {
+        final CoordinateXY[] boundedCoordinates = copyOf(coordinates, coordinates.length + 1);
+        boundedCoordinates[boundedCoordinates.length - 1] = coordinates[0];
+        return this.geometryFactory.createPolygon(boundedCoordinates);
     }
 
     private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
