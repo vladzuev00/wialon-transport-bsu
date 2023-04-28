@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.geocoding.component.nominatim.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
+import org.wololo.geojson.Geometry;
 
 @Value
 @Builder
@@ -11,15 +12,18 @@ public class NominatimResponse {
     double centerLongitude;
     NominatimResponseAddress address;
     double[] boundingBoxCoordinates;
+    Geometry geometry;
 
     public NominatimResponse(@JsonProperty("lat") final double centerLatitude,
                              @JsonProperty("lot") final double centerLongitude,
                              @JsonProperty("address") final NominatimResponseAddress address,
-                             @JsonProperty("boundingbox") final double[] boundingBoxCoordinates) {
+                             @JsonProperty("boundingbox") final double[] boundingBoxCoordinates,
+                             @JsonProperty("geojson") final Geometry geometry) {
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
         this.address = address;
         this.boundingBoxCoordinates = boundingBoxCoordinates;
+        this.geometry = geometry;
     }
 
     @Value

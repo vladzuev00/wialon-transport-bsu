@@ -3797,7 +3797,9 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
                 centerLatitude,
                 centerLongitude,
                 address,
-                boundingBoxCoordinates
+                boundingBoxCoordinates,
+                //TODO: do some value
+                null
         );
     }
 

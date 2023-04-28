@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.wololo.jts2geojson.GeoJSONReader;
 
 import java.util.Optional;
 
@@ -24,7 +25,6 @@ import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
-//TODO: refactor it and tests
 @Service
 @Order(2)
 public final class NominatimGeocodingService implements GeocodingChainComponent {
@@ -35,21 +35,30 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
 
     public NominatimGeocodingService(@Value("${geocoding.url.template}") final String urlTemplate,
                                      final RestTemplate restTemplate,
+                                     final AddressService addressService,
                                      final GeometryFactory geometryFactory,
-                                     final AddressService addressService) {
+                                     final GeoJSONReader geoJSONReader) {
         this.urlTemplate = urlTemplate;
         this.restTemplate = restTemplate;
-        this.responseToAddressMapper = new ResponseToAddressMapper(geometryFactory);
         this.addressService = addressService;
+        this.responseToAddressMapper = new ResponseToAddressMapper(geometryFactory, geoJSONReader);
     }
 
     @Override
     public Optional<Address> receive(final double latitude, final double longitude) {
         final NominatimResponse response = this.doRequest(latitude, longitude);
         return response != null
-                ? Optional.of(this.responseToAddressMapper.map(response))
-                .map(address -> this.addressService.findAddressByGeometry(address.getBoundingBox()).orElse(address))
+                ? Optional.of(this.mapToPossiblySavedAddress(response))
                 : empty();
+    }
+
+    private Address mapToPossiblySavedAddress(final NominatimResponse response) {
+        final Address responseAddress = this.responseToAddressMapper.map(response);
+        final Geometry responseAddressGeometry = responseAddress.getGeometry();
+        final Optional<Address> optionalSavedAddressWithSameGeometry = this.addressService.findAddressByGeometry(
+                responseAddressGeometry
+        );
+        return optionalSavedAddressWithSameGeometry.orElse(responseAddress);
     }
 
     private NominatimResponse doRequest(final double latitude, final double longitude) {
@@ -84,6 +93,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
         private static final int INDEX_RIGHT_UPPER_LONGITUDE_OF_BOUNDING_BOX = 3;
 
         private final GeometryFactory geometryFactory;
+        private final GeoJSONReader geoJSONReader;
 
         public Address map(final NominatimResponse response) {
             final NominatimResponseAddress address = response.getAddress();
@@ -92,6 +102,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
                     .center(this.mapCenter(response))
                     .cityName(address.getCityName())
                     .countryName(address.getCountryName())
+                    .geometry(this.mapGeometry(response))
                     .build();
         }
 
@@ -152,6 +163,11 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
                     response.getCenterLongitude()
             );
             return this.geometryFactory.createPoint(coordinate);
+        }
+
+        private Geometry mapGeometry(final NominatimResponse response) {
+            final org.wololo.geojson.Geometry mappedGeometry = response.getGeometry();
+            return this.geoJSONReader.read(mappedGeometry);
         }
     }
 }

@@ -5,6 +5,7 @@ import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.Nominati
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wololo.jts2geojson.GeoJSONWriter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +13,9 @@ public final class NominatimResponseTest extends AbstractContextTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private GeoJSONWriter geoJSONWriter;
 
     @Test
     public void responseShouldBeConvertedToJson()
