@@ -8,26 +8,25 @@ import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AddressService extends AbstractCRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
+public class AddressService
+        extends AbstractCRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
 
     public AddressService(final AddressMapper mapper, final AddressRepository repository) {
         super(mapper, repository);
     }
 
     @Transactional(readOnly = true)
-    public List<Address> findByGpsCoordinates(final double latitude, final double longitude) {
-//        final List<AddressEntity> foundEntities = super.repository.findByGpsCoordinates(latitude, longitude);
-//        return super.mapper.mapToDto(foundEntities);
-        return null;
+    public Optional<Address> findByGpsCoordinates(final double latitude, final double longitude) {
+        final Optional<AddressEntity> optionalEntity = super.repository.findByGpsCoordinates(latitude, longitude);
+        return optionalEntity.map(super.mapper::mapToDto);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findAddressByBoundingBox(final Geometry boundingBox) {
-        final Optional<AddressEntity> optionalEntity = super.repository.findAddressByGeometry(boundingBox);
+    public Optional<Address> findAddressByGeometry(final Geometry geometry) {
+        final Optional<AddressEntity> optionalEntity = super.repository.findAddressByGeometry(geometry);
         return optionalEntity.map(super.mapper::mapToDto);
     }
 }

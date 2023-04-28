@@ -48,7 +48,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
         final NominatimResponse response = this.doRequest(latitude, longitude);
         return response != null
                 ? Optional.of(this.responseToAddressMapper.map(response))
-                .map(address -> this.addressService.findAddressByBoundingBox(address.getBoundingBox()).orElse(address))
+                .map(address -> this.addressService.findAddressByGeometry(address.getBoundingBox()).orElse(address))
                 : empty();
     }
 

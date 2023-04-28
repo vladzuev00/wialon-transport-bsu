@@ -78,7 +78,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
             + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
             + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
             + ")")
-    public void addressesShouldBeFoundByGpsCoordinates() {
+    public void addressShouldBeFoundByGpsCoordinates() {
         final double givenLatitude = 2.5;
         final double givenLongitude = 2.5;
 
@@ -109,7 +109,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
             + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
             + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
             + ")")
-    public void addressesShouldNotBeFoundByGpsCoordinates() {
+    public void addressShouldNotBeFoundByGpsCoordinates() {
         final double givenLatitude = 20.;
         final double givenLongitude = 20.;
 
