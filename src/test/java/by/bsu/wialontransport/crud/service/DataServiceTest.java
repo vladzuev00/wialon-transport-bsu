@@ -27,9 +27,11 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(258, ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 5 0, 2.5 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((2.5 0, 2.5 2.5, 5 2.5, 2.5 0))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
