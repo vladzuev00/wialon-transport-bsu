@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,12 +16,6 @@ public final class PoolGeocodingService implements GeocodingChainComponent {
 
     @Override
     public Optional<Address> receive(final double latitude, final double longitude) {
-        final List<Address> foundAddresses = this.addressService.findByGpsCoordinates(latitude, longitude);
-        return findAny(foundAddresses);
-    }
-
-    private static Optional<Address> findAny(final List<Address> addresses) {
-        return addresses.stream()
-                .findAny();
+        return this.addressService.findByGpsCoordinates(latitude, longitude);
     }
 }
