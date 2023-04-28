@@ -30,9 +30,11 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_Point(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
@@ -82,9 +84,11 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
+            + ")")
     public void dataShouldBeInserted() {
         final DataEntity givenData = DataEntity.builder()
                 .date(LocalDate.of(2019, 10, 24))
@@ -129,9 +133,11 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
+            + ")")
     @Sql(statements = "INSERT INTO data"
             + "(id, date, time, "
             + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
