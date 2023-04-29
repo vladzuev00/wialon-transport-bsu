@@ -3,13 +3,15 @@ package by.bsu.wialontransport.crud.repository;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import org.junit.Test;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static java.util.Arrays.copyOf;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -35,11 +37,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
         final AddressEntity expected = AddressEntity.builder()
                 .id(255L)
-                .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 6, 7))
-                .center(this.createPoint(53.050286, 24.873635))
+                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
+                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
                 .cityName("city")
                 .countryName("country")
-                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
+                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
                 .build();
         checkEquals(expected, actual);
     }
@@ -47,11 +49,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Test
     public void addressShouldBeSaved() {
         final AddressEntity givenAddress = AddressEntity.builder()
-                .boundingBox(this.createPolygon(2, 3, 4, 5, 6, 7, 8, 9))
-                .center(this.createPoint(53.050287, 24.873636))
+                .boundingBox(createPolygon(this.geometryFactory, 2, 3, 4, 5, 6, 7, 8, 9))
+                .center(createPoint(this.geometryFactory, 53.050287, 24.873636))
                 .cityName("city")
                 .countryName("country")
-                .geometry(this.createPolygon(1, 2, 3, 4, 5, 6))
+                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
                 .build();
 
         super.startQueryCount();
@@ -137,7 +139,8 @@ public final class AddressRepositoryTest extends AbstractContextTest {
             + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
             + ")")
     public void addressShouldBeFoundByGeometry() {
-        final Geometry givenGeometry = this.createPolygon(
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
                 10, 15, 15, 16, 16, 17
         );
 
@@ -167,45 +170,13 @@ public final class AddressRepositoryTest extends AbstractContextTest {
             + "ST_GeomFromText('POLYGON((10.1 15, 15 16, 16 17, 10.1 15))', 4326)"
             + ")")
     public void addressShouldNotBeFoundByGeometry() {
-        final Geometry givenGeometry = this.createPolygon(
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
                 10, 15, 15, 16, 16, 17
         );
 
         final Optional<AddressEntity> optionalActual = this.repository.findAddressByGeometry(givenGeometry);
         assertTrue(optionalActual.isEmpty());
-    }
-
-    private Point createPoint(final double longitude, final double latitude) {
-        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
-        return this.geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude,
-                                   final double fourthLongitude, final double fourthLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude),
-                new CoordinateXY(fourthLongitude, fourthLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final CoordinateXY... coordinates) {
-        final CoordinateXY[] boundedCoordinates = copyOf(coordinates, coordinates.length + 1);
-        boundedCoordinates[boundedCoordinates.length - 1] = coordinates[0];
-        return this.geometryFactory.createPolygon(boundedCoordinates);
     }
 
     private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {

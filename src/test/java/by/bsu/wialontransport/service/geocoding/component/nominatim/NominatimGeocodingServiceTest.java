@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.geocoding.component.nominatim;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
+import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
 import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
@@ -13,11 +14,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.util.Optional;
 
+import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
 import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
+import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
@@ -32,7 +37,10 @@ public final class NominatimGeocodingServiceTest extends AbstractContextTest {
     @MockBean
     private RestTemplate mockedRestTemplate;
 
-    @Value("${geocoding.url.format}")
+    @MockBean
+    private AddressService mockedAddressService;
+
+    @Value("${geocoding.url.template}")
     private String urlTemplate;
 
     @Autowired
@@ -41,18 +49,27 @@ public final class NominatimGeocodingServiceTest extends AbstractContextTest {
     @Autowired
     private GeometryFactory geometryFactory;
 
+    @Autowired
+    private GeoJSONWriter geoJSONWriter;
+
     @Test
     @SuppressWarnings("unchecked")
     public void addressWithNotExistGeometryShouldBeReceived() {
         final double givenLatitude = 5.5;
         final double givenLongitude = 6.6;
 
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
+                1, 2, 3, 4, 5, 6
+        );
         final NominatimResponse givenResponse = NominatimResponse.builder()
                 .centerLatitude(4.4)
                 .centerLongitude(5.5)
                 .address(new NominatimResponseAddress("city", "country"))
                 .boundingBoxCoordinates(new double[]{3.3, 4.4, 5.5, 6.6})
+                .geometry(this.geoJSONWriter.write(givenGeometry))
                 .build();
+
         when(this.mockedRestTemplate.exchange(
                         eq(this.createUrl(givenLatitude, givenLongitude)),
                         same(GET),
@@ -61,6 +78,9 @@ public final class NominatimGeocodingServiceTest extends AbstractContextTest {
                 )
         ).thenReturn(ok(givenResponse));
 
+        when(this.mockedAddressService.findAddressByGeometry(givenGeometry))
+                .thenReturn(empty());
+
         final Optional<Address> optionalActual = this.nominatimGeocodingService.receive(
                 givenLatitude, givenLongitude
         );
@@ -68,12 +88,58 @@ public final class NominatimGeocodingServiceTest extends AbstractContextTest {
         final Address actual = optionalActual.get();
 
         final Address expected = Address.builder()
-                .boundingBox(this.createPolygon(3.3, 5.5, 3.3, 6.6, 4.4, 6.6, 4.4, 5.5))
-                .center(this.createPoint(4.4, 5.5))
+                .boundingBox(createPolygon(this.geometryFactory, 3.3, 5.5, 3.3, 6.6, 4.4, 6.6, 4.4, 5.5))
+                .center(createPoint(this.geometryFactory, 4.4, 5.5))
                 .cityName("city")
                 .countryName("country")
+                .geometry(givenGeometry)
                 .build();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void addressWithExistGeometryShouldBeReceived() {
+        final double givenLatitude = 5.5;
+        final double givenLongitude = 6.6;
+
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
+                1, 2, 3, 4, 5, 6
+        );
+        final NominatimResponse givenResponse = NominatimResponse.builder()
+                .centerLatitude(4.4)
+                .centerLongitude(5.5)
+                .address(new NominatimResponseAddress("city", "country"))
+                .boundingBoxCoordinates(new double[]{3.3, 4.4, 5.5, 6.6})
+                .geometry(this.geoJSONWriter.write(givenGeometry))
+                .build();
+
+        when(this.mockedRestTemplate.exchange(
+                        eq(this.createUrl(givenLatitude, givenLongitude)),
+                        same(GET),
+                        same(EMPTY),
+                        any(ParameterizedTypeReference.class)
+                )
+        ).thenReturn(ok(givenResponse));
+
+        final Address givenAlreadyExistAddress = Address.builder()
+                .id(255L)
+                .boundingBox(createPolygon(this.geometryFactory, 3.3, 5.5, 3.3, 6.6, 4.4, 6.6, 4.4, 5.5))
+                .center(createPoint(this.geometryFactory, 4.4, 5.5))
+                .cityName("city")
+                .countryName("country")
+                .geometry(givenGeometry)
+                .build();
+        when(this.mockedAddressService.findAddressByGeometry(givenGeometry))
+                .thenReturn(Optional.of(givenAlreadyExistAddress));
+
+        final Optional<Address> optionalActual = this.nominatimGeocodingService.receive(
+                givenLatitude, givenLongitude
+        );
+        assertTrue(optionalActual.isPresent());
+        final Address actual = optionalActual.get();
+        assertEquals(givenAlreadyExistAddress, actual);
     }
 
     @Test
@@ -118,38 +184,5 @@ public final class NominatimGeocodingServiceTest extends AbstractContextTest {
 
     private String createUrl(final double latitude, final double longitude) {
         return format(this.urlTemplate, latitude, longitude);
-    }
-
-    private Point createPoint(final double longitude, final double latitude) {
-        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
-        return this.geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude,
-                                   final double fourthLongitude, final double fourthLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude),
-                new CoordinateXY(fourthLongitude, fourthLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final CoordinateXY... coordinates) {
-        final CoordinateXY[] boundedCoordinates = copyOf(coordinates, coordinates.length + 1);
-        boundedCoordinates[boundedCoordinates.length - 1] = coordinates[0];
-        return this.geometryFactory.createPolygon(boundedCoordinates);
     }
 }

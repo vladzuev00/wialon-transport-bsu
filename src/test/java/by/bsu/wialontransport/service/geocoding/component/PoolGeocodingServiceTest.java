@@ -3,14 +3,16 @@ package by.bsu.wialontransport.service.geocoding.component;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import org.junit.Test;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static java.util.Arrays.copyOf;
-import static org.junit.Assert.*;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public final class PoolGeocodingServiceTest extends AbstractContextTest {
 
@@ -50,11 +52,11 @@ public final class PoolGeocodingServiceTest extends AbstractContextTest {
         final Address actual = optionalActual.get();
         final Address expected = Address.builder()
                 .id(255L)
-                .boundingBox(this.createPolygon(1, 1, 1, 4, 4, 4, 4, 1))
-                .center(this.createPoint(53.050286, 24.873635))
+                .boundingBox(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
                 .cityName("city")
                 .countryName("country")
-                .geometry(this.createPolygon(1, 1, 1, 4, 4, 4))
+                .geometry(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4))
                 .build();
         assertEquals(expected, actual);
     }
@@ -86,38 +88,5 @@ public final class PoolGeocodingServiceTest extends AbstractContextTest {
                 givenLatitude, givenLongitude
         );
         assertTrue(optionalActual.isEmpty());
-    }
-
-    private Point createPoint(final double longitude, final double latitude) {
-        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
-        return this.geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude,
-                                   final double fourthLongitude, final double fourthLatitude) {
-        return this.createPolygon(
-                new CoordinateXY(firstLongitude, firstLatitude),
-                new CoordinateXY(secondLongitude, secondLatitude),
-                new CoordinateXY(thirdLongitude, thirdLatitude),
-                new CoordinateXY(fourthLongitude, fourthLatitude)
-        );
-    }
-
-    private Geometry createPolygon(final CoordinateXY... coordinates) {
-        final CoordinateXY[] boundedCoordinates = copyOf(coordinates, coordinates.length + 1);
-        boundedCoordinates[boundedCoordinates.length - 1] = coordinates[0];
-        return this.geometryFactory.createPolygon(boundedCoordinates);
     }
 }

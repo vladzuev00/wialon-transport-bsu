@@ -29,6 +29,8 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.STRING;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
 import static java.util.Collections.emptyList;
 import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.*;
@@ -72,8 +74,8 @@ public final class DataMapperTest extends AbstractContextTest {
                         .build())
                 .address(Address.builder()
                         .id(257L)
-                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
-                        .center(this.createPoint(5.5, 6.6))
+                        .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(createPoint(this.geometryFactory, 5.5, 6.6))
                         .cityName("city")
                         .countryName("country")
                         .build())
@@ -107,8 +109,8 @@ public final class DataMapperTest extends AbstractContextTest {
                         .build())
                 .address(AddressEntity.builder()
                         .id(257L)
-                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
-                        .center(this.createPoint(5.5, 6.6))
+                        .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(createPoint(this.geometryFactory, 5.5, 6.6))
                         .cityName("city")
                         .countryName("country")
                         .build())
@@ -147,8 +149,8 @@ public final class DataMapperTest extends AbstractContextTest {
                         .build())
                 .address(AddressEntity.builder()
                         .id(257L)
-                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
-                        .center(this.createPoint(5.5, 6.6))
+                        .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(createPoint(this.geometryFactory, 5.5, 6.6))
                         .cityName("city")
                         .countryName("country")
                         .build())
@@ -182,8 +184,8 @@ public final class DataMapperTest extends AbstractContextTest {
                         .build())
                 .address(Address.builder()
                         .id(257L)
-                        .boundingBox(this.createPolygon(1, 2, 3, 4, 5, 6, 7, 8))
-                        .center(this.createPoint(5.5, 6.6))
+                        .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 7, 8))
+                        .center(createPoint(this.geometryFactory, 5.5, 6.6))
                         .cityName("city")
                         .countryName("country")
                         .build())
@@ -292,24 +294,5 @@ public final class DataMapperTest extends AbstractContextTest {
         assertEquals(expected.getCenter(), actual.getCenter());
         assertEquals(expected.getCityName(), actual.getCityName());
         assertEquals(expected.getCountryName(), actual.getCountryName());
-    }
-
-    private Point createPoint(final double longitude, final double latitude) {
-        final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
-        return this.geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry createPolygon(final double firstLongitude, final double firstLatitude,
-                                   final double secondLongitude, final double secondLatitude,
-                                   final double thirdLongitude, final double thirdLatitude,
-                                   final double fourthLongitude, final double fourthLatitude) {
-        return this.geometryFactory.createPolygon(new Coordinate[]{
-                        new CoordinateXY(firstLongitude, firstLatitude),
-                        new CoordinateXY(secondLongitude, secondLatitude),
-                        new CoordinateXY(thirdLongitude, thirdLatitude),
-                        new CoordinateXY(fourthLongitude, fourthLatitude),
-                        new CoordinateXY(firstLongitude, firstLatitude)
-                }
-        );
     }
 }
