@@ -14,8 +14,11 @@ spring:
     bootstrap-servers: 127.0.0.1:9092
   mvc:
     view:
-      prefix: /view/
+      prefix: /META-INF/views/
       suffix: .jsp
+  thymeleaf:
+    mode: HTML5
+    enabled: false
 
 wialon:
   server:

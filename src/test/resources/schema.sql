@@ -171,6 +171,34 @@ ALTER TABLE trackers_last_data
     ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY (data_id)
         REFERENCES data (id);
 
+CREATE TABLE searching_cities_processes(
+	id BIGSERIAL PRIMARY KEY,
+	bounds GEOMETRY NOT NULL,
+	search_step DOUBLE PRECISION NOT NULL,
+	total_points BIGINT NOT NULL,
+	handled_points BIGINT NOT NULL
+);
+
+CREATE TABLE cities(
+	id SERIAL PRIMARY KEY,
+	address_id BIGINT NOT NULL,
+	searching_cities_process_id BIGINT
+);
+
+ALTER TABLE cities
+	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(address_id)
+		REFERENCES addresses(id)
+			ON DELETE CASCADE;
+
+ALTER TABLE cities
+	ADD CONSTRAINT address_id_should_be_unique UNIQUE(address_id);
+
+ALTER TABLE cities
+	ADD CONSTRAINT fk_cities_to_searching_cities_processes
+		FOREIGN KEY(searching_cities_process_id)
+			REFERENCES searching_cities_processes(id)
+				ON DELETE SET NULL;
+
 CREATE
 OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
 '
