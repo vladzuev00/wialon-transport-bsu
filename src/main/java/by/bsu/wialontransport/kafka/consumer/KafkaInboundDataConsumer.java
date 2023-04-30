@@ -22,6 +22,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +36,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -180,24 +182,34 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     }
 
     private List<Data> findDataWithSavedAddresses(final List<Data> source) {
-        return source.stream()
-                .map(this::mapToDataWithSavedAddressIfAddressIsNew)
+        final Map<Address, List<Data>> dataGroupedByAddresses = source.stream()
+                .collect(groupingBy(Data::getAddress));
+        dataGroupedByAddresses.replaceAll(this::mapToDataWithSavedAddressIfAddressIsNew);
+        return dataGroupedByAddresses.values()
+                .stream()
+                .flatMap(Collection::stream)
                 .toList();
     }
 
-    private Data mapToDataWithSavedAddressIfAddressIsNew(final Data data) {
-        return isDataAddressNew(data) ? this.mapToDataWithSavedAddress(data) : data;
+    /**
+     * @param data    - data with given address
+     * @param address - address of all data
+     * @return data with saved address
+     */
+    private List<Data> mapToDataWithSavedAddressIfAddressIsNew(final Address address, final List<Data> data) {
+        return isNewAddress(address) ? this.mapToDataWithSavedAddress(data, address) : data;
     }
 
-    private Data mapToDataWithSavedAddress(final Data dataWithNewAddress) {
-        final Address newAddress = dataWithNewAddress.getAddress();
+    /**
+     * @param source     - data with given address
+     * @param newAddress - not saved address of all data
+     * @return data with saved address
+     */
+    private List<Data> mapToDataWithSavedAddress(final List<Data> source, final Address newAddress) {
         final Address savedAddress = this.addressService.save(newAddress);
-        return createWithAddress(dataWithNewAddress, savedAddress);
-    }
-
-    private static boolean isDataAddressNew(final Data data) {
-        final Address address = data.getAddress();
-        return isNewAddress(address);
+        return source.stream()
+                .map(data -> createWithAddress(data, savedAddress))
+                .toList();
     }
 
     private static boolean isNewAddress(final Address address) {
