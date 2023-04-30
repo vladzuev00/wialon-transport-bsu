@@ -9,13 +9,19 @@ import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
+    //'0 AS clazz_' - because of inheritance strategy for AddressEntity is JOINED:
+    //https://stackoverflow.com/questions/49804053/psqlexception-the-column-name-clazz-was-not-found-in-this-resultset
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
             + "FROM addresses WHERE ST_Intersects(geometry, ST_SetSRID(ST_Point(:longitude, :latitude), 4326))",
             nativeQuery = true)
     Optional<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
             + "FROM addresses WHERE ST_Equals(addresses.geometry, :geometry)",
             nativeQuery = true)
     Optional<AddressEntity> findAddressByGeometry(final Geometry geometry);
+
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM addresses WHERE ST_Equals(addresses.geometry, :geometry))",
+            nativeQuery = true)
+    boolean isExistByGeometry(final Geometry geometry);
 }

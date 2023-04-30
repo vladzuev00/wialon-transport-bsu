@@ -10,10 +10,10 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
+import static by.bsu.wialontransport.util.EntityUtil.checkEquals;
 import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
 import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
 
@@ -179,11 +179,61 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         assertTrue(optionalActual.isEmpty());
     }
 
-    private static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getBoundingBox(), actual.getBoundingBox());
-        assertEquals(expected.getCenter(), actual.getCenter());
-        assertEquals(expected.getCityName(), actual.getCityName());
-        assertEquals(expected.getCountryName(), actual.getCountryName());
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
+            + ")")
+    public void addressShouldExistByGeometry() {
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
+                10, 15, 15, 16, 16, 17
+        );
+
+        final boolean actual = this.repository.isExistByGeometry(givenGeometry);
+        assertTrue(actual);
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((10.1 15, 15 16, 16 17, 10.1 15))', 4326)"
+            + ")")
+    public void addressShouldNotExistByGeometry() {
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
+                10, 15, 15, 16, 16, 17
+        );
+
+        final boolean actual = this.repository.isExistByGeometry(givenGeometry);
+        assertFalse(actual);
     }
 }
