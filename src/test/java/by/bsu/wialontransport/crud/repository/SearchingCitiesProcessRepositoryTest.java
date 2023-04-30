@@ -42,7 +42,6 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     public void processShouldBeSaved() {
         final SearchingCitiesProcessEntity givenProcess = SearchingCitiesProcessEntity.builder()
-                .id(255L)
                 .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
@@ -52,6 +51,6 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
 
         super.startQueryCount();
         this.repository.save(givenProcess);
-        super.checkQueryCount(2);
+        super.checkQueryCount(1);
     }
 }

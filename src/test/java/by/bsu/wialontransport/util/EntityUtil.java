@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.util;
 
+import by.bsu.wialontransport.crud.entity.AddressEntity;
+import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import lombok.experimental.UtilityClass;
 
@@ -17,5 +19,19 @@ public final class EntityUtil {
         assertEquals(expected.getTotalPoints(), actual.getTotalPoints());
         assertEquals(expected.getHandledPoints(), actual.getHandledPoints());
         assertSame(expected.getStatus(), actual.getStatus());
+    }
+
+    public static void checkEquals(final AddressEntity expected, final AddressEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getBoundingBox(), actual.getBoundingBox());
+        assertEquals(expected.getCenter(), actual.getCenter());
+        assertEquals(expected.getCityName(), actual.getCityName());
+        assertEquals(expected.getCountryName(), actual.getCountryName());
+        assertEquals(expected.getGeometry(), actual.getGeometry());
+    }
+
+    public static void checkEquals(final CityEntity expected, final CityEntity actual) {
+        checkEquals(expected, (AddressEntity) actual);
+        assertEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
     }
 }
