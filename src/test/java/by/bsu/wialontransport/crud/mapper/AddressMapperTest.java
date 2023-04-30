@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.locationtech.jts.geom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

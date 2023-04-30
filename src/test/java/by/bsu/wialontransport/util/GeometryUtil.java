@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.unil;
+package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
 import org.locationtech.jts.geom.CoordinateXY;

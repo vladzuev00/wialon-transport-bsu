@@ -18,10 +18,9 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.util.Optional;
 
-import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
 import static java.lang.String.format;
-import static java.util.Arrays.copyOf;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

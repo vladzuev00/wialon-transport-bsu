@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding.component.nominatim.dto;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
-import by.bsu.wialontransport.unil.GeometryUtil;
+import by.bsu.wialontransport.util.GeometryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.wololo.geojson.Polygon;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
-import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
-import static java.util.Arrays.copyOf;
+import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 

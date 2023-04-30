@@ -3,18 +3,15 @@ package by.bsu.wialontransport.crud.service;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import org.junit.Test;
-import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static by.bsu.wialontransport.unil.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.unil.GeometryUtil.createPolygon;
-import static java.util.Arrays.copyOf;
+import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

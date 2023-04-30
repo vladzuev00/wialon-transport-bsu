@@ -180,18 +180,14 @@ CREATE TABLE searching_cities_processes(
 );
 
 CREATE TABLE cities(
-	id SERIAL PRIMARY KEY,
-	address_id BIGINT NOT NULL,
+	id BIGINT PRIMARY KEY,
 	searching_cities_process_id BIGINT
 );
 
 ALTER TABLE cities
-	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(address_id)
+	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(id)
 		REFERENCES addresses(id)
 			ON DELETE CASCADE;
-
-ALTER TABLE cities
-	ADD CONSTRAINT address_id_should_be_unique UNIQUE(address_id);
 
 ALTER TABLE cities
 	ADD CONSTRAINT fk_cities_to_searching_cities_processes
