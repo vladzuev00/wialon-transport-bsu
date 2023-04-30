@@ -2,11 +2,15 @@ package by.bsu.wialontransport.crud.dto;
 
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
 
 @Value
-public class SearchingCitiesProcess {
+@AllArgsConstructor
+@Builder
+public class SearchingCitiesProcess implements AbstractDto<Long> {
     Long id;
     Geometry bounds;
     double searchStep;
