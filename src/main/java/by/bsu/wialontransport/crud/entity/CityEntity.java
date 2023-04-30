@@ -13,7 +13,6 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 @Getter
 @ToString
-@Builder
 public class CityEntity extends AddressEntity {
 
     @ManyToOne(fetch = LAZY)
