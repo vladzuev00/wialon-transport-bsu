@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.util;
 
+import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
@@ -33,5 +34,11 @@ public final class EntityUtil {
     public static void checkEquals(final CityEntity expected, final CityEntity actual) {
         checkEquals(expected, (AddressEntity) actual);
         assertEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
+    }
+
+    public static SearchingCitiesProcess createSearchingCitiesProcess(final Long id) {
+        return SearchingCitiesProcess.builder()
+                .id(id)
+                .build();
     }
 }

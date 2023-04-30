@@ -1,27 +1,26 @@
-package by.bsu.wialontransport.crud.repository;
+package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
+import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
-import java.util.Set;
 
-import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
-import static by.bsu.wialontransport.util.EntityUtil.checkEquals;
+import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
+import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
+import static by.bsu.wialontransport.util.EntityUtil.createSearchingCitiesProcess;
 import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
-import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.data.domain.Pageable.ofSize;
 
-public final class SearchingCitiesProcessRepositoryTest extends AbstractContextTest {
+public final class SearchingCitiesProcessServiceTest extends AbstractContextTest {
 
     @Autowired
-    private SearchingCitiesProcessRepository repository;
+    private SearchingCitiesProcessService service;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -30,56 +29,22 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Sql(statements = "INSERT INTO searching_cities_processes("
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    public void processShouldBeFoundById() {
-        super.startQueryCount();
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
-
-        final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
-        checkEquals(expected, actual);
-    }
-
-    @Test
-    public void processShouldBeSaved() {
-        final SearchingCitiesProcessEntity givenProcess = SearchingCitiesProcessEntity.builder()
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
-
-        super.startQueryCount();
-        this.repository.save(givenProcess);
-        super.checkQueryCount(1);
-    }
-
-    @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
     public void statusOfProcessShouldBeUpdated() {
-        super.startQueryCount();
-        this.repository.updateStatus(255L, SUCCESS);
-        super.checkQueryCount(1);
+        final Long givenId = 255L;
+        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
-        final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
+        this.service.updateStatus(givenProcess, ERROR);
+
+        final SearchingCitiesProcess actual = this.service.findById(givenId).orElseThrow();
+        final SearchingCitiesProcess expected = SearchingCitiesProcess.builder()
                 .id(255L)
                 .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
-                .status(SUCCESS)
+                .status(ERROR)
                 .build();
-        checkEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -87,12 +52,13 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
     public void handledPointsShouldBeIncreased() {
-        super.startQueryCount();
-        this.repository.increaseHandledPoints(255L, 100);
-        super.checkQueryCount(1);
+        final Long givenId = 255L;
+        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
-        final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
+        this.service.increaseHandledPoints(givenProcess, 100);
+
+        final SearchingCitiesProcess actual = this.service.findById(givenId).orElseThrow();
+        final SearchingCitiesProcess expected = SearchingCitiesProcess.builder()
                 .id(255L)
                 .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
@@ -100,7 +66,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
                 .handledPoints(200)
                 .status(HANDLING)
                 .build();
-        checkEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -117,15 +83,26 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(258, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'ERROR')")
     public void processesShouldBeFoundByStatus() {
-        super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(HANDLING, ofSize(4));
-        super.checkQueryCount(1);
-
-        final Set<Long> actualIds = actual.stream()
-                .map(SearchingCitiesProcessEntity::getId)
-                .collect(toSet());
-        final Set<Long> expectedIds = Set.of(255L, 256L);
-        assertEquals(expectedIds, actualIds);
+        final List<SearchingCitiesProcess> actual = this.service.findByStatus(HANDLING, ofSize(4));
+        final List<SearchingCitiesProcess> expected = List.of(
+                SearchingCitiesProcess.builder()
+                        .id(255L)
+                        .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                        .searchStep(0.5)
+                        .totalPoints(1000)
+                        .handledPoints(100)
+                        .status(HANDLING)
+                        .build(),
+                SearchingCitiesProcess.builder()
+                        .id(256L)
+                        .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                        .searchStep(0.5)
+                        .totalPoints(1000)
+                        .handledPoints(100)
+                        .status(HANDLING)
+                        .build()
+        );
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -139,10 +116,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(257, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'SUCCESS')")
     public void processesShouldNotBeFoundByStatus() {
-        super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(ERROR, ofSize(4));
-        super.checkQueryCount(1);
-
+        final List<SearchingCitiesProcess> actual = this.service.findByStatus(ERROR, ofSize(4));
         assertTrue(actual.isEmpty());
     }
 }
