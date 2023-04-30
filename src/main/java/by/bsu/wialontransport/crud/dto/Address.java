@@ -1,19 +1,19 @@
 package by.bsu.wialontransport.crud.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
-@Value
 @AllArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
 @Builder
 public class Address implements AbstractDto<Long> {
-    Long id;
-    Geometry boundingBox;
-    Point center;
-    String cityName;
-    String countryName;
-    Geometry geometry;
+    private final Long id;
+    private final Geometry boundingBox;
+    private final Point center;
+    private final String cityName;
+    private final String countryName;
+    private final Geometry geometry;
 }
