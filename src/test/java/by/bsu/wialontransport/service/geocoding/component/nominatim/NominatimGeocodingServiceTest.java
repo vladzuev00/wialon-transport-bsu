@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.geocoding.component.nominatim;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
+import by.bsu.wialontransport.service.geocoding.component.NominatimGeocodingService;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
 import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
 import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;

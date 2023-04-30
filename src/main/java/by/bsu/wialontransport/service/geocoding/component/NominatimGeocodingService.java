@@ -1,87 +1,51 @@
-package by.bsu.wialontransport.service.geocoding.component.nominatim;
+package by.bsu.wialontransport.service.geocoding.component;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
-import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
-import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
-import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
+import by.bsu.wialontransport.service.nominatim.NominatimService;
+import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Order;
 import org.locationtech.jts.geom.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.wololo.jts2geojson.GeoJSONReader;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
 import static java.util.Optional.empty;
-import static org.springframework.http.HttpEntity.EMPTY;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpStatus.OK;
 
+//TODO: refactor tests for it
 @Service
 @Order(2)
-public final class NominatimGeocodingService implements GeocodingChainComponent {
-    private final String urlTemplate;
-    private final RestTemplate restTemplate;
+public class NominatimGeocodingService implements GeocodingChainComponent {
+    private final NominatimService nominatimService;
     private final ResponseToAddressMapper responseToAddressMapper;
     private final AddressService addressService;
 
-    public NominatimGeocodingService(@Value("${geocoding.url.template}") final String urlTemplate,
-                                     final RestTemplate restTemplate,
+    public NominatimGeocodingService(final NominatimService nominatimService,
                                      final AddressService addressService,
                                      final GeometryFactory geometryFactory,
                                      final GeoJSONReader geoJSONReader) {
-        this.urlTemplate = urlTemplate;
-        this.restTemplate = restTemplate;
+        this.nominatimService = nominatimService;
         this.addressService = addressService;
         this.responseToAddressMapper = new ResponseToAddressMapper(geometryFactory, geoJSONReader);
     }
 
     @Override
     public Optional<Address> receive(final double latitude, final double longitude) {
-        final NominatimResponse response = this.doRequest(latitude, longitude);
+        final NominatimReverseResponse response = this.nominatimService.reverse(latitude, longitude);
         return response != null
                 ? Optional.of(this.mapToPossiblySavedAddress(response))
                 : empty();
     }
 
-    private Address mapToPossiblySavedAddress(final NominatimResponse response) {
+    private Address mapToPossiblySavedAddress(final NominatimReverseResponse response) {
         final Address responseAddress = this.responseToAddressMapper.map(response);
         final Geometry responseAddressGeometry = responseAddress.getGeometry();
         final Optional<Address> optionalSavedAddressWithSameGeometry = this.addressService.findAddressByGeometry(
                 responseAddressGeometry
         );
         return optionalSavedAddressWithSameGeometry.orElse(responseAddress);
-    }
-
-    private NominatimResponse doRequest(final double latitude, final double longitude) {
-        final String url = this.createUrl(latitude, longitude);
-        final ResponseEntity<NominatimResponse> responseEntity = this.restTemplate.exchange(
-                url, GET, EMPTY, new ParameterizedTypeReference<>() {
-                }
-        );
-        validateResponseEntity(responseEntity, url);
-        return responseEntity.getBody();
-    }
-
-    private String createUrl(final double latitude, final double longitude) {
-        return format(this.urlTemplate, latitude, longitude);
-    }
-
-    private static void validateResponseEntity(final ResponseEntity<?> responseEntity, final String url) {
-        final HttpStatus httpStatus = responseEntity.getStatusCode();
-        if (httpStatus != OK) {
-            throw new GeocodingException(
-                    format("Http status after receiving address from '%s' is '%s'.", url, httpStatus)
-            );
-        }
     }
 
     @RequiredArgsConstructor
@@ -95,8 +59,8 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
         private final GeometryFactory geometryFactory;
         private final GeoJSONReader geoJSONReader;
 
-        public Address map(final NominatimResponse response) {
-            final NominatimResponseAddress address = response.getAddress();
+        public Address map(final NominatimReverseResponse response) {
+            final NominatimReverseResponse.Address address = response.getAddress();
             return Address.builder()
                     .boundingBox(this.mapBoundingBox(response))
                     .center(this.mapCenter(response))
@@ -106,7 +70,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
                     .build();
         }
 
-        private Geometry mapBoundingBox(final NominatimResponse response) {
+        private Geometry mapBoundingBox(final NominatimReverseResponse response) {
             final double[] boundingBoxCoordinates = response.getBoundingBoxCoordinates();
             return this.createBoundingBox(
                     findLeftBottomCoordinateOfBoundingBox(boundingBoxCoordinates),
@@ -157,7 +121,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
             });
         }
 
-        private Point mapCenter(final NominatimResponse response) {
+        private Point mapCenter(final NominatimReverseResponse response) {
             final CoordinateXY coordinate = new CoordinateXY(
                     response.getCenterLatitude(),
                     response.getCenterLongitude()
@@ -165,7 +129,7 @@ public final class NominatimGeocodingService implements GeocodingChainComponent 
             return this.geometryFactory.createPoint(coordinate);
         }
 
-        private Geometry mapGeometry(final NominatimResponse response) {
+        private Geometry mapGeometry(final NominatimReverseResponse response) {
             final org.wololo.geojson.Geometry mappedGeometry = response.getGeometry();
             return this.geoJSONReader.read(mappedGeometry);
         }

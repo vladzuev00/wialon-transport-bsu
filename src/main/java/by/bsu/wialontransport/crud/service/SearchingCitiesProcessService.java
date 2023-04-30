@@ -7,6 +7,7 @@ import by.bsu.wialontransport.crud.mapper.SearchingCitiesProcessMapper;
 import by.bsu.wialontransport.crud.repository.SearchingCitiesProcessRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
         this.repository.increaseHandledPoints(process.getId(), delta);
     }
 
+    @Transactional(readOnly = true)
     public List<SearchingCitiesProcess> findByStatus(final Status status, final Pageable pageable) {
         final List<SearchingCitiesProcessEntity> foundEntities = this.repository.findByStatus(status, pageable);
         return super.mapper.mapToDto(foundEntities);
