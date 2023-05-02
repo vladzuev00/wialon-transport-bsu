@@ -8,4 +8,5 @@ public interface GeocodingChainComponent extends GeocodingService {
         final Class<?> componentClass = this.getClass();
         return componentClass.getSimpleName();
     }
+
 }

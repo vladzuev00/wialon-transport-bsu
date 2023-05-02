@@ -31,7 +31,7 @@ public final class GeocodingChainComponentAspect {
         final GeocodingChainComponent component = (GeocodingChainComponent) joinPoint.getTarget();
         final String message = optionalAddress
                 .map(address -> format(TEMPLATE_MESSAGE_ABOUT_SUCCESSFUL_RECEIVING, address, component.findName()))
-                .orElse(format(TEMPLATE_MESSAGE_ABOUT_FAILURE_RECEIVING, component.findName()));
+                .orElseGet(() -> format(TEMPLATE_MESSAGE_ABOUT_FAILURE_RECEIVING, component.findName()));
         log.info(message);
     }
 
