@@ -5,12 +5,17 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -21,6 +26,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Import({
+        GeocodingChainComponentAspectTest.SuccessfullyReceivingComponent.class,
+        GeocodingChainComponentAspectTest.FailureReceivingComponent.class
+})
 public final class GeocodingChainComponentAspectTest extends AbstractContextTest {
     private static final String FIELD_NAME_LOGGER = "log";
     private static final String FIELD_NAME_THE_UNSAFE = "theUnsafe";
@@ -54,11 +63,21 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
     }
 
     @Test
-    public void successReceivingShouldBeLogged() {
+    public void successReceivingByDoubleLatitudeAndDoubleLongitudeShouldBeLogged() {
         this.successfullyReceivingComponent.receive(4.5, 5.5);
 
         verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
-        assertEquals("", this.stringArgumentCaptor.getValue());
+        assertEquals(
+                "Address "
+                        + "'Address(id=null, boundingBox=null, center=null, cityName=null, countryName=null, geometry=null)' "
+                        + "was successfully received by 'SuccessfullyReceivingComponent'",
+                this.stringArgumentCaptor.getValue()
+        );
+    }
+
+    @Test
+    public void successReceivingByLatitudeAndLongitudeShouldBeLogged() {
+        throw new RuntimeException();
     }
 
     @Service
