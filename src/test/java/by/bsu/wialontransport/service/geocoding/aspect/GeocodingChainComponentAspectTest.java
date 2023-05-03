@@ -10,7 +10,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -61,7 +61,7 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
         assertEquals("", this.stringArgumentCaptor.getValue());
     }
 
-    @Component
+    @Service
     public static class SuccessfullyReceivingComponent implements GeocodingChainComponent {
 
         @Override
@@ -69,14 +69,16 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
             final Address address = Address.builder().build();
             return Optional.of(address);
         }
+
     }
 
-    @Component
+    @Service
     public static class FailureReceivingComponent implements GeocodingChainComponent {
 
         @Override
         public Optional<Address> receive(final double latitude, final double longitude) {
             return empty();
         }
+
     }
 }
