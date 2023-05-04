@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.service.nominatim;
 
-import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.springframework.beans.factory.annotation.Value;

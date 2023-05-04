@@ -2,6 +2,9 @@ package by.bsu.wialontransport.service.geocoding.aspect;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
+import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Data.Latitude;
+import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,8 +79,52 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
     }
 
     @Test
+    public void failureReceivingByDoubleLatitudeAndDoubleLongitudeShouldBeLogged() {
+        this.failureReceivingComponent.receive(4.5, 5.5);
+
+        verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
+        assertEquals(
+                "Address wasn't received by 'FailureReceivingComponent'",
+                this.stringArgumentCaptor.getValue()
+        );
+    }
+
+    @Test
     public void successReceivingByLatitudeAndLongitudeShouldBeLogged() {
-        throw new RuntimeException();
+        final Latitude givenLatitude = createLatitude();
+        final Longitude givenLongitude = createLongitude();
+
+        this.successfullyReceivingComponent.receive(givenLatitude, givenLongitude);
+
+        verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
+        assertEquals(
+                "Address "
+                        + "'Address(id=null, boundingBox=null, center=null, cityName=null, countryName=null, geometry=null)' "
+                        + "was successfully received by 'SuccessfullyReceivingComponent'",
+                this.stringArgumentCaptor.getValue()
+        );
+    }
+
+    @Test
+    public void failureReceivingByLatitudeAndLongitudeShouldBeLogged() {
+        final Latitude givenLatitude = createLatitude();
+        final Longitude givenLongitude = createLongitude();
+
+        this.failureReceivingComponent.receive(givenLatitude, givenLongitude);
+
+        verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
+        assertEquals(
+                "Address wasn't received by 'FailureReceivingComponent'",
+                this.stringArgumentCaptor.getValue()
+        );
+    }
+
+    private static Latitude createLatitude() {
+        return Latitude.builder().build();
+    }
+
+    private static Longitude createLongitude() {
+        return Longitude.builder().build();
     }
 
     @Service
