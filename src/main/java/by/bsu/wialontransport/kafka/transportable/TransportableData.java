@@ -10,7 +10,7 @@ import org.apache.avro.reflect.Nullable;
 @Builder
 @AllArgsConstructor
 @FieldNameConstants
-public class TransportableData {
+public class TransportableData implements Transportable<Long> {
 
     @Nullable
     Long id;
@@ -35,4 +35,10 @@ public class TransportableData {
     String driverKeyCode;
     String serializedParameters;
     Long trackerId;
+
+    //TODO: test
+    @Override
+    public Long findKey() {
+        return this.trackerId;
+    }
 }

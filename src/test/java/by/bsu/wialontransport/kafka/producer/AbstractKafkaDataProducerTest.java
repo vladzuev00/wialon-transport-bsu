@@ -24,15 +24,6 @@ public final class AbstractKafkaDataProducerTest {
     private final AbstractKafkaDataProducer producer = new TestKafkaDataProducer();
 
     @Test
-    public void keyShouldBeFound() {
-        final Long givenTrackerId = 255L;
-        final TransportableData givenTransportableData = createTransportableDataWithTrackerId(givenTrackerId);
-
-        final Long actual = this.producer.findKey(givenTransportableData);
-        assertEquals(givenTrackerId, actual);
-    }
-
-    @Test
     public void dataShouldBeMappedToTransportableInCaseParametersWithoutId() {
         final Long givenId = 255L;
         final LocalDateTime givenDateTime = LocalDateTime.of(
