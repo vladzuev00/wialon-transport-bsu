@@ -1,57 +1,60 @@
-//package by.bsu.wialontransport.service.geocoding.component.nominatim;
-//
-//import by.bsu.wialontransport.base.AbstractContextTest;
-//import by.bsu.wialontransport.crud.dto.Address;
-//import by.bsu.wialontransport.crud.service.AddressService;
-//import by.bsu.wialontransport.service.geocoding.component.NominatimGeocodingService;
-//import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse;
-//import by.bsu.wialontransport.service.geocoding.component.nominatim.dto.NominatimResponse.NominatimResponseAddress;
-//import by.bsu.wialontransport.service.geocoding.exception.GeocodingException;
-//import org.junit.Test;
-//import org.locationtech.jts.geom.*;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.core.ParameterizedTypeReference;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.client.RestTemplate;
-//import org.wololo.jts2geojson.GeoJSONWriter;
-//
-//import java.util.Optional;
-//
-//import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
-//import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
-//import static java.lang.String.format;
-//import static java.util.Optional.empty;
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertTrue;
-//import static org.mockito.ArgumentMatchers.*;
-//import static org.mockito.Mockito.when;
-//import static org.springframework.http.HttpEntity.EMPTY;
-//import static org.springframework.http.HttpMethod.GET;
-//import static org.springframework.http.HttpStatus.BAD_REQUEST;
-//import static org.springframework.http.ResponseEntity.ok;
-//
-//public final class NominatimGeocodingServiceTest extends AbstractContextTest {
-//
-//    @MockBean
-//    private RestTemplate mockedRestTemplate;
-//
-//    @MockBean
-//    private AddressService mockedAddressService;
-//
-//    @Value("${geocoding.url.template}")
-//    private String urlTemplate;
-//
-//    @Autowired
-//    private NominatimGeocodingService nominatimGeocodingService;
-//
-//    @Autowired
-//    private GeometryFactory geometryFactory;
-//
-//    @Autowired
-//    private GeoJSONWriter geoJSONWriter;
-//
+package by.bsu.wialontransport.service.geocoding.component;
+
+import by.bsu.wialontransport.crud.service.AddressService;
+
+import by.bsu.wialontransport.service.nominatim.NominatimService;
+import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
+import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.http.ResponseEntity.ok;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class NominatimGeocodingServiceTest {
+
+    @Mock
+    private NominatimService mockedNominatimService;
+
+    @Mock
+    private ReverseResponseToAddressMapper mockedResponseToAddressMapper;
+
+    @Mock
+    private AddressService mockedAddressService;
+
+    private NominatimGeocodingService geocodingService;
+
+    @Before
+    public void initializeGeocodingService() {
+        this.geocodingService = new NominatimGeocodingService(
+                this.mockedNominatimService,
+                this.mockedResponseToAddressMapper,
+                this.mockedAddressService
+        );
+    }
+
+    @Test
+    public void addressWithNotExistGeometryShouldBeReceived() {
+        final NominatimReverseResponse givenReverseResponse = createNominatimReverseResponse();
+
+
+        final double givenLatitude = 5.5;
+        final double givenLongitude = 6.6;
+
+        throw new RuntimeException();
+    }
+
+    private static NominatimReverseResponse createNominatimReverseResponse() {
+        return NominatimReverseResponse.builder().build();
+    }
+
 //    @Test
 //    @SuppressWarnings("unchecked")
 //    public void addressWithNotExistGeometryShouldBeReceived() {
@@ -185,4 +188,4 @@
 //    private String createUrl(final double latitude, final double longitude) {
 //        return format(this.urlTemplate, latitude, longitude);
 //    }
-//}
+}
