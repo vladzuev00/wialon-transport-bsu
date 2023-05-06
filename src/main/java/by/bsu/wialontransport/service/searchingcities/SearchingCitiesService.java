@@ -14,6 +14,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+//TODO: подумать что если адресс уже есть, но города с ним нету
 @Service
 @RequiredArgsConstructor
 public final class SearchingCitiesService {

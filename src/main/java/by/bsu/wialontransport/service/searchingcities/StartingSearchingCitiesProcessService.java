@@ -50,8 +50,8 @@ public final class StartingSearchingCitiesProcessService {
     public SearchingCitiesProcess start(final AreaCoordinate areaCoordinate, final double searchStep) {
         final SearchingCitiesProcess process = this.processFactory.create(areaCoordinate, searchStep);
         final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(process);
-        this.eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, process));
-        runAsync(new TaskSearchingAllCities(areaCoordinate, searchStep, process), this.executorService);
+        this.eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, savedProcess));
+        runAsync(new TaskSearchingAllCities(areaCoordinate, searchStep, savedProcess), this.executorService);
         return savedProcess;
     }
 

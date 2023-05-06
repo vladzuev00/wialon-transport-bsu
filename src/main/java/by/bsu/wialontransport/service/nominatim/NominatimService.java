@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.nominatim;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,10 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
 @Component
+@Slf4j
 public class NominatimService {
+    private static final String TEMPLATE_MESSAGE_OF_REQUESTING = "Request to Nominatim: {}";
+
     private final String urlTemplate;
     private final RestTemplate restTemplate;
 
@@ -33,6 +37,7 @@ public class NominatimService {
 
     public NominatimReverseResponse reverse(final double latitude, final double longitude) {
         final String url = this.createUrl(latitude, longitude);
+        log.info(TEMPLATE_MESSAGE_OF_REQUESTING, url);
         final ResponseEntity<NominatimReverseResponse> responseEntity = this.restTemplate.exchange(
                 url, GET, EMPTY, new ParameterizedTypeReference<>() {
                 }

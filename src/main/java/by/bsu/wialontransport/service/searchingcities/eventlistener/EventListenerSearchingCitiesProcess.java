@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public final class EventListenerSearchingCitiesProcess {
+public class EventListenerSearchingCitiesProcess {
     private static final String LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES
             = "Process searching cities has been started. Process: {}";
 

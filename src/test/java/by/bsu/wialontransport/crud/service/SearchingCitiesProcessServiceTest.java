@@ -83,7 +83,7 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(258, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'ERROR')")
     public void processesShouldBeFoundByStatus() {
-        final List<SearchingCitiesProcess> actual = this.service.findByStatus(HANDLING, ofSize(4));
+        final List<SearchingCitiesProcess> actual = this.service.findByStatus(HANDLING, 0, 4);
         final List<SearchingCitiesProcess> expected = List.of(
                 SearchingCitiesProcess.builder()
                         .id(255L)
@@ -116,7 +116,7 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
             + "id, bounds, search_step, total_points, handled_points, status) "
             + "VALUES(257, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'SUCCESS')")
     public void processesShouldNotBeFoundByStatus() {
-        final List<SearchingCitiesProcess> actual = this.service.findByStatus(ERROR, ofSize(4));
+        final List<SearchingCitiesProcess> actual = this.service.findByStatus(ERROR, 0, 4);
         assertTrue(actual.isEmpty());
     }
 }
