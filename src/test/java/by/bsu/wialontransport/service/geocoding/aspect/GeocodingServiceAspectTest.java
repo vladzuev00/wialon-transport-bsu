@@ -2,23 +2,18 @@ package by.bsu.wialontransport.service.geocoding.aspect;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
-import by.bsu.wialontransport.service.geocoding.component.GeocodingChainComponent;
+import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -30,10 +25,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Import({
-        GeocodingChainComponentAspectTest.SuccessfullyReceivingComponent.class,
-        GeocodingChainComponentAspectTest.FailureReceivingComponent.class
+        GeocodingServiceAspectTest.SuccessfullyReceivingService.class,
+        GeocodingServiceAspectTest.FailureReceivingService.class
 })
-public final class GeocodingChainComponentAspectTest extends AbstractContextTest {
+public final class GeocodingServiceAspectTest extends AbstractContextTest {
     private static final String FIELD_NAME_LOGGER = "log";
     private static final String FIELD_NAME_THE_UNSAFE = "theUnsafe";
 
@@ -44,10 +39,10 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
     private ArgumentCaptor<String> stringArgumentCaptor;
 
     @Autowired
-    private SuccessfullyReceivingComponent successfullyReceivingComponent;
+    private SuccessfullyReceivingService successfullyReceivingService;
 
     @Autowired
-    private FailureReceivingComponent failureReceivingComponent;
+    private FailureReceivingService failureReceivingService;
 
     @Before
     public void injectMockedLogger()
@@ -56,7 +51,7 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
         unsafeField.setAccessible(true);
         try {
             final Unsafe unsafe = (Unsafe) unsafeField.get(null);
-            final Field ourField = GeocodingChainComponentAspect.class.getDeclaredField(FIELD_NAME_LOGGER);
+            final Field ourField = GeocodingServiceAspect.class.getDeclaredField(FIELD_NAME_LOGGER);
             final Object staticFieldBase = unsafe.staticFieldBase(ourField);
             final long staticFieldOffset = unsafe.staticFieldOffset(ourField);
             unsafe.putObject(staticFieldBase, staticFieldOffset, this.mockedLogger);
@@ -67,24 +62,24 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
 
     @Test
     public void successReceivingByDoubleLatitudeAndDoubleLongitudeShouldBeLogged() {
-        this.successfullyReceivingComponent.receive(4.5, 5.5);
+        this.successfullyReceivingService.receive(4.5, 5.5);
 
         verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
         assertEquals(
                 "Address "
                         + "'Address(id=null, boundingBox=null, center=null, cityName=null, countryName=null, geometry=null)' "
-                        + "was successfully received by 'SuccessfullyReceivingComponent'",
+                        + "was successfully received by 'SuccessfullyReceivingService'",
                 this.stringArgumentCaptor.getValue()
         );
     }
 
     @Test
     public void failureReceivingByDoubleLatitudeAndDoubleLongitudeShouldBeLogged() {
-        this.failureReceivingComponent.receive(4.5, 5.5);
+        this.failureReceivingService.receive(4.5, 5.5);
 
         verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
         assertEquals(
-                "Address wasn't received by 'FailureReceivingComponent'",
+                "Address wasn't received by 'FailureReceivingService'",
                 this.stringArgumentCaptor.getValue()
         );
     }
@@ -94,13 +89,13 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
         final Latitude givenLatitude = createLatitude();
         final Longitude givenLongitude = createLongitude();
 
-        this.successfullyReceivingComponent.receive(givenLatitude, givenLongitude);
+        this.successfullyReceivingService.receive(givenLatitude, givenLongitude);
 
         verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
         assertEquals(
                 "Address "
                         + "'Address(id=null, boundingBox=null, center=null, cityName=null, countryName=null, geometry=null)' "
-                        + "was successfully received by 'SuccessfullyReceivingComponent'",
+                        + "was successfully received by 'SuccessfullyReceivingService'",
                 this.stringArgumentCaptor.getValue()
         );
     }
@@ -110,11 +105,11 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
         final Latitude givenLatitude = createLatitude();
         final Longitude givenLongitude = createLongitude();
 
-        this.failureReceivingComponent.receive(givenLatitude, givenLongitude);
+        this.failureReceivingService.receive(givenLatitude, givenLongitude);
 
         verify(this.mockedLogger, times(1)).info(this.stringArgumentCaptor.capture());
         assertEquals(
-                "Address wasn't received by 'FailureReceivingComponent'",
+                "Address wasn't received by 'FailureReceivingService'",
                 this.stringArgumentCaptor.getValue()
         );
     }
@@ -128,7 +123,7 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
     }
 
     @Service
-    public static class SuccessfullyReceivingComponent implements GeocodingChainComponent {
+    public static class SuccessfullyReceivingService implements GeocodingService {
 
         @Override
         public Optional<Address> receive(final double latitude, final double longitude) {
@@ -139,7 +134,7 @@ public final class GeocodingChainComponentAspectTest extends AbstractContextTest
     }
 
     @Service
-    public static class FailureReceivingComponent implements GeocodingChainComponent {
+    public static class FailureReceivingService implements GeocodingService {
 
         @Override
         public Optional<Address> receive(final double latitude, final double longitude) {

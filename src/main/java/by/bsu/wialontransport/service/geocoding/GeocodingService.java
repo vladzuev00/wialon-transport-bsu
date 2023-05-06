@@ -17,4 +17,9 @@ public interface GeocodingService {
         return this.receive(latitudeDoubleValue, longitudeDoubleValue);
     }
 
+    default String findName() {
+        final Class<?> componentClass = this.getClass();
+        return componentClass.getSimpleName();
+    }
+
 }

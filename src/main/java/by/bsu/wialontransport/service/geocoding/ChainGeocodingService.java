@@ -12,7 +12,7 @@ import static java.util.function.UnaryOperator.identity;
 
 @Service
 @RequiredArgsConstructor
-public final class ChainGeocodingService implements GeocodingService {
+public class ChainGeocodingService implements GeocodingService {
     private final List<GeocodingChainComponent> componentServices;
 
     @Override
