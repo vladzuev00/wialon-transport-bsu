@@ -72,6 +72,10 @@ nominatim:
   millis-between-requests: 100
   enable-waiting-between-requests: true
 
+search-cities:
+  amount-handled-points-to-save-state: 10
+  amount-of-threads-to-search-cities: 5
+
 
 
 

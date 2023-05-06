@@ -21,4 +21,17 @@ public final class City extends Address {
         super(id, boundingBox, center, cityName, countryName, geometry);
         this.searchingCitiesProcess = searchingCitiesProcess;
     }
+
+    //TODO: test
+    public static City createWithSearchingCitiesProcess(final City source, final SearchingCitiesProcess process) {
+        return new City(
+            source.getId(),
+            source.getBoundingBox(),
+            source.getCenter(),
+            source.getCityName(),
+            source.getCountryName(),
+            source.getGeometry(),
+            process
+        );
+    }
 }

@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public final class StartSearchingCitiesProcessEvent extends SearchingCitiesProcessEvent {
-    private final SearchingCitiesProcess searchingCitiesProcess;
+    private final SearchingCitiesProcess process;
 
     public StartSearchingCitiesProcessEvent(final StartingSearchingCitiesProcessService service,
-                                            final SearchingCitiesProcess searchingCitiesProcess) {
+                                            final SearchingCitiesProcess process) {
         super(service);
-        this.searchingCitiesProcess = searchingCitiesProcess;
+        this.process = process;
     }
 }

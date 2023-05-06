@@ -15,10 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
+import static by.bsu.wialontransport.crud.dto.City.createWithSearchingCitiesProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
 import static java.util.stream.Collectors.toList;
 
+
+/**
+ * events are handled synchronously
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -42,9 +47,7 @@ public final class EventListenerSearchingCitiesProcess {
 
     @EventListener
     public void onStartSearchingCities(final StartSearchingCitiesProcessEvent event) {
-        final SearchingCitiesProcess processToBeSaved = event.getSearchingCitiesProcess();
-        final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(processToBeSaved);
-        log.info(LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES, savedProcess);
+        log.info(LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES, event.getProcess());
     }
 
     @EventListener
@@ -60,12 +63,15 @@ public final class EventListenerSearchingCitiesProcess {
         exception.printStackTrace();
     }
 
-    @Transactional
     @EventListener
+    @Transactional
     public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
-        final List<City> citiesWithNotExistGeometries = this.findCitiesWithNotExistGeometries(event.getFoundCities());
-        this.cityService.saveAll(citiesWithNotExistGeometries);
-        this.searchingCitiesProcessService.updateStatus(event.getProcess(), SUCCESS);
+        final SearchingCitiesProcess process = event.getProcess();
+        final List<City> citiesToBeSaved = this.findCitiesWithNotExistGeometriesAndInjectedProcess(
+                event.getFoundCities(), process
+        );
+        this.cityService.saveAll(citiesToBeSaved);
+        this.searchingCitiesProcessService.updateStatus(process, SUCCESS);
         log.info(LOG_SUCCESS_PROCESS_SEARCHING_CITIES);
     }
 
@@ -77,9 +83,11 @@ public final class EventListenerSearchingCitiesProcess {
         exception.printStackTrace();
     }
 
-    private List<City> findCitiesWithNotExistGeometries(final Collection<City> foundCities) {
+    private List<City> findCitiesWithNotExistGeometriesAndInjectedProcess(final Collection<City> foundCities,
+                                                                          final SearchingCitiesProcess process) {
         return foundCities.stream()
                 .filter(city -> !this.addressService.isExistByGeometry(city.getGeometry()))
+                .map(cityWithoutProcess -> createWithSearchingCitiesProcess(cityWithoutProcess, process))
                 .collect(toList());
     }
 }
