@@ -5,10 +5,10 @@ import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.CityService;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
-import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.service.searchingcities.SearchingCitiesProcessFactory;
+import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +23,8 @@ import static java.util.stream.Collectors.toList;
 @Component
 @RequiredArgsConstructor
 public final class EventListenerSearchingCitiesProcess {
-    private static final String LOG_START_PROCESS_SEARCHING_CITIES = "Process searching cities has been started.";
+    private static final String LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES
+            = "Process searching cities has been started. Process: {}";
 
     private static final String LOG_SUCCESS_SUBTASK_SEARCHING_CITIES
             = "Subtask searching cities has been finished successfully.";
@@ -35,40 +36,43 @@ public final class EventListenerSearchingCitiesProcess {
     private static final String LOG_TEMPLATE_FAILURE_PROCESS_SEARCHING_CITIES
             = "Process searching all cities has been failed. Exception: {}.";
 
-    private final SearchingCitiesProcessFactory searchingCitiesProcessFactory;
     private final SearchingCitiesProcessService searchingCitiesProcessService;
     private final CityService cityService;
     private final AddressService addressService;
 
-    public SearchingCitiesProcess onStartSearchCities(final AreaCoordinate areaCoordinate, final double searchStep) {
-        final SearchingCitiesProcess processToBeSaved = this.searchingCitiesProcessFactory.create(
-                areaCoordinate, searchStep
-        );
+    @EventListener
+    public void onStartSearchingCities(final StartSearchingCitiesProcessEvent event) {
+        final SearchingCitiesProcess processToBeSaved = event.getSearchingCitiesProcess();
         final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(processToBeSaved);
-        log.info(LOG_START_PROCESS_SEARCHING_CITIES);
-        return savedProcess;
+        log.info(LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES, savedProcess);
     }
 
-    public void onSuccessFindCitiesBySubtask(final SearchingCitiesProcess process, final long amountHandledPoints) {
-        this.searchingCitiesProcessService.increaseHandledPoints(process, amountHandledPoints);
+    @EventListener
+    public void onSuccessSearchingCitiesBySubtask(final SuccessSearchingCitiesBySubtaskEvent event) {
+        this.searchingCitiesProcessService.increaseHandledPoints(event.getProcess(), event.getAmountHandledPoints());
         log.info(LOG_SUCCESS_SUBTASK_SEARCHING_CITIES);
     }
 
-    public void onFailedFindCitiesBySubtask(final Exception exception) {
+    @EventListener
+    public void onFailedSearchingCitiesBySubtask(final FailedSearchingCitiesBySubtaskEvent event) {
+        final Exception exception = event.getException();
         log.error(LOG_TEMPLATE_FAILURE_SUBTASK_SEARCHING_CITIES, exception.getMessage());
         exception.printStackTrace();
     }
 
     @Transactional
-    public void onSuccessFindAllCities(final SearchingCitiesProcess process, final Collection<City> foundCities) {
-        final List<City> citiesWithNotExistGeometries = this.findCitiesWithNotExistGeometries(foundCities);
+    @EventListener
+    public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
+        final List<City> citiesWithNotExistGeometries = this.findCitiesWithNotExistGeometries(event.getFoundCities());
         this.cityService.saveAll(citiesWithNotExistGeometries);
-        this.searchingCitiesProcessService.updateStatus(process, SUCCESS);
+        this.searchingCitiesProcessService.updateStatus(event.getProcess(), SUCCESS);
         log.info(LOG_SUCCESS_PROCESS_SEARCHING_CITIES);
     }
 
-    public void onFailedFindAllCities(final SearchingCitiesProcess process, final Exception exception) {
-        this.searchingCitiesProcessService.updateStatus(process, ERROR);
+    @EventListener
+    public void onFailedSearchingAllCities(final FailedSearchingAllCitiesEvent event) {
+        final Exception exception = event.getException();
+        this.searchingCitiesProcessService.updateStatus(event.getProcess(), ERROR);
         log.error(LOG_TEMPLATE_FAILURE_PROCESS_SEARCHING_CITIES, exception.getMessage());
         exception.printStackTrace();
     }
