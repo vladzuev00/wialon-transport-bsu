@@ -33,7 +33,6 @@ DROP CONSTRAINT IF EXISTS fk_cities_to_addresses;
 ALTER TABLE IF EXISTS cities
 DROP CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
 
-
 --DROPPING tables
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
@@ -41,7 +40,11 @@ DROP TABLE IF EXISTS data;
 DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
+
+--DROPPING TYPES
+DROP TYPE IF EXISTS searching_cities_process_type;
 
 CREATE
 EXTENSION IF NOT EXISTS postgis;
