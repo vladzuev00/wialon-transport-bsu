@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.service.nominatim;
 
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,11 @@ public class NominatimService {
                             final RestTemplate restTemplate) {
         this.urlTemplate = urlTemplate;
         this.restTemplate = restTemplate;
+    }
+
+    //TODO: test
+    public NominatimReverseResponse reverse(final Coordinate coordinate) {
+        return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }
 
     public NominatimReverseResponse reverse(final double latitude, final double longitude) {
