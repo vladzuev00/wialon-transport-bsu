@@ -27,11 +27,11 @@ public abstract class AbstractReverseResponseToAddressMapper<T extends Address> 
         return this.createAddress(boundingBox, center, cityName, countryName, geometry);
     }
 
-    public abstract T createAddress(final Geometry boundingBox,
-                                    final Point center,
-                                    final String cityName,
-                                    final String countryName,
-                                    final Geometry geometry);
+    protected abstract T createAddress(final Geometry boundingBox,
+                                       final Point center,
+                                       final String cityName,
+                                       final String countryName,
+                                       final Geometry geometry);
 
     private Geometry mapBoundingBox(final NominatimReverseResponse response) {
         final double[] boundingBoxCoordinates = response.getBoundingBoxCoordinates();

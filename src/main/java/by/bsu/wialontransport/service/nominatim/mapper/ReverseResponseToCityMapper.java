@@ -15,11 +15,11 @@ public final class ReverseResponseToCityMapper extends AbstractReverseResponseTo
     }
 
     @Override
-    public City createAddress(final Geometry boundingBox,
-                              final Point center,
-                              final String cityName,
-                              final String countryName,
-                              final Geometry geometry) {
+    protected City createAddress(final Geometry boundingBox,
+                                 final Point center,
+                                 final String cityName,
+                                 final String countryName,
+                                 final Geometry geometry) {
         return City.cityBuilder()
                 .boundingBox(boundingBox)
                 .center(center)
