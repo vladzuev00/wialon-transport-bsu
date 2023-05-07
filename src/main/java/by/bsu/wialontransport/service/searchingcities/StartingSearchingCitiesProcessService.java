@@ -7,6 +7,7 @@ import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesException;
+import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

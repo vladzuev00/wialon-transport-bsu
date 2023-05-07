@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.searchingcities;
+package by.bsu.wialontransport.service.searchingcities.factory;
 
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;

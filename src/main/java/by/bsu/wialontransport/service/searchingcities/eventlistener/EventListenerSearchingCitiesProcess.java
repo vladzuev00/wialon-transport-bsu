@@ -18,7 +18,6 @@ import java.util.List;
 import static by.bsu.wialontransport.crud.dto.City.createWithSearchingCitiesProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
-import static java.util.stream.Collectors.toList;
 
 
 /**
@@ -88,6 +87,6 @@ public class EventListenerSearchingCitiesProcess {
         return foundCities.stream()
                 .filter(city -> !this.addressService.isExistByGeometry(city.getGeometry()))
                 .map(cityWithoutProcess -> createWithSearchingCitiesProcess(cityWithoutProcess, process))
-                .collect(toList());
+                .toList();
     }
 }

@@ -35,6 +35,7 @@ public class NominatimService {
         return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }
 
+    //TODO: add zoom as argument
     public NominatimReverseResponse reverse(final double latitude, final double longitude) {
         final String url = this.createUrl(latitude, longitude);
         log.info(TEMPLATE_MESSAGE_OF_REQUESTING, url);
