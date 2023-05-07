@@ -45,7 +45,7 @@ public final class DataComponentsParser {
             //NA comes from retranslator
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
-            + "(([^:]+:[123]:[^:]+,?)*)";                          //parameters
+            + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
     private static final Pattern PATTERN_DATA = compile(REGEX_DATA);
 
     private static final int GROUP_NUMBER_DATE_TIME = 1;

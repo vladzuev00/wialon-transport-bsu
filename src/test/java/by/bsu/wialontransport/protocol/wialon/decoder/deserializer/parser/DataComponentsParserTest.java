@@ -48,6 +48,15 @@ public final class DataComponentsParserTest {
         new DataComponentsParser(givenData);
     }
 
+    @Test(expected = NotValidDataException.class)
+    public void parserShouldNotBeCreatedBecauseOfThereIsNoParametersDelimiter() {
+        final String givenData = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "param-name-1:1:654321param-name-2:2:65.4321,param-name-3:3:param-value";
+        new DataComponentsParser(givenData);
+    }
+
     @Test
     public void dateTimeShouldBeParsed() {
         final String givenData = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
