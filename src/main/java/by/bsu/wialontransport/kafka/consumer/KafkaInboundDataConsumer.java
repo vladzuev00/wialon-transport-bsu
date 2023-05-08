@@ -39,6 +39,7 @@ import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
+//TODO: по сути сейчас работа с адрересами выполняется по принципу проверить - затем действовать, что при параллельной обработке будет давать сбой - заменить одной атомарной операцией
 @Component
 public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
     private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
