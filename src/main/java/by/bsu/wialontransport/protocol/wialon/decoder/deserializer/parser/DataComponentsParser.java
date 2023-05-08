@@ -30,7 +30,6 @@ import static java.util.stream.Collectors.toMap;
 public final class DataComponentsParser {
     private static final String MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION = "Given data '%s' isn't valid.";
 
-    //TODO: test case with forgetting ',' between params
     private static final String REGEX_DATA
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude

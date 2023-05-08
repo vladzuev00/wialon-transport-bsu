@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 //TODO: подумать что если адресс уже есть, но города с ним нету
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,7 @@ public final class SearchingCitiesService {
                 .map(this.nominatimService::reverse)
                 .filter(SearchingCitiesService::isCity)
                 .map(this.mapper::map)
-                .collect(toList());
+                .toList();
     }
 
     private static boolean isCity(final NominatimReverseResponse response) {
