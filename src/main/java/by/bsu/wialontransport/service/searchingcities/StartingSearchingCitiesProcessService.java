@@ -23,6 +23,7 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.IntStream.range;
 
 @Service
@@ -65,10 +66,11 @@ public final class StartingSearchingCitiesProcessService {
         @Override
         public void run() {
             try {
-                final Set<String> namesAlreadyFoundCities = new HashSet<>();
+                final Set<String> namesAlreadyFoundCities = newKeySet();
                 final List<Coordinate> coordinates = this.findCoordinates();
                 final int amountOfSubAreas = this.findAmountOfSubAreas();
                 final List<City> foundUniqueCities = range(0, amountOfSubAreas)
+                        .parallel()
                         .mapToObj(i -> this.extractSubAreaCoordinatesByItsIndex(coordinates, i))
                         .map(subAreaCoordinates -> new SubtaskSearchingCities(subAreaCoordinates, this.process))
                         .map(subtask -> supplyAsync(subtask::search, executorService))
