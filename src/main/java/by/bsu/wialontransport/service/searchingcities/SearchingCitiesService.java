@@ -12,20 +12,19 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
-//TODO: подумать что если адресс уже есть, но города с ним нету
 @Service
 @RequiredArgsConstructor
 public final class SearchingCitiesService {
     private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "(city)|(town)";
 
     private final NominatimService nominatimService;
-    private final ReverseResponseToCityMapper mapper;
+    private final ReverseResponseToCityMapper responseToCityMapper;
 
     public Collection<City> findByCoordinates(final List<Coordinate> coordinates) {
         return coordinates.stream()
                 .map(this.nominatimService::reverse)
                 .filter(SearchingCitiesService::isCity)
-                .map(this.mapper::map)
+                .map(this.responseToCityMapper::map)
                 .toList();
     }
 
