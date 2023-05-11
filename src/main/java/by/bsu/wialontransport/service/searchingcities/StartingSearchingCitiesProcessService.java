@@ -122,14 +122,10 @@ public final class StartingSearchingCitiesProcessService {
         }
     }
 
+    @RequiredArgsConstructor
     private final class SubtaskSearchingCities {
         private final List<Coordinate> coordinates;
         private final SearchingCitiesProcess process;
-
-        public SubtaskSearchingCities(final List<Coordinate> coordinates, final SearchingCitiesProcess process) {
-            this.coordinates = coordinates;
-            this.process = process;
-        }
 
         public Collection<City> search() {
             try {
