@@ -39,7 +39,6 @@ import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
-//TODO: по сути сейчас работа с адрересами выполняется по принципу проверить - затем действовать, что при параллельной обработке будет давать сбой - заменить одной атомарной операцией
 @Component
 public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
     private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
@@ -68,6 +67,10 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
         this.savedDataProducer = savedDataProducer;
     }
 
+    /**
+     * concurrency should be 1 because of working with addresses performs in way at first check
+     * then act so parallel working will be failed
+     */
     @Override
     @KafkaListener(
             topics = "${kafka.topic.inbound-data.name}",
