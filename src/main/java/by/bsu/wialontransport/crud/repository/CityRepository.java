@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 //TODO: подумать что если адресс уже есть, но города с ним нету
 public interface CityRepository extends JpaRepository<CityEntity, Long> {
 
-    //TODO: remove
     @Query(value = "SELECT EXISTS("
             + "SELECT 1 FROM cities INNER JOIN addresses ON cities.id = addresses.id "
             + "WHERE ST_Equals(addresses.geometry, :geometry)"
@@ -17,7 +16,4 @@ public interface CityRepository extends JpaRepository<CityEntity, Long> {
             nativeQuery = true)
     boolean isExistByGeometry(final Geometry geometry);
 
-    @Modifying
-    @Query(value = "", nativeQuery = true)
-    CityEntity insertPossiblySavedCityWithPossiblySavedAddress(final CityEntity city);
 }

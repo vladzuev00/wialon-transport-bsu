@@ -21,7 +21,6 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             nativeQuery = true)
     Optional<AddressEntity> findAddressByGeometry(final Geometry geometry);
 
-    //TODO: remove
     @Query(value = "SELECT EXISTS(SELECT 1 FROM addresses WHERE ST_Equals(addresses.geometry, :geometry))",
             nativeQuery = true)
     boolean isExistByGeometry(final Geometry geometry);

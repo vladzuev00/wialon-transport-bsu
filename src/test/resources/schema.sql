@@ -94,7 +94,7 @@ CREATE TABLE addresses
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 
-CREATE INDEX ON addresses using GIST(bounding_box);
+CREATE INDEX ON addresses using GIST(geometry);
 
 CREATE TABLE data
 (
