@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+//TODO: подумать что если адресс уже есть, но города с ним нету
 public interface CityRepository extends JpaRepository<CityEntity, Long> {
 
     //TODO: remove

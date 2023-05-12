@@ -18,6 +18,7 @@ import java.util.List;
 import static by.bsu.wialontransport.crud.dto.City.createWithSearchingCitiesProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
 
 /**
@@ -63,7 +64,7 @@ public class EventListenerSearchingCitiesProcess {
     }
 
     @EventListener
-    @Transactional
+    @Transactional(isolation = READ_COMMITTED)
     public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
         final SearchingCitiesProcess process = event.getProcess();
         final List<City> citiesToBeSaved = this.findCitiesWithNotExistGeometriesAndInjectedProcess(

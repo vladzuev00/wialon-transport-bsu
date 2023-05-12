@@ -20,6 +20,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -38,9 +39,10 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
 @Component
-public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
+public class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
     private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
     private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
@@ -108,6 +110,7 @@ public final class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordCo
     }
 
     @Override
+    @Transactional(isolation = READ_COMMITTED)
     protected void processData(final List<Data> data) {
         final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
         final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
