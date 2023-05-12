@@ -39,6 +39,7 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
 @Component
 public class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
@@ -105,7 +106,7 @@ public class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = READ_COMMITTED)
     protected void processData(final List<Data> data) {
         final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
         final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
