@@ -3,7 +3,6 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
-import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToCityMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public final class SearchingCitiesService {
     private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "(city)|(town)";
 
     private final NominatimService nominatimService;
-    private final ReverseResponseToCityMapper responseToCityMapper;
+//    private final ReverseResponseToCityMapper responseToCityMapper;
 
     public Collection<City> findByCoordinates(final List<Coordinate> coordinates) {
         return null;
