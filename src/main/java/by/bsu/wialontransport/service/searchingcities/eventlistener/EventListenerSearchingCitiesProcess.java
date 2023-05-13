@@ -7,14 +7,15 @@ import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.CityService;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import static by.bsu.wialontransport.crud.dto.City.createWithAddressAndProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
@@ -27,7 +28,6 @@ import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EventListenerSearchingCitiesProcess {
     private static final String LOG_TEMPLATE_START_PROCESS_SEARCHING_CITIES
             = "Process searching cities has been started. Process: {}";
@@ -45,6 +45,17 @@ public class EventListenerSearchingCitiesProcess {
     private final SearchingCitiesProcessService searchingCitiesProcessService;
     private final CityService cityService;
     private final AddressService addressService;
+    private final ExecutorService executorService;
+
+    public EventListenerSearchingCitiesProcess(final SearchingCitiesProcessService searchingCitiesProcessService,
+                                               final CityService cityService,
+                                               final AddressService addressService,
+                                               @Qualifier("executorServiceToSearchCities") final ExecutorService executorService) {
+        this.searchingCitiesProcessService = searchingCitiesProcessService;
+        this.cityService = cityService;
+        this.addressService = addressService;
+        this.executorService = executorService;
+    }
 
     @EventListener
     public void onStartSearchingCities(final StartSearchingCitiesProcessEvent event) {
@@ -57,11 +68,13 @@ public class EventListenerSearchingCitiesProcess {
         log.info(LOG_SUCCESS_SUBTASK_SEARCHING_CITIES);
     }
 
+    //TODO: refactor test
     @EventListener
     public void onFailedSearchingCitiesBySubtask(final FailedSearchingCitiesBySubtaskEvent event) {
         final Exception exception = event.getException();
         log.error(LOG_TEMPLATE_FAILURE_SUBTASK_SEARCHING_CITIES, exception.getMessage());
         exception.printStackTrace();
+        this.executorService.shutdownNow();
     }
 
     //TODO: refactor test
@@ -83,7 +96,7 @@ public class EventListenerSearchingCitiesProcess {
     }
 
     private void saveCities(final Collection<City> foundCities,
-                                  final SearchingCitiesProcess process) {
+                            final SearchingCitiesProcess process) {
         foundCities.stream()
                 .filter(this::isCityNotExist)
                 .forEach(notExistingCity -> this.saveCityAndAddressIfNotExist(notExistingCity, process));

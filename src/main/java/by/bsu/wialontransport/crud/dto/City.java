@@ -15,6 +15,11 @@ public class City implements AbstractDto<Long> {
         return this.address.getGeometry();
     }
 
+    public String getCityName() {
+        return this.address.getCityName();
+    }
+
+    //TODO: test
     public static City createWithAddressAndProcess(final City source,
                                                    final Address address,
                                                    final SearchingCitiesProcess process) {
@@ -25,12 +30,7 @@ public class City implements AbstractDto<Long> {
         );
     }
 
-    //TODO: test
-    public static City createWithSearchingCitiesProcess(final City source, final SearchingCitiesProcess process) {
-        return new City(
-                source.getId(),
-                source.getAddress(),
-                process
-        );
+    public static City createWithAddress(final Address address) {
+        return new City(null, address, null);
     }
 }

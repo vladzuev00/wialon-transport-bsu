@@ -81,29 +81,38 @@ public final class ReverseResponseToAddressMapper {
         );
     }
 
+    //TODO: refactor
     private Geometry createBoundingBox(final CoordinateXY leftBottomCoordinate,
                                        final CoordinateXY leftUpperCoordinate,
                                        final CoordinateXY rightUpperCoordinate,
                                        final CoordinateXY rightBottomCoordinate) {
-        return this.geometryFactory.createPolygon(new Coordinate[]{
+        final Geometry boundingBox = this.geometryFactory.createPolygon(new Coordinate[]{
                 leftBottomCoordinate,
                 leftUpperCoordinate,
                 rightUpperCoordinate,
                 rightBottomCoordinate,
                 leftBottomCoordinate
         });
+        boundingBox.setSRID(this.geometryFactory.getSRID());
+        return boundingBox;
     }
 
+    //TODO: refactor
     private Point mapCenter(final NominatimReverseResponse response) {
         final CoordinateXY coordinate = new CoordinateXY(
                 response.getCenterLongitude(),
                 response.getCenterLatitude()
         );
-        return this.geometryFactory.createPoint(coordinate);
+        final Point center = this.geometryFactory.createPoint(coordinate);
+        center.setSRID(this.geometryFactory.getSRID());
+        return center;
     }
 
+    //TODO: refactor
     private Geometry mapGeometry(final NominatimReverseResponse response) {
         final org.wololo.geojson.Geometry mappedGeometry = response.getGeometry();
-        return this.geoJSONReader.read(mappedGeometry);
+        final Geometry geometry = this.geoJSONReader.read(mappedGeometry);
+        geometry.setSRID(this.geometryFactory.getSRID());
+        return geometry;
     }
 }

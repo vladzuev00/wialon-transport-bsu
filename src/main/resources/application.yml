@@ -69,8 +69,8 @@ nominatim:
   reverse:
     url:
       template: https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%f&lon=%f&zoom=10&accept-language=ru&polygon_geojson=1&extratags=1
-  millis-between-requests: 100
-  enable-waiting-between-requests: true
+  millis-between-requests: 1000
+  enable-waiting-between-requests: false
 
 search-cities:
   amount-handled-points-to-save-state: 10

@@ -57,7 +57,7 @@ public final class NominatimServiceAspect implements AutoCloseable {
             }
             final NominatimReverseResponse response = (NominatimReverseResponse) proceedingJoinPoint.proceed();
             this.durationBetweenRequestsPassed = false;
-            this.condition.signal();
+            this.condition.signalAll();
             return response;
         } finally {
             this.lock.unlock();
@@ -80,7 +80,7 @@ public final class NominatimServiceAspect implements AutoCloseable {
                     }
                     MILLISECONDS.sleep(this.millisBetweenRequests);
                     this.durationBetweenRequestsPassed = true;
-                    this.condition.signal();
+                    this.condition.signalAll();
                 }
             } catch (final InterruptedException cause) {
                 currentThread().interrupt();
@@ -91,7 +91,7 @@ public final class NominatimServiceAspect implements AutoCloseable {
     }
 
     @Pointcut("execution(public by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse "
-            + "by.bsu.wialontransport.service.nominatim.NominatimService.reverse(double,double)"
+            + "by.bsu.wialontransport.service.nominatim.NominatimService.reverse(..)"
             + ")")
     private void reverseMethod() {
 

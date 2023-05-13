@@ -18,6 +18,7 @@ import static org.springframework.http.MediaType.ALL;
 @Configuration
 public class RestTemplateConfig {
 
+    //TODO: do pool of rest templates
     @Bean
     public RestTemplate restTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();

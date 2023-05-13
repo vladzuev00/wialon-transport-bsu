@@ -16,6 +16,7 @@ public class NominatimReverseResponse {
     Geometry geometry;
     ExtraTags extraTags;
 
+    @JsonCreator
     public NominatimReverseResponse(@JsonProperty("lat") final double centerLatitude,
                                     @JsonProperty("lot") final double centerLongitude,
                                     @JsonProperty("address") final Address address,
@@ -35,6 +36,7 @@ public class NominatimReverseResponse {
         String cityName;
         String countryName;
 
+        @JsonCreator
         public Address(@JsonProperty("city") final String cityName,
                        @JsonProperty("country") final String countryName) {
             this.cityName = cityName;

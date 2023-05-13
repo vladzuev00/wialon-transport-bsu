@@ -16,8 +16,8 @@ import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.OK;
 
-@Component
 @Slf4j
+@Component
 public class NominatimService {
     private static final String TEMPLATE_MESSAGE_OF_REQUESTING = "Request to Nominatim: {}";
 
@@ -30,6 +30,7 @@ public class NominatimService {
         this.restTemplate = restTemplate;
     }
 
+    //TODO: test advice for it
     public NominatimReverseResponse reverse(final Coordinate coordinate) {
         return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }

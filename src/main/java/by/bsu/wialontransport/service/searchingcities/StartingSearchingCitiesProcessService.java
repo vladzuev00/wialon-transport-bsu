@@ -15,14 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
-import static java.util.concurrent.CompletableFuture.runAsync;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.IntStream.range;
 
@@ -69,16 +70,13 @@ public final class StartingSearchingCitiesProcessService {
                 final Set<String> namesAlreadyFoundCities = newKeySet();
                 final List<Coordinate> coordinates = this.findCoordinates();
                 final int amountOfSubAreas = this.findAmountOfSubAreas();
-                final List<City> foundUniqueCities = range(0, amountOfSubAreas)
-                        .parallel()
+                final CompletableFuture<List<City>> foundUniqueCitiesFuture = range(0, amountOfSubAreas)
                         .mapToObj(i -> this.extractSubAreaCoordinatesByItsIndex(coordinates, i))
                         .map(subAreaCoordinates -> new SubtaskSearchingCities(subAreaCoordinates, this.process))
                         .map(subtask -> supplyAsync(subtask::search, executorService))
-                        .map(CompletableFuture::join)
-                        .flatMap(Collection::stream)
-                        //TODO
-//                        .filter(city -> namesAlreadyFoundCities.add(city.getCityName()))
-                        .toList();
+                        .map(future -> afterCompleteRemoveDuplicatesByNames(future, namesAlreadyFoundCities))
+                        .reduce(completedFuture(new ArrayList<>()), TaskSearchingAllCities::combineFutures);
+                final List<City> foundUniqueCities = foundUniqueCitiesFuture.get();
                 this.publishSuccessSearchingEvent(foundUniqueCities);
             } catch (final Exception exception) {
                 this.publishFailedSearchingEvent(exception);
@@ -102,6 +100,28 @@ public final class StartingSearchingCitiesProcessService {
                     subAreaIndex * amountHandledPointsToSaveState,
                     min(amountHandledPointsToSaveState * (subAreaIndex + 1), coordinates.size())
             );
+        }
+
+        private static CompletableFuture<List<City>> afterCompleteRemoveDuplicatesByNames(
+                final CompletableFuture<List<City>> future, final Set<String> namesAlreadyFoundCities) {
+            return future.thenApply(foundCities -> removeDuplicatesByNames(foundCities, namesAlreadyFoundCities));
+        }
+
+        private static List<City> removeDuplicatesByNames(final List<City> foundCities,
+                                                          final Set<String> namesAlreadyFoundCities) {
+            return foundCities.stream()
+                    .filter(city -> namesAlreadyFoundCities.add(city.getCityName()))
+                    .toList();
+        }
+
+        private static CompletableFuture<List<City>> combineFutures(
+                final CompletableFuture<List<City>> first, final CompletableFuture<List<City>> second) {
+            return first.thenCombine(second, TaskSearchingAllCities::unionCities);
+        }
+
+        private static List<City> unionCities(final List<City> first, final List<City> second) {
+            first.addAll(second);
+            return first;
         }
 
         private void publishSuccessSearchingEvent(final List<City> foundCities) {
@@ -128,9 +148,9 @@ public final class StartingSearchingCitiesProcessService {
         private final List<Coordinate> coordinates;
         private final SearchingCitiesProcess process;
 
-        public Collection<City> search() {
+        public List<City> search() {
             try {
-                final Collection<City> foundCities = searchingCitiesService.findByCoordinates(this.coordinates);
+                final List<City> foundCities = searchingCitiesService.findByCoordinates(this.coordinates);
                 this.publishSuccessSearchingEvent();
                 return foundCities;
             } catch (final Exception exception) {
