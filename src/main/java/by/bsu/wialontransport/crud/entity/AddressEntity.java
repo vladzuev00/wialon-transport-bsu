@@ -14,7 +14,6 @@ import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
 @Table(name = "addresses")
-@Inheritance(strategy = JOINED)
 @TypeDef(
         name = "geometry-type",
         typeClass = JTSGeometryType.class

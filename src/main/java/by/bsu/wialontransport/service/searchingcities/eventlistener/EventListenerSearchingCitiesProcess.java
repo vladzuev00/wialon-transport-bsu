@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.service.searchingcities.eventlistener;
 
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.AddressService;
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
-import static by.bsu.wialontransport.crud.dto.City.createWithSearchingCitiesProcess;
+import static by.bsu.wialontransport.crud.dto.City.createWithAddressAndProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
 
 /**
@@ -63,14 +64,12 @@ public class EventListenerSearchingCitiesProcess {
         exception.printStackTrace();
     }
 
+    //TODO: refactor test
     @EventListener
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional(isolation = SERIALIZABLE)
     public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
         final SearchingCitiesProcess process = event.getProcess();
-        final List<City> citiesToBeSaved = this.findCitiesWithNotExistGeometriesAndInjectedProcess(
-                event.getFoundCities(), process
-        );
-        this.cityService.saveAll(citiesToBeSaved);
+        this.saveCities(event.getFoundCities(), process);
         this.searchingCitiesProcessService.updateStatus(process, SUCCESS);
         log.info(LOG_SUCCESS_PROCESS_SEARCHING_CITIES);
     }
@@ -83,11 +82,25 @@ public class EventListenerSearchingCitiesProcess {
         exception.printStackTrace();
     }
 
-    private List<City> findCitiesWithNotExistGeometriesAndInjectedProcess(final Collection<City> foundCities,
-                                                                          final SearchingCitiesProcess process) {
-        return foundCities.stream()
-                .filter(city -> !this.addressService.isExistByGeometry(city.getGeometry()))
-                .map(cityWithoutProcess -> createWithSearchingCitiesProcess(cityWithoutProcess, process))
-                .toList();
+    private void saveCities(final Collection<City> foundCities,
+                                  final SearchingCitiesProcess process) {
+        foundCities.stream()
+                .filter(this::isCityNotExist)
+                .forEach(notExistingCity -> this.saveCityAndAddressIfNotExist(notExistingCity, process));
+    }
+
+    private boolean isCityNotExist(final City city) {
+        return !this.cityService.isExistByGeometry(city.getGeometry());
+    }
+
+    private void saveCityAndAddressIfNotExist(final City city, SearchingCitiesProcess process) {
+        final Address savedAddress = this.findSavedAddressOfCity(city);
+        final City cityToBeSaved = createWithAddressAndProcess(city, savedAddress, process);
+        this.cityService.save(cityToBeSaved);
+    }
+
+    private Address findSavedAddressOfCity(final City city) {
+        final Optional<Address> optionalAddress = this.addressService.findByGeometry(city.getGeometry());
+        return optionalAddress.orElseGet(() -> this.addressService.save(city.getAddress()));
     }
 }

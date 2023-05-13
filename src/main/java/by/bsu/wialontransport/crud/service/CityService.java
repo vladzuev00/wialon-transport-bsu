@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CityService extends AbstractCRUDService<Long, CityEntity, City, CityMapper, CityRepository> {
 
-    public CityService(final CityMapper mapper, final CityRepository repository) {
+    public CityService(final CityMapper mapper,
+                       final CityRepository repository) {
         super(mapper, repository);
     }
 

@@ -58,7 +58,7 @@ public final class NominatimGeocodingServiceTest {
         when(this.mockedResponseToAddressMapper.map(same(givenReverseResponse)))
                 .thenReturn(givenAddress);
 
-        when(this.mockedAddressService.findAddressByGeometry(same(givenAddressGeometry))).thenReturn(empty());
+        when(this.mockedAddressService.findByGeometry(same(givenAddressGeometry))).thenReturn(empty());
 
         final Optional<Address> optionalActual = this.geocodingService.receive(givenLatitude, givenLongitude);
         assertTrue(optionalActual.isPresent());
@@ -81,7 +81,7 @@ public final class NominatimGeocodingServiceTest {
                 .thenReturn(givenAddress);
 
         final Address givenAlreadySavedAddressWithSameGeometry = createAddress(givenAddressGeometry);
-        when(this.mockedAddressService.findAddressByGeometry(same(givenAddressGeometry)))
+        when(this.mockedAddressService.findByGeometry(same(givenAddressGeometry)))
                 .thenReturn(Optional.of(givenAlreadySavedAddressWithSameGeometry));
 
         final Optional<Address> optionalActual = this.geocodingService.receive(givenLatitude, givenLongitude);

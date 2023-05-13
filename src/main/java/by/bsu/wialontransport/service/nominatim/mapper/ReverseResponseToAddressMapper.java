@@ -20,12 +20,14 @@ public final class ReverseResponseToAddressMapper extends AbstractReverseRespons
                                     final String cityName,
                                     final String countryName,
                                     final Geometry geometry) {
-        return Address.builder()
-                .boundingBox(boundingBox)
-                .center(center)
-                .cityName(cityName)
-                .countryName(countryName)
-                .geometry(geometry)
-                .build();
+        //TODO
+//        return Address.builder()
+//                .boundingBox(boundingBox)
+//                .center(center)
+//                .cityName(cityName)
+//                .countryName(countryName)
+//                .geometry(geometry)
+//                .build();
+        return null;
     }
 }

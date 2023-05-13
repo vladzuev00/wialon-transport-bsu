@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.crud.mapper;
 
+import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.modelmapper.ModelMapper;
@@ -18,13 +20,14 @@ public final class CityMapper extends AbstractMapper<CityEntity, City> {
     protected City createDto(final CityEntity entity) {
         return new City(
                 entity.getId(),
-                entity.getBoundingBox(),
-                entity.getCenter(),
-                entity.getCityName(),
-                entity.getCountryName(),
-                entity.getGeometry(),
+                this.mapAddress(entity),
                 this.mapSearchingCitiesProcess(entity)
         );
+    }
+
+    private Address mapAddress(final CityEntity source) {
+        final AddressEntity mapped = source.getAddress();
+        return super.mapPropertyIfLoadedOrElseNull(mapped, Address.class);
     }
 
     private SearchingCitiesProcess mapSearchingCitiesProcess(final CityEntity source) {

@@ -39,7 +39,7 @@ public class NominatimGeocodingService implements GeocodingChainComponent {
     private Address mapToPossiblySavedAddress(final NominatimReverseResponse response) {
         final Address responseAddress = this.responseToAddressMapper.map(response);
         final Geometry responseAddressGeometry = responseAddress.getGeometry();
-        final Optional<Address> optionalSavedAddressWithSameGeometry = this.addressService.findAddressByGeometry(
+        final Optional<Address> optionalSavedAddressWithSameGeometry = this.addressService.findByGeometry(
                 responseAddressGeometry
         );
         return optionalSavedAddressWithSameGeometry.orElse(responseAddress);

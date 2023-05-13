@@ -76,7 +76,8 @@ public final class StartingSearchingCitiesProcessService {
                         .map(subtask -> supplyAsync(subtask::search, executorService))
                         .map(CompletableFuture::join)
                         .flatMap(Collection::stream)
-                        .filter(city -> namesAlreadyFoundCities.add(city.getCityName()))
+                        //TODO
+//                        .filter(city -> namesAlreadyFoundCities.add(city.getCityName()))
                         .toList();
                 this.publishSuccessSearchingEvent(foundUniqueCities);
             } catch (final Exception exception) {

@@ -32,8 +32,15 @@ public final class EntityUtil {
     }
 
     public static void checkEquals(final CityEntity expected, final CityEntity actual) {
-        checkEquals(expected, (AddressEntity) actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getAddress(), actual.getAddress());
         assertEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
+    }
+
+    public static void checkDeepEquals(final CityEntity expected, final CityEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        checkEquals(expected.getAddress(), actual.getAddress());
+        checkEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
     }
 
     public static SearchingCitiesProcess createSearchingCitiesProcess(final Long id) {

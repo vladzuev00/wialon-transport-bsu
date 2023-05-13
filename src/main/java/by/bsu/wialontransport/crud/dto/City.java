@@ -2,36 +2,35 @@ package by.bsu.wialontransport.crud.dto;
 
 import lombok.*;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
 
-@Getter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public final class City extends Address {
-    private final SearchingCitiesProcess searchingCitiesProcess;
+@Value
+@AllArgsConstructor
+@Builder
+public class City implements AbstractDto<Long> {
+    Long id;
+    Address address;
+    SearchingCitiesProcess searchingCitiesProcess;
 
-    @Builder(builderMethodName = "cityBuilder")
-    public City(final Long id,
-                final Geometry boundingBox,
-                final Point center,
-                final String cityName,
-                final String countryName,
-                final Geometry geometry,
-                final SearchingCitiesProcess searchingCitiesProcess) {
-        super(id, boundingBox, center, cityName, countryName, geometry);
-        this.searchingCitiesProcess = searchingCitiesProcess;
+    public Geometry getGeometry() {
+        return this.address.getGeometry();
+    }
+
+    public static City createWithAddressAndProcess(final City source,
+                                                   final Address address,
+                                                   final SearchingCitiesProcess process) {
+        return new City(
+                source.getId(),
+                address,
+                process
+        );
     }
 
     //TODO: test
     public static City createWithSearchingCitiesProcess(final City source, final SearchingCitiesProcess process) {
         return new City(
-            source.getId(),
-            source.getBoundingBox(),
-            source.getCenter(),
-            source.getCityName(),
-            source.getCountryName(),
-            source.getGeometry(),
-            process
+                source.getId(),
+                source.getAddress(),
+                process
         );
     }
 }

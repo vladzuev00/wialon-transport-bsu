@@ -144,7 +144,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
                 10, 15, 15, 16, 16, 17
         );
 
-        final Optional<AddressEntity> optionalActual = this.repository.findAddressByGeometry(givenGeometry);
+        final Optional<AddressEntity> optionalActual = this.repository.findByGeometry(givenGeometry);
         final long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
         final long expectedId = 257;
         assertEquals(expectedId, actualId);
@@ -175,7 +175,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
                 10, 15, 15, 16, 16, 17
         );
 
-        final Optional<AddressEntity> optionalActual = this.repository.findAddressByGeometry(givenGeometry);
+        final Optional<AddressEntity> optionalActual = this.repository.findByGeometry(givenGeometry);
         assertTrue(optionalActual.isEmpty());
     }
 

@@ -21,11 +21,12 @@ public final class SearchingCitiesService {
     private final ReverseResponseToCityMapper responseToCityMapper;
 
     public Collection<City> findByCoordinates(final List<Coordinate> coordinates) {
-        return coordinates.stream()
-                .map(this.nominatimService::reverse)
-                .filter(SearchingCitiesService::isCity)
-                .map(this.responseToCityMapper::map)
-                .toList();
+        return null;
+//        return coordinates.stream()
+//                .map(this.nominatimService::reverse)
+//                .filter(SearchingCitiesService::isCity)
+//                .map(this.responseToCityMapper::map)
+//                .toList();
     }
 
     private static boolean isCity(final NominatimReverseResponse response) {

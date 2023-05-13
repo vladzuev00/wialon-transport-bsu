@@ -114,7 +114,7 @@ public final class AddressServiceTest extends AbstractContextTest {
                 this.geometryFactory, 10, 15, 15, 16, 16, 17
         );
 
-        final Optional<Address> optionalActual = this.addressService.findAddressByGeometry(givenGeometry);
+        final Optional<Address> optionalActual = this.addressService.findByGeometry(givenGeometry);
         assertTrue(optionalActual.isPresent());
         final Address actual = optionalActual.get();
         final Address expected = Address.builder()
@@ -153,7 +153,7 @@ public final class AddressServiceTest extends AbstractContextTest {
                 10, 15, 15, 16, 16, 18
         );
 
-        final Optional<Address> optionalActual = this.addressService.findAddressByGeometry(givenGeometry);
+        final Optional<Address> optionalActual = this.addressService.findByGeometry(givenGeometry);
         assertTrue(optionalActual.isEmpty());
     }
 

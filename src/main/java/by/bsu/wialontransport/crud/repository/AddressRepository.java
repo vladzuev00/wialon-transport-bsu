@@ -19,7 +19,7 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
     @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
             + "FROM addresses WHERE ST_Equals(addresses.geometry, :geometry)",
             nativeQuery = true)
-    Optional<AddressEntity> findAddressByGeometry(final Geometry geometry);
+    Optional<AddressEntity> findByGeometry(final Geometry geometry);
 
     @Query(value = "SELECT EXISTS(SELECT 1 FROM addresses WHERE ST_Equals(addresses.geometry, :geometry))",
             nativeQuery = true)

@@ -25,8 +25,8 @@ public class AddressService
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findAddressByGeometry(final Geometry geometry) {
-        final Optional<AddressEntity> optionalEntity = super.repository.findAddressByGeometry(geometry);
+    public Optional<Address> findByGeometry(final Geometry geometry) {
+        final Optional<AddressEntity> optionalEntity = super.repository.findByGeometry(geometry);
         return optionalEntity.map(super.mapper::mapToDto);
     }
 

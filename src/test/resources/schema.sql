@@ -194,20 +194,24 @@ CREATE TABLE searching_cities_processes(
 );
 
 CREATE TABLE cities(
-	id BIGINT PRIMARY KEY,
-	searching_cities_process_id BIGINT
+	id BIGSERIAL PRIMARY KEY,
+	address_id BIGINT NOT NULL,
+	searching_cities_process_id BIGINT NOT NULL
 );
 
 ALTER TABLE cities
-	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(id)
+	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(address_id)
 		REFERENCES addresses(id)
 			ON DELETE CASCADE;
 
 ALTER TABLE cities
+    ADD CONSTRAINT address_id_should_be_unique
+        UNIQUE(address_id);
+
+ALTER TABLE cities
 	ADD CONSTRAINT fk_cities_to_searching_cities_processes
 		FOREIGN KEY(searching_cities_process_id)
-			REFERENCES searching_cities_processes(id)
-				ON DELETE SET NULL;
+			REFERENCES searching_cities_processes(id);
 
 CREATE
 OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
