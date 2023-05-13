@@ -24,7 +24,7 @@ public final class ReverseResponseToAddressMapper {
         return Address.builder()
                 .boundingBox(this.mapBoundingBox(response))
                 .center(this.mapCenter(response))
-                .cityName( address.getCityName())
+                .cityName(address.getCityName())
                 .countryName(address.getCountryName())
                 .geometry(this.mapGeometry(response))
                 .build();
@@ -41,30 +41,43 @@ public final class ReverseResponseToAddressMapper {
     }
 
     private static CoordinateXY findLeftBottomCoordinateOfBoundingBox(final double[] boundingBoxCoordinates) {
-        return new CoordinateXY(
-                boundingBoxCoordinates[INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX],
-                boundingBoxCoordinates[INDEX_LEFT_BOTTOM_LONGITUDE_OF_BOUNDING_BOX]
+        return findCoordinateOfBoundingBox(
+                boundingBoxCoordinates,
+                INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX,
+                INDEX_LEFT_BOTTOM_LONGITUDE_OF_BOUNDING_BOX
         );
     }
 
     private static CoordinateXY findLeftUpperCoordinateOfBoundingBox(final double[] boundingBoxCoordinates) {
-        return new CoordinateXY(
-                boundingBoxCoordinates[INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX],
-                boundingBoxCoordinates[INDEX_RIGHT_UPPER_LONGITUDE_OF_BOUNDING_BOX]
+        return findCoordinateOfBoundingBox(
+                boundingBoxCoordinates,
+                INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX,
+                INDEX_RIGHT_UPPER_LONGITUDE_OF_BOUNDING_BOX
         );
     }
 
     private static CoordinateXY findRightUpperCoordinateOfBoundingBox(final double[] boundingBoxCoordinates) {
-        return new CoordinateXY(
-                boundingBoxCoordinates[INDEX_RIGHT_UPPER_LATITUDE_OF_BOUNDING_BOX],
-                boundingBoxCoordinates[INDEX_RIGHT_UPPER_LONGITUDE_OF_BOUNDING_BOX]
+        return findCoordinateOfBoundingBox(
+                boundingBoxCoordinates,
+                INDEX_RIGHT_UPPER_LATITUDE_OF_BOUNDING_BOX,
+                INDEX_RIGHT_UPPER_LONGITUDE_OF_BOUNDING_BOX
         );
     }
 
     private static CoordinateXY findRightBottomCoordinateOfBoundingBox(final double[] boundingBoxCoordinates) {
+        return findCoordinateOfBoundingBox(
+                boundingBoxCoordinates,
+                INDEX_RIGHT_UPPER_LATITUDE_OF_BOUNDING_BOX,
+                INDEX_LEFT_BOTTOM_LONGITUDE_OF_BOUNDING_BOX
+        );
+    }
+
+    private static CoordinateXY findCoordinateOfBoundingBox(final double[] boundingBoxCoordinates,
+                                                            final int latitudeIndex,
+                                                            final int longitudeIndex) {
         return new CoordinateXY(
-                boundingBoxCoordinates[INDEX_RIGHT_UPPER_LATITUDE_OF_BOUNDING_BOX],
-                boundingBoxCoordinates[INDEX_LEFT_BOTTOM_LONGITUDE_OF_BOUNDING_BOX]
+                boundingBoxCoordinates[longitudeIndex],
+                boundingBoxCoordinates[latitudeIndex]
         );
     }
 
@@ -83,8 +96,8 @@ public final class ReverseResponseToAddressMapper {
 
     private Point mapCenter(final NominatimReverseResponse response) {
         final CoordinateXY coordinate = new CoordinateXY(
-                response.getCenterLatitude(),
-                response.getCenterLongitude()
+                response.getCenterLongitude(),
+                response.getCenterLatitude()
         );
         return this.geometryFactory.createPoint(coordinate);
     }

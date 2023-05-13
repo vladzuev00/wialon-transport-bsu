@@ -51,7 +51,7 @@ public final class ReverseResponseToAddressMapperTest extends AbstractContextTes
 
         final Geometry expectedBoundingBox = createPolygon(
                 this.geometryFactory,
-                4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.1, 11.2
+                4.4, 5.5, 8.8, 5.5, 8.8, 9.9, 4.4, 9.9
         );
         final Point expectedCenter = createPoint(this.geometryFactory, givenCenterLongitude, givenCenterLatitude);
         final Address expected = Address.builder()
