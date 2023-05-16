@@ -14,11 +14,10 @@ import java.util.List;
 
 import static java.lang.Thread.currentThread;
 
-//TODO: refactor tests
 @Service
 @RequiredArgsConstructor
 public final class SearchingCitiesService {
-    private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "(city)|(town)";
+    private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "^(city)|(town)$";
 
     private final NominatimService nominatimService;
     private final ReverseResponseToAddressMapper responseToAddressMapper;
