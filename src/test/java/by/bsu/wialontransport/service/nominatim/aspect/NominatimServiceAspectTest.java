@@ -3,11 +3,13 @@ package by.bsu.wialontransport.service.nominatim.aspect;
 import by.bsu.wialontransport.configuration.GeoJsonConfiguration;
 import by.bsu.wialontransport.configuration.GeometryFactoryConfiguration;
 import by.bsu.wialontransport.configuration.RestTemplateConfig;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.locationtech.jts.geom.Geometry;
@@ -74,7 +76,7 @@ public final class NominatimServiceAspectTest {
     private GeoJSONWriter geoJSONWriter;
 
     @Test
-    public void requestsShouldBeSentWithWaitsBetweenRequests()
+    public void requestsOfReversingShouldBeSentWithWaitsBetweenRequests()
             throws Exception {
         this.registerInterceptor();
 
@@ -101,9 +103,11 @@ public final class NominatimServiceAspectTest {
                 requestTo(expectedUrl)
         ).andRespond(withSuccess(givenResponseJson, APPLICATION_JSON));
 
-        range(0, givenAmountOfRequests).forEach(
-                i -> this.nominatimService.reverse(givenLatitude, givenLongitude)
-        );
+        range(0, givenAmountOfRequests).mapToObj(
+                i -> isEven(i)
+                        ? this.nominatimService.reverse(givenLatitude, givenLongitude)
+                        : this.nominatimService.reverse(new Coordinate(givenLatitude, givenLongitude))
+        ).forEach(Assert::assertNotNull);
     }
 
     private void registerInterceptor() {
@@ -115,6 +119,10 @@ public final class NominatimServiceAspectTest {
 
     private String createUrl(final double latitude, final double longitude) {
         return format(this.urlTemplate, latitude, longitude);
+    }
+
+    private static boolean isEven(final int research) {
+        return research % 2 == 0;
     }
 
     private final class TimeSendingRequestControllingInterceptor implements ClientHttpRequestInterceptor {
