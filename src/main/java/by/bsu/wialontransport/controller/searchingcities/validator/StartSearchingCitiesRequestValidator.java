@@ -13,8 +13,8 @@ public final class StartSearchingCitiesRequestValidator {
     private static final String EXCEPTION_MESSAGE_NOT_VALID_AREA_COORDINATE
             = "Left bottom point's coordinates should be less than right upper point's coordinates.";
 
-    public void validate(final StartSearchingCitiesRequest requestBody) {
-        if (!isValidAreaCoordinate(requestBody.getAreaCoordinate())) {
+    public void validate(final StartSearchingCitiesRequest request) {
+        if (!isValidAreaCoordinate(request.getAreaCoordinate())) {
             throw new CustomValidationException(EXCEPTION_MESSAGE_NOT_VALID_AREA_COORDINATE);
         }
     }
