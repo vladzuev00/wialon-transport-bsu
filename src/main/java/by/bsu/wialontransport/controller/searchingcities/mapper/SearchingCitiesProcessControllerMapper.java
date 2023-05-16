@@ -5,6 +5,7 @@ import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesPr
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.wololo.geojson.Geometry;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public final class SearchingCitiesProcessControllerMapper {
     public SearchingCitiesProcessResponse mapToResponse(final SearchingCitiesProcess mapped) {
         return SearchingCitiesProcessResponse.builder()
                 .id(mapped.getId())
-                .bounds(this.geoJSONWriter.write(mapped.getBounds()))
+                .bounds(this.mapBounds(mapped))
                 .searchStep(mapped.getSearchStep())
                 .totalPoints(mapped.getTotalPoints())
                 .handledPoints(mapped.getHandledPoints())
@@ -41,5 +42,9 @@ public final class SearchingCitiesProcessControllerMapper {
                 .pageSize(pageSize)
                 .processes(this.mapToResponses(processes))
                 .build();
+    }
+
+    private Geometry mapBounds(final SearchingCitiesProcess source) {
+        return this.geoJSONWriter.write(source.getBounds());
     }
 }
