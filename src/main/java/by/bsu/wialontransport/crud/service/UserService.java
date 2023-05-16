@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService extends AbstractCRUDService<Long, UserEntity, User, UserMapper, UserRepository> {
 
-    public UserService(UserMapper mapper, UserRepository repository) {
+    public UserService(final UserMapper mapper, final UserRepository repository) {
         super(mapper, repository);
     }
 }
