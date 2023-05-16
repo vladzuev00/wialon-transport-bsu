@@ -19,10 +19,9 @@ public class City implements AbstractDto<Long> {
         return this.address.getCityName();
     }
 
-    //TODO: test
-    public static City createWithAddressAndProcess(final City source,
-                                                   final Address address,
-                                                   final SearchingCitiesProcess process) {
+    public static City copyWithAddressAndProcess(final City source,
+                                                 final Address address,
+                                                 final SearchingCitiesProcess process) {
         return new City(
                 source.getId(),
                 address,

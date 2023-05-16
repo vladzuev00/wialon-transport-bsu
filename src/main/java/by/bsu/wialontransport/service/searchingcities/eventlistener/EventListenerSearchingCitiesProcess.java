@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-import static by.bsu.wialontransport.crud.dto.City.createWithAddressAndProcess;
+import static by.bsu.wialontransport.crud.dto.City.copyWithAddressAndProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
@@ -118,7 +118,7 @@ public class EventListenerSearchingCitiesProcess {
 
     private City mapToCityWithSavedAddressAndProcess(final City city, final SearchingCitiesProcess process) {
         final Address savedAddress = this.findSavedAddressOfCity(city);
-        return createWithAddressAndProcess(city, savedAddress, process);
+        return copyWithAddressAndProcess(city, savedAddress, process);
     }
 
     private Address findSavedAddressOfCity(final City city) {
