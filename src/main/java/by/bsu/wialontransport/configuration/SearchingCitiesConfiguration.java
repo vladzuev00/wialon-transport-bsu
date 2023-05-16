@@ -10,7 +10,8 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * Size of executor service should be equal or more than 2 - one thread to start main task, another threads to start subtasks.
- * If size is 1, then main task will be run and then blocked until subtasks will be finished but subtasks won't be run
+ * If size is 1, then main task will be run and then blocked until subtasks will be finished but subtasks won't be run =>
+ * so deadlock will happen
  */
 @Configuration
 public class SearchingCitiesConfiguration {

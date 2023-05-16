@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
@@ -64,11 +65,12 @@ public class EventListenerSearchingCitiesProcess {
 
     @EventListener
     public void onSuccessSearchingCitiesBySubtask(final SuccessSearchingCitiesBySubtaskEvent event) {
-        this.searchingCitiesProcessService.increaseHandledPoints(event.getProcess(), event.getAmountHandledPoints());
+        this.searchingCitiesProcessService.increaseHandledPoints(
+                event.getProcess(), event.getAmountHandledPoints()
+        );
         log.info(LOG_SUCCESS_SUBTASK_SEARCHING_CITIES);
     }
 
-    //TODO: refactor test
     @EventListener
     public void onFailedSearchingCitiesBySubtask(final FailedSearchingCitiesBySubtaskEvent event) {
         final Exception exception = event.getException();
@@ -77,12 +79,11 @@ public class EventListenerSearchingCitiesProcess {
         this.executorService.shutdownNow();
     }
 
-    //TODO: refactor test
     @EventListener
     @Transactional(isolation = SERIALIZABLE)
     public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
         final SearchingCitiesProcess process = event.getProcess();
-        this.saveCities(event.getFoundCities(), process);
+        this.saveCitiesIfNotExist(event.getFoundCities(), process);
         this.searchingCitiesProcessService.updateStatus(process, SUCCESS);
         log.info(LOG_SUCCESS_PROCESS_SEARCHING_CITIES);
     }
@@ -95,21 +96,29 @@ public class EventListenerSearchingCitiesProcess {
         exception.printStackTrace();
     }
 
-    private void saveCities(final Collection<City> foundCities,
-                            final SearchingCitiesProcess process) {
-        foundCities.stream()
+    private void saveCitiesIfNotExist(final Collection<City> foundCities,
+                                      final SearchingCitiesProcess process) {
+        final List<City> notExistCitiesWithSavedAddresses = this.findNotExistCitiesWithSavedAddresses(
+                foundCities, process
+        );
+        this.cityService.saveAll(notExistCitiesWithSavedAddresses);
+    }
+
+    private List<City> findNotExistCitiesWithSavedAddresses(final Collection<City> foundCities,
+                                                            final SearchingCitiesProcess process) {
+        return foundCities.stream()
                 .filter(this::isCityNotExist)
-                .forEach(notExistingCity -> this.saveCityAndAddressIfNotExist(notExistingCity, process));
+                .map(notExistCity -> this.mapToCityWithSavedAddressAndProcess(notExistCity, process))
+                .toList();
     }
 
     private boolean isCityNotExist(final City city) {
         return !this.cityService.isExistByGeometry(city.getGeometry());
     }
 
-    private void saveCityAndAddressIfNotExist(final City city, SearchingCitiesProcess process) {
+    private City mapToCityWithSavedAddressAndProcess(final City city, final SearchingCitiesProcess process) {
         final Address savedAddress = this.findSavedAddressOfCity(city);
-        final City cityToBeSaved = createWithAddressAndProcess(city, savedAddress, process);
-        this.cityService.save(cityToBeSaved);
+        return createWithAddressAndProcess(city, savedAddress, process);
     }
 
     private Address findSavedAddressOfCity(final City city) {
