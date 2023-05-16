@@ -1,12 +1,10 @@
-package by.bsu.wialontransport.controller.searchingcities;
+package by.bsu.wialontransport.controller.searchingcities.mapper;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.controller.searchingcities.mapper.SearchingCitiesProcessControllerMapper;
 import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.util.GeometryUtil;
-
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
