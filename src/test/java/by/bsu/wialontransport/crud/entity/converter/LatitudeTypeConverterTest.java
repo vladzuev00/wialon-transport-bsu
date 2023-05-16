@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.crud.entity.converter;
 
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type;
 import org.junit.Test;
 
