@@ -28,10 +28,12 @@ DROP
 CONSTRAINT IF EXISTS fk_trackers_last_data_to_data;
 
 ALTER TABLE IF EXISTS cities
-DROP CONSTRAINT IF EXISTS fk_cities_to_addresses;
+DROP
+CONSTRAINT IF EXISTS fk_cities_to_addresses;
 
 ALTER TABLE IF EXISTS cities
-DROP CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
+DROP
+CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
 
 --DROPPING tables
 DROP TABLE IF EXISTS users;
@@ -44,24 +46,25 @@ DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
 
 --DROPPING TYPES
+DROP TYPE IF EXISTS user_type;
+DROP TYPE IF EXISTS parameter_type;
 DROP TYPE IF EXISTS searching_cities_process_type;
 
 CREATE
 EXTENSION IF NOT EXISTS postgis;
+
+CREATE TYPE user_type AS ENUM('USER', 'ADMIN');
 
 CREATE TABLE users
 (
     id                 SERIAL       NOT NULL PRIMARY KEY,
     email              VARCHAR(256) NOT NULL,
     encrypted_password VARCHAR(256) NOT NULL,
-    role               VARCHAR(16)  NOT NULL
+    role               user_type NOT NULL
 );
 
 ALTER TABLE users
     ADD CONSTRAINT correct_email CHECK (email ~ '[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+');
-
-ALTER TABLE users
-    ADD CONSTRAINT correct_role CHECK (role IN ('USER', 'ADMIN'));
 
 CREATE TABLE trackers
 (
@@ -85,11 +88,11 @@ ALTER TABLE trackers
 CREATE TABLE addresses
 (
     id           BIGSERIAL PRIMARY KEY,
-    bounding_box GEOMETRY(POLYGON, 4326)     NOT NULL,
+    bounding_box GEOMETRY(POLYGON, 4326) NOT NULL,
     center       GEOMETRY(POINT, 4326) NOT NULL,
     city_name    VARCHAR(256) NOT NULL,
     country_name VARCHAR(256) NOT NULL,
-    geometry     GEOMETRY(POLYGON, 4326)     NOT NULL
+    geometry     GEOMETRY(POLYGON, 4326) NOT NULL
 );
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
@@ -144,13 +147,15 @@ ALTER TABLE data
 ALTER TABLE data
     ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
 
+CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');
+
 CREATE TABLE parameters
 (
-    id      BIGSERIAL    NOT NULL PRIMARY KEY,
-    name    VARCHAR(256) NOT NULL,
-    type    VARCHAR(64)  NOT NULL,
-    value   VARCHAR(256) NOT NULL,
-    data_id BIGINT       NOT NULL
+    id      BIGSERIAL      NOT NULL PRIMARY KEY,
+    name    VARCHAR(256)   NOT NULL,
+    type    parameter_type NOT NULL,
+    value   VARCHAR(256)   NOT NULL,
+    data_id BIGINT         NOT NULL
 );
 
 ALTER SEQUENCE parameters_id_seq INCREMENT 50;
@@ -162,9 +167,6 @@ ALTER TABLE parameters
 
 ALTER TABLE parameters
     ADD CONSTRAINT correct_name CHECK (char_length(name) != 0);
-
-ALTER TABLE parameters
-    ADD CONSTRAINT correct_type CHECK (type IN ('INTEGER', 'DOUBLE', 'STRING'));
 
 CREATE TABLE trackers_last_data
 (
@@ -184,34 +186,36 @@ ALTER TABLE trackers_last_data
 
 CREATE TYPE searching_cities_process_type AS ENUM('HANDLING', 'SUCCESS', 'ERROR');
 
-CREATE TABLE searching_cities_processes(
-	id BIGSERIAL PRIMARY KEY,
-	bounds GEOMETRY(POLYGON, 4326) NOT NULL,
-	search_step DOUBLE PRECISION NOT NULL,
-	total_points BIGINT NOT NULL,
-	handled_points BIGINT NOT NULL,
-	status         searching_cities_process_type NOT NULL
+CREATE TABLE searching_cities_processes
+(
+    id             BIGSERIAL PRIMARY KEY,
+    bounds         GEOMETRY(POLYGON, 4326) NOT NULL,
+    search_step    DOUBLE PRECISION              NOT NULL,
+    total_points   BIGINT                        NOT NULL,
+    handled_points BIGINT                        NOT NULL,
+    status         searching_cities_process_type NOT NULL
 );
 
-CREATE TABLE cities(
-	id BIGSERIAL PRIMARY KEY,
-	address_id BIGINT NOT NULL,
-	searching_cities_process_id BIGINT NOT NULL
+CREATE TABLE cities
+(
+    id                          BIGSERIAL PRIMARY KEY,
+    address_id                  BIGINT NOT NULL,
+    searching_cities_process_id BIGINT NOT NULL
 );
 
 ALTER TABLE cities
-	ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY(address_id)
-		REFERENCES addresses(id)
-			ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY (address_id)
+        REFERENCES addresses (id)
+        ON DELETE CASCADE;
 
 ALTER TABLE cities
     ADD CONSTRAINT address_id_should_be_unique
-        UNIQUE(address_id);
+        UNIQUE (address_id);
 
 ALTER TABLE cities
-	ADD CONSTRAINT fk_cities_to_searching_cities_processes
-		FOREIGN KEY(searching_cities_process_id)
-			REFERENCES searching_cities_processes(id);
+    ADD CONSTRAINT fk_cities_to_searching_cities_processes
+        FOREIGN KEY (searching_cities_process_id)
+            REFERENCES searching_cities_processes (id);
 
 CREATE
 OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS

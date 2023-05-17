@@ -1,6 +1,9 @@
 package by.bsu.wialontransport.crud.entity;
 
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -9,6 +12,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "users")
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -28,11 +35,12 @@ public class UserEntity extends AbstractEntity<Long> {
     @Column(name = "encrypted_password")
     private String password;
 
-    @Column(name = "role")
     @Enumerated(STRING)
+    @Column(name = "role")
+    @Type(type = "pgsql_enum")
     private Role role;
 
     public enum Role {
-        NOT_DEFINED, USER, ADMIN
+        USER, ADMIN
     }
 }

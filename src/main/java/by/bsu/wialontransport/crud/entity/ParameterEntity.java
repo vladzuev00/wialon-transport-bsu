@@ -1,6 +1,8 @@
 package by.bsu.wialontransport.crud.entity;
 
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -12,6 +14,10 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Table(name = "parameters")
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -31,6 +37,7 @@ public class ParameterEntity extends AbstractEntity<Long> {
 
     @Enumerated(STRING)
     @Column(name = "type")
+    @org.hibernate.annotations.Type(type = "pgsql_enum")
     private Type type;
 
     @Column(name = "value")
