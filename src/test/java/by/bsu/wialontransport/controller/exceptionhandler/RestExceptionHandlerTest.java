@@ -6,6 +6,8 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import javax.validation.ConstraintViolationException;
 
 import static java.util.Collections.emptySet;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.core.convert.TypeDescriptor.valueOf;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -117,13 +119,47 @@ public final class RestExceptionHandlerTest extends AbstractContextTest {
     }
 
     @Test
-    public void conversionFailedExceptionShouldBeHandled() {
-        throw new RuntimeException();
+    public void conversionFailedExceptionShouldBeHandled()
+            throws Exception {
+        final ConversionFailedException givenException = mock(ConversionFailedException.class);
+
+        final TypeDescriptor givenTypeDescriptor = valueOf(TestObject.class);
+        when(givenException.getTargetType()).thenReturn(givenTypeDescriptor);
+
+        final String givenMessage = "exception-message";
+        when(givenException.getMessage()).thenReturn(givenMessage);
+
+        final ResponseEntity<?> actualResponseEntity = this.handler.handleException(givenException);
+        assertSame(NOT_ACCEPTABLE, actualResponseEntity.getStatusCode());
+
+        final Object actualBody = actualResponseEntity.getBody();
+        final String actualBodyString = this.objectMapper.writeValueAsString(actualBody);
+        final String expectedBodyStringRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
+                + "\"message\":\"exception-message\","
+                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
+        assertTrue(actualBodyString.matches(expectedBodyStringRegex));
     }
 
     @Test
-    public void conversionFailedExceptionWithEnumTargetTypeShouldBeHandled() {
-        throw new RuntimeException();
+    public void conversionFailedExceptionWithEnumTargetTypeShouldBeHandled()
+            throws Exception {
+        final ConversionFailedException givenException = mock(ConversionFailedException.class);
+
+        final TypeDescriptor givenTypeDescriptor = valueOf(TestEnum.class);
+        when(givenException.getTargetType()).thenReturn(givenTypeDescriptor);
+
+        final String givenValue = "exception-value";
+        when(givenException.getValue()).thenReturn(givenValue);
+
+        final ResponseEntity<?> actualResponseEntity = this.handler.handleException(givenException);
+        assertSame(NOT_ACCEPTABLE, actualResponseEntity.getStatusCode());
+
+        final Object actualBody = actualResponseEntity.getBody();
+        final String actualBodyString = this.objectMapper.writeValueAsString(actualBody);
+        final String expectedBodyStringRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
+                + "\"message\":\"'exception-value' should be replaced by one of: FIRST, SECOND, THIRD\\.\","
+                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
+        assertTrue(actualBodyString.matches(expectedBodyStringRegex));
     }
 
     @Test
@@ -145,4 +181,11 @@ public final class RestExceptionHandlerTest extends AbstractContextTest {
         assertTrue(actualBodyString.matches(expectedBodyStringRegex));
     }
 
+    private static final class TestObject {
+
+    }
+
+    private enum TestEnum {
+        FIRST, SECOND, THIRD
+    }
 }
