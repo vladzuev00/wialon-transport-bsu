@@ -31,9 +31,9 @@ public class SearchingCitiesProcessController {
     private static final String MESSAGE_EXCEPTION_OF_NO_SUCH_PROCESS = "Process with id '%d' doesn't exist.";
 
     private final StartSearchingCitiesRequestValidator validator;
-    private final StartingSearchingCitiesProcessService startingProcessService;
     private final SearchingCitiesProcessService processService;
     private final SearchingCitiesProcessControllerMapper mapper;
+    private final StartingSearchingCitiesProcessService startingProcessService;
 
     @GetMapping("/{id}")
     public ResponseEntity<SearchingCitiesProcessResponse> findById(@PathVariable final Long id) {

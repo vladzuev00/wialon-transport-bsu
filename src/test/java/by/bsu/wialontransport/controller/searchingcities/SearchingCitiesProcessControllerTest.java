@@ -4,12 +4,17 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
+import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,6 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -35,6 +41,9 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
 
     @MockBean
     private SearchingCitiesProcessService mockedProcessService;
+
+    @MockBean
+    private StartingSearchingCitiesProcessService mockedStartingProcessService;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -237,6 +246,113 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
         assertTrue(actual.matches(expectedRegex));
     }
 
+    @Test
+    public void processShouldBeStarted() {
+        final String givenBody = "{"
+                + "\"areaCoordinate\" : {"
+                + "\"leftBottom\" : {"
+                + "\"latitude\" : 53.669375,"
+                + "\"longitude\" : 27.053689"
+                + "},"
+                + "\"rightUpper\" : {"
+                + "\"latitude\" : 53.896085,"
+                + "\"longitude\" : 27.443176"
+                + "}"
+                + "},"
+                + "\"searchStep\": 0.04"
+                + "}";
+
+        final HttpHeaders givenHeaders = new HttpHeaders();
+        givenHeaders.setContentType(APPLICATION_JSON);
+
+        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
+
+        final String url = createUrlToStartProcess();
+
+        final SearchingCitiesProcess givenProcess = SearchingCitiesProcess.builder()
+                .id(255L)
+                .bounds(createPolygon(this.geometryFactory, 1., 2., 3., 4., 5., 6.))
+                .searchStep(0.5)
+                .totalPoints(100)
+                .handledPoints(0)
+                .status(HANDLING)
+                .build();
+        final AreaCoordinate expectedAreaCoordinate = new AreaCoordinate(
+                new Coordinate(53.669375, 27.053689),
+                new Coordinate(53.896085, 27.443176)
+        );
+        final double expectedSearchStep = 0.04;
+        when(this.mockedStartingProcessService.start(expectedAreaCoordinate, expectedSearchStep))
+                .thenReturn(givenProcess);
+
+        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expected = "{\"id\":255,\"bounds\":{\"type\":\"Polygon\","
+                + "\"coordinates\":[[[1.0,2.0],[3.0,4.0],[5.0,6.0],[1.0,2.0]]]},"
+                + "\"searchStep\":0.5,\"totalPoints\":100,\"handledPoints\":0,\"status\":\"HANDLING\"}";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void processShouldNotBeStartedBecauseOfRequestIsNotValid() {
+        final String givenBody = "{"
+                + "\"areaCoordinate\" : {"
+                + "\"leftBottom\" : {"
+                + "\"latitude\" : 53.669375,"
+                + "\"longitude\" : 27.053689"
+                + "},"
+                + "\"rightUpper\" : {"
+                + "\"latitude\" : 53.896085,"
+                + "\"longitude\" : 27.443176"
+                + "}"
+                + "}"
+                + "}";
+
+        final HttpHeaders givenHeaders = new HttpHeaders();
+        givenHeaders.setContentType(APPLICATION_JSON);
+
+        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
+
+        final String url = createUrlToStartProcess();
+
+        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
+                + "\"message\":\"searchStep : не должно равняться null\","
+                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
+        assertNotNull(actual);
+        assertTrue(actual.matches(expectedRegex));
+    }
+
+    @Test
+    public void processShouldBeStartedBecauseOfAreaCoordinateIsNotValid() {
+        final String givenBody = "{"
+                + "\"areaCoordinate\" : {"
+                + "\"leftBottom\" : {"
+                + "\"latitude\" : 53.896085,"
+                + "\"longitude\" : 27.443176"
+                + "},"
+                + "\"rightUpper\" : {"
+                + "\"latitude\" : 53.896084,"
+                + "\"longitude\" : 27.443175"
+                + "}"
+                + "},"
+                + "\"searchStep\": 0.04"
+                + "}";
+
+        final HttpHeaders givenHeaders = new HttpHeaders();
+        givenHeaders.setContentType(APPLICATION_JSON);
+
+        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
+
+        final String url = createUrlToStartProcess();
+
+        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
+                + "\"message\":\"Left bottom point's coordinates should be less than right upper point's coordinates.\","
+                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
+        assertNotNull(actual);
+        assertTrue(actual.matches(expectedRegex));
+    }
+
     private static String createUrlToFindProcessById(final Long id) {
         return CONTROLLER_URL + "/" + id;
     }
@@ -264,5 +380,9 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
         return builder
                 .build()
                 .toUriString();
+    }
+
+    private static String createUrlToStartProcess() {
+        return CONTROLLER_URL;
     }
 }
