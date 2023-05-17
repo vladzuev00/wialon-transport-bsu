@@ -7,7 +7,6 @@ import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesPr
 import by.bsu.wialontransport.controller.searchingcities.model.StartSearchingCitiesRequest;
 import by.bsu.wialontransport.controller.searchingcities.validator.StartSearchingCitiesRequestValidator;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
@@ -17,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +46,8 @@ public class SearchingCitiesProcessController {
     @GetMapping
     public ResponseEntity<SearchingCitiesProcessPageResponse> findByStatus(
             @RequestParam(name = "status") final Status status,
-            @RequestParam(name = "pageNumber") @Min(0) final int pageNumber,
-            @RequestParam(name = "pageSize") @Min(1) final int pageSize) {
+            @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
+            @RequestParam(name = "pageSize") @Min(1) final Integer pageSize) {
         final List<SearchingCitiesProcess> foundProcesses = this.processService.findByStatus(
                 status, pageNumber, pageSize
         );
