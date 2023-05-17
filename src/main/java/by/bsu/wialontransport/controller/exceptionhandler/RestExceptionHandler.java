@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -60,6 +61,12 @@ public final class RestExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<RestErrorResponse> handleException(final ConversionFailedException exception) {
         return handleValidationException(findMessage(exception));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<RestErrorResponse> handleException(
+            final MissingServletRequestParameterException exception) {
+        return handleValidationException(exception.getMessage());
     }
 
     private static ResponseEntity<RestErrorResponse> handleNotFoundException(final String message) {
