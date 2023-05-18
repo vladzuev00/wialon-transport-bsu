@@ -11,6 +11,7 @@ import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
@@ -74,7 +75,7 @@ public final class AbstractKafkaDataProducerTest {
                 .outputs(givenOutputs)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode(givenKeyDriverCode)
-                .parametersByNames(Map.of(
+                .parametersByNames(createLinkedHashMapParametersByNames(
                         "param-name-1", createParameter("param-name-1", INTEGER, "654321"),
                         "param-name-2", createParameter("param-name-2", DOUBLE, "65.4321"),
                         "param-name-3", createParameter("param-name-3", STRING, "param-value")))
@@ -159,7 +160,7 @@ public final class AbstractKafkaDataProducerTest {
                 .outputs(givenOutputs)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode(givenKeyDriverCode)
-                .parametersByNames(Map.of(
+                .parametersByNames(createLinkedHashMapParametersByNames(
                                 "param-name-1", createParameter(257L, "param-name-1", INTEGER, "654321"),
                                 "param-name-2", createParameter(258L, "param-name-2", DOUBLE, "65.4321"),
                                 "param-name-3", createParameter(259L, "param-name-3", STRING, "param-value")
@@ -193,12 +194,6 @@ public final class AbstractKafkaDataProducerTest {
                 .trackerId(givenTrackerId)
                 .build();
         assertEquals(expected, actual);
-    }
-
-    private static TransportableData createTransportableDataWithTrackerId(final Long trackerId) {
-        return TransportableData.builder()
-                .trackerId(trackerId)
-                .build();
     }
 
     private static Latitude createLatitude(final int degrees, final int minutes, final int minuteShare,
@@ -243,6 +238,21 @@ public final class AbstractKafkaDataProducerTest {
         return Tracker.builder()
                 .id(id)
                 .build();
+    }
+
+    private static Map<String, Parameter> createLinkedHashMapParametersByNames(final String firstParameterName,
+                                                                               final Parameter firstParameter,
+                                                                               final String secondParameterName,
+                                                                               final Parameter secondParameter,
+                                                                               final String thirdParameterName,
+                                                                               final Parameter thirdParameter) {
+        return new LinkedHashMap<>() {
+            {
+                super.put(firstParameterName, firstParameter);
+                super.put(secondParameterName, secondParameter);
+                super.put(thirdParameterName, thirdParameter);
+            }
+        };
     }
 
     private static final class TestKafkaDataProducer extends AbstractKafkaDataProducer {
