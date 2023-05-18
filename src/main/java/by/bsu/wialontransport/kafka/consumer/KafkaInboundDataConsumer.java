@@ -4,8 +4,6 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Data.Latitude;
 import by.bsu.wialontransport.crud.dto.Data.Longitude;
-import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -19,8 +17,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
@@ -59,50 +56,37 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     @Override
+    protected Data mapToData(final GenericRecord genericRecord) {
+        final LocalDateTime dateTime = extractDateTime(genericRecord);
+        final Latitude latitude = super.extractLatitude(genericRecord);
+        final Longitude longitude = super.extractLongitude(genericRecord);
+        return new Data(
+                extractId(genericRecord),
+                dateTime.toLocalDate(),
+                dateTime.toLocalTime(),
+                latitude,
+                longitude,
+                extractSpeed(genericRecord),
+                extractCourse(genericRecord),
+                extractAltitude(genericRecord),
+                extractAmountOfSatellites(genericRecord),
+                extractReductionPrecision(genericRecord),
+                extractInputs(genericRecord),
+                extractOutputs(genericRecord),
+                extractAnalogInputs(genericRecord),
+                extractDriverKeyCode(genericRecord),
+                super.extractParametersByNames(genericRecord),
+                super.extractTracker(genericRecord),
+                this.findAddress(latitude, longitude)
+        );
+    }
+
+    @Override
     @Transactional(isolation = READ_COMMITTED)
     protected void processData(final List<Data> data) {
         final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
         final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
         this.sendInSavedDataTopic(savedData);
-    }
-
-    @Override
-    protected Data createData(final Long id,
-                              final LocalDate date,
-                              final LocalTime time,
-                              final Latitude latitude,
-                              final Longitude longitude,
-                              final int speed,
-                              final int course,
-                              final int altitude,
-                              final int amountOfSatellites,
-                              final double reductionPrecision,
-                              final int inputs,
-                              final int outputs,
-                              final double[] analogInputs,
-                              final String driverKeyCode,
-                              final Map<String, Parameter> parametersByNames,
-                              final Tracker tracker,
-                              final GenericRecord genericRecord) {
-        return new Data(
-                id,
-                date,
-                time,
-                latitude,
-                longitude,
-                speed,
-                course,
-                altitude,
-                amountOfSatellites,
-                reductionPrecision,
-                inputs,
-                outputs,
-                analogInputs,
-                driverKeyCode,
-                parametersByNames,
-                tracker,
-                this.findAddress(latitude, longitude)
-        );
     }
 
     private Address findAddress(final Latitude latitude, final Longitude longitude) {

@@ -12,9 +12,7 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import org.apache.avro.generic.GenericRecord;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -43,103 +41,63 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         this.trackerService = trackerService;
     }
 
-    @Override
-    protected final Data mapToData(final GenericRecord genericRecord) {
-        final Long id = extractId(genericRecord);
-        final LocalDateTime dateTime = extractDateTime(genericRecord);
-        final Latitude latitude = this.latitudeExtractor.extract(genericRecord);
-        final Longitude longitude = this.longitudeExtractor.extract(genericRecord);
-        final int speed = extractSpeed(genericRecord);
-        final int course = extractCourse(genericRecord);
-        final int altitude = extractAltitude(genericRecord);
-        final int amountOfSatellites = extractAmountOfSatellites(genericRecord);
-        final double reductionPrecision = extractReductionPrecision(genericRecord);
-        final int inputs = extractInputs(genericRecord);
-        final int outputs = extractOutputs(genericRecord);
-        final double[] analogInputs = this.analogInputsExtractor.extract(genericRecord);
-        final String driverKeyCode = extractDriverKeyCode(genericRecord);
-        final Map<String, Parameter> parametersByNames = this.parametersByNamesExtractor.extract(genericRecord);
-        final Tracker tracker = this.extractTracker(genericRecord);
-        return this.createData(
-                id,
-                dateTime.toLocalDate(),
-                dateTime.toLocalTime(),
-                latitude,
-                longitude,
-                speed,
-                course,
-                altitude,
-                amountOfSatellites,
-                reductionPrecision,
-                inputs,
-                outputs,
-                analogInputs,
-                driverKeyCode,
-                parametersByNames,
-                tracker,
-                genericRecord
-        );
-    }
-
-    protected abstract Data createData(final Long id,
-                                       final LocalDate date,
-                                       final LocalTime time,
-                                       final Latitude latitude,
-                                       final Longitude longitude,
-                                       final int speed,
-                                       final int course,
-                                       final int altitude,
-                                       final int amountOfSatellites,
-                                       final double reductionPrecision,
-                                       final int inputs,
-                                       final int outputs,
-                                       final double[] analogInputs,
-                                       final String driverKeyCode,
-                                       final Map<String, Parameter> parametersByNames,
-                                       final Tracker tracker,
-                                       final GenericRecord genericRecord);
-
-    private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
+    protected static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
         return extractDateTime(genericRecord, epochSeconds);
     }
 
-    private static Long extractId(final GenericRecord genericRecord) {
+    protected final Latitude extractLatitude(final GenericRecord genericRecord) {
+        return this.latitudeExtractor.extract(genericRecord);
+    }
+
+    protected final Longitude extractLongitude(final GenericRecord genericRecord) {
+        return this.longitudeExtractor.extract(genericRecord);
+    }
+
+    protected static Long extractId(final GenericRecord genericRecord) {
         return extractValue(genericRecord, id);
     }
 
-    private static int extractSpeed(final GenericRecord genericRecord) {
+    protected static int extractSpeed(final GenericRecord genericRecord) {
         return extractValue(genericRecord, speed);
     }
 
-    private static int extractCourse(final GenericRecord genericRecord) {
+    protected static int extractCourse(final GenericRecord genericRecord) {
         return extractValue(genericRecord, course);
     }
 
-    private static int extractAltitude(final GenericRecord genericRecord) {
+    protected static int extractAltitude(final GenericRecord genericRecord) {
         return extractValue(genericRecord, altitude);
     }
 
-    private static int extractAmountOfSatellites(final GenericRecord genericRecord) {
+    protected static int extractAmountOfSatellites(final GenericRecord genericRecord) {
         return extractValue(genericRecord, amountOfSatellites);
     }
 
-    private static double extractReductionPrecision(final GenericRecord genericRecord) {
+    protected static double extractReductionPrecision(final GenericRecord genericRecord) {
         return extractValue(genericRecord, reductionPrecision);
     }
 
-    private static int extractInputs(final GenericRecord genericRecord) {
+    protected static int extractInputs(final GenericRecord genericRecord) {
         return extractValue(genericRecord, inputs);
     }
 
-    private static int extractOutputs(final GenericRecord genericRecord) {
+    protected static int extractOutputs(final GenericRecord genericRecord) {
         return extractValue(genericRecord, outputs);
     }
 
-    private static String extractDriverKeyCode(final GenericRecord genericRecord) {
+    protected final double[] extractAnalogInputs(final GenericRecord genericRecord) {
+        return this.analogInputsExtractor.extract(genericRecord);
+    }
+
+    protected static String extractDriverKeyCode(final GenericRecord genericRecord) {
         return extractString(genericRecord, driverKeyCode);
     }
 
-    private Tracker extractTracker(final GenericRecord genericRecord) {
+    protected final Map<String, Parameter> extractParametersByNames(final GenericRecord genericRecord) {
+        return this.parametersByNamesExtractor.extract(genericRecord);
+    }
+
+    protected final Tracker extractTracker(final GenericRecord genericRecord) {
         final Long extractedTrackerId = extractTrackerId(genericRecord);
         final Optional<Tracker> optionalTracker = this.trackerService.findById(extractedTrackerId);
         return optionalTracker.orElseThrow(

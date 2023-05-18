@@ -2,8 +2,6 @@ package by.bsu.wialontransport.kafka.consumer;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
@@ -14,10 +12,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -44,47 +40,32 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     @Override
-    protected void processData(final List<Data> data) {
-        log.info("Consuming saved data: {}", data);
+    protected Data mapToData(final GenericRecord genericRecord) {
+        final LocalDateTime dateTime = extractDateTime(genericRecord);
+        return new Data(
+                extractId(genericRecord),
+                dateTime.toLocalDate(),
+                dateTime.toLocalTime(),
+                super.extractLatitude(genericRecord),
+                super.extractLongitude(genericRecord),
+                extractSpeed(genericRecord),
+                extractCourse(genericRecord),
+                extractAltitude(genericRecord),
+                extractAmountOfSatellites(genericRecord),
+                extractReductionPrecision(genericRecord),
+                extractInputs(genericRecord),
+                extractOutputs(genericRecord),
+                extractAnalogInputs(genericRecord),
+                extractDriverKeyCode(genericRecord),
+                super.extractParametersByNames(genericRecord),
+                super.extractTracker(genericRecord),
+                this.extractAddress(genericRecord)
+        );
     }
 
     @Override
-    protected Data createData(final Long id,
-                              final LocalDate date,
-                              final LocalTime time,
-                              final Data.Latitude latitude,
-                              final Data.Longitude longitude,
-                              final int speed,
-                              final int course,
-                              final int altitude,
-                              final int amountOfSatellites,
-                              final double reductionPrecision,
-                              final int inputs,
-                              final int outputs,
-                              final double[] analogInputs,
-                              final String driverKeyCode,
-                              final Map<String, Parameter> parametersByNames,
-                              final Tracker tracker,
-                              final GenericRecord genericRecord) {
-        return new Data(
-                id,
-                date,
-                time,
-                latitude,
-                longitude,
-                speed,
-                course,
-                altitude,
-                amountOfSatellites,
-                reductionPrecision,
-                inputs,
-                outputs,
-                analogInputs,
-                driverKeyCode,
-                parametersByNames,
-                tracker,
-                this.extractAddress(genericRecord)
-        );
+    protected void processData(final List<Data> data) {
+        log.info("Consuming saved data: {}", data);
     }
 
     private Address extractAddress(final GenericRecord genericRecord) {
