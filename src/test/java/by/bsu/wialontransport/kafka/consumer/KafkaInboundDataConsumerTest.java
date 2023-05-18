@@ -276,31 +276,40 @@ public final class KafkaInboundDataConsumerTest {
     @Test
     public void dataShouldBeProcessed() {
         final List<Data> givenData = List.of(
-                createData(),
-                createData(),
                 createDataWithAddress(258L),
-                createDataWithAddress(260L)
+                createDataWithAddress(258L),
+                createDataWithAddress(259L),
+                //address's id - 260
+                createDataWithAddress(createAddressWithCityName("first-city")),
+                //address's id - 260
+                createDataWithAddress(createAddressWithCityName("first-city")),
+                //address's id - 261
+                createDataWithAddress(createAddressWithCityName("second-name"))
         );
 
-        final Address firstGivenNewSavedAddress = createAddress(261L);
-        final Address secondGivenNewSavedAddress = createAddress(262L);
+        final Address firstGivenNewSavedAddress = createAddress(260L);
+        final Address secondGivenNewSavedAddress = createAddress(261L);
         when(this.mockedAddressService.save(any(Address.class)))
                 .thenReturn(firstGivenNewSavedAddress)
                 .thenReturn(secondGivenNewSavedAddress);
 
         final List<Data> expectedNotSavedDataWithSavedAddress = List.of(
-                createDataWithAddress(261L),
-                createDataWithAddress(262L),
                 createDataWithAddress(258L),
-                createDataWithAddress(260L)
+                createDataWithAddress(258L),
+                createDataWithAddress(259L),
+                createDataWithAddress(260L),
+                createDataWithAddress(260L),
+                createDataWithAddress(261L)
         );
         final List<Data> givenSavedData = List.of(
-                createDataWithAddress(250L, 261L),
-                createDataWithAddress(251L, 262L),
-                createDataWithAddress(252L, 258L),
-                createDataWithAddress(253L, 260L)
+                createDataWithAddress(300L, 258L),
+                createDataWithAddress(301L, 258L),
+                createDataWithAddress(302L, 259L),
+                createDataWithAddress(303L, 260L),
+                createDataWithAddress(304L, 260L),
+                createDataWithAddress(305L, 261L)
         );
-        when(this.mockedDataService.saveAll(expectedNotSavedDataWithSavedAddress)).thenReturn(givenSavedData);
+        when(this.mockedDataService.saveAll(anyList())).thenReturn(givenSavedData);
 
         this.consumer.processData(givenData);
 
@@ -311,7 +320,7 @@ public final class KafkaInboundDataConsumerTest {
         verify(this.mockedKafkaSavedDataProducer, times(givenSavedData.size()))
                 .send(this.dataArgumentCaptor.capture());
 
-        assertTrue(this.addressArgumentCaptor.getAllValues().stream().allMatch(address -> address.getId() == null));
+        assertTrue(areAddressesNew(this.addressArgumentCaptor.getAllValues()));
         assertEquals(expectedNotSavedDataWithSavedAddress, this.listOfDataArgumentCaptor.getValue());
         assertEquals(givenSavedData, this.dataArgumentCaptor.getAllValues());
     }
@@ -390,18 +399,10 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
-    private static Data createData() {
-        return createData(null);
-    }
-
     private static Data createDataWithAddress(final Long addressId) {
         return createDataWithAddress(null, addressId);
     }
-
-    private static Data createData(final Long id) {
-        return createDataWithAddress(id, null);
-    }
-
+    
     private static Data createDataWithAddress(final Long id, final Long addressId) {
         return Data.builder()
                 .id(id)
@@ -409,10 +410,31 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
+    private static Data createDataWithAddress(final Address address) {
+        return Data.builder()
+                .address(address)
+                .build();
+    }
+
     private static Address createAddress(final Long id) {
         return Address.builder()
                 .id(id)
                 .build();
+    }
+
+    private static Address createAddressWithCityName(final String cityName) {
+        return Address.builder()
+                .cityName(cityName)
+                .build();
+    }
+
+    private static boolean areAddressesNew(final List<Address> addresses) {
+        return addresses.stream()
+                .allMatch(KafkaInboundDataConsumerTest::isAddressNew);
+    }
+
+    private static boolean isAddressNew(final Address address) {
+        return address.getId() == null;
     }
 }
 

@@ -23,10 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +34,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
 @Component
@@ -69,10 +65,6 @@ public class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer
         this.savedDataProducer = savedDataProducer;
     }
 
-    /**
-     * concurrency should be 1 because of working with addresses performs in way at first check
-     * then act so parallel working will be failed
-     */
     @Override
     @KafkaListener(
             topics = "${kafka.topic.inbound-data.name}",
@@ -190,7 +182,7 @@ public class KafkaInboundDataConsumer extends AbstractKafkaGenericRecordConsumer
 
     private List<Data> findDataWithSavedAddresses(final List<Data> source) {
         final Map<Address, List<Data>> dataGroupedByAddresses = source.stream()
-                .collect(groupingBy(Data::getAddress));
+                .collect(groupingBy(Data::getAddress, LinkedHashMap::new, toList()));
         dataGroupedByAddresses.replaceAll(this::mapToDataWithSavedAddressIfAddressIsNew);
         return dataGroupedByAddresses.values()
                 .stream()
