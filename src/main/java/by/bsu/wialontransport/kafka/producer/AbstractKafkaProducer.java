@@ -21,7 +21,7 @@ public abstract class AbstractKafkaProducer<K, V, T extends Transportable<K>, S>
 
     public final void send(final S source) {
         final T transportable = this.mapToTransportable(source);
-        final K key = transportable.findKey();
+        final K key = transportable.findTopicKey();
         final V value = this.mapToValue(transportable);
         this.sendValue(key, value);
     }

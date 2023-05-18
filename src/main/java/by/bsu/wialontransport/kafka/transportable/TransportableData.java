@@ -37,7 +37,7 @@ public class TransportableData implements Transportable<Long> {
     private final Long trackerId;
 
     @Override
-    public final Long findKey() {
+    public final Long findTopicKey() {
         return this.trackerId;
     }
 }

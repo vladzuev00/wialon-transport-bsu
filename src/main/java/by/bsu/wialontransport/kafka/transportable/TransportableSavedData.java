@@ -10,7 +10,7 @@ import lombok.experimental.FieldNameConstants;
 public final class TransportableSavedData extends TransportableData {
     private final Long addressId;
 
-    @Builder
+    @Builder(builderMethodName = "savedDataBuilder")
     public TransportableSavedData(final Long id,
                                   final long epochSeconds,
                                   final int latitudeDegrees,
