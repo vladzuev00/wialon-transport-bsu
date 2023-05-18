@@ -44,7 +44,7 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     @Override
-    protected void processData(List<Data> data) {
+    protected void processData(final List<Data> data) {
         log.info("Consuming saved data: {}", data);
     }
 
