@@ -72,7 +72,7 @@ public final class WialonHandlerTest {
             final long staticFieldOffset = unsafe.staticFieldOffset(ourField);
             unsafe.putObject(staticFieldBase, staticFieldOffset, this.mockedLogger);
         } finally {
-            unsafeField.setAccessible(true);
+            unsafeField.setAccessible(false);
         }
     }
 

@@ -155,7 +155,7 @@ public final class KafkaInboundDataConsumerTest {
     }
 
     @Test(expected = DataConsumingException.class)
-    public void genericRecordShouldNotBeMappedToDateBecauseOfThereIsNoAddressWithGivenId() {
+    public void genericRecordShouldNotBeMappedToDateBecauseOfAddressWasNotReceived() {
         final Long givenId = 255L;
         final LocalDate givenDate = LocalDate.of(2023, 5, 18);
         final LocalTime givenTime = LocalTime.of(17, 37, 20);

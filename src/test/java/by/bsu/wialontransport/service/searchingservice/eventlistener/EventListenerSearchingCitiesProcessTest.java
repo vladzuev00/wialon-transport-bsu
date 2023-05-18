@@ -100,7 +100,7 @@ public final class EventListenerSearchingCitiesProcessTest extends AbstractConte
             final long staticFieldOffset = unsafe.staticFieldOffset(ourField);
             unsafe.putObject(staticFieldBase, staticFieldOffset, this.mockedLogger);
         } finally {
-            unsafeField.setAccessible(true);
+            unsafeField.setAccessible(false);
         }
     }
 
