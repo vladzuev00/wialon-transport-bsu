@@ -82,7 +82,8 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
                               final double[] analogInputs,
                               final String driverKeyCode,
                               final Map<String, Parameter> parametersByNames,
-                              final Tracker tracker) {
+                              final Tracker tracker,
+                              final GenericRecord genericRecord) {
         return new Data(
                 id,
                 date,

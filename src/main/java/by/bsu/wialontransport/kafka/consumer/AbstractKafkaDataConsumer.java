@@ -76,7 +76,8 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
                 analogInputs,
                 driverKeyCode,
                 parametersByNames,
-                tracker
+                tracker,
+                genericRecord
         );
     }
 
@@ -95,7 +96,8 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
                                        final double[] analogInputs,
                                        final String driverKeyCode,
                                        final Map<String, Parameter> parametersByNames,
-                                       final Tracker tracker);
+                                       final Tracker tracker,
+                                       final GenericRecord genericRecord);
 
     private static LocalDateTime extractDateTime(final GenericRecord genericRecord) {
         return extractDateTime(genericRecord, epochSeconds);
