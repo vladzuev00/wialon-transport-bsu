@@ -65,7 +65,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     @Autowired
-    public ConcurrentKafkaListenerContainerFactory<Long, GenericRecord> kafkaListenerContainerFactorySaveData(
+    public ConcurrentKafkaListenerContainerFactory<Long, GenericRecord> kafkaListenerContainerFactorySavedData(
             @Qualifier("consumerFactorySavedData")
             final ConsumerFactory<Long, GenericRecord> consumerFactorySavedData) {
         return createKafkaListenerContainerFactory(consumerFactorySavedData);
