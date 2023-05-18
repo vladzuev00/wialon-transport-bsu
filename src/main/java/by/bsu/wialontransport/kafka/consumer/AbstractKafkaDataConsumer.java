@@ -216,17 +216,19 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
                 = "Given serialized parameter isn't valid: %s";
 
         public Map<String, Parameter> extract(final GenericRecord genericRecord) {
-            final String[] serializedParameters = findSerializedParameters(genericRecord);
-            return deserializeToParametersByNames(serializedParameters);
-        }
-
-        private static String[] findSerializedParameters(final GenericRecord genericRecord) {
             final String serializedParametersString = extractSerializedParameters(genericRecord);
-            return serializedParametersString.split(REGEX_DELIMITER_SERIALIZED_PARAMETERS);
+            final String[] serializedParameters = findSerializedParameters(serializedParametersString);
+            return deserializeToParametersByNames(serializedParameters);
         }
 
         private static String extractSerializedParameters(final GenericRecord genericRecord) {
             return extractString(genericRecord, serializedParameters);
+        }
+
+        private static String[] findSerializedParameters(final String serializedParametersString) {
+            return !serializedParametersString.isEmpty()
+                    ? serializedParametersString.split(REGEX_DELIMITER_SERIALIZED_PARAMETERS)
+                    : new String[0];
         }
 
         private static Map<String, Parameter> deserializeToParametersByNames(final String[] serializedParameters) {

@@ -9,7 +9,6 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
-import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.apache.avro.generic.GenericRecord;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,11 +24,13 @@ import java.util.Optional;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
+import static by.bsu.wialontransport.kafka.consumer.AbstractKafkaDataConsumer.*;
 import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
-import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.longitudeTypeValue;
+import static java.time.LocalDateTime.ofEpochSecond;
 import static java.time.ZoneOffset.UTC;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.empty;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -50,224 +49,240 @@ public final class AbstractKafkaDataConsumerTest {
     }
 
     @Test
-    public void genericRecordShouldBeMappedToData() {
-        final Long givenId = 255L;
+    public void dateTimeShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
 
-        final LocalDateTime givenDateTime = LocalDateTime.of(
-                2023, 4, 8, 18, 25, 2);
-        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
+        final long givenEpochSeconds = 100500600;
+        when(givenGenericRecord.get(epochSeconds)).thenReturn(givenEpochSeconds);
 
-        final Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
-        final Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
-        final int givenSpeed = 50;
-        final int givenCourse = 51;
-        final int givenAltitude = 52;
-        final int givenAmountOfSatellites = 53;
-        final double givenReductionPrecision = 0.5;
-        final int givenInputs = 54;
-        final int givenOutputs = 55;
-        final String givenDriverKeyCode = "driver-key-code";
+        final LocalDateTime actual = extractDateTime(givenGenericRecord);
+        final LocalDateTime expected = ofEpochSecond(givenEpochSeconds, 0, UTC);
+        assertEquals(expected, actual);
+    }
 
-        final Long givenTrackerId = 256L;
-        final Tracker givenTracker = createTracker(givenTrackerId);
+    @Test
+    public void latitudeShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
 
-        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
-                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
-                givenReductionPrecision, givenInputs, givenOutputs, "5.5,4343.454544334,454.433,1",
-                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
+        final int givenLatitudeDegrees = 1;
+        when(givenGenericRecord.get(latitudeDegrees)).thenReturn(givenLatitudeDegrees);
+
+        final int givenLatitudeMinutes = 2;
+        when(givenGenericRecord.get(latitudeMinutes)).thenReturn(givenLatitudeMinutes);
+
+        final int givenLatitudeMinuteShare = 3;
+        when(givenGenericRecord.get(latitudeMinuteShare)).thenReturn(givenLatitudeMinuteShare);
+
+        final int givenLatitudeTypeValueAsInt = 'N';
+        when(givenGenericRecord.get(latitudeTypeValue)).thenReturn(givenLatitudeTypeValueAsInt);
+
+        final Latitude actual = this.consumer.extractLatitude(givenGenericRecord);
+        final Latitude expected = createLatitude(
+                givenLatitudeDegrees, givenLatitudeMinutes, givenLatitudeMinuteShare, NORTH
         );
+        assertEquals(expected, actual);
+    }
 
-        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
+    @Test
+    public void longitudeShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
 
-        final Data actual = this.consumer.mapToData(givenGenericRecord);
+        final int givenLongitudeDegrees = 1;
+        when(givenGenericRecord.get(longitudeDegrees)).thenReturn(givenLongitudeDegrees);
 
-        final double[] expectedAnalogInputs = new double[]{5.5, 4343.454544334, 454.433, 1};
-        final Map<String, Parameter> expectedParametersByNames = Map.of(
+        final int givenLongitudeMinutes = 2;
+        when(givenGenericRecord.get(longitudeMinutes)).thenReturn(givenLongitudeMinutes);
+
+        final int givenLongitudeMinuteShare = 3;
+        when(givenGenericRecord.get(longitudeMinuteShare)).thenReturn(givenLongitudeMinuteShare);
+
+        final int givenLongitudeTypeValueAsInt = 'E';
+        when(givenGenericRecord.get(longitudeTypeValue)).thenReturn(givenLongitudeTypeValueAsInt);
+
+        final Longitude actual = this.consumer.extractLongitude(givenGenericRecord);
+        final Longitude expected = createLongitude(
+                givenLongitudeDegrees, givenLongitudeMinutes, givenLongitudeMinuteShare, EAST
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void idShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final Long givenId = 255L;
+        when(givenGenericRecord.get(id)).thenReturn(givenId);
+
+        final Long actual = extractId(givenGenericRecord);
+        assertEquals(givenId, actual);
+    }
+
+    @Test
+    public void speedShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenSpeed = 60;
+        when(givenGenericRecord.get(speed)).thenReturn(givenSpeed);
+
+        final int actual = extractSpeed(givenGenericRecord);
+        assertEquals(givenSpeed, actual);
+    }
+
+    @Test
+    public void courseShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenCourse = 60;
+        when(givenGenericRecord.get(course)).thenReturn(givenCourse);
+
+        final int actual = extractCourse(givenGenericRecord);
+        assertEquals(givenCourse, actual);
+    }
+
+    @Test
+    public void altitudeShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenAltitude = 50;
+        when(givenGenericRecord.get(altitude)).thenReturn(givenAltitude);
+
+        final int actual = extractAltitude(givenGenericRecord);
+        assertEquals(givenAltitude, actual);
+    }
+
+    @Test
+    public void amountOfSatellitesShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenAmountOfSatellites = 50;
+        when(givenGenericRecord.get(amountOfSatellites)).thenReturn(givenAmountOfSatellites);
+
+        final int actual = extractAmountOfSatellites(givenGenericRecord);
+        assertEquals(givenAmountOfSatellites, actual);
+    }
+
+    @Test
+    public void reductionPrecisionShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final double givenReductionPrecision = 0.5;
+        when(givenGenericRecord.get(reductionPrecision)).thenReturn(givenReductionPrecision);
+
+        final double actual = extractReductionPrecision(givenGenericRecord);
+        assertEquals(givenReductionPrecision, actual, 0.);
+    }
+
+    @Test
+    public void inputsShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenInputs = 10;
+        when(givenGenericRecord.get(inputs)).thenReturn(givenInputs);
+
+        final int actual = extractInputs(givenGenericRecord);
+        assertEquals(givenInputs, actual);
+    }
+
+    @Test
+    public void outputsShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final int givenOutputs = 15;
+        when(givenGenericRecord.get(outputs)).thenReturn(givenOutputs);
+
+        final int actual = extractOutputs(givenGenericRecord);
+        assertEquals(givenOutputs, actual);
+    }
+
+    @Test
+    public void analogInputsShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final String givenSerializedAnalogInputs = "5.5,4343.454544334,454.433,1";
+        when(givenGenericRecord.get(serializedAnalogInputs)).thenReturn(givenSerializedAnalogInputs);
+
+        final double[] actual = this.consumer.extractAnalogInputs(givenGenericRecord);
+        final double[] expected = new double[]{5.5, 4343.454544334, 454.433, 1};
+        assertArrayEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void emptyAnalogInputsShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final String givenSerializedAnalogInputs = "";
+        when(givenGenericRecord.get(serializedAnalogInputs)).thenReturn(givenSerializedAnalogInputs);
+
+        final double[] actual = this.consumer.extractAnalogInputs(givenGenericRecord);
+        final double[] expected = new double[]{};
+        assertArrayEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void driverKeyCodeShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final String givenDriverKeyCode = "driverKeyCode";
+        when(givenGenericRecord.get(driverKeyCode)).thenReturn(givenDriverKeyCode);
+
+        final String actual = extractDriverKeyCode(givenGenericRecord);
+        assertEquals(givenDriverKeyCode, actual);
+    }
+
+    @Test
+    public void parametersByNamesShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final String givenSerializedParameters = "122:3:str,123:2:6,124:1:7";
+        when(givenGenericRecord.get(serializedParameters)).thenReturn(givenSerializedParameters);
+
+        final Map<String, Parameter> actual = this.consumer.extractParametersByNames(givenGenericRecord);
+        final Map<String, Parameter> expected = Map.of(
                 "122", createParameter("122", STRING, "str"),
                 "123", createParameter("123", DOUBLE, "6"),
                 "124", createParameter("124", INTEGER, "7")
         );
-        final Data expected = Data.builder()
-                .id(givenId)
-                .date(givenDateTime.toLocalDate())
-                .time(givenDateTime.toLocalTime())
-                .latitude(givenLatitude)
-                .longitude(givenLongitude)
-                .speed(givenSpeed)
-                .course(givenCourse)
-                .altitude(givenAltitude)
-                .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
-                .inputs(givenInputs)
-                .outputs(givenOutputs)
-                .analogInputs(expectedAnalogInputs)
-                .driverKeyCode(givenDriverKeyCode)
-                .parametersByNames(expectedParametersByNames)
-                .tracker(givenTracker)
-                .build();
         assertEquals(expected, actual);
     }
 
-    @Test(expected = DataConsumingException.class)
-    public void genericRecordShouldNotBeMappedToDataBecauseOfThereIsNotTrackerWithGivenId() {
-        final Long givenId = 255L;
+    @Test
+    public void emptyParametersByNamesShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
 
-        final LocalDateTime givenDateTime = LocalDateTime.of(
-                2023, 4, 8, 18, 25, 2);
-        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
+        final String givenSerializedParameters = "";
+        when(givenGenericRecord.get(serializedParameters)).thenReturn(givenSerializedParameters);
 
-        final Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
-        final Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
-        final int givenSpeed = 50;
-        final int givenCourse = 51;
-        final int givenAltitude = 52;
-        final int givenAmountOfSatellites = 53;
-        final double givenReductionPrecision = 0.5;
-        final int givenInputs = 54;
-        final int givenOutputs = 55;
-        final String givenDriverKeyCode = "driver-key-code";
-
-        final Long givenTrackerId = 256L;
-        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
-                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
-                givenReductionPrecision, givenInputs, givenOutputs, "5.5,4343.454544334,454.433,1",
-                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
-        );
-
-        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(empty());
-
-        this.consumer.mapToData(givenGenericRecord);
+        final Map<String, Parameter> actual = this.consumer.extractParametersByNames(givenGenericRecord);
+        final Map<String, Parameter> expected = emptyMap();
+        assertEquals(expected, actual);
     }
 
-//    @Test(expected = DataConsumingException.class)
-//    public void genericRecordShouldNotBeMappedToDataBecauseOfThereIsNoTrackerWithGivenId() {
-//        final Long givenId = 255L;
-//
-//        final LocalDateTime givenDateTime = LocalDateTime.of(
-//                2023, 4, 8, 18, 25, 2);
-//        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
-//
-//        final Data.Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
-//        final Data.Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
-//        final int givenSpeed = 50;
-//        final int givenCourse = 51;
-//        final int givenAltitude = 52;
-//        final int givenAmountOfSatellites = 53;
-//        final double givenReductionPrecision = 0.5;
-//        final int givenInputs = 54;
-//        final int givenOutputs = 55;
-//        final String givenDriverKeyCode = "driver-key-code";
-//        final Long givenTrackerId = 256L;
-//
-//        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
-//                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
-//                givenReductionPrecision, givenInputs, givenOutputs, "5.5,4343.454544334,454.433,1",
-//                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
-//        );
-//
-//        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(empty());
-//
-//        this.consumer.mapToData(givenGenericRecord);
-//    }
-//
-//    @Test(expected = DataConsumingException.class)
-//    public void genericRecordShouldNotBeMappedToDataBecauseOfGeocodingServiceDoNotFindAddress() {
-//        final Long givenId = 255L;
-//
-//        final LocalDateTime givenDateTime = LocalDateTime.of(
-//                2023, 4, 8, 18, 25, 2);
-//        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
-//
-//        final Data.Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
-//        final Data.Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
-//        final int givenSpeed = 50;
-//        final int givenCourse = 51;
-//        final int givenAltitude = 52;
-//        final int givenAmountOfSatellites = 53;
-//        final double givenReductionPrecision = 0.5;
-//        final int givenInputs = 54;
-//        final int givenOutputs = 55;
-//        final String givenDriverKeyCode = "driver-key-code";
-//
-//        final Long givenTrackerId = 256L;
-//        final Tracker givenTracker = createTracker(givenTrackerId);
-//
-//        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
-//                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
-//                givenReductionPrecision, givenInputs, givenOutputs, "5.5,4343.454544334,454.433,1",
-//                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
-//        );
-//
-//        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
-//
-//        when(this.mockedGeocodingService.receive(givenLatitude, givenLongitude)).thenReturn(empty());
-//
-//        this.consumer.mapToData(givenGenericRecord);
-//    }
-//
-//    @Test
-//    public void genericRecordWithEmptyAnalogInputsShouldBeMappedToData() {
-//        final Long givenId = 255L;
-//
-//        final LocalDateTime givenDateTime = LocalDateTime.of(
-//                2023, 4, 8, 18, 25, 2);
-//        final long givenEpochSeconds = givenDateTime.toEpochSecond(UTC);
-//
-//        final Data.Latitude givenLatitude = createLatitude(44, 45, 46, NORTH);
-//        final Data.Longitude givenLongitude = createLongitude(47, 48, 49, EAST);
-//        final int givenSpeed = 50;
-//        final int givenCourse = 51;
-//        final int givenAltitude = 52;
-//        final int givenAmountOfSatellites = 53;
-//        final double givenReductionPrecision = 0.5;
-//        final int givenInputs = 54;
-//        final int givenOutputs = 55;
-//        final String givenDriverKeyCode = "driver-key-code";
-//
-//        final Long givenTrackerId = 256L;
-//        final Tracker givenTracker = createTracker(givenTrackerId);
-//
-//        final GenericRecord givenGenericRecord = createGenericRecord(givenId, givenEpochSeconds, givenLatitude,
-//                givenLongitude, givenSpeed, givenCourse, givenAltitude, givenAmountOfSatellites,
-//                givenReductionPrecision, givenInputs, givenOutputs, "",
-//                givenDriverKeyCode, "122:3:str,123:2:6,124:1:7", givenTrackerId
-//        );
-//
-//        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
-//
-//        final Address givenAddress = createAddress(258L);
-//        when(this.mockedGeocodingService.receive(givenLatitude, givenLongitude))
-//                .thenReturn(Optional.of(givenAddress));
-//
-//        final Data actual = this.consumer.mapToData(givenGenericRecord);
-//
-//        final double[] expectedAnalogInputs = new double[]{};
-//        final Map<String, Parameter> expectedParametersByNames = Map.of(
-//                "122", createParameter("122", STRING, "str"),
-//                "123", createParameter("123", DOUBLE, "6"),
-//                "124", createParameter("124", INTEGER, "7")
-//        );
-//        final Data expected = Data.builder()
-//                .id(givenId)
-//                .date(givenDateTime.toLocalDate())
-//                .time(givenDateTime.toLocalTime())
-//                .latitude(givenLatitude)
-//                .longitude(givenLongitude)
-//                .speed(givenSpeed)
-//                .course(givenCourse)
-//                .altitude(givenAltitude)
-//                .amountOfSatellites(givenAmountOfSatellites)
-//                .reductionPrecision(givenReductionPrecision)
-//                .inputs(givenInputs)
-//                .outputs(givenOutputs)
-//                .analogInputs(expectedAnalogInputs)
-//                .driverKeyCode(givenDriverKeyCode)
-//                .parametersByNames(expectedParametersByNames)
-//                .tracker(givenTracker)
-//                .address(givenAddress)
-//                .build();
-//        assertEquals(expected, actual);
-//    }
+    @Test
+    public void trackerShouldBeExtracted() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final Long givenTrackerId = 255L;
+        when(givenGenericRecord.get(trackerId)).thenReturn(givenTrackerId);
+
+        final Tracker givenTracker = createTracker(givenTrackerId);
+        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(Optional.of(givenTracker));
+
+        final Tracker actual = this.consumer.extractTracker(givenGenericRecord);
+        assertEquals(givenTracker, actual);
+    }
+
+    @Test(expected = DataConsumingException.class)
+    public void trackerShouldNotBeExtractedBecauseOfThereIsNoTrackerWithGivenId() {
+        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+
+        final Long givenTrackerId = 255L;
+        when(givenGenericRecord.get(trackerId)).thenReturn(givenTrackerId);
+
+        createTracker(givenTrackerId);
+        when(this.mockedTrackerService.findById(givenTrackerId)).thenReturn(empty());
+
+        this.consumer.extractTracker(givenGenericRecord);
+    }
 
     private static Latitude createLatitude(final int degrees,
                                            final int minutes,
@@ -309,55 +324,6 @@ public final class AbstractKafkaDataConsumerTest {
                 .build();
     }
 
-    private static GenericRecord createGenericRecord(final Long id,
-                                                     final long epochSeconds,
-                                                     final Latitude latitude,
-                                                     final Longitude longitude,
-                                                     final int speed,
-                                                     final int course,
-                                                     final int altitude,
-                                                     final int amountOfSatellites,
-                                                     final double reductionPrecision,
-                                                     final int inputs,
-                                                     final int outputs,
-                                                     final String serializedAnalogInputs,
-                                                     final String driverKeyCode,
-                                                     final String serializedParameters,
-                                                     final Long trackerId) {
-        final GenericRecord genericRecord = mock(GenericRecord.class);
-        when(genericRecord.get(TransportableData.Fields.id)).thenReturn(id);
-        when(genericRecord.get(TransportableData.Fields.epochSeconds)).thenReturn(epochSeconds);
-        injectLatitudeInGenericRecord(genericRecord, latitude);
-        injectLongitudeInGenericRecord(genericRecord, longitude);
-        when(genericRecord.get(TransportableData.Fields.speed)).thenReturn(speed);
-        when(genericRecord.get(TransportableData.Fields.course)).thenReturn(course);
-        when(genericRecord.get(TransportableData.Fields.altitude)).thenReturn(altitude);
-        when(genericRecord.get(TransportableData.Fields.amountOfSatellites)).thenReturn(amountOfSatellites);
-        when(genericRecord.get(TransportableData.Fields.reductionPrecision)).thenReturn(reductionPrecision);
-        when(genericRecord.get(TransportableData.Fields.inputs)).thenReturn(inputs);
-        when(genericRecord.get(TransportableData.Fields.outputs)).thenReturn(outputs);
-        when(genericRecord.get(TransportableData.Fields.serializedAnalogInputs)).thenReturn(serializedAnalogInputs);
-        when(genericRecord.get(TransportableData.Fields.driverKeyCode)).thenReturn(driverKeyCode);
-        when(genericRecord.get(TransportableData.Fields.serializedParameters)).thenReturn(serializedParameters);
-        when(genericRecord.get(TransportableData.Fields.trackerId)).thenReturn(trackerId);
-        return genericRecord;
-    }
-
-    private static void injectLatitudeInGenericRecord(final GenericRecord genericRecord, final Latitude latitude) {
-        when(genericRecord.get(latitudeDegrees)).thenReturn(latitude.getDegrees());
-        when(genericRecord.get(latitudeMinutes)).thenReturn(latitude.getMinutes());
-        when(genericRecord.get(latitudeMinuteShare)).thenReturn(latitude.getMinuteShare());
-        when(genericRecord.get(latitudeTypeValue)).thenReturn((int) latitude.getType().getValue());
-    }
-
-    private static void injectLongitudeInGenericRecord(final GenericRecord genericRecord,
-                                                       final Longitude longitude) {
-        when(genericRecord.get(longitudeDegrees)).thenReturn(longitude.getDegrees());
-        when(genericRecord.get(longitudeMinutes)).thenReturn(longitude.getMinutes());
-        when(genericRecord.get(longitudeMinuteShare)).thenReturn(longitude.getMinuteShare());
-        when(genericRecord.get(longitudeTypeValue)).thenReturn((int) longitude.getType().getValue());
-    }
-
     private static final class TestKafkaDataConsumer extends AbstractKafkaDataConsumer {
 
         public TestKafkaDataConsumer(final TrackerService trackerService) {
@@ -365,46 +331,13 @@ public final class AbstractKafkaDataConsumerTest {
         }
 
         @Override
-        protected void processData(final List<Data> data) {
-
+        protected Data mapToData(final GenericRecord value) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
-        protected Data createData(final Long id,
-                                  final LocalDate date,
-                                  final LocalTime time,
-                                  final Latitude latitude,
-                                  final Longitude longitude,
-                                  final int speed,
-                                  final int course,
-                                  final int altitude,
-                                  final int amountOfSatellites,
-                                  final double reductionPrecision,
-                                  final int inputs,
-                                  final int outputs,
-                                  final double[] analogInputs,
-                                  final String driverKeyCode,
-                                  final Map<String, Parameter> parametersByNames,
-                                  final Tracker tracker,
-                                  final GenericRecord genericRecord) {
-            return Data.builder()
-                    .id(id)
-                    .date(date)
-                    .time(time)
-                    .latitude(latitude)
-                    .longitude(longitude)
-                    .speed(speed)
-                    .course(course)
-                    .altitude(altitude)
-                    .amountOfSatellites(amountOfSatellites)
-                    .reductionPrecision(reductionPrecision)
-                    .inputs(inputs)
-                    .outputs(outputs)
-                    .analogInputs(analogInputs)
-                    .driverKeyCode(driverKeyCode)
-                    .parametersByNames(parametersByNames)
-                    .tracker(tracker)
-                    .build();
+        protected void processData(final List<Data> data) {
+            throw new UnsupportedOperationException();
         }
     }
 }
