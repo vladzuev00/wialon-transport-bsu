@@ -66,11 +66,11 @@ public final class KafkaInboundDataConsumerTest {
     @Captor
     private ArgumentCaptor<Address> addressArgumentCaptor;
 
-    private KafkaInboundDataConsumer consumer;
+    private AbstractKafkaDataConsumer consumer;
 
     @Before
     public void initializeConsumer() {
-        this.consumer = new KafkaInboundDataConsumer(
+        this.consumer = new AbstractKafkaDataConsumer(
                 this.mockedTrackerService,
                 this.mockedDataService,
                 this.mockedAddressService,
@@ -402,7 +402,7 @@ public final class KafkaInboundDataConsumerTest {
     private static Data createDataWithAddress(final Long addressId) {
         return createDataWithAddress(null, addressId);
     }
-    
+
     private static Data createDataWithAddress(final Long id, final Long addressId) {
         return Data.builder()
                 .id(id)
