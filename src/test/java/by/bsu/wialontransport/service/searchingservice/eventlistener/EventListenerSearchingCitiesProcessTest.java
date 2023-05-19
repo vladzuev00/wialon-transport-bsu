@@ -65,19 +65,10 @@ public final class EventListenerSearchingCitiesProcessTest extends AbstractConte
     private ArgumentCaptor<SearchingCitiesProcess> processArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<Geometry> geometryArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<Address> addressArgumentCaptor;
-
-    @Captor
     private ArgumentCaptor<List<City>> citiesArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Status> processStatusArgumentCaptor;
-
-    @Autowired
-    private EventListenerSearchingCitiesProcess eventListener;
 
     @Autowired
     private GeometryFactory geometryFactory;

@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.kafka.consumer;
 
+import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
@@ -13,12 +14,12 @@ import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.apache.avro.generic.GenericRecord;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -34,7 +35,6 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
-import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.longitudeTypeValue;
 import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.addressId;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Optional.empty;
@@ -42,29 +42,24 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public final class KafkaSavedDataConsumerTest {
+public final class KafkaSavedDataConsumerTest extends AbstractContextTest {
     private static final String FIELD_NAME_LOGGER = "log";
     private static final String FIELD_NAME_THE_UNSAFE = "theUnsafe";
 
     @Mock
     private Logger mockedLogger;
 
-    @Mock
+    @MockBean
     private TrackerService mockedTrackerService;
 
-    @Mock
+    @MockBean
     private AddressService mockedAddressService;
 
     @Captor
-    private ArgumentCaptor<Object> listOfDataArgumentCaptor;
+    private ArgumentCaptor<List<Data>> listOfDataArgumentCaptor;
 
+    @Autowired
     private KafkaSavedDataConsumer consumer;
-
-    @Before
-    public void initializeConsumer() {
-        this.consumer = new KafkaSavedDataConsumer(this.mockedTrackerService, this.mockedAddressService);
-    }
 
     @Before
     public void injectMockedLogger()
