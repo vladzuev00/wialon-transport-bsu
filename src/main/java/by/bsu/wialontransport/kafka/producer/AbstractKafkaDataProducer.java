@@ -36,7 +36,7 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
         this.parametersSerializer = new ParametersSerializer();
     }
 
-    protected static long findEpochSecondsOfDateTime(final Data data) {
+    protected static long findEpochSeconds(final Data data) {
         final LocalDateTime dateTime = LocalDateTime.of(data.getDate(), data.getTime());
         return dateTime.toEpochSecond(UTC);
     }
@@ -77,12 +77,6 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
         return longitudeType.getValue();
     }
 
-    private static <T extends GeographicCoordinate> int findGeographicCoordinateIntFieldValue(
-            final Data data, final Function<Data, T> getterGeographicCoordinate, final ToIntFunction<T> getterValue) {
-        final T geographicCoordinate = getterGeographicCoordinate.apply(data);
-        return getterValue.applyAsInt(geographicCoordinate);
-    }
-
     protected final String serializeAnalogInputs(final Data data) {
         return this.analogInputsSerializer.serialize(data);
     }
@@ -102,6 +96,12 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
 
     private static int findLongitudeIntFieldValue(final Data data, final ToIntFunction<Longitude> getterValue) {
         return findGeographicCoordinateIntFieldValue(data, Data::getLongitude, getterValue);
+    }
+
+    private static <T extends GeographicCoordinate> int findGeographicCoordinateIntFieldValue(
+            final Data data, final Function<Data, T> getterGeographicCoordinate, final ToIntFunction<T> getterValue) {
+        final T geographicCoordinate = getterGeographicCoordinate.apply(data);
+        return getterValue.applyAsInt(geographicCoordinate);
     }
 
     private static final class AnalogInputsSerializer {

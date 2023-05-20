@@ -10,224 +10,180 @@ import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static java.time.ZoneOffset.UTC;
+import static by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer.*;
 import static org.junit.Assert.assertEquals;
 
 public final class AbstractKafkaDataProducerTest {
 
-    private final AbstractKafkaDataProducer producer = new TestKafkaDataProducer();
+    private final AbstractKafkaDataProducer<TransportableData> producer = new TestKafkaDataProducer();
 
     @Test
-    public void dataShouldBeMappedToTransportableInCaseParametersWithoutId() {
-        final Long givenId = 255L;
-        final LocalDateTime givenDateTime = LocalDateTime.of(
-                2022, 11, 15, 14, 56, 43);
-        final int givenLatitudeDegrees = 55;
-        final int givenLatitudeMinutes = 44;
-        final int givenLatitudeMinuteShare = 6025;
-        final DataEntity.Latitude.Type givenLatitudeType = NORTH;
-        final int givenLongitudeDegrees = 37;
-        final int givenLongitudeMinutes = 39;
-        final int givenLongitudeMinuteShare = 6834;
-        final DataEntity.Longitude.Type givenLongitudeType = EAST;
-        final int givenSpeed = 100;
-        final int givenCourse = 15;
-        final int givenAltitude = 10;
-        final int givenAmountOfSatellites = 177;
-        final double givenReductionPrecision = 545.4554;
-        final int givenInputs = 17;
-        final int givenOutputs = 18;
-        final String givenKeyDriverCode = "keydrivercode";
-        final Long givenTrackerId = 256L;
+    public void epochSecondsShouldBeFound() {
         final Data givenData = Data.builder()
-                .id(givenId)
-                .date(givenDateTime.toLocalDate())
-                .time(givenDateTime.toLocalTime())
-                .latitude(
-                        createLatitude(
-                                givenLatitudeDegrees,
-                                givenLatitudeMinutes,
-                                givenLatitudeMinuteShare,
-                                givenLatitudeType
-                        )
-                )
-                .longitude(
-                        createLongitude(
-                                givenLongitudeDegrees,
-                                givenLongitudeMinutes,
-                                givenLongitudeMinuteShare,
-                                givenLongitudeType
-                        )
-                )
-                .speed(givenSpeed)
-                .course(givenCourse)
-                .altitude(givenAltitude)
-                .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
-                .inputs(givenInputs)
-                .outputs(givenOutputs)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode(givenKeyDriverCode)
-                .parametersByNames(createLinkedHashMapParametersByNames(
-                        "param-name-1", createParameter("param-name-1", INTEGER, "654321"),
-                        "param-name-2", createParameter("param-name-2", DOUBLE, "65.4321"),
-                        "param-name-3", createParameter("param-name-3", STRING, "param-value")))
-                .tracker(createTracker(givenTrackerId))
+                .date(LocalDate.of(2023, 5, 20))
+                .time(LocalTime.of(10, 11, 12))
                 .build();
 
-        final TransportableData actual = this.producer.mapToTransportable(givenData);
-        final TransportableData expected = TransportableData.builder()
-                .id(givenId)
-                .epochSeconds(givenDateTime.toEpochSecond(UTC))
-                .latitudeDegrees(givenLatitudeDegrees)
-                .latitudeMinutes(givenLatitudeMinutes)
-                .latitudeMinuteShare(givenLatitudeMinuteShare)
-                .latitudeTypeValue(givenLatitudeType.getValue())
-                .longitudeDegrees(givenLongitudeDegrees)
-                .longitudeMinutes(givenLongitudeMinutes)
-                .longitudeMinuteShare(givenLongitudeMinuteShare)
-                .longitudeTypeValue(givenLongitudeType.getValue())
-                .speed(givenSpeed)
-                .course(givenCourse)
-                .altitude(givenAltitude)
-                .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
-                .inputs(givenInputs)
-                .outputs(givenOutputs)
-                .driverKeyCode(givenKeyDriverCode)
-                .serializedAnalogInputs("5.5,4343.454544334,454.433,1.0")
-                .serializedParameters("param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value")
-                .trackerId(givenTrackerId)
-                .build();
+        final long actual = findEpochSeconds(givenData);
+        final long expected = 1684577472;
         assertEquals(expected, actual);
     }
 
     @Test
-    public void dataShouldBeMappedToTransportableInCaseParametersWithId() {
-        final Long givenId = 255L;
-        final LocalDateTime givenDateTime = LocalDateTime.of(
-                2022, 11, 15, 14, 56, 43);
-        final int givenLatitudeDegrees = 55;
-        final int givenLatitudeMinutes = 44;
-        final int givenLatitudeMinuteShare = 6025;
-        final DataEntity.Latitude.Type givenLatitudeType = NORTH;
-        final int givenLongitudeDegrees = 37;
-        final int givenLongitudeMinutes = 39;
-        final int givenLongitudeMinuteShare = 6834;
-        final DataEntity.Longitude.Type givenLongitudeType = EAST;
-        final int givenSpeed = 100;
-        final int givenCourse = 15;
-        final int givenAltitude = 10;
-        final int givenAmountOfSatellites = 177;
-        final double givenReductionPrecision = 545.4554;
-        final int givenInputs = 17;
-        final int givenOutputs = 18;
-        final String givenKeyDriverCode = "keydrivercode";
-        final Long givenTrackerId = 256L;
+    public void latitudeDegreesShouldBeFound() {
+        final int givenLatitudeDegrees = 10;
         final Data givenData = Data.builder()
-                .id(givenId)
-                .date(givenDateTime.toLocalDate())
-                .time(givenDateTime.toLocalTime())
-                .latitude(
-                        createLatitude(
-                                givenLatitudeDegrees,
-                                givenLatitudeMinutes,
-                                givenLatitudeMinuteShare,
-                                givenLatitudeType
-                        )
-                )
-                .longitude(
-                        createLongitude(
-                                givenLongitudeDegrees,
-                                givenLongitudeMinutes,
-                                givenLongitudeMinuteShare,
-                                givenLongitudeType
-                        )
-                )
-                .speed(givenSpeed)
-                .course(givenCourse)
-                .altitude(givenAltitude)
-                .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
-                .inputs(givenInputs)
-                .outputs(givenOutputs)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode(givenKeyDriverCode)
-                .parametersByNames(createLinkedHashMapParametersByNames(
-                                "param-name-1", createParameter(257L, "param-name-1", INTEGER, "654321"),
-                                "param-name-2", createParameter(258L, "param-name-2", DOUBLE, "65.4321"),
-                                "param-name-3", createParameter(259L, "param-name-3", STRING, "param-value")
-                        )
-                )
-                .tracker(createTracker(givenTrackerId))
+                .latitude(Latitude.builder()
+                        .degrees(givenLatitudeDegrees)
+                        .build())
                 .build();
 
-        final TransportableData actual = this.producer.mapToTransportable(givenData);
-        final TransportableData expected = TransportableData.builder()
-                .id(givenId)
-                .epochSeconds(givenDateTime.toEpochSecond(UTC))
-                .latitudeDegrees(givenLatitudeDegrees)
-                .latitudeMinutes(givenLatitudeMinutes)
-                .latitudeMinuteShare(givenLatitudeMinuteShare)
-                .latitudeTypeValue(givenLatitudeType.getValue())
-                .longitudeDegrees(givenLongitudeDegrees)
-                .longitudeMinutes(givenLongitudeMinutes)
-                .longitudeMinuteShare(givenLongitudeMinuteShare)
-                .longitudeTypeValue(givenLongitudeType.getValue())
-                .speed(givenSpeed)
-                .course(givenCourse)
-                .altitude(givenAltitude)
-                .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
-                .inputs(givenInputs)
-                .outputs(givenOutputs)
-                .driverKeyCode(givenKeyDriverCode)
-                .serializedAnalogInputs("5.5,4343.454544334,454.433,1.0")
-                .serializedParameters("257:param-name-1:1:654321,258:param-name-2:2:65.4321,259:param-name-3:3:param-value")
-                .trackerId(givenTrackerId)
+        final int actual = findLatitudeDegrees(givenData);
+        assertEquals(givenLatitudeDegrees, actual);
+    }
+
+    @Test
+    public void latitudeMinutesShouldBeFound() {
+        final int givenLatitudeMinutes = 10;
+        final Data givenData = Data.builder()
+                .latitude(Latitude.builder()
+                        .minutes(givenLatitudeMinutes)
+                        .build())
                 .build();
+
+        final int actual = findLatitudeMinutes(givenData);
+        assertEquals(givenLatitudeMinutes, actual);
+    }
+
+    @Test
+    public void latitudeMinuteShareShouldBeFound() {
+        final int givenLatitudeMinuteShare = 10;
+        final Data giveData = Data.builder()
+                .latitude(Latitude.builder()
+                        .minuteShare(givenLatitudeMinuteShare)
+                        .build())
+                .build();
+
+        final int actual = findLatitudeMinuteShare(giveData);
+        assertEquals(givenLatitudeMinuteShare, actual);
+    }
+
+    @Test
+    public void latitudeTypeValueShouldBeFound() {
+        final DataEntity.Latitude.Type givenType = NORTH;
+        final Data givenData = Data.builder()
+                .latitude(Latitude.builder()
+                        .type(givenType)
+                        .build())
+                .build();
+
+        final char actual = findLatitudeTypeValue(givenData);
+        final char expected = givenType.getValue();
         assertEquals(expected, actual);
     }
 
-    private static Latitude createLatitude(final int degrees, final int minutes, final int minuteShare,
-                                           final DataEntity.Latitude.Type type) {
-        return Latitude.builder()
-                .degrees(degrees)
-                .minutes(minutes)
-                .minuteShare(minuteShare)
-                .type(type)
+    @Test
+    public void longitudeDegreesShouldBeFound() {
+        final int givenLongitudeDegrees = 10;
+        final Data givenData = Data.builder()
+                .longitude(Longitude.builder()
+                        .degrees(givenLongitudeDegrees)
+                        .build())
                 .build();
+
+        final int actual = findLongitudeDegrees(givenData);
+        assertEquals(givenLongitudeDegrees, actual);
     }
 
-    private static Longitude createLongitude(final int degrees, final int minutes, final int minuteShare,
-                                             final DataEntity.Longitude.Type type) {
-        return Longitude.builder()
-                .degrees(degrees)
-                .minutes(minutes)
-                .minuteShare(minuteShare)
-                .type(type)
+    @Test
+    public void longitudeMinutesShouldBeFound() {
+        final int givenLongitudeMinutes = 11;
+        final Data givenData = Data.builder()
+                .longitude(Longitude.builder()
+                        .minutes(givenLongitudeMinutes)
+                        .build())
                 .build();
+
+        final int actual = findLongitudeMinutes(givenData);
+        assertEquals(givenLongitudeMinutes, actual);
+    }
+
+    @Test
+    public void longitudeMinuteShareShouldBeFound() {
+        final int givenLongitudeMinuteShare = 12;
+        final Data givenData = Data.builder()
+                .longitude(Longitude.builder()
+                        .minuteShare(givenLongitudeMinuteShare)
+                        .build())
+                .build();
+
+        final int actual = findLongitudeMinuteShare(givenData);
+        assertEquals(givenLongitudeMinuteShare, actual);
+    }
+
+    @Test
+    public void longitudeTypeValueShouldBeFound() {
+        final DataEntity.Longitude.Type givenType = EAST;
+        final Data givenData = Data.builder()
+                .longitude(Longitude.builder()
+                        .type(givenType)
+                        .build())
+                .build();
+
+        final char actual = findLongitudeTypeValue(givenData);
+        final char expected = givenType.getValue();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void analogInputsShouldBeSerialized() {
+        final Data givenData = Data.builder()
+                .analogInputs(new double[]{1.1, 2.2, 3.3})
+                .build();
+
+        final String actual = this.producer.serializeAnalogInputs(givenData);
+        final String expected = "1.1,2.2,3.3";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void parametersShouldBeSerialized() {
+        final Data givenData = Data.builder()
+                .parametersByNames(
+                        createLinkedHashMapParametersByNames(
+                                "first", createParameter("first", INTEGER, "1"),
+                                "second", createParameter("second", DOUBLE, "1.1"),
+                                "third", createParameter("third", STRING, "text")
+                        )
+                )
+                .build();
+
+        final String actual = this.producer.serializeParameters(givenData);
+        final String expected = "first:1:1,second:2:1.1,third:3:text";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerIdShouldBeFound() {
+        final Long givenTrackerId = 255L;
+        final Data givenData = Data.builder()
+                .tracker(createTracker(givenTrackerId))
+                .build();
+
+        final Long actual = findTrackerId(givenData);
+        assertEquals(givenTrackerId, actual);
     }
 
     private static Parameter createParameter(final String name, final ParameterEntity.Type type, final String value) {
         return Parameter.builder()
-                .name(name)
-                .type(type)
-                .value(value)
-                .build();
-    }
-
-    private static Parameter createParameter(final Long id, final String name, final ParameterEntity.Type type,
-                                             final String value) {
-        return Parameter.builder()
-                .id(id)
                 .name(name)
                 .type(type)
                 .value(value)
@@ -255,10 +211,15 @@ public final class AbstractKafkaDataProducerTest {
         };
     }
 
-    private static final class TestKafkaDataProducer extends AbstractKafkaDataProducer {
+    private static final class TestKafkaDataProducer extends AbstractKafkaDataProducer<TransportableData> {
 
         public TestKafkaDataProducer() {
             super(null, null, null);
+        }
+
+        @Override
+        protected TransportableData mapToTransportable(final Data source) {
+            throw new UnsupportedOperationException();
         }
     }
 }
