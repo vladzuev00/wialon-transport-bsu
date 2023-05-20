@@ -23,7 +23,8 @@ import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
-public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKafkaProducer<Long, TransportableData, Data> {
+public abstract class AbstractKafkaDataProducer<T extends TransportableData>
+        extends AbstractGenericRecordKafkaProducer<Long, T, Data> {
     private final AnalogInputsSerializer analogInputsSerializer;
     private final ParametersSerializer parametersSerializer;
 
@@ -35,80 +36,45 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
         this.parametersSerializer = new ParametersSerializer();
     }
 
-    @Override
-    protected TransportableData mapToTransportable(final Data data) {
-        return new TransportableData(
-                data.getId(),
-                findEpochSecondsOfDateTime(data),
-                findLatitudeDegrees(data),
-                findLatitudeMinutes(data),
-                findLatitudeMinuteShare(data),
-                findLatitudeTypeValue(data),
-                findLongitudeDegrees(data),
-                findLongitudeMinutes(data),
-                findLongitudeMinuteShare(data),
-                findLongitudeTypeValue(data),
-                data.getSpeed(),
-                data.getCourse(),
-                data.getAltitude(),
-                data.getAmountOfSatellites(),
-                data.getReductionPrecision(),
-                data.getInputs(),
-                data.getOutputs(),
-                this.analogInputsSerializer.serialize(data),
-                data.getDriverKeyCode(),
-                this.parametersSerializer.serialize(data),
-                findTrackerId(data)
-        );
-    }
-
-    private static long findEpochSecondsOfDateTime(final Data data) {
+    protected static long findEpochSecondsOfDateTime(final Data data) {
         final LocalDateTime dateTime = LocalDateTime.of(data.getDate(), data.getTime());
         return dateTime.toEpochSecond(UTC);
     }
 
-    private static int findLatitudeDegrees(final Data data) {
+    protected static int findLatitudeDegrees(final Data data) {
         return findLatitudeIntFieldValue(data, Latitude::getDegrees);
     }
 
-    private static int findLatitudeMinutes(final Data data) {
+    protected static int findLatitudeMinutes(final Data data) {
         return findLatitudeIntFieldValue(data, Latitude::getMinutes);
     }
 
-    private static int findLatitudeMinuteShare(final Data data) {
+    protected static int findLatitudeMinuteShare(final Data data) {
         return findLatitudeIntFieldValue(data, Latitude::getMinuteShare);
     }
 
-    private static char findLatitudeTypeValue(final Data data) {
+    protected static char findLatitudeTypeValue(final Data data) {
         final Latitude latitude = data.getLatitude();
         final DataEntity.Latitude.Type latitudeType = latitude.getType();
         return latitudeType.getValue();
     }
 
-    private static int findLongitudeDegrees(final Data data) {
+    protected static int findLongitudeDegrees(final Data data) {
         return findLongitudeIntFieldValue(data, Longitude::getDegrees);
     }
 
-    private static int findLongitudeMinutes(final Data data) {
+    protected static int findLongitudeMinutes(final Data data) {
         return findLongitudeIntFieldValue(data, Longitude::getMinutes);
     }
 
-    private static int findLongitudeMinuteShare(final Data data) {
+    protected static int findLongitudeMinuteShare(final Data data) {
         return findLongitudeIntFieldValue(data, Longitude::getMinuteShare);
     }
 
-    private static char findLongitudeTypeValue(final Data data) {
+    protected static char findLongitudeTypeValue(final Data data) {
         final Longitude longitude = data.getLongitude();
         final DataEntity.Longitude.Type longitudeType = longitude.getType();
         return longitudeType.getValue();
-    }
-
-    private static int findLatitudeIntFieldValue(final Data data, final ToIntFunction<Latitude> getterValue) {
-        return findGeographicCoordinateIntFieldValue(data, Data::getLatitude, getterValue);
-    }
-
-    private static int findLongitudeIntFieldValue(final Data data, final ToIntFunction<Longitude> getterValue) {
-        return findGeographicCoordinateIntFieldValue(data, Data::getLongitude, getterValue);
     }
 
     private static <T extends GeographicCoordinate> int findGeographicCoordinateIntFieldValue(
@@ -117,9 +83,25 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
         return getterValue.applyAsInt(geographicCoordinate);
     }
 
-    private static Long findTrackerId(final Data data) {
+    protected final String serializeAnalogInputs(final Data data) {
+        return this.analogInputsSerializer.serialize(data);
+    }
+
+    protected final String serializeParameters(final Data data) {
+        return this.parametersSerializer.serialize(data);
+    }
+
+    protected static Long findTrackerId(final Data data) {
         final Tracker tracker = data.getTracker();
         return tracker.getId();
+    }
+
+    private static int findLatitudeIntFieldValue(final Data data, final ToIntFunction<Latitude> getterValue) {
+        return findGeographicCoordinateIntFieldValue(data, Data::getLatitude, getterValue);
+    }
+
+    private static int findLongitudeIntFieldValue(final Data data, final ToIntFunction<Longitude> getterValue) {
+        return findGeographicCoordinateIntFieldValue(data, Data::getLongitude, getterValue);
     }
 
     private static final class AnalogInputsSerializer {
