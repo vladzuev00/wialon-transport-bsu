@@ -205,7 +205,7 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
 
         final String actual = responseEntity.getBody();
         final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-                + "\"message\":\"findByStatus\\.pageNumber: должно быть не меньше 0\","
+                + "\"message\":\"findByStatus\\.pageNumber: must be greater than or equal to 0\","
                 + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
         assertNotNull(actual);
         assertTrue(actual.matches(expectedRegex));
@@ -240,7 +240,7 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
 
         final String actual = responseEntity.getBody();
         final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-                + "\"message\":\"findByStatus\\.pageSize: должно быть не меньше 1\","
+                + "\"message\":\"findByStatus\\.pageSize: must be greater than or equal to 1\","
                 + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
         assertNotNull(actual);
         assertTrue(actual.matches(expectedRegex));
@@ -316,7 +316,7 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
 
         final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
         final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-                + "\"message\":\"searchStep : не должно равняться null\","
+                + "\"message\":\"searchStep : must not be null\","
                 + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
         assertNotNull(actual);
         assertTrue(actual.matches(expectedRegex));

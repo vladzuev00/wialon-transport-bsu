@@ -48,7 +48,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("не должно равняться null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
@@ -65,7 +65,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("не должно равняться null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
@@ -82,7 +82,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("не должно равняться null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
@@ -100,7 +100,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
         );
         assertEquals(1, constraintViolations.size());
         assertEquals(
-                "должно быть больше, чем или равно 0.01",
+                "must be greater than or equal to 0.01",
                 constraintViolations.iterator().next().getMessage()
         );
     }
@@ -120,7 +120,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
         );
         assertEquals(1, constraintViolations.size());
         assertEquals(
-                "должно быть меньше, чем или равно 5",
+                "must be less than or equal to 5",
                 constraintViolations.iterator().next().getMessage()
         );
     }

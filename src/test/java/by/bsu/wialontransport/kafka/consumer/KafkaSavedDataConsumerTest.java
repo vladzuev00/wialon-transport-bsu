@@ -164,12 +164,7 @@ public final class KafkaSavedDataConsumerTest extends AbstractContextTest {
         final double givenReductionPrecision = 0.11;
         final int givenInputs = 12;
         final int givenOutputs = 13;
-        final double[] givenAnalogInputs = new double[]{14.4, 15.5, 16.6};
         final String givenDriverKeyCode = "driverKeyCode";
-        final Map<String, Parameter> givenParametersByNames = Map.of(
-                "first", createParameter("first", DOUBLE, "4.4"),
-                "second", createParameter("second", INTEGER, "4")
-        );
         final Long givenTrackerId = 256L;
 
         final GenericRecord givenGenericRecord = createGenericRecord(
