@@ -38,23 +38,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isValid(givenData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldNotBeValidInCaseNotExistingPreviousDataBecauseOfDateTimeIsLessThanMinimalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenData = createData(
@@ -355,7 +338,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfAmountOfSatellitesIsLessThanMinimalAllowableBecauseFilteringIsNotEnabled() {
+    public void dataShouldBeNeededToBeFixedBecauseFilteringIsNotEnabled() {
         final DataFilter givenFilter = this.createFilter(false);
         final Data givenPreviousData = createData(
                 now(),
@@ -378,7 +361,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
+        assertTrue(actual);
     }
 
     @Test
@@ -409,33 +392,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfAmountOfSatellitesIsMoreThanMaximalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                1000,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldBeNeededToBeFixedBecauseOfHDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenPreviousData = createData(
@@ -459,32 +415,6 @@ public final class DataFilterTest extends AbstractContextTest {
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
         assertTrue(actual);
-    }
-
-    @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfHDOPParameterAbsentsBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
     }
 
     @Test
@@ -515,7 +445,7 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfHDOPParameterIsLessThanMinimalAllowableBecauseOfFilteringIsNotEnabled() {
+    public void dataShouldBeNeededToBeFixedBecauseOfFilteringIsNotEnabled() {
         final DataFilter givenFilter = this.createFilter(false);
         final Data givenPreviousData = createData(
                 now(),
@@ -538,7 +468,7 @@ public final class DataFilterTest extends AbstractContextTest {
         );
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
+        assertTrue(actual);
     }
 
     @Test
@@ -569,33 +499,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfHDOPParameterIsMoreThanMaximalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "7.01"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldBeNeededToBeFixedBecauseOfVDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenPreviousData = createData(
@@ -619,32 +522,6 @@ public final class DataFilterTest extends AbstractContextTest {
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
         assertTrue(actual);
-    }
-
-    @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfVDOPParameterAbsentsBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "7"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
     }
 
     @Test
@@ -675,33 +552,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldBeNeededToBeFixedDespiteOfVDOPParameterIsLessThanMinimalAllowableBecauseOfFilteringIsNotEnable() {
-        final DataFilter givenFilter = createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "-0.01"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldBeNeededToBeFixedBecauseOfVDOPParameterIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenPreviousData = createData(
@@ -729,33 +579,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfVDOPParameterIsMoreThanMaximalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "7.01"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldBeNeededToBeFixedBecauseOfPDOPParameterAbsents() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenPreviousData = createData(
@@ -779,32 +602,6 @@ public final class DataFilterTest extends AbstractContextTest {
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
         assertTrue(actual);
-    }
-
-    @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfPDOPParameterAbsentsBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
     }
 
     @Test
@@ -835,33 +632,6 @@ public final class DataFilterTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfPDOPParameterIsLessThanMinimalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "4"),
-                        "124", createDoubleParameter("124", "-0.01")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
-    }
-
-    @Test
     public void dataShouldBeNeededToBeFixedBecauseOfPDOPParameterIsMoreThanMaximalAllowable() {
         final DataFilter givenFilter = this.createFilter(true);
         final Data givenPreviousData = createData(
@@ -886,33 +656,6 @@ public final class DataFilterTest extends AbstractContextTest {
 
         final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
         assertTrue(actual);
-    }
-
-    @Test
-    public void dataShouldNotBeNeededToBeFixedDespiteOfPDOPParameterIsMoreThanMaximalAllowableBecauseOfFilteringIsNotEnabled() {
-        final DataFilter givenFilter = this.createFilter(false);
-        final Data givenPreviousData = createData(
-                now(),
-                3,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "6")
-                )
-        );
-
-        final Data givenCurrentData = createData(
-                now(),
-                10,
-                Map.of(
-                        "122", createDoubleParameter("122", "4"),
-                        "123", createDoubleParameter("123", "5"),
-                        "124", createDoubleParameter("124", "7.1")
-                )
-        );
-
-        final boolean actual = givenFilter.isNeedToBeFixed(givenCurrentData, givenPreviousData);
-        assertFalse(actual);
     }
 
     @Test
