@@ -10,7 +10,7 @@ public class TrackSimplifyingConfiguration {
 
     @Bean
     public RamerDouglasPeuckerTrackSimplifier ramerDouglasPeuckerTrackSimplifier(
-            @Value("{track-simplifier.ramer-douglas-peucker.epsilon}") final double epsilon) {
+            @Value("#{new Double('${track-simplifier.ramer-douglas-peucker.epsilon}')}") final double epsilon) {
         return new RamerDouglasPeuckerTrackSimplifier(epsilon);
     }
 
