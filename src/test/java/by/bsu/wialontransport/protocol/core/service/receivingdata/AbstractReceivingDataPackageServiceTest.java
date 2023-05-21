@@ -3,6 +3,7 @@ package by.bsu.wialontransport.protocol.core.service.receivingdata;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer;
+import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
@@ -36,13 +37,16 @@ public final class AbstractReceivingDataPackageServiceTest {
     private DataFilter mockedDataFilter;
 
     @Mock
-    private AbstractKafkaDataProducer mockedKafkaDataProducer;
+    private AbstractKafkaDataProducer<TransportableData> mockedKafkaDataProducer;
 
     @Mock
     private DataFixer mockedDataFixer;
 
     @Captor
     private ArgumentCaptor<TestResponseDataPackage> responsePackageArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Data> dataArgumentCaptor;
 
     private AbstractReceivingDataPackageService<TestRequestDataPackage, TestResponseDataPackage> receivingService;
 
@@ -210,9 +214,46 @@ public final class AbstractReceivingDataPackageServiceTest {
         assertEquals(expectedResponsePackage, actualResponsePackage);
     }
 
-    //TODO: tests with several data
     @Test
-    public void a() {
+    public void listOfDataShouldBeReceivedAsValidInCaseNotExistingPreviousData() {
+        final Data firstGivenData = createData(255L);
+        final Data secondGivenData = createData(256L);
+        final List<Data> givenData = List.of(firstGivenData, secondGivenData);
+
+        final TestRequestDataPackage givenPackage = new TestRequestDataPackage(givenData);
+
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+        when(this.mockedContextAttributeManager.findLastData(givenContext)).thenReturn(empty());
+
+        when(this.mockedDataFilter.isValid(firstGivenData)).thenReturn(true);
+        when(this.mockedDataFilter.isValid(secondGivenData, firstGivenData)).thenReturn(true);
+
+        final Tracker givenTracker = createTracker(257L);
+        when(this.mockedContextAttributeManager.findTracker(givenContext)).thenReturn(Optional.of(givenTracker));
+
+        this.receivingService.receive(givenPackage, givenContext);
+
+        final Data firstExpectedDataWithTracker = createDataWithTracker(255L, 257L);
+        final Data secondExpectedDataWithTracker = createDataWithTracker(256L, 257L);
+
+        verify(this.mockedContextAttributeManager, times(1)).findLastData(givenContext);
+        verify(this.mockedDataFilter, times(1)).isValid(firstGivenData);
+        verify(this.mockedDataFilter, times(1))
+                .isValid(secondGivenData, firstGivenData);
+        verify(this.mockedDataFilter, times(0)).isNeedToBeFixed(any(Data.class), any(Data.class));
+        verify(this.mockedDataFixer, times(0)).fix(any(Data.class), any(Data.class));
+        verify(this.mockedContextAttributeManager, times(1))
+                .putLastData(givenContext, secondExpectedDataWithTracker);
+        verify(this.mockedKafkaDataProducer, times(2)).send(this.dataArgumentCaptor.capture());
+
+        assertEquals(
+                List.of(firstExpectedDataWithTracker, secondExpectedDataWithTracker),
+                this.dataArgumentCaptor.getAllValues()
+        );
+    }
+
+    @Test
+    public void listOfDataWithFirstNotValidAndSecondValidShouldBeReceivedInCaseNotExistingPackage() {
         throw new RuntimeException();
     }
 
@@ -252,7 +293,7 @@ public final class AbstractReceivingDataPackageServiceTest {
 
         public TestReceivingDataPackageService(final ContextAttributeManager contextAttributeManager,
                                                final DataFilter dataFilter,
-                                               final AbstractKafkaDataProducer kafkaInboundDataProducer,
+                                               final AbstractKafkaDataProducer<TransportableData> kafkaInboundDataProducer,
                                                final DataFixer dataFixer) {
             super(contextAttributeManager, dataFilter, kafkaInboundDataProducer, dataFixer);
         }
