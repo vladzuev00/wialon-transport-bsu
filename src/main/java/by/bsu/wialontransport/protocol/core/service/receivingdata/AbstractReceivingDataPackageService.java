@@ -3,6 +3,7 @@ package by.bsu.wialontransport.protocol.core.service.receivingdata;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer;
+import by.bsu.wialontransport.kafka.transportable.TransportableData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
@@ -23,12 +24,12 @@ public abstract class AbstractReceivingDataPackageService<
         ResponsePackageType extends Package> {
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;
-    private final AbstractKafkaDataProducer kafkaInboundDataProducer;
+    private final AbstractKafkaDataProducer<TransportableData> kafkaInboundDataProducer;
     private final DataFixer dataFixer;
 
     public AbstractReceivingDataPackageService(final ContextAttributeManager contextAttributeManager,
                                                final DataFilter dataFilter,
-                                               final AbstractKafkaDataProducer kafkaInboundDataProducer,
+                                               final AbstractKafkaDataProducer<TransportableData> kafkaInboundDataProducer,
                                                final DataFixer dataFixer) {
         this.contextAttributeManager = contextAttributeManager;
         this.dataFilter = dataFilter;
