@@ -14,7 +14,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.Arrays.stream;
-import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;

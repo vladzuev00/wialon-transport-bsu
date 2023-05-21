@@ -3,7 +3,6 @@ package by.bsu.wialontransport.crud.repository;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CityRepository extends JpaRepository<CityEntity, Long> {

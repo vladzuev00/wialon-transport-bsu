@@ -10,7 +10,6 @@ import org.locationtech.jts.geom.Point;
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.SEQUENCE;
-import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
 @Table(name = "addresses")
