@@ -155,7 +155,7 @@ public final class AbstractKafkaDataProducerTest {
     }
 
     @Test
-    public void parametersShouldBeSerialized() {
+    public void parametersWithoutIdShouldBeSerialized() {
         final Data givenData = Data.builder()
                 .parametersByNames(
                         createLinkedHashMapParametersByNames(
@@ -172,6 +172,23 @@ public final class AbstractKafkaDataProducerTest {
     }
 
     @Test
+    public void parametersWithIdShouldBeSerialized() {
+        final Data givenData = Data.builder()
+                .parametersByNames(
+                        createLinkedHashMapParametersByNames(
+                                "first", createParameter(255L,"first", INTEGER, "1"),
+                                "second", createParameter(256L, "second", DOUBLE, "1.1"),
+                                "third", createParameter(257L,"third", STRING, "text")
+                        )
+                )
+                .build();
+
+        final String actual = this.producer.serializeParameters(givenData);
+        final String expected = "255:first:1:1,256:second:2:1.1,257:third:3:text";
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void trackerIdShouldBeFound() {
         final Long givenTrackerId = 255L;
         final Data givenData = Data.builder()
@@ -184,6 +201,18 @@ public final class AbstractKafkaDataProducerTest {
 
     private static Parameter createParameter(final String name, final ParameterEntity.Type type, final String value) {
         return Parameter.builder()
+                .name(name)
+                .type(type)
+                .value(value)
+                .build();
+    }
+
+    private static Parameter createParameter(final Long id,
+                                             final String name,
+                                             final ParameterEntity.Type type,
+                                             final String value) {
+        return Parameter.builder()
+                .id(id)
                 .name(name)
                 .type(type)
                 .value(value)
