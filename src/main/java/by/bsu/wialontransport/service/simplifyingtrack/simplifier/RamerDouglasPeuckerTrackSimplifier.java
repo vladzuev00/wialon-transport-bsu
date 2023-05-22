@@ -16,7 +16,6 @@ import static java.util.stream.IntStream.rangeClosed;
 //https://habr.com/ru/articles/448618/
 @RequiredArgsConstructor
 public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier {
-    private static final int SQUARE_EXPONENT = 2;
     private static final int MINIMAL_AMOUNT_OF_POINTS_OF_TRACK_ABLE_TO_BE_SIMPLIFIED = 3;
 
     private final double epsilon;
@@ -97,13 +96,13 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
 
     private static double findDistanceBetweenPoints(final Coordinate first, final Coordinate second) {
         return sqrt(
-                findSquare(second.getLatitude() - first.getLatitude())
-                        + findSquare(second.getLongitude() - first.getLongitude())
+                square(second.getLatitude() - first.getLatitude())
+                        + square(second.getLongitude() - first.getLongitude())
         );
     }
 
-    private static double findSquare(final double source) {
-        return pow(source, SQUARE_EXPONENT);
+    private static double square(final double source) {
+        return pow(source, 2);
     }
 
     @Value

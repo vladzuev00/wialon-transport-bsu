@@ -128,15 +128,12 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
         assertSame(givenTrack, actual);
     }
 
-    //TODO: don't pass
     @Test
     public void bigTrackShouldBeSimplified()
             throws Exception {
-        final TrackSimplifier givenTrackSimplifier = new RamerDouglasPeuckerTrackSimplifier(0.5);
-
         final Track givenTrack = readTrack(FILE_PATH_WITH_TRACK_POINTS_TO_BE_SIMPLIFIED);
 
-        final Track actual = givenTrackSimplifier.simplify(givenTrack);
+        final Track actual = this.trackSimplifier.simplify(givenTrack);
         final Track expected = readTrack(FILE_PATH_WITH_TRACK_POINTS_AFTER_SIMPLIFIED);
         assertEquals(expected, actual);
     }
