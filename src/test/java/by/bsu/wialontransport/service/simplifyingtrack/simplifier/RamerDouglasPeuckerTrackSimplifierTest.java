@@ -3,16 +3,12 @@ package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Track;
-import com.opencsv.CSVReader;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.FileReader;
-import java.util.List;
-
 import static by.bsu.wialontransport.model.Track.create;
+import static by.bsu.wialontransport.util.CsvReadingUtil.readTrack;
 import static java.io.File.separator;
-import static java.lang.Double.parseDouble;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -29,8 +25,6 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
 
     @Autowired
     private RamerDouglasPeuckerTrackSimplifier trackSimplifier;
-
-    private final CoordinateFactory coordinateFactory = new CoordinateFactory();
 
     @Test
     public void trackShouldBeSimplified() {
@@ -136,34 +130,6 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
         final Track actual = this.trackSimplifier.simplify(givenTrack);
         final Track expected = readTrack(FILE_PATH_WITH_TRACK_POINTS_AFTER_SIMPLIFIED);
         assertEquals(expected, actual);
-    }
-
-    private Track readTrack(final String filePath)
-            throws Exception {
-        try (final CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
-            final List<Coordinate> coordinates = this.readCoordinates(csvReader);
-            return new Track(coordinates);
-        }
-    }
-
-    private List<Coordinate> readCoordinates(final CSVReader csvReader)
-            throws Exception {
-        return csvReader.readAll()
-                .stream()
-                .map(this.coordinateFactory::create)
-                .toList();
-    }
-
-    private static final class CoordinateFactory {
-        private static final int INDEX_READ_PROPERTY_LATITUDE = 0;
-        private static final int INDEX_READ_PROPERTY_LONGITUDE = 1;
-
-        public Coordinate create(final String[] readProperties) {
-            final double latitude = parseDouble(readProperties[INDEX_READ_PROPERTY_LATITUDE]);
-            final double longitude = parseDouble(readProperties[INDEX_READ_PROPERTY_LONGITUDE]);
-            return new Coordinate(latitude, longitude);
-        }
-
     }
 
 }

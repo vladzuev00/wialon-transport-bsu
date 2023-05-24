@@ -12,6 +12,10 @@ spring:
     show-sql: true
   kafka:
     bootstrap-servers: 127.0.0.1:9092
+  mvc:
+    view:
+      prefix: /WEB-INF/view/
+      suffix: .jsp
 
 wialon:
   server:

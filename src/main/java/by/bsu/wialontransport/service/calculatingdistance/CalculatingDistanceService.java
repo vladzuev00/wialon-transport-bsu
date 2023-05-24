@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.Track;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,8 @@ import static java.util.stream.IntStream.range;
 public final class CalculatingDistanceService {
     private static final double EARTH_RADIUS_IN_KILOMETERS = 6378.136;
 
-    public double calculate(final List<Coordinate> coordinates) {
+    public double calculate(final Track track) {
+        final List<Coordinate> coordinates = track.getCoordinates();
         return range(0, coordinates.size() - 1)
                 .mapToDouble(i -> calculate(coordinates.get(i), coordinates.get(i + 1)))
                 .sum();
