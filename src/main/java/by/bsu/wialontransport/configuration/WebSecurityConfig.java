@@ -1,9 +1,7 @@
 package by.bsu.wialontransport.configuration;
 
-import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.security.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,8 +47,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth)
+    protected void configureGlobal(final AuthenticationManagerBuilder authenticationManagerBuilder)
             throws Exception {
-        auth.userDetailsService(this.securityUserService).passwordEncoder(this.passwordEncoder);
+        authenticationManagerBuilder
+                .userDetailsService(this.securityUserService)
+                .passwordEncoder(this.passwordEncoder);
     }
 }
