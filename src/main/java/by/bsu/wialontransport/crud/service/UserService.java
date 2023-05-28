@@ -4,7 +4,6 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import by.bsu.wialontransport.crud.mapper.UserMapper;
 import by.bsu.wialontransport.crud.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
