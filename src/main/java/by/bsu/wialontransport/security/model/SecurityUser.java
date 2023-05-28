@@ -75,7 +75,7 @@ public class SecurityUser implements UserDetails {
                     .filter(securityRole -> securityRole.role == role)
                     .findFirst()
                     .orElseThrow(
-                            () -> new IllegalStateException("There is no security role for %s".formatted(role.name()))
+                            () -> new IllegalStateException("There is no security role for %s".formatted(role))
                     );
         }
     }
