@@ -3,13 +3,13 @@ package by.bsu.wialontransport.model;
 public enum SignInStatus {
     SUCCESS(""), WRONG_EMAIL(""), WRONG_PASSWORD("");
 
-    private final String nameOfView;
+    private final String viewName;
 
-    SignInStatus(final String nameOfView) {
-        this.nameOfView = nameOfView;
+    SignInStatus(final String viewName) {
+        this.viewName = viewName;
     }
 
-    public String getNameOfView() {
-        return this.nameOfView;
+    public String getViewName() {
+        return this.viewName;
     }
 }

@@ -29,7 +29,7 @@ public class SignInController {
                          @RequestParam(name = "password") final String password,
                          final Model model) {
         final SignInStatus status = this.signInService.signIn(email, password, model);
-        return status.getNameOfView();
+        return status.getViewName();
     }
 
 }

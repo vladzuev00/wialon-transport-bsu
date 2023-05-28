@@ -21,4 +21,9 @@ public class UserService extends AbstractCRUDService<Long, UserEntity, User, Use
         final Optional<UserEntity> optionalEntity = super.repository.findByEmail(email);
         return optionalEntity.map(super.mapper::mapToDto);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isExistByEmail(final String email) {
+        return super.repository.existsByEmail(email);
+    }
 }
