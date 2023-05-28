@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @EqualsAndHashCode
 @ToString
+@Builder
 public final class UserForm {
 
     @NotNull
