@@ -32,7 +32,6 @@ public class UserService extends AbstractCRUDService<Long, UserEntity, User, Use
         return super.repository.existsByEmail(email);
     }
 
-    //TODO: test
     public User saveWithEncryptingPassword(final User user) {
         final UserEntity entity = super.mapper.mapToEntity(user);
         this.setEncryptedPassword(entity);
