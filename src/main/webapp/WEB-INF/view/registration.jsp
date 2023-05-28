@@ -24,7 +24,7 @@
     <div>
       <form:input type="password" path="confirmedPassword" placeholder="Confirm your password"></form:input>
       <form:errors path="password"></form:errors>
-        ${passwordError}
+        ${confirmingPasswordError}
     </div>
     <button type="submit">Check in</button>
   </form:form>
