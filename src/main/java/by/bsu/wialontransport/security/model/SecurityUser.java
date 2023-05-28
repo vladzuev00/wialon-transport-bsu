@@ -1,6 +1,8 @@
 package by.bsu.wialontransport.security.model;
 
 import by.bsu.wialontransport.crud.entity.UserEntity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +13,8 @@ import java.util.Set;
 import static java.util.Arrays.stream;
 
 @Value
+@AllArgsConstructor
+@Builder
 public class SecurityUser implements UserDetails {
     Long id;
     String email;
