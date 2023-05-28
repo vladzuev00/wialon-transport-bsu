@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 public final class InitBinderControllerAdvice {
 
     @InitBinder
-    public void initBinder(final WebDataBinder webDataBinder)
-    {
+    public void configureInitBinder(final WebDataBinder webDataBinder) {
         //тримит строки при binding-е, если были введены одни пробелы, то будет присвоено полю значиение null
         final StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
         webDataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
