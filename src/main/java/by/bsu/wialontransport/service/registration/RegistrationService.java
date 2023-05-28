@@ -1,8 +1,10 @@
 package by.bsu.wialontransport.service.registration;
 
 import by.bsu.wialontransport.controller.registration.model.UserForm;
+import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;
+import by.bsu.wialontransport.service.registration.mapper.UserFormToUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -14,18 +16,37 @@ import static by.bsu.wialontransport.model.RegistrationStatus.*;
 @RequiredArgsConstructor
 public final class RegistrationService {
     private final UserService userService;
+    private final UserFormToUserMapper mapper;
 
     public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
         if (bindingResult.hasErrors()) {
-            return BINDING_ERROR;
+            return onBindingError();
         } else if (!isPasswordConfirmedCorrectly(userForm)) {
-            addErrorMessageOfConfirmingPassword(model);
-            return CONFIRMING_PASSWORD_ERROR;
+            return onConfirmingPasswordError(model);
         } else if (this.isEmailAlreadyExist(userForm)) {
-            return EMAIL_ALREADY_EXIST;
+            return onEmailAlreadyExists();
         } else {
-            return SUCCESS;
+            return onSuccess(userForm);
         }
+    }
+
+    private static RegistrationStatus onBindingError() {
+        return BINDING_ERROR;
+    }
+
+    private static RegistrationStatus onConfirmingPasswordError(final Model model) {
+        addErrorMessageOfConfirmingPassword(model);
+        return CONFIRMING_PASSWORD_ERROR;
+    }
+
+    private static RegistrationStatus onEmailAlreadyExists() {
+        return EMAIL_ALREADY_EXISTS;
+    }
+
+    private RegistrationStatus onSuccess(final UserForm userForm) {
+        final User user = this.mapper.map(userForm);
+        this.userService.saveWithEncryptingPassword(user);
+        return SUCCESS;
     }
 
     private static boolean isPasswordConfirmedCorrectly(final UserForm userForm) {
