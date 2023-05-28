@@ -19,10 +19,11 @@
     </div>
     <div>
       <form:input type="password" path="password" placeholder="Password"></form:input>
+      <form:errors path="password"></form:errors>
     </div>
     <div>
       <form:input type="password" path="confirmedPassword" placeholder="Confirm your password"></form:input>
-      <form:errors path="password"></form:errors>
+      <form:errors path="confirmedPassword"></form:errors>
         ${confirmingPasswordError}
     </div>
     <button type="submit">Check in</button>

@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 
@@ -24,7 +27,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public String checkIn(@ModelAttribute("userForm") @Valid final UserForm userForm,
+    public String checkIn(@Valid @ModelAttribute("userForm") final UserForm userForm,
                           final BindingResult bindingResult,
                           final Model model) {
         final RegistrationStatus status = this.registrationService.checkIn(userForm, bindingResult, model);
