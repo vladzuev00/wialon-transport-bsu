@@ -1,6 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
 <html>
@@ -16,7 +15,7 @@
     <div>
       <form:input type="text" path="email" placeholder="email" autofocus="true"></form:input>
       <form:errors path="email"></form:errors>
-        ${usernameError}
+        ${emailAlreadyExistsError}
     </div>
     <div>
       <form:input type="password" path="password" placeholder="Password"></form:input>

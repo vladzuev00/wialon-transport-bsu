@@ -24,7 +24,7 @@ public final class RegistrationService {
         } else if (!isPasswordConfirmedCorrectly(userForm)) {
             return onConfirmingPasswordError(model);
         } else if (this.isEmailAlreadyExist(userForm)) {
-            return onEmailAlreadyExists();
+            return onEmailAlreadyExists(model);
         } else {
             return onSuccess(userForm);
         }
@@ -39,7 +39,8 @@ public final class RegistrationService {
         return CONFIRMING_PASSWORD_ERROR;
     }
 
-    private static RegistrationStatus onEmailAlreadyExists() {
+    private static RegistrationStatus onEmailAlreadyExists(final Model model) {
+        addErrorMessageOfEmailAlreadyExists(model);
         return EMAIL_ALREADY_EXISTS;
     }
 
@@ -57,6 +58,10 @@ public final class RegistrationService {
 
     private static void addErrorMessageOfConfirmingPassword(final Model model) {
         model.addAttribute("confirmingPasswordError", "Password isn't confirmed correctly");
+    }
+
+    private static void addErrorMessageOfEmailAlreadyExists(final Model model) {
+        model.addAttribute("emailAlreadyExistsError", "Email already exists");
     }
 
     private boolean isEmailAlreadyExist(final UserForm userForm) {
