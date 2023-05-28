@@ -70,6 +70,24 @@ public final class UserRepositoryTest extends AbstractContextTest {
         assertTrue(optionalEntity.isEmpty());
     }
 
+    @Test
+    public void userShouldExistsByEmail() {
+        super.startQueryCount();
+        final boolean exists = this.repository.existsByEmail("vladzuev.00@mail.ru");
+        super.checkQueryCount(1);
+
+        assertTrue(exists);
+    }
+
+    @Test
+    public void userShouldNotExistsByEmail() {
+        super.startQueryCount();
+        final boolean exists = this.repository.existsByEmail("notexist@mail.ru");
+        super.checkQueryCount(1);
+
+        assertFalse(exists);
+    }
+
     private static void checkEquals(final UserEntity expected, final UserEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getEmail(), actual.getEmail());
