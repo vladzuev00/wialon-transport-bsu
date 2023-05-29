@@ -21,7 +21,8 @@ public final class SecurityUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String email)
             throws UsernameNotFoundException {
         final Optional<User> optionalUser = this.userService.findByEmail(email);
-        return optionalUser.map(this.mapper::map)
+        return optionalUser
+                .map(this.mapper::map)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email %s doesn't exist".formatted(email)));
     }
 }
