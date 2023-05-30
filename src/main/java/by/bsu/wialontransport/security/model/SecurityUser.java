@@ -70,6 +70,10 @@ public class SecurityUser implements UserDetails {
             return super.name();
         }
 
+        public Role getUserRole() {
+            return this.role;
+        }
+
         public static SecurityRole findByRole(final Role role) {
             return stream(values())
                     .filter(securityRole -> securityRole.role == role)

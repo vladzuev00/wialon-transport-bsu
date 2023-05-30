@@ -9,13 +9,13 @@
 </head>
 <body>
 <div>
-  <h3>${pageContext.request.userPrincipal.name}</h3>
   <sec:authorize access="!isAuthenticated()">
     <h4><a href="/login">Log in</a></h4>
     <h4><a href="/registration">Registration</a></h4>
   </sec:authorize>
   <sec:authorize access="isAuthenticated()">
     <h4><a href="/logout">Log out</a></h4>
+    <h4><a href="/user/profile?pageNumber=0&pageSize=5">Your profile</a></h4>
   </sec:authorize>
 </div>
 </body>
