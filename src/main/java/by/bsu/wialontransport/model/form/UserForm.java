@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.controller.registration.model;
+package by.bsu.wialontransport.model.form;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.registration;
 
-import by.bsu.wialontransport.controller.registration.model.UserForm;
+import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.model.RegistrationStatus;
 import by.bsu.wialontransport.service.registration.RegistrationService;
 import org.junit.Before;

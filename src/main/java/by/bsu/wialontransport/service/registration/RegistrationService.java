@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.registration;
 
-import by.bsu.wialontransport.controller.registration.model.UserForm;
+import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;

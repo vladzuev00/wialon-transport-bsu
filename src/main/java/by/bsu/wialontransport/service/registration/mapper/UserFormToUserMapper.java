@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.registration.mapper;
 
-import by.bsu.wialontransport.controller.registration.model.UserForm;
+import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.crud.dto.User;
 import org.springframework.stereotype.Component;
 

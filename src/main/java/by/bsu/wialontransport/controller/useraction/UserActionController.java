@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.controller.useraction;
 
+import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -8,18 +9,22 @@ import by.bsu.wialontransport.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserActionController {
     private static final String MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS = "listed_trackers";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER = "updated_tracker";
+
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
+    private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
 
     private final SecurityService securityService;
     private final TrackerService trackerService;
@@ -35,6 +40,21 @@ public class UserActionController {
         );
         model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS, listedTrackers);
         return VIEW_NAME_PROFILE_PAGE;
+    }
+
+    @GetMapping("/updateTracker")
+    public String showUpdateTrackerPage(@RequestParam(name = "trackerId") final Long trackerId,
+                                        final Model model) {
+        final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
+        final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
+        model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER, tracker);
+        return VIEW_NAME_UPDATE_TRACKER_PAGE;
+    }
+
+    @PutMapping("/updateTracker")
+    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final Tracker updatedTracker,
+                                final BindingResult bindingResult) {
+
     }
 
     private List<Tracker> findListedTrackers(final User loggedOnUser,
