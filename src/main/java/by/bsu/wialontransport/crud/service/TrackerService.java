@@ -28,7 +28,6 @@ public class TrackerService
         return optionalFoundEntity.map(super.mapper::mapToDto);
     }
 
-    //TODO: test
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user, final int pageNumber, final int pageSize) {
         final Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -36,7 +35,6 @@ public class TrackerService
         return super.mapper.mapToDto(foundEntities);
     }
 
-    //TODO: test
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user,
                                     final int pageNumber,
