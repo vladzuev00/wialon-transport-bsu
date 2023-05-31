@@ -26,6 +26,8 @@ public class UserActionController {
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
     private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
 
+    private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile";
+
     private final SecurityService securityService;
     private final TrackerService trackerService;
 
@@ -54,7 +56,11 @@ public class UserActionController {
     @PutMapping("/updateTracker")
     public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final Tracker updatedTracker,
                                 final BindingResult bindingResult) {
-
+        if (bindingResult.hasErrors()) {
+            return VIEW_NAME_UPDATE_TRACKER_PAGE;
+        }
+        this.trackerService.update(updatedTracker);
+        return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
     }
 
     private List<Tracker> findListedTrackers(final User loggedOnUser,

@@ -12,7 +12,6 @@ public interface TrackerRepository extends JpaRepository<TrackerEntity, Long> {
 
     Optional<TrackerEntity> findByImei(final String imei);
 
-    //TODO: test
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId")
     List<TrackerEntity> findByUserId(final Long userId, final Pageable pageable);
 

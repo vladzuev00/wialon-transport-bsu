@@ -5,11 +5,15 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.data.domain.Pageable.ofSize;
 
 public final class TrackerRepositoryTest extends AbstractContextTest {
 
@@ -70,6 +74,32 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         super.checkQueryCount(1);
 
         assertTrue(optionalFoundTracker.isEmpty());
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
+            + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
+    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
+            + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
+    public void trackersShouldBeFoundByUserId() {
+        super.startQueryCount();
+        final List<TrackerEntity> actual = this.repository.findByUserId(255L, ofSize(5));
+        super.checkQueryCount(1);
+
+        final List<Long> actualIds = actual.stream()
+                .map(TrackerEntity::getId)
+                .toList();
+        final List<Long> expectedIds = List.of(255L, 355L, 356L);
+        assertEquals(expectedIds, actualIds);
+    }
+
+    @Test
+    public void trackersShouldNotBeFoundByUserId() {
+        super.startQueryCount();
+        final List<TrackerEntity> actual = this.repository.findByUserId(256L, ofSize(5));
+        super.checkQueryCount(1);
+
+        assertTrue(actual.isEmpty());
     }
 
     private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
