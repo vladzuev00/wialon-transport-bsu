@@ -40,14 +40,14 @@
                         </tbody>
                     </table>
                 </spring-form:form>
-            </div>
+     </div>
 
-            <br />
+     <br />
 
-            <p>
-                <a href="${pageContext.request.contextPath}">
-                    Cancel
-                </a>
-            </p>
+     <p>
+            <a href="${pageContext.request.contextPath}">
+                Cancel
+            </a>
+     </p>
 
 </html>

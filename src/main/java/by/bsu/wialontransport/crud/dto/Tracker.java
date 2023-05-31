@@ -12,4 +12,5 @@ public class Tracker implements AbstractDto<Long> {
     String imei;
     String password;
     String phoneNumber;
+    User user;
 }

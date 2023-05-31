@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,8 @@ public final class TrackerMapper extends AbstractMapper<TrackerEntity, Tracker> 
                 entity.getId(),
                 entity.getImei(),
                 entity.getPassword(),
-                entity.getPhoneNumber()
+                entity.getPhoneNumber(),
+                super.mapPropertyIfLoadedOrElseNull(entity.getUser(), User.class)
         );
     }
 }

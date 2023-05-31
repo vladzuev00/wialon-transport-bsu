@@ -53,7 +53,7 @@ public class UserActionController {
         return VIEW_NAME_UPDATE_TRACKER_PAGE;
     }
 
-    @PutMapping("/updateTracker")
+    @PostMapping("/updateTracker")
     public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final Tracker updatedTracker,
                                 final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
