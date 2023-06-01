@@ -4,6 +4,7 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserActionController {
     private static final String MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS = "listed_trackers";
-    private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER = "updated_tracker";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER = "updated_tracker_form";
 
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
     private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
@@ -30,6 +31,7 @@ public class UserActionController {
 
     private final SecurityService securityService;
     private final TrackerService trackerService;
+    private final TrackerFormMapper trackerFormMapper;
 
     @GetMapping("/profile")
     public String showProfilePage(@RequestParam(name = "pageNumber") final int pageNumber,
