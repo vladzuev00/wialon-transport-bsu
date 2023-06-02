@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.controller.useraction;
 
-import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -16,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -51,10 +49,9 @@ public class UserActionController {
     @GetMapping("/updateTracker")
     public String showUpdateTrackerPage(@RequestParam(name = "trackerId") final Long trackerId,
                                         final Model model) {
-        final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
-        final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
-        final TrackerForm trackerForm = this.trackerFormMapper.map(tracker);
-        model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER, trackerForm);
+        this.userActionService.addAttributeOfTrackerFormToUpdateTracker(
+                trackerId, model, MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER
+        );
         return VIEW_NAME_UPDATE_TRACKER_PAGE;
     }
 
