@@ -8,7 +8,7 @@
    </head>
 
      <div id="container">
-                <spring-form:form acceptCharset="UTF-8" modelAttribute="updated_tracker" method="PUT" action="/user/updateTracker">
+                <spring-form:form acceptCharset="UTF-8" modelAttribute="updated_tracker_form" method="PUT" action="/user/updateTracker">
                 <spring-form:hidden path="id" value="${updated_tracker.id}" />
                     <table>
                         <tbody>

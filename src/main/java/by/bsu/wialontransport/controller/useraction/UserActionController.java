@@ -4,9 +4,11 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
+import by.bsu.wialontransport.service.useraction.UserActionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -27,7 +28,10 @@ public class UserActionController {
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
     private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
 
-    private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile";
+    private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile"
+            + "?pageNumber=0&pageSize=5&trackerSortingKey=IMEI";
+
+    private final UserActionService userActionService;
 
     private final SecurityService securityService;
     private final TrackerService trackerService;
@@ -36,13 +40,11 @@ public class UserActionController {
     @GetMapping("/profile")
     public String showProfilePage(@RequestParam(name = "pageNumber") final int pageNumber,
                                   @RequestParam(name = "pageSize") final int pageSize,
-                                  @RequestParam(name = "trackerSortingKey", required = false) final TrackerSortingKey trackerSortingKey,
+                                  @RequestParam(name = "trackerSortingKey", required = false) final TrackerSortingKey sortingKey,
                                   final Model model) {
-        final User loggedOnUser = this.securityService.findLoggedOnUser();
-        final List<Tracker> listedTrackers = this.findListedTrackers(
-                loggedOnUser, pageNumber, pageSize, trackerSortingKey
+        this.userActionService.addAttributeOfTrackersToShowProfilePage(
+                pageNumber, pageSize, sortingKey, model, MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS
         );
-        model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS, listedTrackers);
         return VIEW_NAME_PROFILE_PAGE;
     }
 
@@ -51,27 +53,21 @@ public class UserActionController {
                                         final Model model) {
         final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
         final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
-        model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER, tracker);
+        final TrackerForm trackerForm = this.trackerFormMapper.map(tracker);
+        model.addAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER, trackerForm);
         return VIEW_NAME_UPDATE_TRACKER_PAGE;
     }
 
     @PostMapping("/updateTracker")
-    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final Tracker updatedTracker,
+    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final TrackerForm trackerForm,
                                 final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return VIEW_NAME_UPDATE_TRACKER_PAGE;
         }
-        this.trackerService.update(updatedTracker);
+        final User user = this.securityService.findLoggedOnUser();
+        final Tracker tracker = this.trackerFormMapper.map(trackerForm, user);
+        this.trackerService.update(tracker);
         return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
-    }
-
-    private List<Tracker> findListedTrackers(final User loggedOnUser,
-                                             final int pageNumber,
-                                             final int pageSize,
-                                             final TrackerSortingKey sortingKey) {
-        return sortingKey != null
-                ? this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, sortingKey.getComparator())
-                : this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize);
     }
 
 }
