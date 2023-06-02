@@ -40,6 +40,12 @@ public final class UserActionService {
         model.addAttribute(attributeName, trackerForm);
     }
 
+    public void updateTracker(final TrackerForm trackerForm) {
+        final User loggedOnUser = this.securityService.findLoggedOnUser();
+        final Tracker updatedTracker = this.trackerFormMapper.map(trackerForm, loggedOnUser);
+        this.trackerService.update(updatedTracker);
+    }
+
     private List<Tracker> findListedTrackers(final int pageNumber,
                                              final int pageSize,
                                              final TrackerSortingKey sortingKey) {

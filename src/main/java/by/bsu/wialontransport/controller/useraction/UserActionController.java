@@ -1,7 +1,5 @@
 package by.bsu.wialontransport.controller.useraction;
 
-import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
@@ -61,9 +59,7 @@ public class UserActionController {
         if (bindingResult.hasErrors()) {
             return VIEW_NAME_UPDATE_TRACKER_PAGE;
         }
-        final User user = this.securityService.findLoggedOnUser();
-        final Tracker tracker = this.trackerFormMapper.map(trackerForm, user);
-        this.trackerService.update(tracker);
+        this.userActionService.updateTracker(trackerForm);
         return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
     }
 
