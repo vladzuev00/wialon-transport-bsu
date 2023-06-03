@@ -1,7 +1,6 @@
-package by.bsu.wialontransport.controller.registration.model;
+package by.bsu.wialontransport.model.form;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.form.UserForm;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

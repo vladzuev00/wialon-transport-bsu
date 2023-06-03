@@ -21,7 +21,7 @@ public class TrackerForm {
     private String imei;
 
     @NotNull
-    @Size(min = 5, max = 256)
+    @Size(min = 5, max = 128)
     private String password;
 
     @NotNull
