@@ -17,8 +17,8 @@
                                 <td>
                                     <spring-form:input path="imei" />
                                     <spring-form:errors path="imei" />
+                                    ${imeiAlreadyExistsError}
                                 </td>
-                                ${imeiAlreadyExistsError}
                             </tr>
                             <tr>
                                 <td><spring-form:label path="password">New password:</spring-form:label></td>
@@ -32,6 +32,7 @@
                                 <td>
                                     <spring-form:input path="phoneNumber" />
                                     <spring-form:errors path="phoneNumber" />
+                                    ${phoneNumberAlreadyExistsError}
                                 </td>
                             </tr>
                             <tr>

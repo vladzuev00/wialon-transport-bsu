@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.useraction.exception;
 
-public final class TrackerImeiAlreadyExistsException extends Exception {
+public final class TrackerImeiAlreadyExistsException extends TrackerUniqueConstraintException {
 
     public TrackerImeiAlreadyExistsException() {
 

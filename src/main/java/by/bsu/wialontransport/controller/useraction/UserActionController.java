@@ -3,7 +3,7 @@ package by.bsu.wialontransport.controller.useraction;
 import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.service.useraction.UserActionService;
-import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
+import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +57,7 @@ public class UserActionController {
             }
             this.userActionService.updateTracker(trackerForm, model);
             return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
-        } catch (final TrackerImeiAlreadyExistsException exception) {
+        } catch (final TrackerUniqueConstraintException exception) {
             return VIEW_NAME_UPDATE_TRACKER_PAGE;
         }
     }

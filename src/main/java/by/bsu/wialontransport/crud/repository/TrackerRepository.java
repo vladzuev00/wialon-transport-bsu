@@ -19,4 +19,7 @@ public interface TrackerRepository extends JpaRepository<TrackerEntity, Long> {
     @Query("SELECT te FROM TrackerEntity te JOIN FETCH te.user WHERE te.id = :id")
     Optional<TrackerEntity> findByIdWithUser(final Long id);
 
+    //TODO: test
+    Optional<TrackerEntity> findByPhoneNumber(final String phoneNumber);
+
 }
