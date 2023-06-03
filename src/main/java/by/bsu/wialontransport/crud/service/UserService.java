@@ -12,6 +12,8 @@ import java.util.Optional;
 
 @Service
 public class UserService extends AbstractCRUDService<Long, UserEntity, User, UserMapper, UserRepository> {
+
+    //TODO: do encrypting in another service
     private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(final UserMapper mapper,
@@ -39,8 +41,16 @@ public class UserService extends AbstractCRUDService<Long, UserEntity, User, Use
         return super.mapper.mapToDto(savedEntity);
     }
 
+    //TODO: test
+    public void updatePasswordWithEncrypting(final User user, final String newPassword) {
+        final Long userId = user.getId();
+        final String encryptedNewPassword = this.passwordEncoder.encode(newPassword);
+        super.repository.updatePassword(userId, encryptedNewPassword);
+    }
+
     private void setEncryptedPassword(final UserEntity user) {
-        final String encryptedPassword = this.passwordEncoder.encode(user.getPassword());
+        final String password = user.getPassword();
+        final String encryptedPassword = this.passwordEncoder.encode(password);
         user.setPassword(encryptedPassword);
     }
 }

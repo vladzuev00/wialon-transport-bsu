@@ -1,8 +1,10 @@
 package by.bsu.wialontransport.controller.useraction;
 
+import by.bsu.wialontransport.model.form.ChangePasswordForm;
 import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.service.useraction.UserActionService;
+import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,12 +19,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserActionController {
     private static final String MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS = "listed_trackers";
-    private static final String MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER = "added_tracker_form";
-    private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER = "updated_tracker_form";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER_FORM = "added_tracker_form";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER_FORM = "updated_tracker_form";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_CHANGE_PASSWORD_FORM = "change_password_form";
 
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
     private static final String VIEW_NAME_ADD_TRACKER_PAGE = "add_tracker";
     private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
+    private static final String VIEW_NAME_CHANGE_PASSWORD_PAGE = "change_password";
 
     private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile";
 
@@ -41,12 +45,12 @@ public class UserActionController {
 
     @GetMapping("/addTracker")
     public String showAddTrackerPage(final Model model) {
-        this.userActionService.addAttributeOfTrackerFormToAddTracker(model, MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER);
+        this.userActionService.addAttributeOfTrackerFormToAddTracker(model, MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER_FORM);
         return VIEW_NAME_ADD_TRACKER_PAGE;
     }
 
     @PostMapping("/addTracker")
-    public String addTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER) final TrackerForm trackerForm,
+    public String addTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER_FORM) final TrackerForm trackerForm,
                              final BindingResult bindingResult,
                              final Model model) {
         try {
@@ -64,13 +68,13 @@ public class UserActionController {
     public String showUpdateTrackerPage(@RequestParam(name = "trackerId") final Long trackerId,
                                         final Model model) {
         this.userActionService.addAttributeOfTrackerFormToUpdateTracker(
-                trackerId, model, MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER
+                trackerId, model, MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER_FORM
         );
         return VIEW_NAME_UPDATE_TRACKER_PAGE;
     }
 
     @PostMapping("/updateTracker")
-    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER) final TrackerForm trackerForm,
+    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER_FORM) final TrackerForm trackerForm,
                                 final BindingResult bindingResult,
                                 final Model model) {
         try {
@@ -88,6 +92,29 @@ public class UserActionController {
     public String deleteTracker(@RequestParam(name = "trackerId") final Long trackerId) {
         this.userActionService.deleteTracker(trackerId);
         return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
+    }
+
+    @GetMapping("/changePassword")
+    public String showChangePasswordPage(final Model model) {
+        this.userActionService.addAttributeOfChangePasswordFormToChangePassword(
+                model, MODEL_ATTRIBUTE_NAME_OF_CHANGE_PASSWORD_FORM
+        );
+        return VIEW_NAME_CHANGE_PASSWORD_PAGE;
+    }
+
+    @PostMapping("/changePassword")
+    public String changePassword(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_CHANGE_PASSWORD_FORM) final ChangePasswordForm form,
+                                 final BindingResult bindingResult,
+                                 final Model model) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return VIEW_NAME_CHANGE_PASSWORD_PAGE;
+            }
+            this.userActionService.updatePassword(form, model);
+            return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
+        } catch (final PasswordChangingException exception) {
+            return VIEW_NAME_CHANGE_PASSWORD_PAGE;
+        }
     }
 
 }

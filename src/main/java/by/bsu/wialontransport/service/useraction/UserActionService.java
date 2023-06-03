@@ -4,10 +4,13 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.model.form.ChangePasswordForm;
 import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
+import by.bsu.wialontransport.service.useraction.changepassword.ChangingPasswordService;
+import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerPhoneNumberAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
@@ -28,14 +31,15 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public final class UserActionService {
     private static final String ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR = "imeiAlreadyExistsError";
-    private static final String ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS = "Imei already exists";
+    private static final String ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS_ERROR = "Imei already exists";
 
     private static final String ATTRIBUTE_NAME_PHONE_NUMBER_ALREADY_EXISTS_ERROR = "phoneNumberAlreadyExistsError";
-    private static final String ATTRIBUTE_VALUE_PHONE_NUMBER_ALREADY_EXISTS = "Phone number already exists";
+    private static final String ATTRIBUTE_VALUE_PHONE_NUMBER_ALREADY_EXISTS_ERROR = "Phone number already exists";
 
     private final SecurityService securityService;
     private final TrackerService trackerService;
     private final TrackerFormMapper trackerFormMapper;
+    private final ChangingPasswordService changingPasswordService;
 
     public void addAttributeOfTrackersToShowProfilePage(final int pageNumber,
                                                         final int pageSize,
@@ -76,6 +80,22 @@ public final class UserActionService {
         this.trackerService.delete(trackerId);
     }
 
+    public void addAttributeOfChangePasswordFormToChangePassword(final Model model, final String attributeName) {
+        final ChangePasswordForm changePasswordForm = new ChangePasswordForm();
+        model.addAttribute(attributeName, changePasswordForm);
+    }
+
+    public void updatePassword(final ChangePasswordForm form, final Model model)
+            throws PasswordChangingException {
+        try {
+            final User loggedOnUser = this.securityService.findLoggedOnUser();
+            this.changingPasswordService.change(loggedOnUser, form);
+        } catch (final PasswordChangingException exception) {
+            addErrorAttribute(model, exception);
+            throw exception;
+        }
+    }
+
     private List<Tracker> findListedTrackers(final int pageNumber,
                                              final int pageSize,
                                              final TrackerSortingKey sortingKey) {
@@ -103,13 +123,13 @@ public final class UserActionService {
                 TrackerForm::getImei,
                 TrackerService::findByImei,
                 model,
-                UserActionService::addErrorMessageOfImeiAlreadyExists,
+                UserActionService::addErrorAttributeOfImeiAlreadyExists,
                 TrackerImeiAlreadyExistsException::new
         );
     }
 
-    private static void addErrorMessageOfImeiAlreadyExists(final Model model) {
-        model.addAttribute(ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS);
+    private static void addErrorAttributeOfImeiAlreadyExists(final Model model) {
+        model.addAttribute(ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS_ERROR);
     }
 
     private void checkWhetherOtherTrackerWithGivenPhoneNumberExists(final TrackerForm trackerForm, final Model model)
@@ -119,14 +139,14 @@ public final class UserActionService {
                 TrackerForm::getPhoneNumber,
                 TrackerService::findByPhoneNumber,
                 model,
-                UserActionService::addErrorMessageOfPhoneNumberAlreadyExists,
+                UserActionService::addErrorAttributeOfPhoneNumberAlreadyExists,
                 TrackerPhoneNumberAlreadyExistsException::new
         );
     }
 
-    private static void addErrorMessageOfPhoneNumberAlreadyExists(final Model model) {
+    private static void addErrorAttributeOfPhoneNumberAlreadyExists(final Model model) {
         model.addAttribute(
-                ATTRIBUTE_NAME_PHONE_NUMBER_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_PHONE_NUMBER_ALREADY_EXISTS
+                ATTRIBUTE_NAME_PHONE_NUMBER_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_PHONE_NUMBER_ALREADY_EXISTS_ERROR
         );
     }
 
@@ -140,13 +160,13 @@ public final class UserActionService {
             final Function<TrackerForm, P> getter,
             final BiFunction<TrackerService, P, Optional<Tracker>> searchingFunction,
             final Model model,
-            final Consumer<Model> errorMessageAdder,
+            final Consumer<Model> errorAttributeAdder,
             final Supplier<E> exceptionSupplier) throws E {
         final Optional<Tracker> optionalOtherTrackerWithGivenProperty = this.findOtherTrackerWithGivenProperty(
                 trackerForm, getter, searchingFunction
         );
         if (optionalOtherTrackerWithGivenProperty.isPresent()) {
-            errorMessageAdder.accept(model);
+            errorAttributeAdder.accept(model);
             throw exceptionSupplier.get();
         }
     }
@@ -163,6 +183,12 @@ public final class UserActionService {
         final Long trackerId = tracker.getId();
         final Long trackerFormId = trackerForm.getId();
         return !Objects.equals(trackerId, trackerFormId);
+    }
+
+    private static void addErrorAttribute(final Model model, final PasswordChangingException exception) {
+        final String attributeName = exception.findErrorAttributeName();
+        final String attributeValue = exception.findErrorAttributeValue();
+        model.addAttribute(attributeName, attributeValue);
     }
 
 }
