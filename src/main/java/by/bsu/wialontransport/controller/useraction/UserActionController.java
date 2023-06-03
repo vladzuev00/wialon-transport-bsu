@@ -28,9 +28,9 @@ public class UserActionController {
     private final UserActionService userActionService;
 
     @GetMapping("/profile")
-    public String showProfilePage(@RequestParam(name = "pageNumber") final int pageNumber,
-                                  @RequestParam(name = "pageSize") final int pageSize,
-                                  @RequestParam(name = "trackerSortingKey", required = false) final TrackerSortingKey sortingKey,
+    public String showProfilePage(@RequestParam(name = "pageNumber", defaultValue = "0") final int pageNumber,
+                                  @RequestParam(name = "pageSize", defaultValue = "5") final int pageSize,
+                                  @RequestParam(name = "trackerSortingKey", defaultValue = "IMEI") final TrackerSortingKey sortingKey,
                                   final Model model) {
         this.userActionService.addAttributeOfTrackersToShowProfilePage(
                 pageNumber, pageSize, sortingKey, model, MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS

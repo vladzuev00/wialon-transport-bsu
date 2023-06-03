@@ -30,12 +30,12 @@
 
             <table border="1">
 
-                <jstl-core:url var="link_to_sort_by_imei" value="">
-                      <jstl-core:param name="" value="" />
+                <jstl-core:url var="link_to_sort_by_imei" value="/user/profile">
+                      <jstl-core:param name="trackerSortingKey" value="IMEI" />
                 </jstl-core:url>
 
-                <jstl-core:url var="link_to_sort_by_phone_number" value="">
-                      <jstl-core:param name="" value="" />
+                <jstl-core:url var="link_to_sort_by_phone_number" value="/user/profile">
+                      <jstl-core:param name="trackerSortingKey" value="PHONE_NUMBER" />
                 </jstl-core:url>
 
                 <tr>
