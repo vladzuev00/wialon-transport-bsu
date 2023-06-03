@@ -52,10 +52,10 @@
                         <jstl-core:param name="trackerId" value="${listed_tracker.id}" />
                     </jstl-core:url>
 
-                    <tr>
-                        <td align="center">${listed_tracker.imei}</td>
-                        <td align="center">${listed_tracker.phoneNumber}</td>
-                        <td align="center">
+                    <tr align="center">
+                        <td>${listed_tracker.imei}</td>
+                        <td>${listed_tracker.phoneNumber}</td>
+                        <td>
                             <a href="${link_to_update_tracker}">Update</a>
                             |
                             <a href="${link_to_delete_tracker}" onclick="return (confirm('Are you sure you want to delete this tracker'))">
