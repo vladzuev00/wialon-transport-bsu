@@ -13,8 +13,7 @@ import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static java.util.Comparator.comparing;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class TrackerServiceTest extends AbstractContextTest {
 
@@ -145,6 +144,27 @@ public final class TrackerServiceTest extends AbstractContextTest {
     @Test
     public void trackerShouldNotBeFoundByIdWithUser() {
         final Optional<Tracker> optionalActual = this.service.findByIdWithUser(256L);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerShouldBeFoundByPhoneNumber() {
+        final Optional<Tracker> optionalActual = this.service.findByPhoneNumber("447336934");
+        assertTrue(optionalActual.isPresent());
+
+        final Tracker actual = optionalActual.get();
+        final Tracker expected = Tracker.builder()
+                .id(255L)
+                .imei("11112222333344445555")
+                .password("password")
+                .phoneNumber("447336934")
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByPhoneNumber() {
+        final Optional<Tracker> optionalActual = this.service.findByPhoneNumber("447336935");
         assertTrue(optionalActual.isEmpty());
     }
 

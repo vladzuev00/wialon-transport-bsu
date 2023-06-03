@@ -51,7 +51,6 @@ public class TrackerService
         return optionalEntity.map(super.mapper::mapToDto);
     }
 
-    //TODO: test
     @Transactional(readOnly = true)
     public Optional<Tracker> findByPhoneNumber(final String phoneNumber) {
         final Optional<TrackerEntity> optionalEntity = super.repository.findByPhoneNumber(phoneNumber);
