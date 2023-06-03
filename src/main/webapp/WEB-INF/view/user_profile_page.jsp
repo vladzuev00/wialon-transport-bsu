@@ -11,24 +11,21 @@
 
 <body>
 
-    <div>
-        <div>
-            <h2><a href="/logout">Log out</a></h2>
-        </div>
-    </div>
+    <table width="50%">
+        <tr>
+            <td><h4><a href="/logout">Log out</a></h4></td>
+            <td><h4><a href="/user/changeEmail">Change email</a></h4></td>
+            <td><h4><a href="/user/changePassword">Change password</a></h4></td>
+        </tr>
+    </table>
 
     <div>
-        <div>
-            <h2>Your trackers</h2>
-        </div>
-    </div>
-
-    <div>
+        <h2>Your trackers</h2>
         <div>
 
             <input type="button" value="add new" onclick="window.location.href='/user/addTracker'" />
 
-            <table border="1">
+            <table border="1" width="33%">
 
                 <jstl-core:url var="link_to_sort_by_imei" value="/user/profile">
                       <jstl-core:param name="trackerSortingKey" value="IMEI" />
@@ -56,9 +53,9 @@
                     </jstl-core:url>
 
                     <tr>
-                        <td>${listed_tracker.imei}</td>
-                        <td>${listed_tracker.phoneNumber}</td>
-                        <td>
+                        <td align="center">${listed_tracker.imei}</td>
+                        <td align="center">${listed_tracker.phoneNumber}</td>
+                        <td align="center">
                             <a href="${link_to_update_tracker}">Update</a>
                             |
                             <a href="${link_to_delete_tracker}" onclick="return (confirm('Are you sure you want to delete this tracker'))">
