@@ -51,8 +51,8 @@
                         <jstl-core:param name="trackerId" value="${listed_tracker.id}" />
                     </jstl-core:url>
 
-                    <jstl-core:url var="link_to_delete_tracker" value="">
-                        <jstl-core:param name="" value="${listed_tracker.id}" />
+                    <jstl-core:url var="link_to_delete_tracker" value="/user/deleteTracker">
+                        <jstl-core:param name="trackerId" value="${listed_tracker.id}" />
                     </jstl-core:url>
 
                     <tr>

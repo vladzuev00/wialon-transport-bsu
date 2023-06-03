@@ -72,6 +72,10 @@ public final class UserActionService {
         this.trackerService.update(updatedTracker);
     }
 
+    public void deleteTracker(final Long trackerId) {
+        this.trackerService.delete(trackerId);
+    }
+
     private List<Tracker> findListedTrackers(final int pageNumber,
                                              final int pageSize,
                                              final TrackerSortingKey sortingKey) {

@@ -84,4 +84,10 @@ public class UserActionController {
         }
     }
 
+    @GetMapping("/deleteTracker")
+    public String deleteTracker(@RequestParam(name = "trackerId") final Long trackerId) {
+        this.userActionService.deleteTracker(trackerId);
+        return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
+    }
+
 }
