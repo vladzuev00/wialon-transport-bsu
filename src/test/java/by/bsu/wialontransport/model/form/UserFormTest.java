@@ -75,20 +75,23 @@ public final class UserFormTest extends AbstractContextTest {
 
         final Set<ConstraintViolation<UserForm>> constraintViolations = this.validator.validate(givenUserForm);
         assertEquals(1, constraintViolations.size());
-        assertEquals("size must be between 5 and 30", constraintViolations.iterator().next().getMessage());
+        assertEquals("size must be between 5 and 128", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
     public void userFormShouldNotBeValidBecauseOfPasswordLengthIsMoreThanMaximalAllowable() {
         final UserForm givenUserForm = UserForm.builder()
                 .email("vladzuev.00@mail.ru")
-                .password("passwordpasswordpasswordpasswordpasswordpasswordpassword")
+                .password("passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpas"
+                        + "swordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword"
+                        + "passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword"
+                        + "passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword")
                 .confirmedPassword("password")
                 .build();
 
         final Set<ConstraintViolation<UserForm>> constraintViolations = this.validator.validate(givenUserForm);
         assertEquals(1, constraintViolations.size());
-        assertEquals("size must be between 5 and 30", constraintViolations.iterator().next().getMessage());
+        assertEquals("size must be between 5 and 128", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
@@ -113,7 +116,7 @@ public final class UserFormTest extends AbstractContextTest {
 
         final Set<ConstraintViolation<UserForm>> constraintViolations = this.validator.validate(givenUserForm);
         assertEquals(1, constraintViolations.size());
-        assertEquals("size must be between 5 and 30", constraintViolations.iterator().next().getMessage());
+        assertEquals("size must be between 5 and 128", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
@@ -121,12 +124,15 @@ public final class UserFormTest extends AbstractContextTest {
         final UserForm givenUserForm = UserForm.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .confirmedPassword("passwordpasswordpasswordpasswordpasswordpasswordpassword")
+                .confirmedPassword("passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword"
+                        + "passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword"
+                        + "passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword"
+                        + "passwordpasswordpasswordpasswordpasswordpasswordpasswordpasswordpassword")
                 .build();
 
         final Set<ConstraintViolation<UserForm>> constraintViolations = this.validator.validate(givenUserForm);
         assertEquals(1, constraintViolations.size());
-        assertEquals("size must be between 5 and 30", constraintViolations.iterator().next().getMessage());
+        assertEquals("size must be between 5 and 128", constraintViolations.iterator().next().getMessage());
     }
 
 }
