@@ -15,7 +15,6 @@ public interface TrackerRepository extends JpaRepository<TrackerEntity, Long> {
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId")
     List<TrackerEntity> findByUserId(final Long userId, final Pageable pageable);
 
-    //TODO: test
     @Query("SELECT te FROM TrackerEntity te JOIN FETCH te.user WHERE te.id = :id")
     Optional<TrackerEntity> findByIdWithUser(final Long id);
 

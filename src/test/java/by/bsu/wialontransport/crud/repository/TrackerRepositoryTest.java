@@ -5,12 +5,12 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.data.domain.Pageable.ofSize;
@@ -100,6 +100,35 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         super.checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void trackerShouldBeFoundByIdWithLoadedUser() {
+        super.startQueryCount();
+        final Optional<TrackerEntity> optionalActual = this.repository.findByIdWithUser(255L);
+        super.checkQueryCount(1);
+
+        assertTrue(optionalActual.isPresent());
+        final TrackerEntity actual = optionalActual.get();
+        assertTrue(isInitialized(actual.getUser()));
+
+        final TrackerEntity expected = TrackerEntity.builder()
+                .id(255L)
+                .imei("11112222333344445555")
+                .password("password")
+                .phoneNumber("447336934")
+                .user(super.entityManager.getReference(UserEntity.class, 255L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByIdWithLoadedUser() {
+        super.startQueryCount();
+        final Optional<TrackerEntity> optionalActual = this.repository.findByIdWithUser(256L);
+        super.checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
     }
 
     private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
