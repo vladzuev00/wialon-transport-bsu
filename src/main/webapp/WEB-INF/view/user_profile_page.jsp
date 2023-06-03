@@ -26,7 +26,7 @@
     <div>
         <div>
 
-            <input type="button" value="add new" onclick="window.location.href=''" />
+            <input type="button" value="add new" onclick="window.location.href='/user/addTracker'" />
 
             <table border="1">
 

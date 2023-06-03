@@ -1,24 +1,30 @@
 package by.bsu.wialontransport.model.form;
 
-import lombok.Value;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@EqualsAndHashCode
+@ToString
+@Builder
 public class TrackerForm {
-    Long id;
+    private Long id;
 
     @NotNull
     @Pattern(regexp = "\\d{20}", message = "should contain only 20 digits")
-    String imei;
+    private String imei;
 
     @NotNull
     @Size(min = 5, max = 256)
-    String password;
+    private String password;
 
     @NotNull
     @Pattern(regexp = "\\d{9}", message = "should contain only 9 digits")
-    String phoneNumber;
+    private String phoneNumber;
 }

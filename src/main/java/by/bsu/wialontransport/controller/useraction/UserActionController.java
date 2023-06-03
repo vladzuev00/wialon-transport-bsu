@@ -17,13 +17,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserActionController {
     private static final String MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS = "listed_trackers";
+    private static final String MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER = "added_tracker_form";
     private static final String MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER = "updated_tracker_form";
 
     private static final String VIEW_NAME_PROFILE_PAGE = "user_profile_page";
+    private static final String VIEW_NAME_ADD_TRACKER_PAGE = "add_tracker";
     private static final String VIEW_NAME_UPDATE_TRACKER_PAGE = "update_tracker";
 
-    private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile"
-            + "?pageNumber=0&pageSize=5&trackerSortingKey=IMEI";
+    private static final String VIEW_TO_REDIRECT_TO_PROFILE_PAGE = "redirect:/user/profile";
 
     private final UserActionService userActionService;
 
@@ -36,6 +37,27 @@ public class UserActionController {
                 pageNumber, pageSize, sortingKey, model, MODEL_ATTRIBUTE_NAME_OF_LISTED_TRACKERS
         );
         return VIEW_NAME_PROFILE_PAGE;
+    }
+
+    @GetMapping("/addTracker")
+    public String showAddTrackerPage(final Model model) {
+        this.userActionService.addAttributeOfTrackerFormToAddTracker(model, MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER);
+        return VIEW_NAME_ADD_TRACKER_PAGE;
+    }
+
+    @PostMapping("/addTracker")
+    public String addTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER) final TrackerForm trackerForm,
+                             final BindingResult bindingResult,
+                             final Model model) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return VIEW_NAME_ADD_TRACKER_PAGE;
+            }
+            this.userActionService.addTracker(trackerForm, model);
+            return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
+        } catch (final TrackerUniqueConstraintException exception) {
+            return VIEW_NAME_ADD_TRACKER_PAGE;
+        }
     }
 
     @GetMapping("/updateTracker")

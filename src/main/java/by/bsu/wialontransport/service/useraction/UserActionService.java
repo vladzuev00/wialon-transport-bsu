@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +46,18 @@ public final class UserActionService {
         model.addAttribute(attributeName, listedTrackers);
     }
 
+    public void addAttributeOfTrackerFormToAddTracker(final Model model, final String attributeName) {
+        final TrackerForm trackerForm = new TrackerForm();
+        model.addAttribute(attributeName, trackerForm);
+    }
+
+    public void addTracker(final TrackerForm trackerForm, final Model model)
+            throws TrackerUniqueConstraintException {
+        this.checkTrackerUniqueConstraints(trackerForm, model);
+        final Tracker addedTracker = this.mapToTracker(trackerForm);
+        this.trackerService.save(addedTracker);
+    }
+
     public void addAttributeOfTrackerFormToUpdateTracker(final Long trackerId,
                                                          final Model model,
                                                          final String attributeName) {
@@ -54,8 +67,7 @@ public final class UserActionService {
 
     public void updateTracker(final TrackerForm trackerForm, final Model model)
             throws TrackerUniqueConstraintException {
-        this.checkWhetherOtherTrackerWithGivenImeiExists(trackerForm, model);
-        this.checkWhetherOtherTrackerWithGivenPhoneNumberExists(trackerForm, model);
+        this.checkTrackerUniqueConstraints(trackerForm, model);
         final Tracker updatedTracker = this.mapToTracker(trackerForm);
         this.trackerService.update(updatedTracker);
     }
@@ -64,13 +76,20 @@ public final class UserActionService {
                                              final int pageSize,
                                              final TrackerSortingKey sortingKey) {
         final User loggedOnUser = this.securityService.findLoggedOnUser();
-        return this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, sortingKey.getComparator());
+        final Comparator<Tracker> trackerComparator = sortingKey.getComparator();
+        return this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, trackerComparator);
     }
 
     private TrackerForm findTrackerForm(final Long trackerId) {
         final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
         final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
         return this.trackerFormMapper.map(tracker);
+    }
+
+    private void checkTrackerUniqueConstraints(final TrackerForm trackerForm, final Model model)
+            throws TrackerUniqueConstraintException {
+        this.checkWhetherOtherTrackerWithGivenImeiExists(trackerForm, model);
+        this.checkWhetherOtherTrackerWithGivenPhoneNumberExists(trackerForm, model);
     }
 
     private void checkWhetherOtherTrackerWithGivenImeiExists(final TrackerForm trackerForm, final Model model)
