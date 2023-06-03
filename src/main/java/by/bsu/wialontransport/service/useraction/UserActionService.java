@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -80,16 +82,11 @@ public final class UserActionService {
     }
 
     private Optional<Tracker> findOtherTrackerWithGivenImei(final TrackerForm trackerForm) {
-        final String imei = trackerForm.getImei();
-        final Optional<Tracker> optionalTrackerWithGivenImei = this.trackerService.findByImei(imei);
-        return optionalTrackerWithGivenImei
-                .filter(trackerWithGivenImei -> !isSameTracker(trackerWithGivenImei, trackerForm));
-    }
-
-    private static boolean isSameTracker(final Tracker tracker, final TrackerForm trackerForm) {
-        final Long trackerId = tracker.getId();
-        final Long trackerFormId = trackerForm.getId();
-        return Objects.equals(trackerId, trackerFormId);
+        return this.findOtherTrackerWithGivenProperty(
+                trackerForm,
+                TrackerForm::getImei,
+                TrackerService::findByImei
+        );
     }
 
     private static void handleCaseTrackerImeiAlreadyExists(final Model model)
@@ -105,18 +102,19 @@ public final class UserActionService {
     private void checkWhetherPhoneNumberAlreadyExists(final TrackerForm trackerForm, final Model model)
             throws TrackerPhoneNumberAlreadyExistsException {
         final Optional<Tracker> optionalOtherTrackerWithGivenPhoneNumber = this.findOtherTrackerWithGivenPhoneNumber(
-                trackerForm, model
+                trackerForm
         );
         if (optionalOtherTrackerWithGivenPhoneNumber.isPresent()) {
             handleCaseTrackerPhoneNumberAlreadyExists(model);
         }
     }
 
-    private Optional<Tracker> findOtherTrackerWithGivenPhoneNumber(final TrackerForm trackerForm, final Model model) {
-        final String phoneNumber = trackerForm.getPhoneNumber();
-        final Optional<Tracker> optionalTrackerWithGivenImei = this.trackerService.findByPhoneNumber(phoneNumber);
-        return optionalTrackerWithGivenImei
-                .filter(trackerWithGivenImei -> !isSameTracker(trackerWithGivenImei, trackerForm));
+    private Optional<Tracker> findOtherTrackerWithGivenPhoneNumber(final TrackerForm trackerForm) {
+        return this.findOtherTrackerWithGivenProperty(
+                trackerForm,
+                TrackerForm::getPhoneNumber,
+                TrackerService::findByPhoneNumber
+        );
     }
 
     private static void handleCaseTrackerPhoneNumberAlreadyExists(final Model model)
@@ -134,6 +132,20 @@ public final class UserActionService {
     private Tracker mapToTracker(final TrackerForm trackerForm) {
         final User loggedOnUser = this.securityService.findLoggedOnUser();
         return this.trackerFormMapper.map(trackerForm, loggedOnUser);
+    }
+
+    private <P> Optional<Tracker> findOtherTrackerWithGivenProperty(final TrackerForm trackerForm,
+                                                                    final Function<TrackerForm, P> getter,
+                                                                    final BiFunction<TrackerService, P, Optional<Tracker>> searchingFunction) {
+        final P property = getter.apply(trackerForm);
+        final Optional<Tracker> optionalTracker = searchingFunction.apply(this.trackerService, property);
+        return optionalTracker.filter(tracker -> areDifferentTrackers(tracker, trackerForm));
+    }
+
+    private static boolean areDifferentTrackers(final Tracker tracker, final TrackerForm trackerForm) {
+        final Long trackerId = tracker.getId();
+        final Long trackerFormId = trackerForm.getId();
+        return !Objects.equals(trackerId, trackerFormId);
     }
 
 }
