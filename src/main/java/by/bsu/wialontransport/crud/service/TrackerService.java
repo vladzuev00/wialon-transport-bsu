@@ -45,7 +45,6 @@ public class TrackerService
         return foundTrackers;
     }
 
-    //TODO: test
     @Transactional(readOnly = true)
     public Optional<Tracker> findByIdWithUser(final Long id) {
         final Optional<TrackerEntity> optionalEntity = super.repository.findByIdWithUser(id);

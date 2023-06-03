@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -118,6 +119,33 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
         final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5, givenComparator);
         assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void trackerShouldBeFoundByIdWithUser() {
+        final Optional<Tracker> optionalActual = this.service.findByIdWithUser(255L);
+        assertTrue(optionalActual.isPresent());
+
+        final Tracker actual = optionalActual.get();
+        final Tracker expected = Tracker.builder()
+                .id(255L)
+                .imei("11112222333344445555")
+                .password("password")
+                .phoneNumber("447336934")
+                .user(User.builder()
+                        .id(255L)
+                        .email("vladzuev.00@mail.ru")
+                        .password("password")
+                        .role(USER)
+                        .build())
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByIdWithUser() {
+        final Optional<Tracker> optionalActual = this.service.findByIdWithUser(256L);
+        assertTrue(optionalActual.isEmpty());
     }
 
     private static User createUser(final Long id) {
