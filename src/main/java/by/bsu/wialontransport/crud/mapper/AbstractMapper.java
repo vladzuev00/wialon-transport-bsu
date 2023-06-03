@@ -62,7 +62,7 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
             >
     PropertyDtoType mapPropertyIfLoadedOrElseNull(final PropertyEntityType mapped,
                                                   final Class<PropertyDtoType> dtoType) {
-        return isInitialized(mapped) ? this.modelMapper.map(mapped, dtoType) : null;
+        return isPropertyLoaded(mapped) ? this.modelMapper.map(mapped, dtoType) : null;
     }
 
     protected <
@@ -110,5 +110,9 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
             this.mapSpecificFields(source, destination);
             return destination;
         };
+    }
+
+    private static boolean isPropertyLoaded(final Object property) {
+        return property != null && isInitialized(property);
     }
 }
