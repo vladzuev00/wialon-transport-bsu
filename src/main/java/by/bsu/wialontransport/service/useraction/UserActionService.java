@@ -77,7 +77,13 @@ public final class UserActionService {
         final String imei = trackerForm.getImei();
         final Optional<Tracker> optionalTrackerWithGivenImei = this.trackerService.findByImei(imei);
         return optionalTrackerWithGivenImei
-                .filter(trackerWithGivenImei -> !Objects.equals(trackerWithGivenImei.getId(), trackerForm.getId()));
+                .filter(trackerWithGivenImei -> !isSameTracker(trackerWithGivenImei, trackerForm));
+    }
+
+    private static boolean isSameTracker(final Tracker tracker, final TrackerForm trackerForm) {
+        final Long trackerId = tracker.getId();
+        final Long trackerFormId = trackerForm.getId();
+        return Objects.equals(trackerId, trackerFormId);
     }
 
     private static void handleCaseTrackerImeiAlreadyExists(final Model model)
