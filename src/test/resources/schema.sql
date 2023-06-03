@@ -64,7 +64,10 @@ CREATE TABLE users
 );
 
 ALTER TABLE users
-    ADD CONSTRAINT correct_email CHECK (email ~ '[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+');
+    ADD CONSTRAINT email_should_be_correct CHECK (email ~ '[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+');
+
+ALTER TABLE users
+    ADD CONSTRAINT email_should_be_unique UNIQUE(email);
 
 CREATE TABLE trackers
 (
@@ -80,7 +83,10 @@ ALTER TABLE trackers
         ON DELETE CASCADE;
 
 ALTER TABLE trackers
-    ADD CONSTRAINT correct_imei CHECK (imei ~ '[0-9]{20}');
+    ADD CONSTRAINT imei_should_be_correct CHECK (imei ~ '[0-9]{20}');
+
+ALTER TABLE trackers
+    ADD CONSTRAINT phone_number_should_be_unique UNIQUE(phone_number);
 
 ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
