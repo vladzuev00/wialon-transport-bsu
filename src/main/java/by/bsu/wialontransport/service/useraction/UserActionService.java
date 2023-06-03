@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -52,8 +54,8 @@ public final class UserActionService {
 
     public void updateTracker(final TrackerForm trackerForm, final Model model)
             throws TrackerUniqueConstraintException {
-        this.checkWhetherImeiAlreadyExists(trackerForm, model);
-        this.checkWhetherPhoneNumberAlreadyExists(trackerForm, model);
+        this.checkWhetherOtherTrackerWithGivenImeiExists(trackerForm, model);
+        this.checkWhetherOtherTrackerWithGivenPhoneNumberExists(trackerForm, model);
         final Tracker updatedTracker = this.mapToTracker(trackerForm);
         this.trackerService.update(updatedTracker);
     }
@@ -73,54 +75,32 @@ public final class UserActionService {
         return this.trackerFormMapper.map(tracker);
     }
 
-    private void checkWhetherImeiAlreadyExists(final TrackerForm trackerForm, final Model model)
+    private void checkWhetherOtherTrackerWithGivenImeiExists(final TrackerForm trackerForm, final Model model)
             throws TrackerImeiAlreadyExistsException {
-        final Optional<Tracker> optionalOtherTrackerWithGivenImei = this.findOtherTrackerWithGivenImei(trackerForm);
-        if (optionalOtherTrackerWithGivenImei.isPresent()) {
-            handleCaseTrackerImeiAlreadyExists(model);
-        }
-    }
-
-    private Optional<Tracker> findOtherTrackerWithGivenImei(final TrackerForm trackerForm) {
-        return this.findOtherTrackerWithGivenProperty(
+        this.checkWhetherOtherTrackerWithGivenPropertyExists(
                 trackerForm,
                 TrackerForm::getImei,
-                TrackerService::findByImei
+                TrackerService::findByImei,
+                model,
+                UserActionService::addErrorMessageOfImeiAlreadyExists,
+                TrackerImeiAlreadyExistsException::new
         );
-    }
-
-    private static void handleCaseTrackerImeiAlreadyExists(final Model model)
-            throws TrackerImeiAlreadyExistsException {
-        addErrorMessageOfImeiAlreadyExists(model);
-        throw new TrackerImeiAlreadyExistsException();
     }
 
     private static void addErrorMessageOfImeiAlreadyExists(final Model model) {
         model.addAttribute(ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS);
     }
 
-    private void checkWhetherPhoneNumberAlreadyExists(final TrackerForm trackerForm, final Model model)
+    private void checkWhetherOtherTrackerWithGivenPhoneNumberExists(final TrackerForm trackerForm, final Model model)
             throws TrackerPhoneNumberAlreadyExistsException {
-        final Optional<Tracker> optionalOtherTrackerWithGivenPhoneNumber = this.findOtherTrackerWithGivenPhoneNumber(
-                trackerForm
-        );
-        if (optionalOtherTrackerWithGivenPhoneNumber.isPresent()) {
-            handleCaseTrackerPhoneNumberAlreadyExists(model);
-        }
-    }
-
-    private Optional<Tracker> findOtherTrackerWithGivenPhoneNumber(final TrackerForm trackerForm) {
-        return this.findOtherTrackerWithGivenProperty(
+        this.checkWhetherOtherTrackerWithGivenPropertyExists(
                 trackerForm,
                 TrackerForm::getPhoneNumber,
-                TrackerService::findByPhoneNumber
+                TrackerService::findByPhoneNumber,
+                model,
+                UserActionService::addErrorMessageOfPhoneNumberAlreadyExists,
+                TrackerPhoneNumberAlreadyExistsException::new
         );
-    }
-
-    private static void handleCaseTrackerPhoneNumberAlreadyExists(final Model model)
-            throws TrackerPhoneNumberAlreadyExistsException {
-        addErrorMessageOfPhoneNumberAlreadyExists(model);
-        throw new TrackerPhoneNumberAlreadyExistsException();
     }
 
     private static void addErrorMessageOfPhoneNumberAlreadyExists(final Model model) {
@@ -132,6 +112,22 @@ public final class UserActionService {
     private Tracker mapToTracker(final TrackerForm trackerForm) {
         final User loggedOnUser = this.securityService.findLoggedOnUser();
         return this.trackerFormMapper.map(trackerForm, loggedOnUser);
+    }
+
+    private <P, E extends TrackerUniqueConstraintException> void checkWhetherOtherTrackerWithGivenPropertyExists(
+            final TrackerForm trackerForm,
+            final Function<TrackerForm, P> getter,
+            final BiFunction<TrackerService, P, Optional<Tracker>> searchingFunction,
+            final Model model,
+            final Consumer<Model> errorMessageAdder,
+            final Supplier<E> exceptionSupplier) throws E {
+        final Optional<Tracker> optionalOtherTrackerWithGivenProperty = this.findOtherTrackerWithGivenProperty(
+                trackerForm, getter, searchingFunction
+        );
+        if (optionalOtherTrackerWithGivenProperty.isPresent()) {
+            errorMessageAdder.accept(model);
+            throw exceptionSupplier.get();
+        }
     }
 
     private <P> Optional<Tracker> findOtherTrackerWithGivenProperty(final TrackerForm trackerForm,
