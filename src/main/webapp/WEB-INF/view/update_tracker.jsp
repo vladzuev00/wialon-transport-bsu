@@ -18,6 +18,7 @@
                                     <spring-form:input path="imei" />
                                     <spring-form:errors path="imei" />
                                 </td>
+                                ${imeiAlreadyExistsError}
                             </tr>
                             <tr>
                                 <td><spring-form:label path="password">New password:</spring-form:label></td>

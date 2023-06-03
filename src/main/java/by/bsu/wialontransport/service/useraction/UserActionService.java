@@ -8,16 +8,21 @@ import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
+import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public final class UserActionService {
+    private static final String ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR = "imeiAlreadyExistsError";
+    private static final String ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS = "Imei already exists";
+
     private final SecurityService securityService;
     private final TrackerService trackerService;
     private final TrackerFormMapper trackerFormMapper;
@@ -40,9 +45,10 @@ public final class UserActionService {
         model.addAttribute(attributeName, trackerForm);
     }
 
-    public void updateTracker(final TrackerForm trackerForm) {
-        final User loggedOnUser = this.securityService.findLoggedOnUser();
-        final Tracker updatedTracker = this.trackerFormMapper.map(trackerForm, loggedOnUser);
+    public void updateTracker(final TrackerForm trackerForm, final Model model)
+            throws TrackerImeiAlreadyExistsException {
+        this.checkWhetherImeiAlreadyExists(trackerForm, model);
+        final Tracker updatedTracker = this.mapToTracker(trackerForm);
         this.trackerService.update(updatedTracker);
     }
 
@@ -53,6 +59,36 @@ public final class UserActionService {
         return sortingKey != null
                 ? this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, sortingKey.getComparator())
                 : this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize);
+    }
+
+    private void checkWhetherImeiAlreadyExists(final TrackerForm trackerForm, final Model model)
+            throws TrackerImeiAlreadyExistsException {
+        final Optional<Tracker> optionalOtherTrackerWithGivenImei = this.findOtherTrackerWithGivenImei(trackerForm);
+        if (optionalOtherTrackerWithGivenImei.isPresent()) {
+            handleCaseTrackerImeiAlreadyExists(model);
+        }
+    }
+
+    private Optional<Tracker> findOtherTrackerWithGivenImei(final TrackerForm trackerForm) {
+        final String imei = trackerForm.getImei();
+        final Optional<Tracker> optionalTrackerWithGivenImei = this.trackerService.findByImei(imei);
+        return optionalTrackerWithGivenImei
+                .filter(trackerWithGivenImei -> !Objects.equals(trackerWithGivenImei.getId(), trackerForm.getId()));
+    }
+
+    private static void handleCaseTrackerImeiAlreadyExists(final Model model)
+            throws TrackerImeiAlreadyExistsException {
+        addErrorMessageOfImeiAlreadyExists(model);
+        throw new TrackerImeiAlreadyExistsException();
+    }
+
+    private static void addErrorMessageOfImeiAlreadyExists(final Model model) {
+        model.addAttribute(ATTRIBUTE_NAME_IMEI_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_IMEI_ALREADY_EXISTS);
+    }
+
+    private Tracker mapToTracker(final TrackerForm trackerForm) {
+        final User loggedOnUser = this.securityService.findLoggedOnUser();
+        return this.trackerFormMapper.map(trackerForm, loggedOnUser);
     }
 
 }
