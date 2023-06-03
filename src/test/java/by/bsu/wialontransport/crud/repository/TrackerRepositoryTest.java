@@ -131,6 +131,33 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         assertTrue(optionalActual.isEmpty());
     }
 
+    @Test
+    public void trackerShouldBeFoundByPhoneNumber() {
+        super.startQueryCount();
+        final Optional<TrackerEntity> optionalActual = this.repository.findByPhoneNumber("447336934");
+        super.checkQueryCount(1);
+
+        assertTrue(optionalActual.isPresent());
+        final TrackerEntity actual = optionalActual.get();
+        final TrackerEntity expected = TrackerEntity.builder()
+                .id(255L)
+                .imei("11112222333344445555")
+                .password("password")
+                .phoneNumber("447336934")
+                .user(super.entityManager.getReference(UserEntity.class, 255L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByPhoneNumber() {
+        super.startQueryCount();
+        final Optional<TrackerEntity> optionalActual = this.repository.findByPhoneNumber("447336935");
+        super.checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
+    }
+
     private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getImei(), actual.getImei());
