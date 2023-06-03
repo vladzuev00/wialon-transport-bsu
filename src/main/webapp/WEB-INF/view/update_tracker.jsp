@@ -47,7 +47,7 @@
      <br />
 
      <p>
-            <a href="${pageContext.request.contextPath}">
+            <a href="${pageContext.request.contextPath}/user/profile?pageNumber=0&pageSize=5&trackerSortingKey=IMEI">
                 Cancel
             </a>
      </p>
