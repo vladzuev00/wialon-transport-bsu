@@ -39,9 +39,7 @@ public final class UserActionService {
     public void addAttributeOfTrackerFormToUpdateTracker(final Long trackerId,
                                                          final Model model,
                                                          final String attributeName) {
-        final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
-        final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
-        final TrackerForm trackerForm = this.trackerFormMapper.map(tracker);
+        final TrackerForm trackerForm = this.findTrackerForm(trackerId);
         model.addAttribute(attributeName, trackerForm);
     }
 
@@ -59,6 +57,12 @@ public final class UserActionService {
         return sortingKey != null
                 ? this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, sortingKey.getComparator())
                 : this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize);
+    }
+
+    private TrackerForm findTrackerForm(final Long trackerId) {
+        final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
+        final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
+        return this.trackerFormMapper.map(tracker);
     }
 
     private void checkWhetherImeiAlreadyExists(final TrackerForm trackerForm, final Model model)
