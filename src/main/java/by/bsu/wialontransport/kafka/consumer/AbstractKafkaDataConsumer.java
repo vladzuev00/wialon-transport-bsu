@@ -54,10 +54,6 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         return this.longitudeExtractor.extract(genericRecord);
     }
 
-    protected static Long extractId(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, id);
-    }
-
     protected static int extractSpeed(final GenericRecord genericRecord) {
         return extractValue(genericRecord, speed);
     }

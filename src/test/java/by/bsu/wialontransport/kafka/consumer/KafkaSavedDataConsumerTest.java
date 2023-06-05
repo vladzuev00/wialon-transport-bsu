@@ -266,7 +266,8 @@ public final class KafkaSavedDataConsumerTest extends AbstractContextTest {
                                                      final String serializedParameters,
                                                      final Long trackerId) {
         final GenericRecord genericRecord = mock(GenericRecord.class);
-        when(genericRecord.get(TransportableData.Fields.id)).thenReturn(id);
+        //TODO:
+//        when(genericRecord.get(TransportableData.Fields.id)).thenReturn(id);
         injectDateTimeInGenericRecord(genericRecord, date, time);
         injectLatitudeInGenericRecord(genericRecord, latitude);
         injectLongitudeInGenericRecord(genericRecord, longitude);

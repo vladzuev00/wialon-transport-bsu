@@ -2,7 +2,6 @@ package by.bsu.wialontransport.kafka.transportable;
 
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
-import org.apache.avro.reflect.Nullable;
 
 @AllArgsConstructor
 @Getter
@@ -11,10 +10,6 @@ import org.apache.avro.reflect.Nullable;
 @Builder
 @FieldNameConstants
 public class TransportableData implements Transportable<Long> {
-
-    @Nullable
-    private final Long id;
-
     private final long epochSeconds;
     private final int latitudeDegrees;
     private final int latitudeMinutes;
@@ -35,9 +30,6 @@ public class TransportableData implements Transportable<Long> {
     private final String driverKeyCode;
     private final String serializedParameters;
     private final Long trackerId;
-
-    @Nullable
-    private final Long addressId;
 
     @Override
     public final Long findTopicKey() {

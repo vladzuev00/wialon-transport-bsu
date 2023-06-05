@@ -22,7 +22,7 @@ import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfig {
+public class KafkaConsumerConfiguration {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
@@ -59,7 +59,7 @@ public class KafkaConsumerConfig {
             @Value("${kafka.topic.saved-data.consumer.max-poll-records}") final int maxPollRecords,
             @Value("${kafka.topic.saved-data.consumer.fetch-max-wait-ms}") final int fetchMaxWaitMs,
             @Value("${kafka.topic.saved-data.consumer.fetch-min-bytes}") final int fetchMinBytes,
-            @Qualifier("transportableDataSchema") final Schema schema) {
+            @Qualifier("transportableSavedDataSchema") final Schema schema) {
         return this.createConsumerFactory(groupId, maxPollRecords, fetchMaxWaitMs, fetchMinBytes, schema);
     }
 

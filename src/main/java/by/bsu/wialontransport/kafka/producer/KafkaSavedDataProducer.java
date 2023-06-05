@@ -15,7 +15,7 @@ public final class KafkaSavedDataProducer extends AbstractKafkaDataProducer<Tran
 
     public KafkaSavedDataProducer(@Qualifier("kafkaTemplateSavedData") final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                   @Value("${kafka.topic.saved-data.name}") final String topicName,
-                                  @Qualifier("transportableDataSchema") final Schema schema) {
+                                  @Qualifier("transportableSavedDataSchema") final Schema schema) {
         super(kafkaTemplate, topicName, schema);
     }
 

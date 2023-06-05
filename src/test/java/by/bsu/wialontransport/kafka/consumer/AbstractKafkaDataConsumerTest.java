@@ -106,16 +106,16 @@ public final class AbstractKafkaDataConsumerTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void idShouldBeExtracted() {
-        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
-
-        final Long givenId = 255L;
-        when(givenGenericRecord.get(id)).thenReturn(givenId);
-
-        final Long actual = extractId(givenGenericRecord);
-        assertEquals(givenId, actual);
-    }
+//    @Test
+//    public void idShouldBeExtracted() {
+//        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
+//
+//        final Long givenId = 255L;
+//        when(givenGenericRecord.get(id)).thenReturn(givenId);
+//
+//        final Long actual = extractId(givenGenericRecord);
+//        assertEquals(givenId, actual);
+//    }
 
     @Test
     public void speedShouldBeExtracted() {

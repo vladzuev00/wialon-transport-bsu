@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.kafka.configuration;
 
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
 import org.apache.avro.Schema;
 import org.apache.avro.reflect.ReflectData;
 import org.springframework.context.annotation.Bean;
@@ -17,5 +18,10 @@ public class SchemaConfiguration {
     @Bean
     public Schema transportableDataSchema() {
         return this.reflectData.getSchema(TransportableData.class);
+    }
+
+    @Bean
+    public Schema transportableSavedDataSchema() {
+        return this.reflectData.getSchema(TransportableSavedData.class);
     }
 }

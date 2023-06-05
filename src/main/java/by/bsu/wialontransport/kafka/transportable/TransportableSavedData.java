@@ -8,6 +8,7 @@ import lombok.experimental.FieldNameConstants;
 @ToString(callSuper = true)
 @FieldNameConstants
 public final class TransportableSavedData extends TransportableData {
+    private final Long id;
     private final Long addressId;
 
     @Builder(builderMethodName = "savedDataBuilder")
@@ -34,12 +35,13 @@ public final class TransportableSavedData extends TransportableData {
                                   final Long trackerId,
                                   final Long addressId) {
         super(
-                id, epochSeconds,
+                epochSeconds,
                 latitudeDegrees, latitudeMinutes, latitudeMinuteShare, latitudeTypeValue,
                 longitudeDegrees, longitudeMinutes, longitudeMinuteShare, longitudeTypeValue,
                 speed, course, altitude, amountOfSatellites, reductionPrecision, inputs, outputs,
                 serializedAnalogInputs, driverKeyCode, serializedParameters, trackerId
         );
+        this.id = id;
         this.addressId = addressId;
     }
 }

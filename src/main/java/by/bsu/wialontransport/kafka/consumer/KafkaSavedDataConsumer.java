@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.id;
 import static java.lang.String.format;
 
 @Slf4j
@@ -23,8 +24,7 @@ import static java.lang.String.format;
 public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     private final AddressService addressService;
 
-    public KafkaSavedDataConsumer(final TrackerService trackerService,
-                                  final AddressService addressService) {
+    public KafkaSavedDataConsumer(final TrackerService trackerService, final AddressService addressService) {
         super(trackerService);
         this.addressService = addressService;
     }
@@ -68,6 +68,10 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
         log.info("Consuming saved data: {}", data);
     }
 
+    private static Long extractId(final GenericRecord genericRecord) {
+        return extractValue(genericRecord, id);
+    }
+
     private Address extractAddress(final GenericRecord genericRecord) {
         final Long addressId = extractAddressId(genericRecord);
         final Optional<Address> optionalAddress = this.addressService.findById(addressId);
@@ -78,7 +82,7 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
         );
     }
 
-    private Long extractAddressId(final GenericRecord genericRecord) {
+    private static Long extractAddressId(final GenericRecord genericRecord) {
         return extractValue(genericRecord, TransportableSavedData.Fields.addressId);
     }
 }

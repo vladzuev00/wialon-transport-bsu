@@ -48,7 +48,7 @@ public class KafkaProducerConfiguration {
             @Value("${kafka.topic.saved-data.producer.batch-size}") final int batchSize,
             @Value("${kafka.topic.saved-data.producer.linger-ms}") final int lingerMs,
             @Value("${kafka.topic.saved-data.producer.delivery-timeout-ms}") final int deliveryTimeoutMs,
-            @Qualifier("transportableDataSchema") final Schema schema) {
+            @Qualifier("transportableSavedDataSchema") final Schema schema) {
         return new KafkaTemplate<>(this.createProducerFactory(batchSize, lingerMs, deliveryTimeoutMs, schema));
     }
 
