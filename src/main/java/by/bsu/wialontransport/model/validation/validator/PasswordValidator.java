@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public final class PasswordValidator implements ConstraintValidator<Password, String> {
-    private static final String REGEX_VALID_PASSWORD = "[a-zA-Z0-9-]{5,128}";
+    private static final String REGEX_VALID_PASSWORD = "[a-zA-Z0-9-]{3,128}";
 
     @Override
     public boolean isValid(final String research, final ConstraintValidatorContext context) {

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 import org.wololo.geojson.Geometry;
 
+//TODO: refactor tests
 @Value
 @Builder
 public class NominatimReverseResponse {
@@ -17,12 +18,12 @@ public class NominatimReverseResponse {
     ExtraTags extraTags;
 
     @JsonCreator
-    public NominatimReverseResponse(@JsonProperty("lat") final double centerLatitude,
-                                    @JsonProperty("lot") final double centerLongitude,
-                                    @JsonProperty("address") final Address address,
-                                    @JsonProperty("boundingbox") final double[] boundingBoxCoordinates,
-                                    @JsonProperty("geojson") final Geometry geometry,
-                                    @JsonProperty("extratags") final ExtraTags extraTags) {
+    public NominatimReverseResponse(@JsonProperty(value = "lat", required = true) final double centerLatitude,
+                                    @JsonProperty(value = "lon", required = true) final double centerLongitude,
+                                    @JsonProperty(value = "address", required = true) final Address address,
+                                    @JsonProperty(value = "boundingbox", required = true) final double[] boundingBoxCoordinates,
+                                    @JsonProperty(value = "geojson", required = true) final Geometry geometry,
+                                    @JsonProperty(value = "extratags", required = true) final ExtraTags extraTags) {
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
         this.address = address;
@@ -37,8 +38,8 @@ public class NominatimReverseResponse {
         String countryName;
 
         @JsonCreator
-        public Address(@JsonProperty("city") final String cityName,
-                       @JsonProperty("country") final String countryName) {
+        public Address(@JsonProperty(value = "city", defaultValue = "not defined") final String cityName,
+                       @JsonProperty(value = "country", defaultValue = "not defined") final String countryName) {
             this.cityName = cityName;
             this.countryName = countryName;
         }
@@ -51,8 +52,8 @@ public class NominatimReverseResponse {
         String capital;
 
         @JsonCreator
-        public ExtraTags(@JsonProperty("place") final String place,
-                         @JsonProperty("capital") final String capital) {
+        public ExtraTags(@JsonProperty(value = "place", defaultValue = "not defined") final String place,
+                         @JsonProperty(value = "capital", defaultValue = "not defined") final String capital) {
             this.place = place;
             this.capital = capital;
         }
