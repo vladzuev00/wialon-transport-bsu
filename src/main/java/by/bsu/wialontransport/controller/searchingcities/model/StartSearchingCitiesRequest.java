@@ -25,8 +25,8 @@ public class StartSearchingCitiesRequest {
     Double searchStep;
 
     @JsonCreator
-    public StartSearchingCitiesRequest(@JsonProperty("areaCoordinate") final AreaCoordinate areaCoordinate,
-                                       @JsonProperty("searchStep") final Double searchStep) {
+    public StartSearchingCitiesRequest(@JsonProperty(value = "areaCoordinate") final AreaCoordinate areaCoordinate,
+                                       @JsonProperty(value = "searchStep") final Double searchStep) {
         this.areaCoordinate = areaCoordinate;
         this.searchStep = searchStep;
     }

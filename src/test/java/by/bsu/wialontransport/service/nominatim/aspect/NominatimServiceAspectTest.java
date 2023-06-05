@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.nominatim.aspect;
 
 import by.bsu.wialontransport.configuration.GeoJsonConfiguration;
 import by.bsu.wialontransport.configuration.GeometryFactoryConfiguration;
-import by.bsu.wialontransport.configuration.RestTemplateConfig;
+import by.bsu.wialontransport.configuration.RestTemplateConfiguration;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringRunner.class)
 @Import({
-        RestTemplateConfig.class,
+        RestTemplateConfiguration.class,
         GeometryFactoryConfiguration.class,
         GeoJsonConfiguration.class,
         AnnotationAwareAspectJAutoProxyCreator.class,

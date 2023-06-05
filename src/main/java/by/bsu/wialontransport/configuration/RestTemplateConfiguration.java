@@ -16,7 +16,7 @@ import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.ALL;
 
 @Configuration
-public class RestTemplateConfig {
+public class RestTemplateConfiguration {
 
     //TODO: do pool of rest templates
     @Bean
