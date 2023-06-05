@@ -15,15 +15,15 @@ import javax.validation.constraints.Size;
 public class ChangePasswordForm {
 
     @NotNull
-    @Size(min = 5, max = 30)
+    @Size(min = 5, max = 128)
     private String oldPassword;
 
     @NotNull
-    @Size(min = 5, max = 30)
+    @Size(min = 5, max = 128)
     private String newPassword;
 
     @NotNull
-    @Size(min = 5, max = 30)
+    @Size(min = 5, max = 128)
     private String confirmedNewPassword;
 
 }
