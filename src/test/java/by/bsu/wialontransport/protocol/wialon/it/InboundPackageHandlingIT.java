@@ -12,7 +12,6 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.protocol.wialon.server.WialonServer;
 import by.bsu.wialontransport.protocol.wialon.server.factory.WialonServerFactory;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
-import by.bsu.wialontransport.util.GeometryUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +40,6 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.STRING;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -49,10 +47,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.IntStream.range;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
@@ -179,10 +177,12 @@ public class InboundPackageHandlingIT extends AbstractKafkaContainerTest {
     @SuppressWarnings("unchecked")
     @Transactional(propagation = NOT_SUPPORTED)
     @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name) "
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
             + "VALUES(258, "
             + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country')")
+            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((37.54833 55.406944, 41.54833 55.406944, 41.54833 59.406944, 37.54833 59.406944, 37.54833 55.406944))', 4326)"
+            + ")")
     @Sql(statements = "UPDATE trackers_last_data SET data_id = NULL", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM data", executionPhase = AFTER_TEST_METHOD)
     @Sql(statements = "DELETE FROM addresses", executionPhase = AFTER_TEST_METHOD)

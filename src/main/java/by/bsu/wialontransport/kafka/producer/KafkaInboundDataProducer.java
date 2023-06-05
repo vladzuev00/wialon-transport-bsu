@@ -19,30 +19,30 @@ public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer<Tr
         super(kafkaTemplate, topicName, schema);
     }
 
+    //TODO: refactor tests
     @Override
     protected TransportableData mapToTransportable(final Data data) {
-        return new TransportableData(
-                data.getId(),
-                findEpochSeconds(data),
-                findLatitudeDegrees(data),
-                findLatitudeMinutes(data),
-                findLatitudeMinuteShare(data),
-                findLatitudeTypeValue(data),
-                findLongitudeDegrees(data),
-                findLongitudeMinutes(data),
-                findLongitudeMinuteShare(data),
-                findLongitudeTypeValue(data),
-                data.getSpeed(),
-                data.getCourse(),
-                data.getAltitude(),
-                data.getAmountOfSatellites(),
-                data.getReductionPrecision(),
-                data.getInputs(),
-                data.getOutputs(),
-                super.serializeAnalogInputs(data),
-                data.getDriverKeyCode(),
-                super.serializeParameters(data),
-                findTrackerId(data)
-        );
+        return TransportableData.builder()
+                .epochSeconds(findEpochSeconds(data))
+                .latitudeDegrees(findLatitudeDegrees(data))
+                .latitudeMinutes(findLatitudeMinutes(data))
+                .latitudeMinuteShare(findLatitudeMinuteShare(data))
+                .latitudeTypeValue(findLatitudeTypeValue(data))
+                .longitudeDegrees(findLongitudeDegrees(data))
+                .longitudeMinutes(findLongitudeMinutes(data))
+                .longitudeMinuteShare(findLongitudeMinuteShare(data))
+                .longitudeTypeValue(findLongitudeTypeValue(data))
+                .speed(data.getSpeed())
+                .course(data.getCourse())
+                .altitude(data.getAltitude())
+                .amountOfSatellites(data.getAmountOfSatellites())
+                .reductionPrecision(data.getReductionPrecision())
+                .inputs(data.getInputs())
+                .outputs(data.getOutputs())
+                .serializedAnalogInputs(super.serializeAnalogInputs(data))
+                .driverKeyCode(data.getDriverKeyCode())
+                .serializedParameters(super.serializeParameters(data))
+                .trackerId(findTrackerId(data))
+                .build();
     }
 }

@@ -36,6 +36,9 @@ public class TransportableData implements Transportable<Long> {
     private final String serializedParameters;
     private final Long trackerId;
 
+    @Nullable
+    private final Long addressId;
+
     @Override
     public final Long findTopicKey() {
         return this.trackerId;

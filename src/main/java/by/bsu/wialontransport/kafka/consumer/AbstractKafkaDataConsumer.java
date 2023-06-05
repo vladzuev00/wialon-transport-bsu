@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
 import static java.lang.Byte.parseByte;
+import static java.lang.Long.parseLong;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
@@ -206,11 +207,14 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
     private static final class ParametersByNamesExtractor {
         private static final String REGEX_DELIMITER_SERIALIZED_PARAMETERS = ",";
 
-        private static final String REGEX_SERIALIZED_PARAMETER = "^(([a-zA-Z0-9]+):([123]):(.+))$";
+        //TODO: refactor tests with id
+        private static final String REGEX_SERIALIZED_PARAMETER = "^(((\\d+):)?([a-zA-Z0-9]+):([123]):(.+))$";
         private static final Pattern PATTERN_SERIALIZED_PARAMETER = compile(REGEX_SERIALIZED_PARAMETER);
-        private static final int GROUP_NUMBER_NAME = 2;
-        private static final int GROUP_NUMBER_TYPE_VALUE = 3;
-        private static final int GROUP_NUMBER_VALUE = 4;
+
+        private static final int GROUP_NUMBER_ID = 3;
+        private static final int GROUP_NUMBER_NAME = 4;
+        private static final int GROUP_NUMBER_TYPE_VALUE = 5;
+        private static final int GROUP_NUMBER_VALUE = 6;
 
         private static final String MESSAGE_EXCEPTION_NOT_VALID_SERIALIZED_PARAMETER
                 = "Given serialized parameter isn't valid: %s";
@@ -240,6 +244,7 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         private static Parameter deserializeParameter(final String serializedParameter) {
             final Matcher matcher = findMatcherOrThrowExceptionIfNotMatch(serializedParameter);
             return createParameter(
+                    extractId(matcher),
                     extractName(matcher),
                     extractType(matcher),
                     extractValue(matcher)
@@ -256,6 +261,11 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
             return matcher;
         }
 
+        private static Long extractId(final Matcher matcher) {
+            final String idAsString = matcher.group(GROUP_NUMBER_ID);
+            return idAsString != null ? parseLong(idAsString) : null;
+        }
+
         private static String extractName(final Matcher matcher) {
             return matcher.group(GROUP_NUMBER_NAME);
         }
@@ -270,9 +280,12 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
             return matcher.group(GROUP_NUMBER_VALUE);
         }
 
-        private static Parameter createParameter(final String name, final ParameterEntity.Type type,
+        private static Parameter createParameter(final Long id,
+                                                 final String name,
+                                                 final ParameterEntity.Type type,
                                                  final String value) {
             return Parameter.builder()
+                    .id(id)
                     .name(name)
                     .type(type)
                     .value(value)

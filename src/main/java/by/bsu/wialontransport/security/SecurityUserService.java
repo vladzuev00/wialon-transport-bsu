@@ -2,7 +2,7 @@ package by.bsu.wialontransport.security;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.security.mapper.UserToSecurityUserMapper;
+import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public final class SecurityUserService implements UserDetailsService {
     private final UserService userService;
-    private final UserToSecurityUserMapper mapper;
+    private final SecurityUserMapper mapper;
 
     @Override
     public UserDetails loadUserByUsername(final String email)

@@ -3,7 +3,7 @@ package by.bsu.wialontransport.security;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity.Role;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.security.mapper.UserToSecurityUserMapper;
+import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
 import by.bsu.wialontransport.security.model.SecurityUser;
 import by.bsu.wialontransport.security.model.SecurityUser.SecurityRole;
 import org.junit.Before;
@@ -27,7 +27,7 @@ public final class SecurityUserServiceTest {
     private UserService mockedUserService;
 
     @Mock
-    private UserToSecurityUserMapper mockedMapper;
+    private SecurityUserMapper mockedMapper;
 
     private SecurityUserService securityUserService;
 
