@@ -88,6 +88,22 @@ public final class UserRepositoryTest extends AbstractContextTest {
         assertFalse(exists);
     }
 
+    @Test
+    public void userPasswordShouldBeUpdated() {
+        super.startQueryCount();
+        this.repository.updatePassword(255L, "new-password");
+        super.checkQueryCount(1);
+
+        final UserEntity actual = this.repository.findById(255L).orElseThrow();
+        final UserEntity expected = UserEntity.builder()
+                .id(255L)
+                .email("vladzuev.00@mail.ru")
+                .password("new-password")
+                .role(USER)
+                .build();
+        checkEquals(expected, actual);
+    }
+
     private static void checkEquals(final UserEntity expected, final UserEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getEmail(), actual.getEmail());
