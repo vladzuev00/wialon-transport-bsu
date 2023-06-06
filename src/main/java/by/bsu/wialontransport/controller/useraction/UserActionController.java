@@ -50,14 +50,14 @@ public class UserActionController {
     }
 
     @PostMapping("/addTracker")
-    public String addTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER_FORM) final TrackerForm trackerForm,
+    public String addTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_ADDED_TRACKER_FORM) final TrackerForm form,
                              final BindingResult bindingResult,
                              final Model model) {
         try {
             if (bindingResult.hasErrors()) {
                 return VIEW_NAME_ADD_TRACKER_PAGE;
             }
-            this.userActionService.addTracker(trackerForm, model);
+            this.userActionService.addTracker(form, model);
             return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
         } catch (final TrackerUniqueConstraintException exception) {
             return VIEW_NAME_ADD_TRACKER_PAGE;
@@ -74,14 +74,14 @@ public class UserActionController {
     }
 
     @PostMapping("/updateTracker")
-    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER_FORM) final TrackerForm trackerForm,
+    public String updateTracker(@Valid @ModelAttribute(MODEL_ATTRIBUTE_NAME_OF_UPDATED_TRACKER_FORM) final TrackerForm form,
                                 final BindingResult bindingResult,
                                 final Model model) {
         try {
             if (bindingResult.hasErrors()) {
                 return VIEW_NAME_UPDATE_TRACKER_PAGE;
             }
-            this.userActionService.updateTracker(trackerForm, model);
+            this.userActionService.updateTracker(form, model);
             return VIEW_TO_REDIRECT_TO_PROFILE_PAGE;
         } catch (final TrackerUniqueConstraintException exception) {
             return VIEW_NAME_UPDATE_TRACKER_PAGE;
