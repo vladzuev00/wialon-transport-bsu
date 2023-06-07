@@ -11,6 +11,7 @@ import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
 import org.apache.avro.generic.GenericRecord;
 import org.junit.Before;
 import org.junit.Test;
@@ -266,8 +267,7 @@ public final class KafkaSavedDataConsumerTest extends AbstractContextTest {
                                                      final String serializedParameters,
                                                      final Long trackerId) {
         final GenericRecord genericRecord = mock(GenericRecord.class);
-        //TODO:
-//        when(genericRecord.get(TransportableData.Fields.id)).thenReturn(id);
+        when(genericRecord.get(TransportableSavedData.Fields.id)).thenReturn(id);
         injectDateTimeInGenericRecord(genericRecord, date, time);
         injectLatitudeInGenericRecord(genericRecord, latitude);
         injectLongitudeInGenericRecord(genericRecord, longitude);

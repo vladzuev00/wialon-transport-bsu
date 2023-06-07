@@ -7,6 +7,7 @@ import by.bsu.wialontransport.crud.mapper.TrackerMapper;
 import by.bsu.wialontransport.crud.repository.TrackerRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +17,12 @@ import java.util.Optional;
 
 @Service
 public class TrackerService
-        extends AbstractCRUDService<Long, TrackerEntity, Tracker, TrackerMapper, TrackerRepository> {
+        extends AbstractCRUDEncryptingPasswordService<Long, TrackerEntity, Tracker, TrackerMapper, TrackerRepository> {
 
-    public TrackerService(final TrackerMapper mapper, final TrackerRepository repository) {
-        super(mapper, repository);
-    }
-
-    public Tracker updatePassword(final Tracker tracker, final String newPassword) {
-        //TODO
-        throw new UnsupportedOperationException();
+    public TrackerService(final TrackerMapper mapper,
+                          final TrackerRepository repository,
+                          final BCryptPasswordEncoder passwordEncoder) {
+        super(mapper, repository, passwordEncoder);
     }
 
     @Transactional(readOnly = true)

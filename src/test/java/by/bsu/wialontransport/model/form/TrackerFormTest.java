@@ -69,7 +69,7 @@ public final class TrackerFormTest extends AbstractContextTest {
     public void trackerFormShouldNotBeValidBecauseOfPasswordLengthIsLessThanMinimalAllowable() {
         final TrackerForm givenForm = TrackerForm.builder()
                 .imei("11112222333344445555")
-                .password("pas")
+                .password("pa")
                 .phoneNumber("447336934")
                 .build();
 

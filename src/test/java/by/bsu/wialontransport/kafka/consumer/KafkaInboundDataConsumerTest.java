@@ -84,7 +84,6 @@ public final class KafkaInboundDataConsumerTest {
 
     @Test
     public void genericRecordShouldBeMappedToData() {
-        final Long givenId = 255L;
         final LocalDate givenDate = LocalDate.of(2023, 5, 18);
         final LocalTime givenTime = LocalTime.of(17, 37, 20);
         final Latitude givenLatitude = createLatitude(1, 2, 3, SOUTH);
@@ -105,7 +104,6 @@ public final class KafkaInboundDataConsumerTest {
         final Long givenTrackerId = 256L;
 
         final GenericRecord givenGenericRecord = createGenericRecord(
-                givenId,
                 givenDate,
                 givenTime,
                 givenLatitude,
@@ -132,25 +130,24 @@ public final class KafkaInboundDataConsumerTest {
         );
 
         final Data actual = this.consumer.mapToData(givenGenericRecord);
-        final Data expected = new Data(
-                givenId,
-                givenDate,
-                givenTime,
-                givenLatitude,
-                givenLongitude,
-                givenSpeed,
-                givenCourse,
-                givenAltitude,
-                givenAmountOfSatellites,
-                givenReductionPrecision,
-                givenInputs,
-                givenOutputs,
-                givenAnalogInputs,
-                givenDriverKeyCode,
-                givenParametersByNames,
-                givenTracker,
-                givenAddress
-        );
+        final Data expected = Data.builder()
+                .date(givenDate)
+                .time(givenTime)
+                .latitude(givenLatitude)
+                .longitude(givenLongitude)
+                .speed(givenSpeed)
+                .course(givenCourse)
+                .altitude(givenAltitude)
+                .amountOfSatellites(givenAmountOfSatellites)
+                .reductionPrecision(givenReductionPrecision)
+                .inputs(givenInputs)
+                .outputs(givenOutputs)
+                .analogInputs(givenAnalogInputs)
+                .driverKeyCode(givenDriverKeyCode)
+                .parametersByNames(givenParametersByNames)
+                .tracker(givenTracker)
+                .address(givenAddress)
+                .build();
         assertEquals(expected, actual);
     }
 
@@ -172,7 +169,6 @@ public final class KafkaInboundDataConsumerTest {
         final Long givenTrackerId = 256L;
 
         final GenericRecord givenGenericRecord = createGenericRecord(
-                givenId,
                 givenDate,
                 givenTime,
                 givenLatitude,
@@ -322,8 +318,7 @@ public final class KafkaInboundDataConsumerTest {
         return address.getId() == null;
     }
 
-    private static GenericRecord createGenericRecord(final Long id,
-                                                     final LocalDate date,
+    private static GenericRecord createGenericRecord(final LocalDate date,
                                                      final LocalTime time,
                                                      final Latitude latitude,
                                                      final Longitude longitude,
@@ -339,8 +334,6 @@ public final class KafkaInboundDataConsumerTest {
                                                      final String serializedParameters,
                                                      final Long trackerId) {
         final GenericRecord genericRecord = mock(GenericRecord.class);
-        //TODO
-//        when(genericRecord.get(TransportableData.Fields.id)).thenReturn(id);
         injectDateTimeInGenericRecord(genericRecord, date, time);
         injectLatitudeInGenericRecord(genericRecord, latitude);
         injectLongitudeInGenericRecord(genericRecord, longitude);

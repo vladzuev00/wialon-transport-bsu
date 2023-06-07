@@ -46,7 +46,7 @@ public final class RegistrationService {
 
     private RegistrationStatus onSuccess(final UserForm userForm) {
         final User user = this.mapper.map(userForm);
-        this.userService.saveWithEncryptingPassword(user);
+        this.userService.save(user);
         return SUCCESS;
     }
 

@@ -203,7 +203,6 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
     private static final class ParametersByNamesExtractor {
         private static final String REGEX_DELIMITER_SERIALIZED_PARAMETERS = ",";
 
-        //TODO: refactor tests with id
         private static final String REGEX_SERIALIZED_PARAMETER = "^(((\\d+):)?([a-zA-Z0-9]+):([123]):(.+))$";
         private static final Pattern PATTERN_SERIALIZED_PARAMETER = compile(REGEX_SERIALIZED_PARAMETER);
 

@@ -10,12 +10,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "trackers")
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
-@Builder
-public class TrackerEntity extends AbstractEntity<Long> {
+@ToString(callSuper = true)
+public class TrackerEntity extends AbstractEntityWithPassword<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -25,9 +23,6 @@ public class TrackerEntity extends AbstractEntity<Long> {
     @Column(name = "imei")
     private String imei;
 
-    @Column(name = "encrypted_password")
-    private String password;
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -35,4 +30,17 @@ public class TrackerEntity extends AbstractEntity<Long> {
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private UserEntity user;
+
+    @Builder
+    public TrackerEntity(final Long id,
+                         final String imei,
+                         final String password,
+                         final String phoneNumber,
+                         final UserEntity user) {
+        super(password);
+        this.id = id;
+        this.imei = imei;
+        this.phoneNumber = phoneNumber;
+        this.user = user;
+    }
 }

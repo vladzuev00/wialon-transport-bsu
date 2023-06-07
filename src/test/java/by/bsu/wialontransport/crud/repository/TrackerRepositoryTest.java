@@ -158,6 +158,26 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         assertTrue(optionalActual.isEmpty());
     }
 
+    @Test
+    public void trackerPasswordShouldBeUpdated() {
+        final Long givenId = 255L;
+        final String givenNewPassword = "new-password";
+
+        super.startQueryCount();
+        this.repository.updatePassword(givenId, givenNewPassword);
+        super.checkQueryCount(1);
+
+        final TrackerEntity actual = this.repository.findById(givenId).orElseThrow();
+        final TrackerEntity expected = TrackerEntity.builder()
+                .id(givenId)
+                .imei("11112222333344445555")
+                .password(givenNewPassword)
+                .phoneNumber("447336934")
+                .user(super.entityManager.getReference(UserEntity.class, 255L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
     private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getImei(), actual.getImei());

@@ -43,7 +43,7 @@ public final class ChangePasswordFormTest extends AbstractContextTest {
     @Test
     public void changePasswordFormShouldNotBeValidBecauseOfOldPasswordLengthIsLessThanMinimalAllowable() {
         final ChangePasswordForm givenForm = ChangePasswordForm.builder()
-                .oldPassword("old")
+                .oldPassword("ol")
                 .newPassword("new-password")
                 .confirmedNewPassword("new-password")
                 .build();
@@ -85,7 +85,7 @@ public final class ChangePasswordFormTest extends AbstractContextTest {
     public void changePasswordFormShouldNotBeValidBecauseOfNewPasswordLengthIsLessThanMinimalAllowable() {
         final ChangePasswordForm givenForm = ChangePasswordForm.builder()
                 .oldPassword("old-password")
-                .newPassword("new")
+                .newPassword("ne")
                 .confirmedNewPassword("new-password")
                 .build();
 
@@ -126,7 +126,7 @@ public final class ChangePasswordFormTest extends AbstractContextTest {
         final ChangePasswordForm givenForm = ChangePasswordForm.builder()
                 .oldPassword("old-password")
                 .newPassword("new-password")
-                .confirmedNewPassword("new")
+                .confirmedNewPassword("ne")
                 .build();
 
         final Set<ConstraintViolation<ChangePasswordForm>> constraintViolations = this.validator.validate(givenForm);

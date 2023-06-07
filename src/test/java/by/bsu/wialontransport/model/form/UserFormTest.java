@@ -69,7 +69,7 @@ public final class UserFormTest extends AbstractContextTest {
     public void userFormShouldNotBeValidBecauseOfPasswordLengthIsLessThanMinimalAllowable() {
         final UserForm givenUserForm = UserForm.builder()
                 .email("vladzuev.00@mail.ru")
-                .password("pass")
+                .password("pa")
                 .confirmedPassword("password")
                 .build();
 
@@ -111,7 +111,7 @@ public final class UserFormTest extends AbstractContextTest {
         final UserForm givenUserForm = UserForm.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .confirmedPassword("pass")
+                .confirmedPassword("pa")
                 .build();
 
         final Set<ConstraintViolation<UserForm>> constraintViolations = this.validator.validate(givenUserForm);

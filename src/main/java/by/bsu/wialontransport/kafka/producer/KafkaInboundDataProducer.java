@@ -19,7 +19,6 @@ public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer<Tr
         super(kafkaTemplate, topicName, schema);
     }
 
-    //TODO: refactor tests
     @Override
     protected TransportableData mapToTransportable(final Data data) {
         return TransportableData.builder()
