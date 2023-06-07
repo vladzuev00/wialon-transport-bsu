@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(final String email);
 
     @Modifying
-    @Query(value = "UPDATE users SET encrypted_password = :newPassword WHERE users.id = :userId", nativeQuery = true)
+    @Query(value = "UPDATE UserEntity e SET e.password = :newPassword WHERE e.id = :userId", nativeQuery = true)
     void updatePassword(final Long userId, final String newPassword);
 
 }

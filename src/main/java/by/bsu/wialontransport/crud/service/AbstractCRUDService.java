@@ -17,20 +17,34 @@ public abstract class AbstractCRUDService<
 
         extends AbstractRUDService<IdType, EntityType, DtoType, MapperType, RepositoryType> {
 
-
     public AbstractCRUDService(final MapperType mapper, final RepositoryType repository) {
         super(mapper, repository);
     }
 
     public DtoType save(final DtoType saved) {
-        final EntityType entityToBeSaved = super.mapper.mapToEntity(saved);
+        final EntityType entityToBeSaved = this.mapToConfiguredEntity(saved);
         final EntityType savedEntity = super.repository.save(entityToBeSaved);
         return super.mapper.mapToDto(savedEntity);
     }
 
-    public List<DtoType> saveAll(Collection<DtoType> saved) {
-        final List<EntityType> entitiesToBeSaved = super.mapper.mapToEntity(saved);
+    public List<DtoType> saveAll(final Collection<DtoType> saved) {
+        final List<EntityType> entitiesToBeSaved = this.mapToConfiguredEntities(saved);
         final List<EntityType> savedEntities = super.repository.saveAll(entitiesToBeSaved);
         return super.mapper.mapToDto(savedEntities);
+    }
+
+    protected EntityType configureBeforeSave(final EntityType source) {
+        return source;
+    }
+
+    private EntityType mapToConfiguredEntity(final DtoType source) {
+        final EntityType sourceEntity = super.mapper.mapToEntity(source);
+        return this.configureBeforeSave(sourceEntity);
+    }
+
+    private List<EntityType> mapToConfiguredEntities(final Collection<DtoType> source) {
+        return source.stream()
+                .map(this::mapToConfiguredEntity)
+                .toList();
     }
 }

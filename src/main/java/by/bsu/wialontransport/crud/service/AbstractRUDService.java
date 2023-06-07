@@ -18,21 +18,21 @@ public abstract class AbstractRUDService<
 
         extends AbstractReadService<IdType, EntityType, DtoType, MapperType, RepositoryType> {
     private static final String TEMPLATE_EXCEPTION_MESSAGE_CHECKING_ID
-            = "Entity should have id: (not null OR 0), but was id: %s.";
+            = "Entity should have id: (not null or 0), but was id: %s.";
 
     public AbstractRUDService(final MapperType mapper, final RepositoryType repository) {
         super(mapper, repository);
     }
 
     public DtoType update(final DtoType updated) {
-        checkId(updated.getId());
+        this.checkId(updated.getId());
         final EntityType entityToBeUpdated = super.mapper.mapToEntity(updated);
         final EntityType updatedEntity = super.repository.save(entityToBeUpdated);
         return this.mapper.mapToDto(updatedEntity);
     }
 
     public void delete(final IdType id) {
-        checkId(id);
+        this.checkId(id);
         super.repository.deleteById(id);
     }
 
