@@ -6,9 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class TrackerPasswordEncryptingService extends AbstractPasswordEncryptingService<Tracker, TrackerService> {
+public final class TrackerEncryptingPasswordService extends AbstractEncryptingPasswordService<Tracker, TrackerService> {
 
-    public TrackerPasswordEncryptingService(final BCryptPasswordEncoder encoder, final TrackerService trackerService) {
+    public TrackerEncryptingPasswordService(final BCryptPasswordEncoder encoder, final TrackerService trackerService) {
         super(encoder, trackerService);
     }
 

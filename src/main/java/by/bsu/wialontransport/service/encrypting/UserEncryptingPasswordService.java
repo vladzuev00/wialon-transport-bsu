@@ -4,9 +4,9 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public final class UserPasswordEncryptingService extends AbstractPasswordEncryptingService<User, UserService> {
+public final class UserEncryptingPasswordService extends AbstractEncryptingPasswordService<User, UserService> {
 
-    public UserPasswordEncryptingService(final BCryptPasswordEncoder encoder, final UserService crudService) {
+    public UserEncryptingPasswordService(final BCryptPasswordEncoder encoder, final UserService crudService) {
         super(encoder, crudService);
     }
 
