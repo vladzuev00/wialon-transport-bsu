@@ -2,13 +2,13 @@ package by.bsu.wialontransport.crud.repository;
 
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TrackerRepository extends JpaRepository<TrackerEntity, Long> {
+public interface TrackerRepository extends EntityWithPasswordRepository<Long, TrackerEntity> {
 
     Optional<TrackerEntity> findByImei(final String imei);
 
@@ -20,4 +20,8 @@ public interface TrackerRepository extends JpaRepository<TrackerEntity, Long> {
 
     Optional<TrackerEntity> findByPhoneNumber(final String phoneNumber);
 
+    @Override
+    @Modifying
+    @Query("UPDATE TrackerEntity e SET e.password = :encryptedPassword WHERE e.id = :id")
+    void updatePassword(final Long id, final String encryptedPassword);
 }
