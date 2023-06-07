@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.registration.mapper;
+package by.bsu.wialontransport.model.form.mapper;
 
 import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.crud.dto.User;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 
 @Component
-public final class UserFormToUserMapper {
+public final class UserFormMapper {
 
     public User map(final UserForm userForm) {
         return User.builder()

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Value;
 import org.wololo.geojson.Geometry;
 
-//TODO: refactor tests
 @Value
 @Builder
 public class NominatimReverseResponse {
@@ -18,12 +17,12 @@ public class NominatimReverseResponse {
     ExtraTags extraTags;
 
     @JsonCreator
-    public NominatimReverseResponse(@JsonProperty(value = "lat", required = true) final double centerLatitude,
-                                    @JsonProperty(value = "lon", required = true) final double centerLongitude,
-                                    @JsonProperty(value = "address", required = true) final Address address,
-                                    @JsonProperty(value = "boundingbox", required = true) final double[] boundingBoxCoordinates,
-                                    @JsonProperty(value = "geojson", required = true) final Geometry geometry,
-                                    @JsonProperty(value = "extratags", required = true) final ExtraTags extraTags) {
+    public NominatimReverseResponse(@JsonProperty(value = "lat") final double centerLatitude,
+                                    @JsonProperty(value = "lon") final double centerLongitude,
+                                    @JsonProperty(value = "address") final Address address,
+                                    @JsonProperty(value = "boundingbox") final double[] boundingBoxCoordinates,
+                                    @JsonProperty(value = "geojson") final Geometry geometry,
+                                    @JsonProperty(value = "extratags") final ExtraTags extraTags) {
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
         this.address = address;

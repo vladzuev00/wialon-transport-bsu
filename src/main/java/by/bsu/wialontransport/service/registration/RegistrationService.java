@@ -4,7 +4,7 @@ import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;
-import by.bsu.wialontransport.service.registration.mapper.UserFormToUserMapper;
+import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import static by.bsu.wialontransport.model.RegistrationStatus.*;
 @RequiredArgsConstructor
 public final class RegistrationService {
     private final UserService userService;
-    private final UserFormToUserMapper mapper;
+    private final UserFormMapper mapper;
 
     public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
         if (bindingResult.hasErrors()) {
