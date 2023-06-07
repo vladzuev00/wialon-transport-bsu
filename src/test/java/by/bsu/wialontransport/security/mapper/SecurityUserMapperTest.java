@@ -8,8 +8,27 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public final class UserToSecurityUserMapperTest {
+public final class SecurityUserMapperTest {
     private final SecurityUserMapper mapper = new SecurityUserMapper();
+
+    @Test
+    public void securityUserShouldBeMappedToUser() {
+        final SecurityUser givenSecurityUser = SecurityUser.builder()
+                .id(255L)
+                .email("vladzuev.00@mail.ru")
+                .password("password")
+                .role(SecurityRole.USER)
+                .build();
+
+        final User actual = this.mapper.map(givenSecurityUser);
+        final User expected = User.builder()
+                .id(255L)
+                .email("vladzuev.00@mail.ru")
+                .password("password")
+                .role(Role.USER)
+                .build();
+        assertEquals(expected, actual);
+    }
 
     @Test
     public void userShouldBeMappedToSecurityUser() {
@@ -28,11 +47,6 @@ public final class UserToSecurityUserMapperTest {
                 .role(SecurityRole.USER)
                 .build();
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void securityUserShouldBeMappedToUser() {
-        throw new RuntimeException();
     }
 
 }
