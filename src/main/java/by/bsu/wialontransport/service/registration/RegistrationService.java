@@ -4,7 +4,7 @@ import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;
-import by.bsu.wialontransport.service.registration.mapper.UserFormToUserMapper;
+import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -15,8 +15,14 @@ import static by.bsu.wialontransport.model.RegistrationStatus.*;
 @Service
 @RequiredArgsConstructor
 public final class RegistrationService {
+    private static final String ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR = "confirmingPasswordError";
+    private static final String ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR = "Password isn't confirmed correctly";
+
+    private static final String ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR = "emailAlreadyExistsError";
+    private static final String ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR = "Email already exists";
+
     private final UserService userService;
-    private final UserFormToUserMapper mapper;
+    private final UserFormMapper mapper;
 
     public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
         if (bindingResult.hasErrors()) {
@@ -24,9 +30,9 @@ public final class RegistrationService {
         } else if (!isPasswordConfirmedCorrectly(userForm)) {
             return onConfirmingPasswordError(model);
         } else if (this.isEmailAlreadyExist(userForm)) {
-            return onEmailAlreadyExists(model);
+            return onEmailAlreadyExistsError(model);
         } else {
-            return onSuccess(userForm);
+            return this.onSuccess(userForm);
         }
     }
 
@@ -39,7 +45,7 @@ public final class RegistrationService {
         return CONFIRMING_PASSWORD_ERROR;
     }
 
-    private static RegistrationStatus onEmailAlreadyExists(final Model model) {
+    private static RegistrationStatus onEmailAlreadyExistsError(final Model model) {
         addErrorMessageOfEmailAlreadyExists(model);
         return EMAIL_ALREADY_EXISTS;
     }
@@ -57,11 +63,11 @@ public final class RegistrationService {
     }
 
     private static void addErrorMessageOfConfirmingPassword(final Model model) {
-        model.addAttribute("confirmingPasswordError", "Password isn't confirmed correctly");
+        model.addAttribute(ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR, ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR);
     }
 
     private static void addErrorMessageOfEmailAlreadyExists(final Model model) {
-        model.addAttribute("emailAlreadyExistsError", "Email already exists");
+        model.addAttribute(ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR);
     }
 
     private boolean isEmailAlreadyExist(final UserForm userForm) {

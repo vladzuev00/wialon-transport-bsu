@@ -1,10 +1,9 @@
-package by.bsu.wialontransport.service.searchingservice.factory;
+package by.bsu.wialontransport.service.searchingcities.factory;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;

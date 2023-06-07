@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.searchingservice;
+package by.bsu.wialontransport.service.searchingcities;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
@@ -7,7 +7,6 @@ import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
-import by.bsu.wialontransport.service.searchingcities.SearchingCitiesService;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesInterruptedException;
 import org.junit.Before;
 import org.junit.Test;

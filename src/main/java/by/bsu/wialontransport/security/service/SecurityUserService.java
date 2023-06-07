@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.security;
+package by.bsu.wialontransport.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;

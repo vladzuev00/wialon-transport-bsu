@@ -1,8 +1,7 @@
-package by.bsu.wialontransport.service.searchingservice.areaiterator;
+package by.bsu.wialontransport.service.searchingcities.areaiterator;
 
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import org.junit.Test;
 
 import java.util.ArrayList;
