@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status.*;
 
-//TODO: refactor tests
 @Service
 @RequiredArgsConstructor
 public final class AuthorizationTrackerService {
