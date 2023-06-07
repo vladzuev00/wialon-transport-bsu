@@ -13,8 +13,8 @@ public abstract class AbstractCRUDService<
         EntityType extends AbstractEntity<IdType>,
         DtoType extends AbstractDto<IdType>,
         MapperType extends AbstractMapper<EntityType, DtoType>,
-        RepositoryType extends JpaRepository<EntityType, IdType>>
-
+        RepositoryType extends JpaRepository<EntityType, IdType>
+        >
         extends AbstractRUDService<IdType, EntityType, DtoType, MapperType, RepositoryType> {
 
     public AbstractCRUDService(final MapperType mapper, final RepositoryType repository) {

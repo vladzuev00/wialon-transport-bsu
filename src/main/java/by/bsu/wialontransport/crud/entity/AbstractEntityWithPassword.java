@@ -1,0 +1,18 @@
+package by.bsu.wialontransport.crud.entity;
+
+import lombok.*;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@MappedSuperclass
+public abstract class AbstractEntityWithPassword<IdType> extends AbstractEntity<IdType> {
+
+    @Column(name = "encrypted_password")
+    private String password;
+
+}
