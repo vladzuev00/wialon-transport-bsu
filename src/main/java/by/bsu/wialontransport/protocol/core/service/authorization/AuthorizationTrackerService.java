@@ -11,12 +11,14 @@ import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginP
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status.*;
 
+//TODO: refactor tests
 @Service
 @RequiredArgsConstructor
 public final class AuthorizationTrackerService {
@@ -24,12 +26,13 @@ public final class AuthorizationTrackerService {
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;
     private final DataService dataService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public void authorize(final RequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());
         final Status status = optionalTracker
-                .map(tracker -> checkPassword(tracker, requestPackage.getPassword()))
+                .map(tracker -> this.checkPassword(tracker, requestPackage.getPassword()))
                 .orElse(CONNECTION_FAILURE);
         if (status == SUCCESS_AUTHORIZATION) {
             final Tracker tracker = optionalTracker.get();
@@ -40,9 +43,11 @@ public final class AuthorizationTrackerService {
         sendResponse(context, status);
     }
 
-    private static Status checkPassword(final Tracker tracker, final String packagePassword) {
-        final String devicePassword = tracker.getPassword();
-        return packagePassword.equals(devicePassword) ? SUCCESS_AUTHORIZATION : ERROR_CHECK_PASSWORD;
+    private Status checkPassword(final Tracker tracker, final String packagePassword) {
+        final String deviceEncryptedPassword = tracker.getPassword();
+        return this.passwordEncoder.matches(packagePassword, deviceEncryptedPassword)
+                ? SUCCESS_AUTHORIZATION
+                : ERROR_CHECK_PASSWORD;
     }
 
     private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
