@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.encrypting;
 
 import by.bsu.wialontransport.crud.dto.AbstractDto;
 import by.bsu.wialontransport.crud.service.AbstractCRUDService;
+import by.bsu.wialontransport.service.encrypting.crud.PasswordEncryptingService;
 import by.bsu.wialontransport.service.encrypting.model.Encryptable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class AbstractPasswordEncryptingService<
         E extends AbstractDto<?> & Encryptable,
-        S extends AbstractCRUDService<?, ?, E, ?, ?>
+        S extends AbstractCRUDService<?, ?, E, ?, ?> & PasswordEncryptingService<E>
         > {
     private final BCryptPasswordEncoder encoder;
     private final S crudService;
@@ -28,12 +29,10 @@ public abstract class AbstractPasswordEncryptingService<
 
     public final E updatePassword(final E source, final String rawNewPassword) {
         final String encryptedNewPassword = this.encoder.encode(rawNewPassword);
-        return this.updatePassword(this.crudService, source, encryptedNewPassword);
+        return this.crudService.updatePassword(source, rawNewPassword);
     }
 
     protected abstract E createWithEncryptedPassword(final E source, final String encryptedPassword);
-
-    protected abstract E updatePassword(final S crudService, final E source, final String encryptedNewPassword);
 
     private E mapToDtoWithEncryptedPassword(final E source) {
         final String rawPassword = source.getPassword();

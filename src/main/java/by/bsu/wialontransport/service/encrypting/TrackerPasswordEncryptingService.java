@@ -1,13 +1,12 @@
 package by.bsu.wialontransport.service.encrypting;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.AbstractCRUDService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class TrackerPasswordEncryptingService extends AbstractPasswordEncryptingService<Tracker> {
+public final class TrackerPasswordEncryptingService extends AbstractPasswordEncryptingService<Tracker, TrackerService> {
 
     public TrackerPasswordEncryptingService(final BCryptPasswordEncoder encoder, final TrackerService trackerService) {
         super(encoder, trackerService);
@@ -22,12 +21,5 @@ public final class TrackerPasswordEncryptingService extends AbstractPasswordEncr
                 source.getPhoneNumber(),
                 source.getUser()
         );
-    }
-
-    @Override
-    protected Tracker updatePassword(final AbstractCRUDService<?, ?, Tracker, ?, ?> crudService,
-                                     final Tracker source,
-                                     final String encryptedNewPassword) {
-        return null;
     }
 }
