@@ -23,15 +23,15 @@ public abstract class AbstractCRUDEncryptingPasswordService<
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void updatePassword(final DtoType source, final String newPassword) {
+        final String encryptedPassword = this.passwordEncoder.encode(newPassword);
+        super.repository.updatePassword(source.getId(), encryptedPassword);
+    }
+
     @Override
     protected final EntityType configureBeforeSave(final EntityType source) {
         this.injectEncryptedPassword(source);
         return source;
-    }
-
-    public void updatePassword(final DtoType source, final String newPassword) {
-        final String encryptedPassword = this.passwordEncoder.encode(newPassword);
-        super.repository.updatePassword(source.getId(), encryptedPassword);
     }
 
     private void injectEncryptedPassword(final EntityType source) {
