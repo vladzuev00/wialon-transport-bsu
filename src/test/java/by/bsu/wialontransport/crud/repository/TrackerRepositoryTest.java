@@ -5,6 +5,7 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Autowired
     private TrackerRepository repository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
     public void trackerShouldBeFoundById() {
@@ -156,6 +160,26 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         super.checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerPasswordShouldBeUpdated() {
+        final Long givenId = 255L;
+        final String givenNewPassword = "new-password";
+
+        super.startQueryCount();
+        this.repository.updatePassword(givenId, givenNewPassword);
+        super.checkQueryCount(1);
+
+        final TrackerEntity actual = this.repository.findById(givenId).orElseThrow();
+        final TrackerEntity expected = TrackerEntity.builder()
+                .id(givenId)
+                .imei("11112222333344445555")
+                .password(givenNewPassword)
+                .phoneNumber("447336934")
+                .user(super.entityManager.getReference(UserEntity.class, 255L))
+                .build();
+        checkEquals(expected, actual);
     }
 
     private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
