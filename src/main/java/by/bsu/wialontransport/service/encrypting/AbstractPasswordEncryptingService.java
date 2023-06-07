@@ -9,9 +9,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class AbstractPasswordEncryptingService<E extends AbstractDto<?> & Encryptable> {
+public abstract class AbstractPasswordEncryptingService<
+        E extends AbstractDto<?> & Encryptable,
+        S extends AbstractCRUDService<?, ?, E, ?, ?>
+        > {
     private final BCryptPasswordEncoder encoder;
-    private final AbstractCRUDService<?, ?, E, ?, ?> crudService;
+    private final S crudService;
 
     public final E save(final E source) {
         final E encrypted = this.mapToDtoWithEncryptedPassword(source);
@@ -30,9 +33,7 @@ public abstract class AbstractPasswordEncryptingService<E extends AbstractDto<?>
 
     protected abstract E createWithEncryptedPassword(final E source, final String encryptedPassword);
 
-    protected abstract E updatePassword(final AbstractCRUDService<?, ?, E, ?, ?> crudService,
-                                        final E source,
-                                        final String encryptedNewPassword);
+    protected abstract E updatePassword(final S crudService, final E source, final String encryptedNewPassword);
 
     private E mapToDtoWithEncryptedPassword(final E source) {
         final String rawPassword = source.getPassword();
