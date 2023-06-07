@@ -4,7 +4,6 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -15,9 +14,6 @@ public final class UserServiceTest extends AbstractContextTest {
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
     public void userShouldBeFoundByEmail() {

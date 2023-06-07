@@ -17,13 +17,7 @@ import java.util.Optional;
 
 @Service
 public class TrackerService
-        extends AbstractCRUDEncryptingPasswordService<
-        Long,
-        TrackerEntity,
-        Tracker,
-        TrackerMapper,
-        TrackerRepository
-        > {
+        extends AbstractCRUDEncryptingPasswordService<Long, TrackerEntity, Tracker, TrackerMapper, TrackerRepository> {
 
     public TrackerService(final TrackerMapper mapper,
                           final TrackerRepository repository,
