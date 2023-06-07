@@ -106,17 +106,6 @@ public final class AbstractKafkaDataConsumerTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
-//    public void idShouldBeExtracted() {
-//        final GenericRecord givenGenericRecord = mock(GenericRecord.class);
-//
-//        final Long givenId = 255L;
-//        when(givenGenericRecord.get(id)).thenReturn(givenId);
-//
-//        final Long actual = extractId(givenGenericRecord);
-//        assertEquals(givenId, actual);
-//    }
-
     @Test
     public void speedShouldBeExtracted() {
         final GenericRecord givenGenericRecord = mock(GenericRecord.class);
@@ -233,13 +222,13 @@ public final class AbstractKafkaDataConsumerTest {
     public void parametersByNamesShouldBeExtracted() {
         final GenericRecord givenGenericRecord = mock(GenericRecord.class);
 
-        final String givenSerializedParameters = "122:3:str,123:2:6,124:1:7";
+        final String givenSerializedParameters = "122:3:str,256:123:2:6,124:1:7";
         when(givenGenericRecord.get(serializedParameters)).thenReturn(givenSerializedParameters);
 
         final Map<String, Parameter> actual = this.consumer.extractParametersByNames(givenGenericRecord);
         final Map<String, Parameter> expected = Map.of(
                 "122", createParameter("122", STRING, "str"),
-                "123", createParameter("123", DOUBLE, "6"),
+                "123", createParameter(256L, "123", DOUBLE, "6"),
                 "124", createParameter("124", INTEGER, "7")
         );
         assertEquals(expected, actual);
@@ -318,6 +307,18 @@ public final class AbstractKafkaDataConsumerTest {
                                              final ParameterEntity.Type type,
                                              final String value) {
         return Parameter.builder()
+                .name(name)
+                .type(type)
+                .value(value)
+                .build();
+    }
+
+    private static Parameter createParameter(final Long id,
+                                             final String name,
+                                             final ParameterEntity.Type type,
+                                             final String value) {
+        return Parameter.builder()
+                .id(id)
                 .name(name)
                 .type(type)
                 .value(value)
