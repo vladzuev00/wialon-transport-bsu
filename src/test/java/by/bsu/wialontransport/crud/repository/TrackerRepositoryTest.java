@@ -21,9 +21,6 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     @Autowired
     private TrackerRepository repository;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     @Test
     public void trackerShouldBeFoundById() {
         super.startQueryCount();
