@@ -15,6 +15,12 @@ import static by.bsu.wialontransport.model.RegistrationStatus.*;
 @Service
 @RequiredArgsConstructor
 public final class RegistrationService {
+    private static final String ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR = "confirmingPasswordError";
+    private static final String ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR = "Password isn't confirmed correctly";
+
+    private static final String ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR = "emailAlreadyExistsError";
+    private static final String ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR = "Email already exists";
+
     private final UserService userService;
     private final UserFormMapper mapper;
 
@@ -57,11 +63,11 @@ public final class RegistrationService {
     }
 
     private static void addErrorMessageOfConfirmingPassword(final Model model) {
-        model.addAttribute("confirmingPasswordError", "Password isn't confirmed correctly");
+        model.addAttribute(ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR, ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR);
     }
 
     private static void addErrorMessageOfEmailAlreadyExists(final Model model) {
-        model.addAttribute("emailAlreadyExistsError", "Email already exists");
+        model.addAttribute(ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR);
     }
 
     private boolean isEmailAlreadyExist(final UserForm userForm) {
