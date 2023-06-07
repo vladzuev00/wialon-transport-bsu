@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.configuration;
 
-import by.bsu.wialontransport.security.SecurityUserService;
+import by.bsu.wialontransport.security.service.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
