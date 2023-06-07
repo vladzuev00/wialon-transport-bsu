@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.searchingservice.eventlistener;
+package by.bsu.wialontransport.service.searchingcities.eventlistener;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Address;
@@ -9,7 +9,6 @@ import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.CityService;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
-import by.bsu.wialontransport.service.searchingcities.eventlistener.EventListenerSearchingCitiesProcess;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import org.junit.Before;
 import org.junit.Test;
