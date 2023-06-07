@@ -2,8 +2,7 @@ package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer;
-import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
@@ -37,7 +36,7 @@ public final class AbstractReceivingDataPackageServiceTest {
     private DataFilter mockedDataFilter;
 
     @Mock
-    private AbstractKafkaDataProducer<TransportableData> mockedKafkaDataProducer;
+    private KafkaInboundDataProducer mockedKafkaDataProducer;
 
     @Mock
     private DataFixer mockedDataFixer;
@@ -330,7 +329,7 @@ public final class AbstractReceivingDataPackageServiceTest {
 
         public TestReceivingDataPackageService(final ContextAttributeManager contextAttributeManager,
                                                final DataFilter dataFilter,
-                                               final AbstractKafkaDataProducer<TransportableData> kafkaInboundDataProducer,
+                                               final KafkaInboundDataProducer kafkaInboundDataProducer,
                                                final DataFixer dataFixer) {
             super(contextAttributeManager, dataFilter, kafkaInboundDataProducer, dataFixer);
         }
