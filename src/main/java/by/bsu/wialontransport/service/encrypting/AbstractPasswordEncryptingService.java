@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.service.encrypting;
 
 import by.bsu.wialontransport.crud.dto.AbstractDto;
-import by.bsu.wialontransport.crud.service.AbstractCRUDService;
 import by.bsu.wialontransport.service.encrypting.crud.PasswordEncryptingService;
 import by.bsu.wialontransport.service.encrypting.model.Encryptable;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class AbstractPasswordEncryptingService<
         E extends AbstractDto<?> & Encryptable,
-        S extends AbstractCRUDService<?, ?, E, ?, ?> & PasswordEncryptingService<E>
+        S extends PasswordEncryptingService<E>
         > {
     private final BCryptPasswordEncoder encoder;
     private final S crudService;
