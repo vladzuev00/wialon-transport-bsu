@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-//TODO: don't work correctly
 @Service
 @RequiredArgsConstructor
 public final class ChangingPasswordService {
@@ -23,7 +22,7 @@ public final class ChangingPasswordService {
             throws PasswordChangingException {
         this.checkConfirmingOldPassword(user, form);
         checkConfirmingNewPassword(form);
-        this.userService.updatePasswordWithEncrypting(user, form.getNewPassword());
+        this.userService.updatePassword(user, form.getNewPassword());
     }
 
     private void checkConfirmingOldPassword(final User user, final ChangePasswordForm form)

@@ -9,7 +9,6 @@ import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
-import by.bsu.wialontransport.service.encrypting.TrackerEncryptingPasswordService;
 import by.bsu.wialontransport.service.useraction.changepassword.ChangingPasswordService;
 import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
@@ -38,7 +37,7 @@ public final class UserActionService {
     private static final String ATTRIBUTE_VALUE_PHONE_NUMBER_ALREADY_EXISTS_ERROR = "Phone number already exists";
 
     private final SecurityService securityService;
-    private final TrackerEncryptingPasswordService trackerEncryptingPasswordService;
+    private final TrackerService trackerService;
     private final TrackerFormMapper trackerFormMapper;
     private final ChangingPasswordService changingPasswordService;
 
@@ -60,7 +59,7 @@ public final class UserActionService {
             throws TrackerUniqueConstraintException {
         this.checkTrackerUniqueConstraints(trackerForm, model);
         final Tracker addedTracker = this.mapToTracker(trackerForm);
-        this.trackerEncryptingPasswordService.save(addedTracker);
+        this.trackerService.save(addedTracker);
     }
 
     public void addAttributeOfTrackerFormToUpdateTracker(final Long trackerId,

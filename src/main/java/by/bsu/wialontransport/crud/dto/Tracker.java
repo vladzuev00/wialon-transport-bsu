@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.crud.dto;
 
-import by.bsu.wialontransport.service.encrypting.model.Encryptable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -8,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @Builder
-public class Tracker implements AbstractDto<Long>, Encryptable {
+public class Tracker implements AbstractDto<Long> {
     Long id;
     String imei;
     String password;
