@@ -15,12 +15,12 @@ public abstract class AbstractPasswordEncryptingService<E extends AbstractDto<?>
 
     public final E save(final E source) {
         final E encrypted = this.mapToDtoWithEncryptedPassword(source);
-        return this.save(this.crudService, encrypted);
+        return this.crudService.save(encrypted);
     }
 
     public final List<E> saveAll(final List<E> source) {
         final List<E> encrypted = this.mapToDtoWithEncryptedPassword(source);
-        return this.saveAll(this.crudService, encrypted);
+        return this.crudService.saveAll(encrypted);
     }
 
     public final E updatePassword(final E source, final String rawNewPassword) {
@@ -29,10 +29,6 @@ public abstract class AbstractPasswordEncryptingService<E extends AbstractDto<?>
     }
 
     protected abstract E createWithEncryptedPassword(final E source, final String encryptedPassword);
-
-    protected abstract E save(final AbstractCRUDService<?, ?, E, ?, ?> crudService, final E encrypted);
-
-    protected abstract List<E> saveAll(final AbstractCRUDService<?, ?, E, ?, ?> crudService, final List<E> encrypted);
 
     protected abstract E updatePassword(final AbstractCRUDService<?, ?, E, ?, ?> crudService,
                                         final E source,
