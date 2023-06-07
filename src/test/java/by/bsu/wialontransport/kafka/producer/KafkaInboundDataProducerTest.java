@@ -28,7 +28,6 @@ public final class KafkaInboundDataProducerTest extends AbstractContextTest {
 
     @Test
     public void dataShouldBeMappedToTransportable() {
-        final Long givenId = 255L;
         final LocalDateTime givenDateTime = LocalDateTime.of(
                 2022, 11, 15, 14, 56, 43);
         final int givenLatitudeDegrees = 55;
@@ -49,7 +48,6 @@ public final class KafkaInboundDataProducerTest extends AbstractContextTest {
         final String givenKeyDriverCode = "keydrivercode";
         final Long givenTrackerId = 256L;
         final Data givenData = Data.builder()
-                .id(givenId)
                 .date(givenDateTime.toLocalDate())
                 .time(givenDateTime.toLocalTime())
                 .latitude(
@@ -86,8 +84,6 @@ public final class KafkaInboundDataProducerTest extends AbstractContextTest {
 
         final TransportableData actual = this.producer.mapToTransportable(givenData);
         final TransportableData expected = TransportableData.builder()
-                //TODO
-//                .id(givenId)
                 .epochSeconds(givenDateTime.toEpochSecond(UTC))
                 .latitudeDegrees(givenLatitudeDegrees)
                 .latitudeMinutes(givenLatitudeMinutes)
