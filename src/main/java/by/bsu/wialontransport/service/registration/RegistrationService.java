@@ -32,7 +32,7 @@ public final class RegistrationService {
         } else if (this.isEmailAlreadyExist(userForm)) {
             return onEmailAlreadyExistsError(model);
         } else {
-            return onSuccess(userForm);
+            return this.onSuccess(userForm);
         }
     }
 
