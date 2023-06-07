@@ -17,11 +17,9 @@ import static javax.persistence.GenerationType.IDENTITY;
         typeClass = PostgreSQLEnumType.class
 )
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
-@Builder
+@ToString(callSuper = true)
 public class UserEntity extends AbstractEntityWithPassword<Long> {
 
     @Id
@@ -36,6 +34,14 @@ public class UserEntity extends AbstractEntityWithPassword<Long> {
     @Column(name = "role")
     @Type(type = "pgsql_enum")
     private Role role;
+
+    @Builder
+    public UserEntity(final Long id, final String email, final String password, final Role role) {
+        super(password);
+        this.id = id;
+        this.email = email;
+        this.role = role;
+    }
 
     public enum Role {
         USER, ADMIN
