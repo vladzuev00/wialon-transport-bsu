@@ -14,7 +14,7 @@ public interface UserRepository extends EntityWithPasswordRepository<Long, UserE
 
     @Override
     @Modifying
-    @Query(value = "UPDATE UserEntity e SET e.password = :newPassword WHERE e.id = :userId", nativeQuery = true)
+    @Query(value = "UPDATE UserEntity e SET e.password = :newPassword WHERE e.id = :userId")
     void updatePassword(final Long userId, final String newPassword);
 
 }
