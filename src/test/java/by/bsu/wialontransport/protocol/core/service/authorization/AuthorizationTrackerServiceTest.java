@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,9 @@ public final class AuthorizationTrackerServiceTest {
     @Mock
     private DataService mockedDataService;
 
+    @Mock
+    private BCryptPasswordEncoder mockedPasswordEncoder;
+
     private AuthorizationTrackerService authorizationTrackerService;
 
     @Captor
@@ -63,8 +67,12 @@ public final class AuthorizationTrackerServiceTest {
 
     @Before
     public void initializeAuthorizationDeviceService() {
-        this.authorizationTrackerService = new AuthorizationTrackerService(this.mockedContextAttributeManager,
-                this.mockedTrackerService, this.mockedConnectionManager, this.mockedDataService);
+        this.authorizationTrackerService = new AuthorizationTrackerService(
+                this.mockedContextAttributeManager,
+                this.mockedTrackerService,
+                this.mockedConnectionManager,
+                this.mockedDataService,
+                this.mockedPasswordEncoder);
     }
 
     @Test
@@ -80,6 +88,8 @@ public final class AuthorizationTrackerServiceTest {
                 .phoneNumber("447336934")
                 .build();
         when(this.mockedTrackerService.findByImei(anyString())).thenReturn(Optional.of(givenTracker));
+
+        when(this.mockedPasswordEncoder.matches("password", "password")).thenReturn(true);
 
         final Data givenData = Data.builder()
                 .id(256L)
@@ -105,8 +115,12 @@ public final class AuthorizationTrackerServiceTest {
 
         assertEquals(
                 List.of(givenContext, givenContext, givenContext, givenContext),
-                this.contextArgumentCaptor.getAllValues());
-        assertEquals(List.of(givenPackage.getImei(), givenPackage.getImei()), this.stringArgumentCaptor.getAllValues());
+                this.contextArgumentCaptor.getAllValues()
+        );
+        assertEquals(
+                List.of(givenPackage.getImei(), givenPackage.getImei()),
+                this.stringArgumentCaptor.getAllValues()
+        );
         assertSame(givenTracker, this.trackerArgumentCaptor.getValue());
         assertEquals(255L, this.longArgumentCaptor.getValue().longValue());
         assertSame(givenData, this.dataArgumentCaptor.getValue());
@@ -130,6 +144,8 @@ public final class AuthorizationTrackerServiceTest {
                 .build();
         when(this.mockedTrackerService.findByImei(anyString())).thenReturn(Optional.of(givenTracker));
 
+        when(this.mockedPasswordEncoder.matches("password", "password")).thenReturn(true);
+
         when(this.mockedDataService.findTrackerLastDataByTrackerId(anyLong())).thenReturn(empty());
 
         this.authorizationTrackerService.authorize(givenPackage, givenContext);
@@ -149,8 +165,14 @@ public final class AuthorizationTrackerServiceTest {
         verify(givenContext, times(1))
                 .writeAndFlush(this.responseLoginPackageArgumentCaptor.capture());
 
-        assertEquals(List.of(givenContext, givenContext, givenContext), this.contextArgumentCaptor.getAllValues());
-        assertEquals(List.of(givenPackage.getImei(), givenPackage.getImei()), this.stringArgumentCaptor.getAllValues());
+        assertEquals(
+                List.of(givenContext, givenContext, givenContext),
+                this.contextArgumentCaptor.getAllValues()
+        );
+        assertEquals(
+                List.of(givenPackage.getImei(), givenPackage.getImei()),
+                this.stringArgumentCaptor.getAllValues()
+        );
         assertSame(givenTracker, this.trackerArgumentCaptor.getValue());
         assertEquals(255L, this.longArgumentCaptor.getValue().longValue());
         assertEquals(
@@ -172,6 +194,9 @@ public final class AuthorizationTrackerServiceTest {
                 .phoneNumber("447336934")
                 .build();
         when(this.mockedTrackerService.findByImei(anyString())).thenReturn(Optional.of(givenTracker));
+
+        when(this.mockedPasswordEncoder.matches("password", "second password"))
+                .thenReturn(false);
 
         this.authorizationTrackerService.authorize(givenPackage, givenContext);
 

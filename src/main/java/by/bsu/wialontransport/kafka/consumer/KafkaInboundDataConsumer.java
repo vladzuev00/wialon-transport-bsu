@@ -55,7 +55,6 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
         super.consume(consumerRecords);
     }
 
-    //TODO: refactor tests
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
