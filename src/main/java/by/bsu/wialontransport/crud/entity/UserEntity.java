@@ -22,7 +22,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class UserEntity extends AbstractEntity<Long> {
+public class UserEntity extends AbstractEntityWithPassword<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -31,9 +31,6 @@ public class UserEntity extends AbstractEntity<Long> {
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "encrypted_password")
-    private String password;
 
     @Enumerated(STRING)
     @Column(name = "role")
