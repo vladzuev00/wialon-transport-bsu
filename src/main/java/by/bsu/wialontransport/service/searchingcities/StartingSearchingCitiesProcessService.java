@@ -11,7 +11,6 @@ import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesE
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -69,15 +68,14 @@ public final class StartingSearchingCitiesProcessService {
         @Override
         public void run() {
             try {
-                //TODO: city names can be null, check unique by geometry
-                final Set<String> namesAlreadyFoundCities = newKeySet();
+                final Set<Geometry> geometriesAlreadyFoundCities = newKeySet();
                 final List<Coordinate> coordinates = this.findCoordinates();
                 final int amountOfSubAreas = this.findAmountOfSubAreas();
                 final CompletableFuture<List<City>> foundUniqueCitiesFuture = range(0, amountOfSubAreas)
                         .mapToObj(i -> this.extractSubAreaCoordinatesByItsIndex(coordinates, i))
                         .map(subAreaCoordinates -> new SubtaskSearchingCities(subAreaCoordinates, this.process))
                         .map(subtask -> supplyAsync(subtask::search, executorService))
-                        .map(future -> afterCompleteRemoveDuplicatesByNames(future, namesAlreadyFoundCities))
+                        .map(future -> afterCompleteRemoveDuplicatedByGeometries(future, geometriesAlreadyFoundCities))
                         .reduce(completedFuture(new ArrayList<>()), TaskSearchingAllCities::combineFutures);
                 final List<City> foundUniqueCities = foundUniqueCitiesFuture.get();
                 this.publishSuccessSearchingEvent(foundUniqueCities);
@@ -105,15 +103,17 @@ public final class StartingSearchingCitiesProcessService {
             );
         }
 
-        private static CompletableFuture<List<City>> afterCompleteRemoveDuplicatesByNames(
-                final CompletableFuture<List<City>> future, final Set<String> namesAlreadyFoundCities) {
-            return future.thenApply(foundCities -> removeDuplicatesByNames(foundCities, namesAlreadyFoundCities));
+        private static CompletableFuture<List<City>> afterCompleteRemoveDuplicatedByGeometries(
+                final CompletableFuture<List<City>> future, final Set<Geometry> geometriesAlreadyFoundCities) {
+            return future.thenApply(
+                    foundCities -> removeDuplicatesByGeometries(foundCities, geometriesAlreadyFoundCities)
+            );
         }
 
-        private static List<City> removeDuplicatesByNames(final List<City> foundCities,
-                                                          final Set<String> namesAlreadyFoundCities) {
+        private static List<City> removeDuplicatesByGeometries(final List<City> foundCities,
+                                                               final Set<Geometry> geometriesAlreadyFoundCities) {
             return foundCities.stream()
-                    .filter(city -> namesAlreadyFoundCities.add(city.getCityName()))
+                    .filter(city -> geometriesAlreadyFoundCities.add(city.getGeometry()))
                     .toList();
         }
 
