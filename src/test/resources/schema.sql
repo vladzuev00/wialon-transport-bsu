@@ -96,7 +96,7 @@ CREATE TABLE addresses
     id           BIGSERIAL PRIMARY KEY,
     bounding_box GEOMETRY(POLYGON, 4326) NOT NULL,
     center       GEOMETRY(POINT, 4326) NOT NULL,
-    city_name    VARCHAR(256),
+    city_name    VARCHAR(256) NOT NULL,
     country_name VARCHAR(256) NOT NULL,
     geometry     GEOMETRY(POLYGON, 4326) NOT NULL
 );
