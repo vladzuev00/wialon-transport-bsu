@@ -7,9 +7,12 @@ import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Component;
 import org.wololo.jts2geojson.GeoJSONReader;
 
+//TODO: refactor tests with not defined city name
 @Component
 @RequiredArgsConstructor
 public final class ReverseResponseToAddressMapper {
+    private static final String NOT_DEFINED_CITY_NAME = "not defined";
+
     private static final int INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX = 0;
     private static final int INDEX_LEFT_BOTTOM_LONGITUDE_OF_BOUNDING_BOX = 2;
 
@@ -24,7 +27,7 @@ public final class ReverseResponseToAddressMapper {
         return Address.builder()
                 .boundingBox(this.mapBoundingBox(response))
                 .center(this.mapCenter(response))
-                .cityName(address.getCityName())
+                .cityName(mapCityName(response))
                 .countryName(address.getCountryName())
                 .geometry(this.mapGeometry(response))
                 .build();
@@ -105,5 +108,11 @@ public final class ReverseResponseToAddressMapper {
     private Geometry mapGeometry(final NominatimReverseResponse response) {
         final org.wololo.geojson.Geometry mappedGeometry = response.getGeometry();
         return this.geoJSONReader.read(mappedGeometry, this.geometryFactory);
+    }
+
+    private static String mapCityName(final NominatimReverseResponse response) {
+        final NominatimReverseResponse.Address address = response.getAddress();
+        final String responseCityName = address.getCityName();
+        return responseCityName != null ? responseCityName : NOT_DEFINED_CITY_NAME;
     }
 }
