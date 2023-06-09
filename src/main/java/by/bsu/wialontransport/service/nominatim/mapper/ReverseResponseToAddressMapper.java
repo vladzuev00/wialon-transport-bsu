@@ -7,7 +7,6 @@ import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Component;
 import org.wololo.jts2geojson.GeoJSONReader;
 
-//TODO: refactor tests with not defined city name
 @Component
 @RequiredArgsConstructor
 public final class ReverseResponseToAddressMapper {

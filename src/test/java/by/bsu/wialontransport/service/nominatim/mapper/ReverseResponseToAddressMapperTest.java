@@ -64,4 +64,43 @@ public final class ReverseResponseToAddressMapperTest extends AbstractContextTes
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void responseWithNullAsCityNameShouldBeMapped() {
+        final double givenCenterLatitude = 8.8;
+        final double givenCenterLongitude = 7.7;
+        final String givenCountryName = "country";
+        final String givenPlace = "place";
+        final String givenCapital = "capital";
+        final Geometry givenGeometry = createPolygon(
+                this.geometryFactory,
+                4.4, 5.5, 6.6, 7.7, 8.8, 9.9
+        );
+        final NominatimReverseResponse givenResponse = NominatimReverseResponse.builder()
+                .centerLatitude(givenCenterLatitude)
+                .centerLongitude(givenCenterLongitude)
+                .address(new NominatimReverseResponse.Address(null, givenCountryName))
+                .boundingBoxCoordinates(new double[]{5.5, 9.9, 4.4, 8.8})
+                .geometry(this.geoJSONWriter.write(givenGeometry))
+                .extraTags(new ExtraTags(givenPlace, givenCapital))
+                .build();
+
+        final Address actual = this.mapper.map(givenResponse);
+
+        final Geometry expectedBoundingBox = createPolygon(
+                this.geometryFactory,
+                4.4, 5.5, 8.8, 5.5, 8.8, 9.9, 4.4, 9.9
+        );
+        final Point expectedCenter = createPoint(this.geometryFactory, givenCenterLongitude, givenCenterLatitude);
+        final Address expected = Address.builder()
+                .boundingBox(expectedBoundingBox)
+                .center(expectedCenter)
+                .cityName("not defined")
+                .countryName(givenCountryName)
+                .geometry(givenGeometry)
+                .build();
+
+        assertEquals(expected, actual);
+    }
+
 }
