@@ -10,6 +10,8 @@ import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesException;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -67,6 +69,7 @@ public final class StartingSearchingCitiesProcessService {
         @Override
         public void run() {
             try {
+                //TODO: city names can be null, check unique by geometry
                 final Set<String> namesAlreadyFoundCities = newKeySet();
                 final List<Coordinate> coordinates = this.findCoordinates();
                 final int amountOfSubAreas = this.findAmountOfSubAreas();
