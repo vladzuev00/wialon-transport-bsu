@@ -98,7 +98,7 @@ CREATE TABLE addresses
     center       GEOMETRY(POINT, 4326) NOT NULL,
     city_name    VARCHAR(256) NOT NULL,
     country_name VARCHAR(256) NOT NULL,
-    geometry     GEOMETRY(MULTIPOLYGON, 4326) NOT NULL
+    geometry     GEOMETRY(POLYGON, 4326) NOT NULL
 );
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
