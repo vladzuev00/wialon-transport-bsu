@@ -30,4 +30,9 @@ public class UserService
     public boolean isExistByEmail(final String email) {
         return super.repository.existsByEmail(email);
     }
+
+    public void updateEmail(final User user, final String email) {
+        final Long userId = user.getId();
+        super.repository.updateEmail(userId, email);
+    }
 }
