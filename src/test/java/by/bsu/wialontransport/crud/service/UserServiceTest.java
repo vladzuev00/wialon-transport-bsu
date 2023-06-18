@@ -47,4 +47,27 @@ public final class UserServiceTest extends AbstractContextTest {
         assertFalse(exists);
     }
 
+    @Test
+    public void emailShouldBeUpdated() {
+        final Long givenUserId = 255L;
+        final User givenUser = createUser(givenUserId);
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        this.service.updateEmail(givenUser, givenNewEmail);
+
+        final User actual = this.service.findById(givenUserId).orElseThrow();
+        final User expected = User.builder()
+                .id(givenUserId)
+                .email(givenNewEmail)
+                .password("password")
+                .role(USER)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    private static User createUser(final Long id) {
+        return User.builder()
+                .id(id)
+                .build();
+    }
 }
