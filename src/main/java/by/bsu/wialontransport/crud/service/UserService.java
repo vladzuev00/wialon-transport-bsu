@@ -31,8 +31,8 @@ public class UserService
         return super.repository.existsByEmail(email);
     }
 
-    public void updateEmail(final User user, final String email) {
+    public void updateEmail(final User user, final String newEmail) {
         final Long userId = user.getId();
-        super.repository.updateEmail(userId, email);
+        super.repository.updateEmail(userId, newEmail);
     }
 }

@@ -9,8 +9,8 @@ import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
-import by.bsu.wialontransport.service.useraction.changepassword.ChangingPasswordService;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.ChangingUserInfoService;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerPhoneNumberAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
@@ -39,7 +39,7 @@ public final class UserActionService {
     private final SecurityService securityService;
     private final TrackerService trackerService;
     private final TrackerFormMapper trackerFormMapper;
-    private final ChangingPasswordService changingPasswordService;
+    private final ChangingUserInfoService changingUserInfoService;
 
     public void addAttributeOfTrackersToShowProfilePage(final int pageNumber,
                                                         final int pageSize,
@@ -89,7 +89,7 @@ public final class UserActionService {
             throws PasswordChangingException {
         try {
             final User loggedOnUser = this.securityService.findLoggedOnUser();
-            this.changingPasswordService.change(loggedOnUser, form);
+            this.changingUserInfoService.changePassword(loggedOnUser, form);
         } catch (final PasswordChangingException exception) {
             addErrorAttribute(model, exception);
             throw exception;

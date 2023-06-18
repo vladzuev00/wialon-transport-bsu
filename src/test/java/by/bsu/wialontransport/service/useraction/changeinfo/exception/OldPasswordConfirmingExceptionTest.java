@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.useraction.changepassword.exception;
+package by.bsu.wialontransport.service.useraction.changeinfo.exception;
 
 import org.junit.Test;
 

@@ -1,28 +1,39 @@
-package by.bsu.wialontransport.service.useraction.changepassword;
+package by.bsu.wialontransport.service.useraction.changeinfo;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.form.ChangePasswordForm;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.NewPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.OldPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.EmailAlreadyExistsException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.NewPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.OldPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+import static java.lang.String.format;
+
 @Service
 @RequiredArgsConstructor
-public final class ChangingPasswordService {
+public final class ChangingUserInfoService {
+    private static final String TEMPLATE_DESCRIPTION_EMAIL_ALREADY_EXISTS_EXCEPTION = "Email '%s' already exists";
+
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public void change(final User user, final ChangePasswordForm form)
+    public void changePassword(final User user, final ChangePasswordForm form)
             throws PasswordChangingException {
         this.checkConfirmingOldPassword(user, form);
         checkConfirmingNewPassword(form);
         this.userService.updatePassword(user, form.getNewPassword());
+    }
+
+    public void changeEmail(final User user, final String newEmail)
+            throws EmailAlreadyExistsException {
+        this.checkUniqueEmailConstraint(newEmail);
+        this.userService.updateEmail(user, newEmail);
     }
 
     private void checkConfirmingOldPassword(final User user, final ChangePasswordForm form)
@@ -49,6 +60,16 @@ public final class ChangingPasswordService {
         final String newPassword = form.getNewPassword();
         final String confirmedNewPassword = form.getConfirmedNewPassword();
         return Objects.equals(newPassword, confirmedNewPassword);
+    }
+
+    private void checkUniqueEmailConstraint(final String newEmail)
+            throws EmailAlreadyExistsException {
+        final boolean emailAlreadyExists = this.userService.isExistByEmail(newEmail);
+        if (emailAlreadyExists) {
+            throw new EmailAlreadyExistsException(
+                    format(TEMPLATE_DESCRIPTION_EMAIL_ALREADY_EXISTS_EXCEPTION, newEmail)
+            );
+        }
     }
 
 }

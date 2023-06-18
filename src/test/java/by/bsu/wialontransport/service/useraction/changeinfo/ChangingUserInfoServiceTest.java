@@ -1,11 +1,11 @@
-package by.bsu.wialontransport.service.useraction.changepassword;
+package by.bsu.wialontransport.service.useraction.changeinfo;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.form.ChangePasswordForm;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.NewPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.OldPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.NewPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.OldPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class ChangingPasswordServiceTest {
+public final class ChangingUserInfoServiceTest {
 
     @Mock
     private UserService mockedUserService;
@@ -24,11 +24,11 @@ public final class ChangingPasswordServiceTest {
     @Mock
     private BCryptPasswordEncoder mockedPasswordEncoder;
 
-    private ChangingPasswordService changingPasswordService;
+    private ChangingUserInfoService changingUserInfoService;
 
     @Before
     public void initializeChangingPasswordService() {
-        this.changingPasswordService = new ChangingPasswordService(this.mockedUserService, this.mockedPasswordEncoder);
+        this.changingUserInfoService = new ChangingUserInfoService(this.mockedUserService, this.mockedPasswordEncoder);
     }
 
     @Test
@@ -42,7 +42,7 @@ public final class ChangingPasswordServiceTest {
         when(this.mockedPasswordEncoder.matches(eq("old-password"), eq("old-password")))
                 .thenReturn(true);
 
-        this.changingPasswordService.change(givenUser, givenForm);
+        this.changingUserInfoService.changePassword(givenUser, givenForm);
 
         verify(this.mockedUserService, times(1)).updatePassword(
                 same(givenUser), eq("new-password")
@@ -60,7 +60,7 @@ public final class ChangingPasswordServiceTest {
         when(this.mockedPasswordEncoder.matches(eq("old-password"), eq("old-password")))
                 .thenReturn(false);
 
-        this.changingPasswordService.change(givenUser, givenForm);
+        this.changingUserInfoService.changePassword(givenUser, givenForm);
 
         verify(this.mockedUserService, times(0)).updatePassword(
                 same(givenUser), any()
@@ -78,7 +78,7 @@ public final class ChangingPasswordServiceTest {
         when(this.mockedPasswordEncoder.matches(eq("old-password"), eq("old-password")))
                 .thenReturn(true);
 
-        this.changingPasswordService.change(givenUser, givenForm);
+        this.changingUserInfoService.changePassword(givenUser, givenForm);
 
         verify(this.mockedUserService, times(0)).updatePassword(
                 same(givenUser), any()
