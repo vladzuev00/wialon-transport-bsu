@@ -83,6 +83,9 @@ ALTER TABLE trackers
         ON DELETE CASCADE;
 
 ALTER TABLE trackers
+    ADD CONSTRAINT imei_should_be_unique UNIQUE(imei);
+
+ALTER TABLE trackers
     ADD CONSTRAINT imei_should_be_correct CHECK (imei ~ '[0-9]{20}');
 
 ALTER TABLE trackers

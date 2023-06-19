@@ -24,7 +24,7 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
                 .build();
         checkEquals(expected, actual);
@@ -33,8 +33,7 @@ public final class UserRepositoryTest extends AbstractContextTest {
     @Test
     public void userShouldBeInserted() {
         final UserEntity givenUser = UserEntity.builder()
-                .id(255L)
-                .email("vladzuev.00@mail.ru")
+                .email("test@mail.ru")
                 .password("password")
                 .role(USER)
                 .build();
@@ -55,7 +54,7 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email(givenEmail)
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
                 .build();
         checkEquals(expected, actual);
@@ -117,7 +116,7 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final UserEntity expected = UserEntity.builder()
                 .id(givenUserId)
                 .email(givenNewEmail)
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
                 .build();
         checkEquals(expected, actual);

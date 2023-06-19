@@ -29,7 +29,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
                 .build();
@@ -39,10 +39,9 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     @Test
     public void trackerShouldBeInserted() {
         final TrackerEntity givenTracker = TrackerEntity.builder()
-                .id(255L)
-                .imei("11112222333344445555")
+                .imei("11112222333344445556")
                 .password("password")
-                .phoneNumber("447336934")
+                .phoneNumber("447336935")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
                 .build();
 
@@ -60,7 +59,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
                 .build();
@@ -115,7 +114,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
                 .build();
@@ -142,7 +141,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
                 .build();
