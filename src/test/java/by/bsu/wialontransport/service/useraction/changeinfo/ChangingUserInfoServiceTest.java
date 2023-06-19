@@ -3,9 +3,10 @@ package by.bsu.wialontransport.service.useraction.changeinfo;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.form.ChangePasswordForm;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.NewPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.OldPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.EmailAlreadyExistsException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.NewPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.OldPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,6 +84,36 @@ public final class ChangingUserInfoServiceTest {
         verify(this.mockedUserService, times(0)).updatePassword(
                 same(givenUser), any()
         );
+    }
+
+    @Test
+    public void userEmailShouldBeChanged()
+            throws EmailAlreadyExistsException {
+        final User givenUser = createUser(255L);
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        when(this.mockedUserService.isExistByEmail(same(givenNewEmail))).thenReturn(false);
+
+        this.changingUserInfoService.changeEmail(givenUser, givenNewEmail);
+
+        verify(this.mockedUserService, times(1)).updateEmail(same(givenUser), same(givenNewEmail));
+    }
+
+    @Test(expected = EmailAlreadyExistsException.class)
+    public void userEmailShouldNotBeChangedBecauseOfSameEmailAlreadyExists()
+            throws EmailAlreadyExistsException {
+        final User givenUser = createUser(255L);
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        when(this.mockedUserService.isExistByEmail(same(givenNewEmail))).thenReturn(true);
+
+        this.changingUserInfoService.changeEmail(givenUser, givenNewEmail);
+    }
+
+    private static User createUser(final Long userId) {
+        return User.builder()
+                .id(userId)
+                .build();
     }
 
     private static User createUserByPassword(final String password) {

@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import static by.bsu.wialontransport.crud.dto.City.copyWithAddressAndProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
 
@@ -80,7 +81,7 @@ public class EventListenerSearchingCitiesProcess {
     }
 
     @EventListener
-    @Transactional(isolation = SERIALIZABLE)
+    @Transactional(isolation = REPEATABLE_READ)
     public void onSuccessSearchingAllCities(final SuccessSearchingAllCitiesEvent event) {
         final SearchingCitiesProcess process = event.getProcess();
         this.saveCitiesIfNotExist(event.getFoundCities(), process);

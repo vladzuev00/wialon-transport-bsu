@@ -10,7 +10,7 @@ import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
 import by.bsu.wialontransport.service.useraction.changeinfo.ChangingUserInfoService;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerPhoneNumberAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;

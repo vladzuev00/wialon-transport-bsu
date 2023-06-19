@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.useraction.changeinfo.exception;
+package by.bsu.wialontransport.service.useraction.changeinfo.exception.password;
 
 public abstract class PasswordChangingException extends Exception {
 

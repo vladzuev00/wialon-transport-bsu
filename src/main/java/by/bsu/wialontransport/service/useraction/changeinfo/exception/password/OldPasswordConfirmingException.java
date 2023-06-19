@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.useraction.changeinfo.exception;
+package by.bsu.wialontransport.service.useraction.changeinfo.exception.password;
 
 public final class OldPasswordConfirmingException extends PasswordChangingException {
     private static final String ATTRIBUTE_NAME_OF_ERROR = "oldPasswordConfirmingError";

@@ -4,9 +4,9 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.form.ChangePasswordForm;
 import by.bsu.wialontransport.service.useraction.changeinfo.exception.EmailAlreadyExistsException;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.NewPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.OldPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changeinfo.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.NewPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.OldPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ public final class ChangingUserInfoService {
         this.userService.updatePassword(user, form.getNewPassword());
     }
 
+    //TODO: add transaction isolation level for 'check than action' and also for change tracker imei
     public void changeEmail(final User user, final String newEmail)
             throws EmailAlreadyExistsException {
         this.checkUniqueEmailConstraint(newEmail);
