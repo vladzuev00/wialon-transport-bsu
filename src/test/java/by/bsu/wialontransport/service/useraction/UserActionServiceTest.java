@@ -9,9 +9,9 @@ import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
-import by.bsu.wialontransport.service.useraction.changepassword.ChangingPasswordService;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.NewPasswordConfirmingException;
-import by.bsu.wialontransport.service.useraction.changepassword.exception.PasswordChangingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.ChangingUserInfoService;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.NewPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerPhoneNumberAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
@@ -53,7 +53,7 @@ public final class UserActionServiceTest {
     private TrackerFormMapper mockedMapper;
 
     @Mock
-    private ChangingPasswordService mockedChangingPasswordService;
+    private ChangingUserInfoService mockedChangingUserInfoService;
 
     private UserActionService userActionService;
 
@@ -63,7 +63,7 @@ public final class UserActionServiceTest {
                 this.mockedSecurityService,
                 this.mockedTrackerService,
                 this.mockedMapper,
-                this.mockedChangingPasswordService
+                this.mockedChangingUserInfoService
         );
     }
 
@@ -334,7 +334,7 @@ public final class UserActionServiceTest {
 
         this.userActionService.updatePassword(givenForm, givenModel);
 
-        verify(this.mockedChangingPasswordService, times(1)).change(
+        verify(this.mockedChangingUserInfoService, times(1)).changePassword(
                 same(givenLoggedOnUser), same(givenForm)
         );
     }
@@ -352,7 +352,7 @@ public final class UserActionServiceTest {
         final User givenLoggedOnUser = createUser(255L);
         when(this.mockedSecurityService.findLoggedOnUser()).thenReturn(givenLoggedOnUser);
 
-        doThrow(NewPasswordConfirmingException.class).when(this.mockedChangingPasswordService).change(
+        doThrow(NewPasswordConfirmingException.class).when(this.mockedChangingUserInfoService).changePassword(
                 same(givenLoggedOnUser), same(givenForm)
         );
 

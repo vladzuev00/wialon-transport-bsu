@@ -104,6 +104,25 @@ public final class UserRepositoryTest extends AbstractContextTest {
         checkEquals(expected, actual);
     }
 
+    @Test
+    public void userEmailShouldBeUpdated() {
+        final Long givenUserId = 255L;
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        super.startQueryCount();
+        this.repository.updateEmail(givenUserId, givenNewEmail);
+        super.checkQueryCount(1);
+
+        final UserEntity actual = this.repository.findById(givenUserId).orElseThrow();
+        final UserEntity expected = UserEntity.builder()
+                .id(givenUserId)
+                .email(givenNewEmail)
+                .password("password")
+                .role(USER)
+                .build();
+        checkEquals(expected, actual);
+    }
+
     private static void checkEquals(final UserEntity expected, final UserEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getEmail(), actual.getEmail());

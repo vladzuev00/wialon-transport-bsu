@@ -1,5 +1,7 @@
-package by.bsu.wialontransport.service.useraction.changepassword.exception;
+package by.bsu.wialontransport.service.useraction.changeinfo.exception.password;
 
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.OldPasswordConfirmingException;
+import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
