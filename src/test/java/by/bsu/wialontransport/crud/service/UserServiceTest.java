@@ -23,7 +23,7 @@ public final class UserServiceTest extends AbstractContextTest {
         final User expected = User.builder()
                 .id(255L)
                 .email(givenEmail)
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
                 .build();
         assertEquals(expected, actual);
@@ -59,7 +59,7 @@ public final class UserServiceTest extends AbstractContextTest {
         final User expected = User.builder()
                 .id(givenUserId)
                 .email(givenNewEmail)
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
                 .build();
         assertEquals(expected, actual);

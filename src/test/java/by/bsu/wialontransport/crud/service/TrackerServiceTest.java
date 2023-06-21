@@ -26,7 +26,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .build();
         assertEquals(expected, actual);
@@ -51,7 +51,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
-                        .password("password")
+                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                         .phoneNumber("447336934")
                         .build(),
                 Tracker.builder()
@@ -92,7 +92,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
-                        .password("password")
+                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                         .phoneNumber("447336934")
                         .build(),
                 Tracker.builder()
@@ -129,12 +129,12 @@ public final class TrackerServiceTest extends AbstractContextTest {
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(User.builder()
                         .id(255L)
                         .email("vladzuev.00@mail.ru")
-                        .password("password")
+                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                         .role(USER)
                         .build())
                 .build();
@@ -156,7 +156,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
-                .password("password")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .build();
         assertEquals(expected, actual);
