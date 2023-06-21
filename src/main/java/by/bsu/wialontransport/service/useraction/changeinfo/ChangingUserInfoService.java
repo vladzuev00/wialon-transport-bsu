@@ -30,7 +30,6 @@ public final class ChangingUserInfoService {
         this.userService.updatePassword(user, form.getNewPassword());
     }
 
-    //TODO: add transaction isolation level for 'check than action' and also for change tracker imei
     public void changeEmail(final User user, final String newEmail)
             throws EmailAlreadyExistsException {
         this.checkUniqueEmailConstraint(newEmail);
