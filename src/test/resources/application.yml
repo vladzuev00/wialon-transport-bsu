@@ -78,7 +78,7 @@ nominatim:
   enable-waiting-between-requests: true
 
 search-cities:
-  amount-handled-points-to-save-state: 10
+  amount-handled-points-to-save-state: 4 #10 was there before(remove this comment)
   amount-of-threads-to-search-cities: 5
 
 track-simplifier:
