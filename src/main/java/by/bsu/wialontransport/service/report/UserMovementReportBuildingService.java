@@ -56,37 +56,6 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 25;
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 750;
 
-    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_IMEI = 150;
-    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
-    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
-    private static final float[] INTRODUCTION_TABLE_COLUMNS_WIDTHS = {
-            INTRODUCTION_TABLE_COLUMN_WIDTH_OF_IMEI,
-            INTRODUCTION_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
-            INTRODUCTION_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
-    };
-
-    private static final Integer INTRODUCTION_TABLE_FONT_SIZE = 10;
-    private static final PDFont INTRODUCTION_TABLE_FONT = HELVETICA;
-    private static final Color INTRODUCTION_TABLE_BORDER_COLOR = WHITE;
-
-    private static final Color INTRODUCTION_TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
-    private static final Color INTRODUCTION_TABLE_NAME_ROW_TEXT_COLOR = WHITE;
-    private static final PDFont INTRODUCTION_TABLE_NAME_ROW_FONT = HELVETICA_BOLD;
-    private static final Integer INTRODUCTION_TABLE_NAME_ROW_FONT_SIZE = 11;
-    private static final HorizontalAlignment INTRODUCTION_TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;
-    private static final int INTRODUCTION_TABLE_NAME_ROW_COL_SPAN = 3;
-    private static final String INTRODUCTION_TABLE_NAME_ROW_CONTENT = "Trackers";
-
-    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_IMEI_NAME = "Imei";
-    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME = "Phone number";
-    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME = "Count of points";
-
-    private static final Color INTRODUCTION_TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
-    private static final Color INTRODUCTION_TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
-    private static final PDFont INTRODUCTION_TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
-    private static final Integer INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE = 11;
-    private static final HorizontalAlignment INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
-
     private static final float INTRODUCTION_TABLE_START_X = 75F;
     private static final float INTRODUCTION_TABLE_START_Y = 650F;
 
@@ -146,7 +115,7 @@ public final class UserMovementReportBuildingService {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
             addIntroductionContentLines(pageContentStream, user, dateInterval);
-            addIntroductionTable(dataGroupedByTrackers, pageContentStream);
+            addUserTrackersTable(dataGroupedByTrackers, pageContentStream);
         }
     }
 
@@ -210,66 +179,33 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static void addIntroductionTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
-                                             final PDPageContentStream pageContentStream) {
-        final Table table = buildIntroductionTable(dataGroupedByTrackers);
-        drawIntroductionTable(pageContentStream, table);
+    private static void addUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
+                                             final PDDocument document) {
+        final List<Table> tableParts = buildUserTrackersPaginatedTable(dataGroupedByTrackers);
+        drawPartUserTrackersTable(pageContentStream, table);
     }
 
-    private static Table buildIntroductionTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
-        final TableBuilder tableBuilder = Table.builder()
-                .addColumnsOfWidth(INTRODUCTION_TABLE_COLUMNS_WIDTHS)
-                .fontSize(INTRODUCTION_TABLE_FONT_SIZE)
-                .font(INTRODUCTION_TABLE_FONT)
-                .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
-                .addRow(buildIntroductionTableNameRow())
-                .addRow(buildIntroductionTableHeaderRow());
+    private static List<Table> buildUserTrackersPaginatedTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
+        final UserTrackersPaginatedTableBuilder builder = new UserTrackersPaginatedTableBuilder();
         dataGroupedByTrackers
                 .forEach(
-                        (tracker, trackerData) -> tableBuilder.addRow(
+                        (tracker, trackerData) -> builder.addRow(
                                 createIntroductionTableTrackerRow(tracker, trackerData)
                         )
                 );
-        return tableBuilder.build();
+        return builder.build();
     }
 
-    private static Row buildIntroductionTableNameRow() {
-        return Row.builder()
-                .add(
-                        TextCell.builder()
-                                .backgroundColor(INTRODUCTION_TABLE_NAME_ROW_BACKGROUND_COLOR)
-                                .textColor(INTRODUCTION_TABLE_NAME_ROW_TEXT_COLOR)
-                                .font(INTRODUCTION_TABLE_NAME_ROW_FONT)
-                                .fontSize(INTRODUCTION_TABLE_NAME_ROW_FONT_SIZE)
-                                .horizontalAlignment(INTRODUCTION_TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
-                                .colSpan(INTRODUCTION_TABLE_NAME_ROW_COL_SPAN)
-                                .text(INTRODUCTION_TABLE_NAME_ROW_CONTENT)
-                                .build()
-                )
-                .build();
-    }
+    private static void drawPaginatedUserTrackersTable()
 
-    private static void drawIntroductionTable(final PDPageContentStream pageContentStream, final Table table) {
+    private static void drawPartUserTrackersTable(final PDPageContentStream pageContentStream, final Table partTable) {
         TableDrawer.builder()
                 .contentStream(pageContentStream)
-                .table(table)
+                .table(partTable)
                 .startX(INTRODUCTION_TABLE_START_X)
                 .startY(INTRODUCTION_TABLE_START_Y)
                 .build()
                 .draw();
-    }
-
-    private static Row buildIntroductionTableHeaderRow() {
-        return Row.builder()
-                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_IMEI_NAME))
-                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
-                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
-                .backgroundColor(INTRODUCTION_TABLE_HEADER_ROW_BACKGROUND_COLOR)
-                .textColor(INTRODUCTION_TABLE_HEADER_ROW_TEXT_COLOR)
-                .font(INTRODUCTION_TABLE_HEADER_ROW_FONT)
-                .fontSize(INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE)
-                .horizontalAlignment(INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
-                .build();
     }
 
     private static Row createIntroductionTableTrackerRow(final Tracker tracker, final List<Data> trackerData) {
@@ -319,12 +255,14 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static final class PaginatedTableBuilder {
+    private static abstract class PaginatedTableBuilder {
         private final float[] columnsWidths;
         private final PDFont font;
         private final Integer fontSize;
         private final Color borderColor;
         private final int maxAmountOfRowsInOneTable;
+        private final Row nameRow;
+        private final Row headerRow;
         private final List<Table> builtTables;
         private int amountOfRowsInCurrentTable;
         private TableBuilder currentTableBuilder;
@@ -333,34 +271,38 @@ public final class UserMovementReportBuildingService {
                                      final PDFont font,
                                      final Integer fontSize,
                                      final Color borderColor,
-                                     final int maxAmountOfRowsInOneTable) {
+                                     final int maxAmountOfRowsInOneTable,
+                                     final Row nameRow,
+                                     final Row headerRow) {
             this.columnsWidths = columnsWidths;
             this.font = font;
             this.fontSize = fontSize;
             this.borderColor = borderColor;
             this.maxAmountOfRowsInOneTable = maxAmountOfRowsInOneTable;
+            this.nameRow = nameRow;
+            this.headerRow = headerRow;
             this.builtTables = new ArrayList<>();
             this.amountOfRowsInCurrentTable = 0;
             this.resetTableBuilder();
         }
 
-        public void addRow(final Row row) {
+        public final void addRow(final Row row) {
             if (this.amountOfRowsInCurrentTable >= this.maxAmountOfRowsInOneTable) {
-                this.resetTableBuilder();
-                //to reset method
-                this.amountOfRowsInCurrentTable = 0;
+                this.finishBuildingTable();
             }
-
+            this.currentTableBuilder.addRow(row);
+            this.amountOfRowsInCurrentTable++;
         }
 
-        public List<Table> build() {
-
+        public final List<Table> build() {
+            return this.builtTables;
         }
 
         private void finishBuildingTable() {
             final Table builtTable = this.currentTableBuilder.build();
             this.builtTables.add(builtTable);
             this.resetTableBuilder();
+            this.amountOfRowsInCurrentTable = 0;
         }
 
         private void resetTableBuilder() {
@@ -368,7 +310,86 @@ public final class UserMovementReportBuildingService {
                     .addColumnsOfWidth(this.columnsWidths)
                     .font(this.font)
                     .fontSize(this.fontSize)
-                    .borderColor(this.borderColor);
+                    .borderColor(this.borderColor)
+                    .addRow(this.nameRow)
+                    .addRow(this.headerRow);
+        }
+    }
+
+    private static final class UserTrackersPaginatedTableBuilder extends PaginatedTableBuilder {
+        private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 150;
+        private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
+        private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
+        private static final float[] TABLE_COLUMNS_WIDTHS = {
+                TABLE_COLUMN_WIDTH_OF_IMEI,
+                TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
+                TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
+        };
+
+        private static final PDFont TABLE_FONT = HELVETICA;
+        private static final Integer TABLE_FONT_SIZE = 10;
+        private static final Color TABLE_BORDER_COLOR = WHITE;
+
+        private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
+
+        //For row with name
+        private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
+        private static final Color TABLE_NAME_ROW_TEXT_COLOR = WHITE;
+        private static final PDFont TABLE_NAME_ROW_FONT = HELVETICA_BOLD;
+        private static final Integer TABLE_NAME_ROW_FONT_SIZE = 11;
+        private static final HorizontalAlignment TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;
+        private static final int TABLE_NAME_ROW_COL_SPAN = 3;
+        private static final String TABLE_NAME_ROW_CONTENT = "Trackers";
+
+        //For header row
+        private static final String TABLE_HEADER_COLUMN_OF_IMEI_NAME = "Imei";
+        private static final String TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME = "Phone number";
+        private static final String TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME = "Count of points";
+        private static final Color TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
+        private static final Color TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
+        private static final PDFont TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
+        private static final Integer TABLE_HEADER_ROW_FONT_SIZE = 11;
+        private static final HorizontalAlignment TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
+
+        public UserTrackersPaginatedTableBuilder() {
+            super(
+                    TABLE_COLUMNS_WIDTHS,
+                    TABLE_FONT,
+                    TABLE_FONT_SIZE,
+                    TABLE_BORDER_COLOR,
+                    MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE,
+                    buildNameRow(),
+                    buildHeaderRow()
+            );
+        }
+
+        private static Row buildNameRow() {
+            return Row.builder()
+                    .add(
+                            TextCell.builder()
+                                    .backgroundColor(TABLE_NAME_ROW_BACKGROUND_COLOR)
+                                    .textColor(TABLE_NAME_ROW_TEXT_COLOR)
+                                    .font(TABLE_NAME_ROW_FONT)
+                                    .fontSize(TABLE_NAME_ROW_FONT_SIZE)
+                                    .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
+                                    .colSpan(TABLE_NAME_ROW_COL_SPAN)
+                                    .text(TABLE_NAME_ROW_CONTENT)
+                                    .build()
+                    )
+                    .build();
+        }
+
+        private static Row buildHeaderRow() {
+            return Row.builder()
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
+                    .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
+                    .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
+                    .font(TABLE_HEADER_ROW_FONT)
+                    .fontSize(TABLE_HEADER_ROW_FONT_SIZE)
+                    .horizontalAlignment(TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
+                    .build();
         }
     }
 }
