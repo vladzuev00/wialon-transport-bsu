@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Service;
 import org.vandeseer.easytable.TableDrawer;
+import org.vandeseer.easytable.settings.HorizontalAlignment;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
 import org.vandeseer.easytable.structure.Table.TableBuilder;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -65,13 +67,25 @@ public final class UserMovementReportBuildingService {
     private static final PDFont INTRODUCTION_TABLE_FONT = HELVETICA;
     private static final Color INTRODUCTION_TABLE_BORDER_COLOR = WHITE;
 
+    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_IMEI_NAME = "Imei";
+    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME = "Phone number";
+    private static final String INTRODUCTION_TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME = "Count of points";
+
+    private static final Color INTRODUCTION_TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
+    private static final Color INTRODUCTION_TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
+    private static final PDFont INTRODUCTION_TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
+    private static final Integer INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE = 11;
+    private static final HorizontalAlignment INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
+
+
+    private static final float CELL_BORDER_WIDTH = 1;
+
     private final TrackerService trackerService;
     private final DataService dataService;
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final PDDocument document = new PDDocument()) {
             addIntroduction(document, user, dateInterval);
-
 
 
             return transformToByteArray(document);
@@ -81,6 +95,7 @@ public final class UserMovementReportBuildingService {
     }
 
     //TODO: 2 запроса объединить в один
+    //introduction includes report's name, user's email, date interval, table with trackers
     private void addIntroduction(final PDDocument document, final User user, final DateInterval dateInterval)
             throws IOException {
         final PDPage page = addPage(document);
@@ -92,17 +107,7 @@ public final class UserMovementReportBuildingService {
                     .fontSize(INTRODUCTION_TABLE_FONT_SIZE)
                     .font(INTRODUCTION_TABLE_FONT)
                     .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
-                    //header row
-                    .addRow(Row.builder()
-                            .add(TextCell.builder().text("Imei").borderWidth(1).build())
-                            .add(TextCell.builder().text("Phone number").borderWidth(1).build())
-                            .add(TextCell.builder().text("Count of points").borderWidth(1).build())
-                            .backgroundColor(new Color(76, 129, 190))
-                            .textColor(WHITE)
-                            .font(HELVETICA_BOLD)
-                            .fontSize(11)
-                            .horizontalAlignment(CENTER)
-                            .build());
+                    .addRow(createIntroductionTableHeaderRow());
 
             final List<Tracker> userTrackers = this.trackerService.findByUser(user);
             final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
@@ -125,6 +130,12 @@ public final class UserMovementReportBuildingService {
                     .build()
                     .draw();
         }
+    }
+
+    private static PDPage addPage(final PDDocument document) {
+        final PDPage page = new PDPage();
+        document.addPage(page);
+        return page;
     }
 
     private static void addIntroductionContentLines(final PDPageContentStream pageContentStream,
@@ -181,10 +192,24 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static PDPage addPage(final PDDocument document) {
-        final PDPage page = new PDPage();
-        document.addPage(page);
-        return page;
+    private static Row createIntroductionTableHeaderRow() {
+        return Row.builder()
+                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_IMEI_NAME))
+                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
+                .add(createCell(INTRODUCTION_TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
+                .backgroundColor(INTRODUCTION_TABLE_HEADER_ROW_BACKGROUND_COLOR)
+                .textColor(INTRODUCTION_TABLE_HEADER_ROW_TEXT_COLOR)
+                .font(INTRODUCTION_TABLE_HEADER_ROW_FONT)
+                .fontSize(INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE)
+                .horizontalAlignment(INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
+                .build();
+    }
+
+    private static TextCell createCell(final String content) {
+        return TextCell.builder()
+                .text(content)
+                .borderWidth(CELL_BORDER_WIDTH)
+                .build();
     }
 
     private static byte[] transformToByteArray(final PDDocument document)
