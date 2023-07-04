@@ -85,8 +85,13 @@ public final class UserMovementReportBuildingService {
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final PDDocument document = new PDDocument()) {
-            addIntroduction(document, user, dateInterval);
 
+            final List<Tracker> userTrackers = this.trackerService.findByUser(user);
+            final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
+            final Map<Tracker, List<Data>> dataGroupedByTrackers = data.stream().collect(groupingBy(Data::getTracker));
+            userTrackers.forEach(userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
+
+            this.addIntroduction(document, user, dateInterval, dataGroupedByTrackers);
 
             return transformToByteArray(document);
         } catch (final IOException cause) {
@@ -96,7 +101,10 @@ public final class UserMovementReportBuildingService {
 
     //TODO: 2 запроса объединить в один
     //introduction includes report's name, user's email, date interval, table with trackers
-    private void addIntroduction(final PDDocument document, final User user, final DateInterval dateInterval)
+    private void addIntroduction(final PDDocument document,
+                                 final User user,
+                                 final DateInterval dateInterval,
+                                 final Map<Tracker, List<Data>> dataGroupedByTrackers)
             throws IOException {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
@@ -109,16 +117,12 @@ public final class UserMovementReportBuildingService {
                     .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
                     .addRow(createIntroductionTableHeaderRow());
 
-            final List<Tracker> userTrackers = this.trackerService.findByUser(user);
-            final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-            final Map<Tracker, List<Data>> dataGroupedByTrackers = data.stream().collect(groupingBy(Data::getTracker));
-            userTrackers.forEach(userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
-            dataGroupedByTrackers.keySet()
-                    .forEach(tracker -> tableBuilder.addRow(Row.builder()
-                            .add(TextCell.builder().text(tracker.getImei()).borderWidth(1).build())
-                            .add(TextCell.builder().text(tracker.getPhoneNumber()).borderWidth(1).build())
-                            .add(TextCell.builder().text(Integer.toString(dataGroupedByTrackers.get(tracker).size())).borderWidth(1).build())
-                            .build()));
+            dataGroupedByTrackers
+                    .forEach(
+                            (tracker, trackerData) -> tableBuilder.addRow(
+                                    createIntroductionTableTrackerRow(tracker, trackerData)
+                            )
+                    );
 
             final Table table = tableBuilder.build();
 
@@ -203,6 +207,19 @@ public final class UserMovementReportBuildingService {
                 .fontSize(INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE)
                 .horizontalAlignment(INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
                 .build();
+    }
+
+    private static Row createIntroductionTableTrackerRow(final Tracker tracker, final List<Data> trackerData) {
+        return Row.builder()
+                .add(createCell(tracker.getImei()))
+                .add(createCell(tracker.getPhoneNumber()))
+                .add(createCell(trackerData.size()))
+                .build();
+    }
+
+    private static TextCell createCell(final int content) {
+        final String contentAsString = Integer.toString(content);
+        return createCell(contentAsString);
     }
 
     private static TextCell createCell(final String content) {
