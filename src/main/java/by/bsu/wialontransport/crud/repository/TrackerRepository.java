@@ -12,6 +12,10 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
 
     Optional<TrackerEntity> findByImei(final String imei);
 
+    //TODO: test and refactor with next method
+    @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId")
+    List<TrackerEntity> findByUserId(final Long userId);
+
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId")
     List<TrackerEntity> findByUserId(final Long userId, final Pageable pageable);
 
