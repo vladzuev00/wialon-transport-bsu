@@ -27,8 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import static java.awt.Color.BLUE;
-import static java.awt.Color.WHITE;
+import static java.awt.Color.*;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
@@ -54,9 +53,9 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 25;
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 750;
 
-    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_IMEI = 200;
+    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_IMEI = 150;
     private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
-    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 100;
+    private static final float INTRODUCTION_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
     private static final float[] INTRODUCTION_TABLE_COLUMNS_WIDTHS = {
             INTRODUCTION_TABLE_COLUMN_WIDTH_OF_IMEI,
             INTRODUCTION_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
@@ -199,6 +198,18 @@ public final class UserMovementReportBuildingService {
                 .fontSize(INTRODUCTION_TABLE_FONT_SIZE)
                 .font(INTRODUCTION_TABLE_FONT)
                 .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
+                .addRow(Row.builder().add(
+                        TextCell.builder()
+                                .colSpan(3)
+                                .font(INTRODUCTION_TABLE_HEADER_ROW_FONT)
+                                .fontSize(INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE)
+                                .backgroundColor(INTRODUCTION_TABLE_HEADER_ROW_BACKGROUND_COLOR)
+                                .textColor(INTRODUCTION_TABLE_HEADER_ROW_TEXT_COLOR)
+                                .horizontalAlignment(INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
+                                .text("Trackers")
+                                .build()
+                        )
+                        .build())
                 .addRow(createIntroductionTableHeaderRow());
         dataGroupedByTrackers
                 .forEach(
