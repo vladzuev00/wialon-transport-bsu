@@ -77,6 +77,8 @@ public final class UserMovementReportBuildingService {
     private static final Integer INTRODUCTION_TABLE_HEADER_ROW_FONT_SIZE = 11;
     private static final HorizontalAlignment INTRODUCTION_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
 
+    private static final float INTRODUCTION_TABLE_START_X = 25F;
+    private static final float INTRODUCTION_TABLE_START_Y = 650F;
 
     private static final float CELL_BORDER_WIDTH = 1;
 
@@ -85,14 +87,10 @@ public final class UserMovementReportBuildingService {
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final PDDocument document = new PDDocument()) {
-
-            final List<Tracker> userTrackers = this.trackerService.findByUser(user);
-            final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-            final Map<Tracker, List<Data>> dataGroupedByTrackers = data.stream().collect(groupingBy(Data::getTracker));
-            userTrackers.forEach(userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
-
+            final Map<Tracker, List<Data>> dataGroupedByTrackers = this.findDataGroupedByAllTrackersOfUser(
+                    user, dateInterval
+            );
             this.addIntroduction(document, user, dateInterval, dataGroupedByTrackers);
-
             return transformToByteArray(document);
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
@@ -100,6 +98,22 @@ public final class UserMovementReportBuildingService {
     }
 
     //TODO: 2 запроса объединить в один
+    private Map<Tracker, List<Data>> findDataGroupedByAllTrackersOfUser(final User user,
+                                                                        final DateInterval dateInterval) {
+        final List<Tracker> userTrackers = this.trackerService.findByUser(user);
+        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
+        final Map<Tracker, List<Data>> dataGroupedByTrackers = groupDataByTrackers(data);
+        userTrackers.forEach(
+                userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList())
+        );
+        return dataGroupedByTrackers;
+    }
+
+    private static Map<Tracker, List<Data>> groupDataByTrackers(final List<Data> data) {
+        return data.stream()
+                .collect(groupingBy(Data::getTracker));
+    }
+
     //introduction includes report's name, user's email, date interval, table with trackers
     private void addIntroduction(final PDDocument document,
                                  final User user,
@@ -109,30 +123,7 @@ public final class UserMovementReportBuildingService {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
             addIntroductionContentLines(pageContentStream, user, dateInterval);
-
-            final TableBuilder tableBuilder = Table.builder()
-                    .addColumnsOfWidth(INTRODUCTION_TABLE_COLUMNS_WIDTHS)
-                    .fontSize(INTRODUCTION_TABLE_FONT_SIZE)
-                    .font(INTRODUCTION_TABLE_FONT)
-                    .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
-                    .addRow(createIntroductionTableHeaderRow());
-
-            dataGroupedByTrackers
-                    .forEach(
-                            (tracker, trackerData) -> tableBuilder.addRow(
-                                    createIntroductionTableTrackerRow(tracker, trackerData)
-                            )
-                    );
-
-            final Table table = tableBuilder.build();
-
-            TableDrawer.builder()
-                    .contentStream(pageContentStream)
-                    .table(table)
-                    .startX(25)
-                    .startY(650)
-                    .build()
-                    .draw();
+            addIntroductionTable(dataGroupedByTrackers, pageContentStream);
         }
     }
 
@@ -194,6 +185,38 @@ public final class UserMovementReportBuildingService {
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
         }
+    }
+
+    private static void addIntroductionTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
+                                             final PDPageContentStream pageContentStream) {
+        final Table table = buildIntroductionTable(dataGroupedByTrackers);
+        drawIntroductionTable(pageContentStream, table);
+    }
+
+    private static Table buildIntroductionTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
+        final TableBuilder tableBuilder = Table.builder()
+                .addColumnsOfWidth(INTRODUCTION_TABLE_COLUMNS_WIDTHS)
+                .fontSize(INTRODUCTION_TABLE_FONT_SIZE)
+                .font(INTRODUCTION_TABLE_FONT)
+                .borderColor(INTRODUCTION_TABLE_BORDER_COLOR)
+                .addRow(createIntroductionTableHeaderRow());
+        dataGroupedByTrackers
+                .forEach(
+                        (tracker, trackerData) -> tableBuilder.addRow(
+                                createIntroductionTableTrackerRow(tracker, trackerData)
+                        )
+                );
+        return tableBuilder.build();
+    }
+
+    private static void drawIntroductionTable(final PDPageContentStream pageContentStream, final Table table) {
+        TableDrawer.builder()
+                .contentStream(pageContentStream)
+                .table(table)
+                .startX(INTRODUCTION_TABLE_START_X)
+                .startY(INTRODUCTION_TABLE_START_Y)
+                .build()
+                .draw();
     }
 
     private static Row createIntroductionTableHeaderRow() {
