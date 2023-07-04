@@ -24,6 +24,7 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -318,18 +319,56 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static abstract class PaginatedTableBuilder {
+    private static final class PaginatedTableBuilder {
         private final float[] columnsWidths;
         private final PDFont font;
         private final Integer fontSize;
         private final Color borderColor;
+        private final int maxAmountOfRowsInOneTable;
+        private final List<Table> builtTables;
+        private int amountOfRowsInCurrentTable;
+        private TableBuilder currentTableBuilder;
+
+        public PaginatedTableBuilder(final float[] columnsWidths,
+                                     final PDFont font,
+                                     final Integer fontSize,
+                                     final Color borderColor,
+                                     final int maxAmountOfRowsInOneTable) {
+            this.columnsWidths = columnsWidths;
+            this.font = font;
+            this.fontSize = fontSize;
+            this.borderColor = borderColor;
+            this.maxAmountOfRowsInOneTable = maxAmountOfRowsInOneTable;
+            this.builtTables = new ArrayList<>();
+            this.amountOfRowsInCurrentTable = 0;
+            this.resetTableBuilder();
+        }
+
+        public void addRow(final Row row) {
+            if (this.amountOfRowsInCurrentTable >= this.maxAmountOfRowsInOneTable) {
+                this.resetTableBuilder();
+                //to reset method
+                this.amountOfRowsInCurrentTable = 0;
+            }
+
+        }
 
         public List<Table> build() {
 
         }
 
-        protected abstract Row buildNameRow();
-        protected abstract Row buildHeaderRow();
-        protected abstract Row buildRow();
+        private void finishBuildingTable() {
+            final Table builtTable = this.currentTableBuilder.build();
+            this.builtTables.add(builtTable);
+            this.resetTableBuilder();
+        }
+
+        private void resetTableBuilder() {
+            this.currentTableBuilder = Table.builder()
+                    .addColumnsOfWidth(this.columnsWidths)
+                    .font(this.font)
+                    .fontSize(this.fontSize)
+                    .borderColor(this.borderColor);
+        }
     }
 }
