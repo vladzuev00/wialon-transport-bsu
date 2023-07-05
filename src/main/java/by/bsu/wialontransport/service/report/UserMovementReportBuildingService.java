@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import static java.awt.Color.*;
 import static java.lang.String.format;
@@ -59,18 +58,6 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_TABLE_START_Y = 650F;
 
     private static final float CELL_BORDER_WIDTH = 1;
-
-    private static final String MOVEMENT_TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME = "Datetime";
-    private static final String MOVEMENT_TABLE_HEADER_COLUMN_OF_LATITUDE_NAME = "Latitude";
-    private static final String MOVEMENT_TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME = "Longitude";
-    private static final String MOVEMENT_TABLE_HEADER_COLUMN_OF_CITY_NAME = "City";
-    private static final String MOVEMENT_TABLE_HEADER_COLUMN_OF_COUNTRY_NAME = "Country";
-
-    private static final Color MOVEMENT_TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
-    private static final Color MOVEMENT_TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
-    private static final PDFont MOVEMENT_TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
-    private static final Integer MOVEMENT_TABLE_HEADER_ROW_FONT_SIZE = 11;
-    private static final HorizontalAlignment MOVEMENT_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
 
     private final TrackerService trackerService;
     private final DataService dataService;
@@ -240,23 +227,10 @@ public final class UserMovementReportBuildingService {
                 .build();
     }
 
-    private static Table buildMovementTable() {
-        return null;
-    }
+    private static Table buildUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
+        dataGroupedByTrackers.entrySet().removeIf(dataByTracker -> dataByTracker.getValue().isEmpty());
 
-    private static Row buildMovementTableHeaderRow() {
-        return Row.builder()
-                .add(createCell(MOVEMENT_TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
-                .add(createCell(MOVEMENT_TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
-                .add(createCell(MOVEMENT_TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME))
-                .add(createCell(MOVEMENT_TABLE_HEADER_COLUMN_OF_CITY_NAME))
-                .add(createCell(MOVEMENT_TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
-                .backgroundColor(MOVEMENT_TABLE_HEADER_ROW_BACKGROUND_COLOR)
-                .textColor(MOVEMENT_TABLE_HEADER_ROW_TEXT_COLOR)
-                .font(MOVEMENT_TABLE_HEADER_ROW_FONT)
-                .fontSize(MOVEMENT_TABLE_HEADER_ROW_FONT_SIZE)
-                .horizontalAlignment(MOVEMENT_TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
-                .build();
+        return null;
     }
 
     private static byte[] transformToByteArray(final PDDocument document)
@@ -342,7 +316,6 @@ public final class UserMovementReportBuildingService {
         private static final PDFont TABLE_FONT = HELVETICA;
         private static final Integer TABLE_FONT_SIZE = 10;
         private static final Color TABLE_BORDER_COLOR = WHITE;
-
         private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
 
         //For row with name
@@ -397,6 +370,95 @@ public final class UserMovementReportBuildingService {
                     .add(createCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))
                     .add(createCell(TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
                     .add(createCell(TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
+                    .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
+                    .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
+                    .font(TABLE_HEADER_ROW_FONT)
+                    .fontSize(TABLE_HEADER_ROW_FONT_SIZE)
+                    .horizontalAlignment(TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
+                    .build();
+        }
+    }
+
+    private static final class UserMovementPaginatedTableBuilder extends PaginatedTableBuilder {
+        private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 90;
+        private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 90;
+        private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 90;
+        private static final float TABLE_COLUMN_WIDTH_OF_CITY = 90;
+        private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 90;
+        private static final float[] TABLE_COLUMNS_WIDTHS = {
+                TABLE_COLUMN_WIDTH_OF_DATETIME,
+                TABLE_COLUMN_WIDTH_OF_LATITUDE,
+                TABLE_COLUMN_WIDTH_OF_LONGITUDE,
+                TABLE_COLUMN_WIDTH_OF_CITY,
+                TABLE_COLUMN_WIDTH_OF_COUNTRY
+        };
+
+        private static final PDFont TABLE_FONT = HELVETICA;
+        private static final Integer TABLE_FONT_SIZE = 10;
+        private static final Color TABLE_BORDER_COLOR = WHITE;
+        private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
+
+        //For row with name
+        private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
+        private static final Color TABLE_NAME_ROW_TEXT_COLOR = WHITE;
+        private static final PDFont TABLE_NAME_ROW_FONT = HELVETICA_BOLD;
+        private static final Integer TABLE_NAME_ROW_FONT_SIZE = 11;
+        private static final HorizontalAlignment TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;
+        private static final int TABLE_NAME_ROW_COL_SPAN = TABLE_COLUMNS_WIDTHS.length;
+        private static final String TABLE_TEMPLATE_NAME_ROW_CONTENT = "User's movement(tracker's imei '%s')";
+
+        //For header row
+        private static final String TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME = "Datetime";
+        private static final String TABLE_HEADER_COLUMN_OF_LATITUDE_NAME = "Latitude";
+        private static final String TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME = "Longitude";
+        private static final String TABLE_HEADER_COLUMN_OF_CITY_NAME = "City";
+        private static final String TABLE_HEADER_COLUMN_OF_COUNTRY_NAME = "Country";
+        private static final Color TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
+        private static final Color TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
+        private static final PDFont TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
+        private static final Integer TABLE_HEADER_ROW_FONT_SIZE = 11;
+        private static final HorizontalAlignment TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
+
+        public UserMovementPaginatedTableBuilder(final Tracker userTracker) {
+            super(
+                    TABLE_COLUMNS_WIDTHS,
+                    TABLE_FONT,
+                    TABLE_FONT_SIZE,
+                    TABLE_BORDER_COLOR,
+                    MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE,
+                    buildNameRow(userTracker),
+                    buildHeaderRow()
+            );
+        }
+
+        private static Row buildNameRow(final Tracker userTracker) {
+            return Row.builder()
+                    .add(
+                            TextCell.builder()
+                                    .backgroundColor(TABLE_NAME_ROW_BACKGROUND_COLOR)
+                                    .textColor(TABLE_NAME_ROW_TEXT_COLOR)
+                                    .font(TABLE_NAME_ROW_FONT)
+                                    .fontSize(TABLE_NAME_ROW_FONT_SIZE)
+                                    .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
+                                    .colSpan(TABLE_NAME_ROW_COL_SPAN)
+                                    .text(createTableName(userTracker))
+                                    .build()
+                    )
+                    .build();
+        }
+
+        private static String createTableName(final Tracker userTracker) {
+            final String trackerImei = userTracker.getImei();
+            return format(TABLE_TEMPLATE_NAME_ROW_CONTENT, trackerImei);
+        }
+
+        private static Row buildHeaderRow() {
+            return Row.builder()
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_CITY_NAME))
+                    .add(createCell(TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
                     .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
                     .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
                     .font(TABLE_HEADER_ROW_FONT)
