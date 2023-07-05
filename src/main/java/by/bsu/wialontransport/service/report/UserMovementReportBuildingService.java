@@ -27,18 +27,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static java.awt.Color.*;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
-import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.groupingBy;
 import static org.apache.pdfbox.pdmodel.font.PDType1Font.*;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
-//TODO: трекеры могут не вместиться на страницу
 @Service
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingService {
@@ -81,8 +80,8 @@ public final class UserMovementReportBuildingService {
             final Map<Tracker, List<Data>> dataGroupedByTrackers = this.findDataGroupedByAllTrackersOfUser(
                     user, dateInterval
             );
-            addIntroduction(document, user, dateInterval, dataGroupedByTrackers);
-
+            addIntroduction(document, user, dateInterval);
+            addUserTrackersTable(dataGroupedByTrackers, document);
             return transformToByteArray(document);
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
@@ -92,30 +91,31 @@ public final class UserMovementReportBuildingService {
     //TODO: 2 запроса объединить в один
     private Map<Tracker, List<Data>> findDataGroupedByAllTrackersOfUser(final User user,
                                                                         final DateInterval dateInterval) {
-        final List<Tracker> userTrackers = this.trackerService.findByUser(user);
         final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-        final Map<Tracker, List<Data>> dataGroupedByTrackers = groupDataByTrackers(data);
-        userTrackers.forEach(
-                userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList())
-        );
+        final Map<Tracker, List<Data>> dataGroupedByTrackers = groupDataByTrackersAndSortTrackersByImei(data);
+        this.insertTrackersWithoutData(dataGroupedByTrackers, user);
         return dataGroupedByTrackers;
     }
 
-    private static Map<Tracker, List<Data>> groupDataByTrackers(final List<Data> data) {
+    private static Map<Tracker, List<Data>> groupDataByTrackersAndSortTrackersByImei(final List<Data> data) {
         return data.stream()
                 .collect(groupingBy(Data::getTracker));
     }
 
-    //introduction includes report's name, user's email, date interval, table with trackers
+    private void insertTrackersWithoutData(final Map<Tracker, List<Data>> dataGroupedByTrackers, final User user) {
+        final List<Tracker> userTrackers = this.trackerService.findByUser(user);
+        userTrackers.forEach(
+                userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList())
+        );
+    }
+
     private static void addIntroduction(final PDDocument document,
                                         final User user,
-                                        final DateInterval dateInterval,
-                                        final Map<Tracker, List<Data>> dataGroupedByTrackers)
+                                        final DateInterval dateInterval)
             throws IOException {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
             addIntroductionContentLines(pageContentStream, user, dateInterval);
-            addUserTrackersTable(dataGroupedByTrackers, pageContentStream);
         }
     }
 
@@ -182,7 +182,7 @@ public final class UserMovementReportBuildingService {
     private static void addUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
                                              final PDDocument document) {
         final List<Table> tableParts = buildUserTrackersPaginatedTable(dataGroupedByTrackers);
-        drawPartUserTrackersTable(pageContentStream, table);
+        drawPaginatedUserTrackersTable(document, tableParts);
     }
 
     private static List<Table> buildUserTrackersPaginatedTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
@@ -196,9 +196,21 @@ public final class UserMovementReportBuildingService {
         return builder.build();
     }
 
-    private static void drawPaginatedUserTrackersTable()
+    private static void drawPaginatedUserTrackersTable(final PDDocument document, final List<Table> paginatedTable) {
+        paginatedTable.forEach(table -> drawPartOfPaginatedUserTrackersTable(document, table));
+    }
 
-    private static void drawPartUserTrackersTable(final PDPageContentStream pageContentStream, final Table partTable) {
+    private static void drawPartOfPaginatedUserTrackersTable(final PDDocument document, final Table table) {
+        final PDPage page = addPage(document);
+        try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
+            drawPartOfPaginatedUserTrackersTable(pageContentStream, table);
+        } catch (final IOException cause) {
+            throw new UserMovementReportBuildingException(cause);
+        }
+    }
+
+    private static void drawPartOfPaginatedUserTrackersTable(final PDPageContentStream pageContentStream,
+                                                             final Table partTable) {
         TableDrawer.builder()
                 .contentStream(pageContentStream)
                 .table(partTable)
@@ -295,6 +307,7 @@ public final class UserMovementReportBuildingService {
         }
 
         public final List<Table> build() {
+            this.finishBuildingTable();
             return this.builtTables;
         }
 

@@ -22,7 +22,7 @@ public class ApplicationRunner {
         final ConfigurableApplicationContext context = run(ApplicationRunner.class, args);
         final UserMovementReportBuildingService service = context.getBean(UserMovementReportBuildingService.class);
         final User user = User.builder()
-                .id(255L)
+                .id(1L)
                 .email("vladzuev.00@mail.ru")
                 .build();
         final DateInterval dateInterval = new DateInterval(
