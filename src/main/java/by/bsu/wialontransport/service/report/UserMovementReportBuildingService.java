@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.springframework.stereotype.Service;
 import org.vandeseer.easytable.TableDrawer;
 import org.vandeseer.easytable.settings.HorizontalAlignment;
@@ -23,15 +24,18 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
-import static java.awt.Color.*;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.WHITE;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
@@ -47,15 +51,15 @@ public final class UserMovementReportBuildingService {
     private static final String DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_PATTERN);
 
+    private static final String DATE_PATTERN = "dd.MM.yyyy";
+    private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_PATTERN);
+
     private static final PDFont FIRST_PAGE_FONT = TIMES_ROMAN;
     private static final float FIRST_PAGE_FONT_SIZE = 16;
 
     private static final String REPORT_NAME = "Movement report";
     private static final String TEMPLATE__ROW_WITH_USER_EMAIL = "User's email: %s";
     private static final String TEMPLATE_ROW_WITH_DATE_INTERVAL = "Date interval: %s - %s";
-
-    private static final String DATE_PATTERN = "dd.MM.yyyy";
-    private static final DateTimeFormatter FORMATTER = ofPattern(DATE_PATTERN);
 
     private static final float INTRODUCTION_CONTENT_LINES_LEADING = 14.5f;
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 25;
@@ -71,18 +75,31 @@ public final class UserMovementReportBuildingService {
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final PDDocument document = new PDDocument()) {
+            final PDType0Font font = loadFont(document, "fonts/Roboto-Regular.ttf");
             final Map<Tracker, List<Data>> dataGroupedByTrackers = this.findDataGroupedByAllTrackersOfUser(
                     user, dateInterval
             );
-            addIntroduction(document, user, dateInterval);
-            addUserTrackersTable(dataGroupedByTrackers, document);
+            addIntroduction(document, user, dateInterval, font);
+            addUserTrackersTable(dataGroupedByTrackers, document, font);
+            addUserMovementTable(dataGroupedByTrackers, document, font);
             return transformToByteArray(document);
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
         }
     }
 
-    //TODO: 2 запроса объединить в один
+    private PDType0Font loadFont(PDDocument document, String pathToFont) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream(pathToFont);
+        PDType0Font font;
+        try {
+            font = PDType0Font.load(document, is);
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Error while reading font file: %s for a report.", pathToFont));
+        }
+        return font;
+    }
+
     private Map<Tracker, List<Data>> findDataGroupedByAllTrackersOfUser(final User user,
                                                                         final DateInterval dateInterval) {
         final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
@@ -105,11 +122,12 @@ public final class UserMovementReportBuildingService {
 
     private static void addIntroduction(final PDDocument document,
                                         final User user,
-                                        final DateInterval dateInterval)
+                                        final DateInterval dateInterval,
+                                        final PDFont font)
             throws IOException {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
-            addIntroductionContentLines(pageContentStream, user, dateInterval);
+            addIntroductionContentLines(pageContentStream, user, dateInterval, font);
         }
     }
 
@@ -121,13 +139,15 @@ public final class UserMovementReportBuildingService {
 
     private static void addIntroductionContentLines(final PDPageContentStream pageContentStream,
                                                     final User user,
-                                                    final DateInterval dateInterval)
+                                                    final DateInterval dateInterval,
+                                                    final PDFont font)
             throws IOException {
         final String rowWithUserEmail = createRowWithUserEmail(user);
         final String rowWithDateInterval = createRowWithDateInterval(dateInterval);
         addContentLines(
                 pageContentStream,
                 INTRODUCTION_CONTENT_LINES_LEADING,
+                font,
                 INTRODUCTION_NEW_LINE_AT_OFFSET_X,
                 INTRODUCTION_NEW_LINE_AT_OFFSET_Y,
                 REPORT_NAME,
@@ -141,21 +161,23 @@ public final class UserMovementReportBuildingService {
     }
 
     private static String createRowWithDateInterval(final DateInterval dateInterval) {
-        final String formattedStartDate = FORMATTER.format(dateInterval.getStart());
-        final String formattedEndDate = FORMATTER.format(dateInterval.getEnd());
+        final String formattedStartDate = DATE_FORMATTER.format(dateInterval.getStart());
+        final String formattedEndDate = DATE_FORMATTER.format(dateInterval.getEnd());
         return format(TEMPLATE_ROW_WITH_DATE_INTERVAL, formattedStartDate, formattedEndDate);
     }
 
     private static void addContentLines(final PDPageContentStream pageContentStream,
                                         final float leading,
+                                        final PDFont font,
                                         final float newLineAtOffsetX,
                                         final float newLineAtOffsetY,
                                         final String... lines)
             throws IOException {
         pageContentStream.setLeading(leading);
         pageContentStream.beginText();
+        pageContentStream.setFont(font, FIRST_PAGE_FONT_SIZE);
         pageContentStream.newLineAtOffset(newLineAtOffsetX, newLineAtOffsetY);
-        pageContentStream.setFont(FIRST_PAGE_FONT, FIRST_PAGE_FONT_SIZE);
+//        pageContentStream.setFont(FIRST_PAGE_FONT, FIRST_PAGE_FONT_SIZE);
         addLines(pageContentStream, lines);
         pageContentStream.endText();
     }
@@ -174,20 +196,22 @@ public final class UserMovementReportBuildingService {
     }
 
     private static void addUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
-                                             final PDDocument document) {
-        final List<Table> tableParts = buildUserTrackersPaginatedTable(dataGroupedByTrackers);
-        drawPaginatedUserTrackersTable(document, tableParts);
+                                             final PDDocument document,
+                                             final PDFont font) {
+        final List<Table> pageTables = buildDistributedUserTrackersTable(dataGroupedByTrackers, font);
+        drawPageTables(document, pageTables);
     }
 
-    private static List<Table> buildUserTrackersPaginatedTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
-        final UserTrackersPaginatedTableBuilder builder = new UserTrackersPaginatedTableBuilder();
+    private static List<Table> buildDistributedUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
+                                                                 final PDFont font) {
+        final DistributedUserTrackersTableBuilder tableBuilder = new DistributedUserTrackersTableBuilder(font);
         dataGroupedByTrackers
                 .forEach(
-                        (tracker, trackerData) -> builder.addRow(
+                        (tracker, trackerData) -> tableBuilder.addRow(
                                 createUserTrackersTableRow(tracker, trackerData)
                         )
                 );
-        return builder.build();
+        return tableBuilder.build();
     }
 
     private static Row createUserTrackersTableRow(final Tracker tracker, final List<Data> trackerData) {
@@ -201,8 +225,8 @@ public final class UserMovementReportBuildingService {
                 .build();
     }
 
-    private static void drawPaginatedUserTrackersTable(final PDDocument document, final List<Table> paginatedTable) {
-        paginatedTable.forEach(table -> drawPageTable(document, table));
+    private static void drawPageTables(final PDDocument document, final List<Table> pageTables) {
+        pageTables.forEach(table -> drawPageTable(document, table));
     }
 
     private static void drawPageTable(final PDDocument document, final Table pageTable) {
@@ -248,28 +272,42 @@ public final class UserMovementReportBuildingService {
                 .build();
     }
 
-    private static List<Table> buildUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
-        dataGroupedByTrackers.entrySet().removeIf(dataByTracker -> dataByTracker.getValue().isEmpty());
+    private static void addUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
+                                             final PDDocument document,
+                                             final PDFont font) {
+        final List<Table> pageTables = buildDistributedUserMovementTables(dataGroupedByTrackers, font);
+        drawPageTables(document, pageTables);
+    }
+
+    private static List<Table> buildDistributedUserMovementTables(final Map<Tracker, List<Data>> dataGroupedByTrackers,
+                                                                  final PDFont font) {
         return dataGroupedByTrackers.entrySet()
                 .stream()
-                .map(trackerWithData -> buildUserMovementTable(trackerWithData.getKey(), trackerWithData.getValue()))
+                .map(entry -> buildDistributedUserMovementTable(entry, font))
                 .flatMap(Collection::stream)
                 .toList();
     }
 
-    private static List<Table> buildUserMovementTable(final Tracker userTracker, final List<Data> trackerData) {
-        final UserMovementPaginatedTableBuilder tableBuilder = new UserMovementPaginatedTableBuilder(userTracker);
-        trackerData.forEach(data -> tableBuilder.addRow(createUserMovementTableRow(data)));
+    private static List<Table> buildDistributedUserMovementTable(final Entry<Tracker, List<Data>> dataByTracker,
+                                                                 final PDFont font) {
+        final Tracker tracker = dataByTracker.getKey();
+        final DistributedUserMovementTableBuilder tableBuilder = new DistributedUserMovementTableBuilder(tracker, font);
+        dataByTracker.getValue().forEach(data -> tableBuilder.addRow(createUserMovementTableRow(data)));
         return tableBuilder.build();
     }
 
     private static Row createUserMovementTableRow(final Data data) {
+        final LocalDateTime dateTime = data.findDateTime();
+        final double latitudeAsDouble = data.findLatitudeAsDouble();
+        final double longitudeAsDouble = data.findLongitudeAsDouble();
+        final String cityName = data.findCityName();
+        final String countryName = data.findCountryName();
         return Row.builder()
-                .add(createCell(LocalDateTime.of(data.getDate(), data.getTime())))
-                .add(createTextCell(data.getLatitude().findDoubleValue()))
-                .add(createTextCell(data.getLongitude().findDoubleValue()))
-                .add(createTextCell(data.getAddress().getCityName()))
-                .add(createTextCell(data.getAddress().getCountryName()))
+                .add(createCell(dateTime))
+                .add(createTextCell(latitudeAsDouble))
+                .add(createTextCell(longitudeAsDouble))
+                .add(createTextCell(cityName))
+                .add(createTextCell(countryName))
                 .build();
     }
 
@@ -281,39 +319,39 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static abstract class PaginatedTableBuilder {
+    private static abstract class DistributedTableBuilder {
         private final float[] columnsWidths;
         private final PDFont font;
         private final Integer fontSize;
         private final Color borderColor;
-        private final int maxAmountOfRowsInOneTable;
+        private final int maxAmountOfRowsInOnePage;
         private final Row nameRow;
         private final Row headerRow;
-        private final List<Table> builtTables;
+        private final List<Table> pageTables;
         private int amountOfRowsInCurrentTable;
         private TableBuilder currentTableBuilder;
 
-        public PaginatedTableBuilder(final float[] columnsWidths,
-                                     final PDFont font,
-                                     final Integer fontSize,
-                                     final Color borderColor,
-                                     final int maxAmountOfRowsInOneTable,
-                                     final Row nameRow,
-                                     final Row headerRow) {
+        public DistributedTableBuilder(final float[] columnsWidths,
+                                       final PDFont font,
+                                       final Integer fontSize,
+                                       final Color borderColor,
+                                       final int maxAmountOfRowsInOnePage,
+                                       final Row nameRow,
+                                       final Row headerRow) {
             this.columnsWidths = columnsWidths;
             this.font = font;
             this.fontSize = fontSize;
             this.borderColor = borderColor;
-            this.maxAmountOfRowsInOneTable = maxAmountOfRowsInOneTable;
+            this.maxAmountOfRowsInOnePage = maxAmountOfRowsInOnePage;
             this.nameRow = nameRow;
             this.headerRow = headerRow;
-            this.builtTables = new ArrayList<>();
+            this.pageTables = new ArrayList<>();
             this.amountOfRowsInCurrentTable = 0;
             this.resetTableBuilder();
         }
 
         public final void addRow(final Row row) {
-            if (this.amountOfRowsInCurrentTable >= this.maxAmountOfRowsInOneTable) {
+            if (this.amountOfRowsInCurrentTable >= this.maxAmountOfRowsInOnePage) {
                 this.finishBuildingTable();
             }
             this.currentTableBuilder.addRow(row);
@@ -322,12 +360,12 @@ public final class UserMovementReportBuildingService {
 
         public final List<Table> build() {
             this.finishBuildingTable();
-            return this.builtTables;
+            return this.pageTables;
         }
 
         private void finishBuildingTable() {
             final Table builtTable = this.currentTableBuilder.build();
-            this.builtTables.add(builtTable);
+            this.pageTables.add(builtTable);
             this.resetTableBuilder();
             this.amountOfRowsInCurrentTable = 0;
         }
@@ -343,7 +381,7 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static final class UserTrackersPaginatedTableBuilder extends PaginatedTableBuilder {
+    private static final class DistributedUserTrackersTableBuilder extends DistributedTableBuilder {
         private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 150;
         private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
         private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
@@ -353,7 +391,6 @@ public final class UserMovementReportBuildingService {
                 TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
         };
 
-        private static final PDFont TABLE_FONT = HELVETICA;
         private static final Integer TABLE_FONT_SIZE = 10;
         private static final Color TABLE_BORDER_COLOR = WHITE;
         private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
@@ -373,19 +410,18 @@ public final class UserMovementReportBuildingService {
         private static final String TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME = "Count of points";
         private static final Color TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
         private static final Color TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
-        private static final PDFont TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
         private static final Integer TABLE_HEADER_ROW_FONT_SIZE = 11;
         private static final HorizontalAlignment TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
 
-        public UserTrackersPaginatedTableBuilder() {
+        public DistributedUserTrackersTableBuilder(final PDFont font) {
             super(
                     TABLE_COLUMNS_WIDTHS,
-                    TABLE_FONT,
+                    font,
                     TABLE_FONT_SIZE,
                     TABLE_BORDER_COLOR,
                     MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE,
                     buildNameRow(),
-                    buildHeaderRow()
+                    buildHeaderRow(font)
             );
         }
 
@@ -405,21 +441,21 @@ public final class UserMovementReportBuildingService {
                     .build();
         }
 
-        private static Row buildHeaderRow() {
+        private static Row buildHeaderRow(final PDFont font) {
             return Row.builder()
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
                     .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
                     .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
-                    .font(TABLE_HEADER_ROW_FONT)
+                    .font(font)
                     .fontSize(TABLE_HEADER_ROW_FONT_SIZE)
                     .horizontalAlignment(TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
                     .build();
         }
     }
 
-    private static final class UserMovementPaginatedTableBuilder extends PaginatedTableBuilder {
+    private static final class DistributedUserMovementTableBuilder extends DistributedTableBuilder {
         private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 90;
         private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 90;
         private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 90;
@@ -433,7 +469,6 @@ public final class UserMovementReportBuildingService {
                 TABLE_COLUMN_WIDTH_OF_COUNTRY
         };
 
-        private static final PDFont TABLE_FONT = HELVETICA;
         private static final Integer TABLE_FONT_SIZE = 10;
         private static final Color TABLE_BORDER_COLOR = WHITE;
         private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
@@ -441,7 +476,6 @@ public final class UserMovementReportBuildingService {
         //For row with name
         private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
         private static final Color TABLE_NAME_ROW_TEXT_COLOR = WHITE;
-        private static final PDFont TABLE_NAME_ROW_FONT = HELVETICA_BOLD;
         private static final Integer TABLE_NAME_ROW_FONT_SIZE = 11;
         private static final HorizontalAlignment TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;
         private static final int TABLE_NAME_ROW_COL_SPAN = TABLE_COLUMNS_WIDTHS.length;
@@ -455,29 +489,28 @@ public final class UserMovementReportBuildingService {
         private static final String TABLE_HEADER_COLUMN_OF_COUNTRY_NAME = "Country";
         private static final Color TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
         private static final Color TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
-        private static final PDFont TABLE_HEADER_ROW_FONT = HELVETICA_BOLD;
         private static final Integer TABLE_HEADER_ROW_FONT_SIZE = 11;
         private static final HorizontalAlignment TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
 
-        public UserMovementPaginatedTableBuilder(final Tracker userTracker) {
+        public DistributedUserMovementTableBuilder(final Tracker userTracker, final PDFont font) {
             super(
                     TABLE_COLUMNS_WIDTHS,
-                    TABLE_FONT,
+                    font,
                     TABLE_FONT_SIZE,
                     TABLE_BORDER_COLOR,
                     MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE,
-                    buildNameRow(userTracker),
-                    buildHeaderRow()
+                    buildNameRow(userTracker, font),
+                    buildHeaderRow(font)
             );
         }
 
-        private static Row buildNameRow(final Tracker userTracker) {
+        private static Row buildNameRow(final Tracker userTracker, final PDFont font) {
             return Row.builder()
                     .add(
                             TextCell.builder()
                                     .backgroundColor(TABLE_NAME_ROW_BACKGROUND_COLOR)
                                     .textColor(TABLE_NAME_ROW_TEXT_COLOR)
-                                    .font(TABLE_NAME_ROW_FONT)
+                                    .font(font)
                                     .fontSize(TABLE_NAME_ROW_FONT_SIZE)
                                     .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
                                     .colSpan(TABLE_NAME_ROW_COL_SPAN)
@@ -492,7 +525,7 @@ public final class UserMovementReportBuildingService {
             return format(TABLE_TEMPLATE_NAME_ROW_CONTENT, trackerImei);
         }
 
-        private static Row buildHeaderRow() {
+        private static Row buildHeaderRow(final PDFont font) {
             return Row.builder()
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
@@ -501,7 +534,7 @@ public final class UserMovementReportBuildingService {
                     .add(createTextCell(TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
                     .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
                     .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
-                    .font(TABLE_HEADER_ROW_FONT)
+                    .font(font)
                     .fontSize(TABLE_HEADER_ROW_FONT_SIZE)
                     .horizontalAlignment(TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
                     .build();

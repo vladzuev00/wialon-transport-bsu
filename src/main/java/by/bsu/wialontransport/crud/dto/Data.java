@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 
@@ -39,6 +40,31 @@ public class Data implements AbstractDto<Long> {
     private final Map<String, Parameter> parametersByNames;
     private final Tracker tracker;
     private final Address address;
+
+    //TODO: test
+    public LocalDateTime findDateTime() {
+        return LocalDateTime.of(this.date, this.time);
+    }
+
+    //TODO: test
+    public double findLatitudeAsDouble() {
+        return this.latitude.findDoubleValue();
+    }
+
+    //TODO: test
+    public double findLongitudeAsDouble() {
+        return this.longitude.findDoubleValue();
+    }
+
+    //TODO: test
+    public String findCityName() {
+        return this.address.getCityName();
+    }
+
+    //TODO: test
+    public String findCountryName() {
+        return this.address.getCountryName();
+    }
 
     public static Data createWithTracker(final Data source, final Tracker tracker) {
         return new Data(
