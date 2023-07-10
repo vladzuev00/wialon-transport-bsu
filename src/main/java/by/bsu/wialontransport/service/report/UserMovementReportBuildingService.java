@@ -23,16 +23,20 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.awt.Color.*;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
 import static org.apache.pdfbox.pdmodel.font.PDType1Font.*;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
@@ -40,6 +44,9 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 @Service
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingService {
+    private static final String DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_PATTERN);
+
     private static final PDFont FIRST_PAGE_FONT = TIMES_ROMAN;
     private static final float FIRST_PAGE_FONT_SIZE = 16;
 
@@ -54,8 +61,8 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 25;
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 750;
 
-    private static final float INTRODUCTION_TABLE_START_X = 75F;
-    private static final float INTRODUCTION_TABLE_START_Y = 650F;
+    private static final float PAGE_TABLE_START_X = 75F;
+    private static final float PAGE_TABLE_START_Y = 650F;
 
     private static final float CELL_BORDER_WIDTH = 1;
 
@@ -177,60 +184,93 @@ public final class UserMovementReportBuildingService {
         dataGroupedByTrackers
                 .forEach(
                         (tracker, trackerData) -> builder.addRow(
-                                createIntroductionTableTrackerRow(tracker, trackerData)
+                                createUserTrackersTableRow(tracker, trackerData)
                         )
                 );
         return builder.build();
     }
 
-    private static void drawPaginatedUserTrackersTable(final PDDocument document, final List<Table> paginatedTable) {
-        paginatedTable.forEach(table -> drawPartOfPaginatedUserTrackersTable(document, table));
+    private static Row createUserTrackersTableRow(final Tracker tracker, final List<Data> trackerData) {
+        final String trackerImei = tracker.getImei();
+        final String trackerPhoneNumber = tracker.getPhoneNumber();
+        final int countOfPoints = trackerData.size();
+        return Row.builder()
+                .add(createTextCell(trackerImei))
+                .add(createTextCell(trackerPhoneNumber))
+                .add(createTextCell(countOfPoints))
+                .build();
     }
 
-    private static void drawPartOfPaginatedUserTrackersTable(final PDDocument document, final Table table) {
+    private static void drawPaginatedUserTrackersTable(final PDDocument document, final List<Table> paginatedTable) {
+        paginatedTable.forEach(table -> drawPageTable(document, table));
+    }
+
+    private static void drawPageTable(final PDDocument document, final Table pageTable) {
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
-            drawPartOfPaginatedUserTrackersTable(pageContentStream, table);
+            drawPageTable(pageContentStream, pageTable);
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
         }
     }
 
-    private static void drawPartOfPaginatedUserTrackersTable(final PDPageContentStream pageContentStream,
-                                                             final Table partTable) {
+    private static void drawPageTable(final PDPageContentStream pageContentStream, final Table pageTable) {
         TableDrawer.builder()
                 .contentStream(pageContentStream)
-                .table(partTable)
-                .startX(INTRODUCTION_TABLE_START_X)
-                .startY(INTRODUCTION_TABLE_START_Y)
+                .table(pageTable)
+                .startX(PAGE_TABLE_START_X)
+                .startY(PAGE_TABLE_START_Y)
                 .build()
                 .draw();
     }
 
-    private static Row createIntroductionTableTrackerRow(final Tracker tracker, final List<Data> trackerData) {
-        return Row.builder()
-                .add(createCell(tracker.getImei()))
-                .add(createCell(tracker.getPhoneNumber()))
-                .add(createCell(trackerData.size()))
-                .build();
+    private static TextCell createTextCell(final int content) {
+        return createTextCell(content, value -> Integer.toString(value));
     }
 
-    private static TextCell createCell(final int content) {
-        final String contentAsString = Integer.toString(content);
-        return createCell(contentAsString);
+    private static TextCell createCell(final LocalDateTime content) {
+        return createTextCell(content, DATE_TIME_FORMATTER::format);
     }
 
-    private static TextCell createCell(final String content) {
+    private static TextCell createTextCell(final double content) {
+        return createTextCell(content, value -> Double.toString(value));
+    }
+
+    private static TextCell createTextCell(final String content) {
+        return createTextCell(content, identity());
+    }
+
+    private static <T> TextCell createTextCell(final T content, final Function<T, String> transformerContentToString) {
+        final String contentAsString = transformerContentToString.apply(content);
         return TextCell.builder()
-                .text(content)
+                .text(contentAsString)
                 .borderWidth(CELL_BORDER_WIDTH)
                 .build();
     }
 
-    private static Table buildUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
+    private static List<Table> buildUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers) {
         dataGroupedByTrackers.entrySet().removeIf(dataByTracker -> dataByTracker.getValue().isEmpty());
+        return dataGroupedByTrackers.entrySet()
+                .stream()
+                .map(trackerWithData -> buildUserMovementTable(trackerWithData.getKey(), trackerWithData.getValue()))
+                .flatMap(Collection::stream)
+                .toList();
+    }
 
-        return null;
+    private static List<Table> buildUserMovementTable(final Tracker userTracker, final List<Data> trackerData) {
+        final UserMovementPaginatedTableBuilder tableBuilder = new UserMovementPaginatedTableBuilder(userTracker);
+        trackerData.forEach(data -> tableBuilder.addRow(createUserMovementTableRow(data)));
+        return tableBuilder.build();
+    }
+
+    private static Row createUserMovementTableRow(final Data data) {
+        return Row.builder()
+                .add(createCell(LocalDateTime.of(data.getDate(), data.getTime())))
+                .add(createTextCell(data.getLatitude().findDoubleValue()))
+                .add(createTextCell(data.getLongitude().findDoubleValue()))
+                .add(createTextCell(data.getAddress().getCityName()))
+                .add(createTextCell(data.getAddress().getCountryName()))
+                .build();
     }
 
     private static byte[] transformToByteArray(final PDDocument document)
@@ -367,9 +407,9 @@ public final class UserMovementReportBuildingService {
 
         private static Row buildHeaderRow() {
             return Row.builder()
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_PHONE_NUMBER_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_COUNT_OF_POINTS_NAME))
                     .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
                     .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
                     .font(TABLE_HEADER_ROW_FONT)
@@ -454,11 +494,11 @@ public final class UserMovementReportBuildingService {
 
         private static Row buildHeaderRow() {
             return Row.builder()
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_CITY_NAME))
-                    .add(createCell(TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_CITY_NAME))
+                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
                     .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
                     .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
                     .font(TABLE_HEADER_ROW_FONT)
