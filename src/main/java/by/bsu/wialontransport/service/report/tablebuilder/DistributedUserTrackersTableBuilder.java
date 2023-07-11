@@ -55,7 +55,6 @@ public final class DistributedUserTrackersTableBuilder extends DistributedTableB
         );
     }
 
-    //TODO: refactor
     private static Row buildNameRow(final PDFont font) {
         return Row.builder()
                 .add(
@@ -72,7 +71,6 @@ public final class DistributedUserTrackersTableBuilder extends DistributedTableB
                 .build();
     }
 
-    //TODO: refactor
     private static Row buildHeaderRow(final PDFont font) {
         return Row.builder()
                 .add(createTextCell(TABLE_HEADER_COLUMN_OF_IMEI_NAME))

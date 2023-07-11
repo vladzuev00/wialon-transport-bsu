@@ -7,47 +7,38 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.service.report.exception.UserMovementReportBuildingException;
+import by.bsu.wialontransport.service.report.factory.ReportBuildingContextFactory;
+import by.bsu.wialontransport.service.report.model.ReportBuildingContext;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserMovementTableBuilder;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserTrackersTableBuilder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.springframework.stereotype.Service;
 import org.vandeseer.easytable.TableDrawer;
-import org.vandeseer.easytable.settings.HorizontalAlignment;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
-import org.vandeseer.easytable.structure.Table.TableBuilder;
-import org.vandeseer.easytable.structure.cell.TextCell;
 
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static by.bsu.wialontransport.util.CellFactoryUtil.createTextCell;
 import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.WHITE;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
-import static java.util.function.Function.identity;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
-import static org.apache.pdfbox.pdmodel.font.PDType1Font.*;
-import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +46,6 @@ public final class UserMovementReportBuildingService {
     private static final String DATE_PATTERN = "dd.MM.yyyy";
     private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_PATTERN);
 
-    private static final PDFont FIRST_PAGE_FONT = TIMES_ROMAN;
     private static final float FIRST_PAGE_FONT_SIZE = 16;
 
     private static final String REPORT_NAME = "Movement report";
@@ -69,18 +59,11 @@ public final class UserMovementReportBuildingService {
     private static final float PAGE_TABLE_START_X = 75F;
     private static final float PAGE_TABLE_START_Y = 650F;
 
-    private static final float CELL_BORDER_WIDTH = 1;
-
-    private final TrackerService trackerService;
-    private final DataService dataService;
+    private final ReportBuildingContextFactory contextFactory;
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
-        try (final PDDocument document = new PDDocument()) {
-            final PDFont font = loadFont(document, "fonts/Roboto-Regular.ttf");
-            final Map<Tracker, List<Data>> dataGroupedByTrackers = this.findDataGroupedByAllTrackersOfUser(
-                    user, dateInterval
-            );
-            addIntroduction(document, user, dateInterval, font);
+        try (final ReportBuildingContext context = this.contextFactory.create(user, dateInterval)) {
+            addIntroduction(context);
             addUserTrackersTable(dataGroupedByTrackers, document, font);
             addUserMovementTable(dataGroupedByTrackers, document, font);
             return transformToByteArray(document);
@@ -89,31 +72,9 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private Map<Tracker, List<Data>> findDataGroupedByAllTrackersOfUser(final User user,
-                                                                        final DateInterval dateInterval) {
-        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-        final Map<Tracker, List<Data>> dataGroupedByTrackers = groupDataByTrackersAndSortTrackersByImei(data);
-        this.insertTrackersWithoutData(dataGroupedByTrackers, user);
-        return dataGroupedByTrackers;
-    }
-
-    private static Map<Tracker, List<Data>> groupDataByTrackersAndSortTrackersByImei(final List<Data> data) {
-        return data.stream()
-                .collect(groupingBy(Data::getTracker));
-    }
-
-    private void insertTrackersWithoutData(final Map<Tracker, List<Data>> dataGroupedByTrackers, final User user) {
-        final List<Tracker> userTrackers = this.trackerService.findByUser(user);
-        userTrackers.forEach(
-                userTracker -> dataGroupedByTrackers.computeIfAbsent(userTracker, tracker -> emptyList())
-        );
-    }
-
-    private static void addIntroduction(final PDDocument document,
-                                        final User user,
-                                        final DateInterval dateInterval,
-                                        final PDFont font)
+    private static void addIntroduction(final ReportBuildingContext context)
             throws IOException {
+        final PDDocument document = context.getDocument();
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
             addIntroductionContentLines(pageContentStream, user, dateInterval, font);
@@ -133,12 +94,9 @@ public final class UserMovementReportBuildingService {
             throws IOException {
         final String rowWithUserEmail = createRowWithUserEmail(user);
         final String rowWithDateInterval = createRowWithDateInterval(dateInterval);
-        addContentLines(
+        addIntroductionContentLines(
                 pageContentStream,
-                INTRODUCTION_CONTENT_LINES_LEADING,
                 font,
-                INTRODUCTION_NEW_LINE_AT_OFFSET_X,
-                INTRODUCTION_NEW_LINE_AT_OFFSET_Y,
                 REPORT_NAME,
                 rowWithUserEmail,
                 rowWithDateInterval
@@ -155,24 +113,21 @@ public final class UserMovementReportBuildingService {
         return format(TEMPLATE_ROW_WITH_DATE_INTERVAL, formattedStartDate, formattedEndDate);
     }
 
-    private static void addContentLines(final PDPageContentStream pageContentStream,
-                                        final float leading,
-                                        final PDFont font,
-                                        final float newLineAtOffsetX,
-                                        final float newLineAtOffsetY,
-                                        final String... lines)
+    private static void addIntroductionContentLines(final PDPageContentStream pageContentStream,
+                                                    final PDFont font,
+                                                    final String... lines)
             throws IOException {
-        pageContentStream.setLeading(leading);
+        pageContentStream.setLeading(INTRODUCTION_CONTENT_LINES_LEADING);
         pageContentStream.beginText();
         pageContentStream.setFont(font, FIRST_PAGE_FONT_SIZE);
-        pageContentStream.newLineAtOffset(newLineAtOffsetX, newLineAtOffsetY);
-//        pageContentStream.setFont(FIRST_PAGE_FONT, FIRST_PAGE_FONT_SIZE);
+        pageContentStream.newLineAtOffset(INTRODUCTION_NEW_LINE_AT_OFFSET_X, INTRODUCTION_NEW_LINE_AT_OFFSET_Y);
         addLines(pageContentStream, lines);
         pageContentStream.endText();
     }
 
     private static void addLines(final PDPageContentStream pageContentStream, final String... lines) {
-        stream(lines).forEach(line -> addLine(pageContentStream, line));
+        stream(lines)
+                .forEach(line -> addLine(pageContentStream, line));
     }
 
     private static void addLine(final PDPageContentStream pageContentStream, final String line) {
@@ -283,4 +238,5 @@ public final class UserMovementReportBuildingService {
             return outputStream.toByteArray();
         }
     }
+
 }

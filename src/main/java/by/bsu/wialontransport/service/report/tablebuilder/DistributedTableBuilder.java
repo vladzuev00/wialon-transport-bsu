@@ -4,17 +4,10 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
 import org.vandeseer.easytable.structure.Table.TableBuilder;
-import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.awt.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-
-import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.function.Function.identity;
 
 public abstract class DistributedTableBuilder {
     private final float[] columnsWidths;

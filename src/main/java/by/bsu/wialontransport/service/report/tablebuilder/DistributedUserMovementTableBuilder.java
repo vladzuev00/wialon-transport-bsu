@@ -63,7 +63,6 @@ public final class DistributedUserMovementTableBuilder extends DistributedTableB
         );
     }
 
-    //TODO: refactor
     private static Row buildNameRow(final PDFont font, final Tracker userTracker) {
         return Row.builder()
                 .add(
@@ -85,7 +84,6 @@ public final class DistributedUserMovementTableBuilder extends DistributedTableB
         return format(TABLE_TEMPLATE_NAME_ROW_CONTENT, trackerImei);
     }
 
-    //TODO: refactor
     private static Row buildHeaderRow(final PDFont font) {
         return Row.builder()
                 .add(createTextCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
