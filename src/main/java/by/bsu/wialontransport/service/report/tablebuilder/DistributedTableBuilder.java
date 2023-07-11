@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.report.tablebuilder;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
+import org.vandeseer.easytable.structure.Table.TableBuilder;
 import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.awt.*;
@@ -16,11 +17,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.function.Function.identity;
 
 public abstract class DistributedTableBuilder {
-    private static final float CELL_BORDER_WIDTH = 1;
-
-    private static final String CELL_DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
-    private static final DateTimeFormatter CELL_DATE_TIME_FORMATTER = ofPattern(CELL_DATE_TIME_PATTERN);
-
     private final float[] columnsWidths;
     private final PDFont font;
     private final Integer fontSize;
@@ -28,9 +24,9 @@ public abstract class DistributedTableBuilder {
     private final int maxAmountOfRowsInOnePage;
     private final Row nameRow;
     private final Row headerRow;
-    private final java.util.List<Table> pageTables;
+    private final List<Table> pageTables;
     private int amountOfRowsInCurrentTable;
-    private Table.TableBuilder currentTableBuilder;
+    private TableBuilder currentTableBuilder;
 
     public DistributedTableBuilder(final float[] columnsWidths,
                                    final PDFont font,
@@ -62,30 +58,6 @@ public abstract class DistributedTableBuilder {
     public final List<Table> build() {
         this.finishBuildingPageTable();
         return this.pageTables;
-    }
-
-    protected static TextCell createTextCell(final int content) {
-        return createTextCell(content, value -> Integer.toString(value));
-    }
-
-    protected static TextCell createCell(final LocalDateTime content) {
-        return createTextCell(content, CELL_DATE_TIME_FORMATTER::format);
-    }
-
-    protected static TextCell createTextCell(final double content) {
-        return createTextCell(content, value -> Double.toString(value));
-    }
-
-    protected static TextCell createTextCell(final String content) {
-        return createTextCell(content, identity());
-    }
-
-    protected static <T> TextCell createTextCell(final T content, final Function<T, String> transformerContentToString) {
-        final String contentAsString = transformerContentToString.apply(content);
-        return TextCell.builder()
-                .text(contentAsString)
-                .borderWidth(CELL_BORDER_WIDTH)
-                .build();
     }
 
     private void finishBuildingPageTable() {

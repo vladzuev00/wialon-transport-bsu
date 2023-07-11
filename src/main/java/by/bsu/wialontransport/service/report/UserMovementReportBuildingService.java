@@ -7,6 +7,8 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.service.report.exception.UserMovementReportBuildingException;
+import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserMovementTableBuilder;
+import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserTrackersTableBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -34,6 +36,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
+import static by.bsu.wialontransport.util.CellFactoryUtil.createTextCell;
+import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
 import static java.lang.String.format;
@@ -48,9 +52,6 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 @Service
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingService {
-    private static final String DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_PATTERN);
-
     private static final String DATE_PATTERN = "dd.MM.yyyy";
     private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_PATTERN);
 
@@ -75,7 +76,7 @@ public final class UserMovementReportBuildingService {
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final PDDocument document = new PDDocument()) {
-            final PDType0Font font = loadFont(document, "fonts/Roboto-Regular.ttf");
+            final PDFont font = loadFont(document, "fonts/Roboto-Regular.ttf");
             final Map<Tracker, List<Data>> dataGroupedByTrackers = this.findDataGroupedByAllTrackersOfUser(
                     user, dateInterval
             );
@@ -86,18 +87,6 @@ public final class UserMovementReportBuildingService {
         } catch (final IOException cause) {
             throw new UserMovementReportBuildingException(cause);
         }
-    }
-
-    private PDType0Font loadFont(PDDocument document, String pathToFont) {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classloader.getResourceAsStream(pathToFont);
-        PDType0Font font;
-        try {
-            font = PDType0Font.load(document, is);
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Error while reading font file: %s for a report.", pathToFont));
-        }
-        return font;
     }
 
     private Map<Tracker, List<Data>> findDataGroupedByAllTrackersOfUser(final User user,
@@ -267,7 +256,7 @@ public final class UserMovementReportBuildingService {
     private static List<Table> buildDistributedUserMovementTable(final Entry<Tracker, List<Data>> dataByTracker,
                                                                  final PDFont font) {
         final Tracker tracker = dataByTracker.getKey();
-        final DistributedUserMovementTableBuilder tableBuilder = new DistributedUserMovementTableBuilder(tracker, font);
+        final DistributedUserMovementTableBuilder tableBuilder = new DistributedUserMovementTableBuilder(font, tracker);
         dataByTracker.getValue().forEach(data -> tableBuilder.addRow(createUserMovementTableRow(data)));
         return tableBuilder.build();
     }
@@ -279,7 +268,7 @@ public final class UserMovementReportBuildingService {
         final String cityName = data.findCityName();
         final String countryName = data.findCountryName();
         return Row.builder()
-                .add(createCell(dateTime))
+                .add(createTextCell(dateTime))
                 .add(createTextCell(latitudeAsDouble))
                 .add(createTextCell(longitudeAsDouble))
                 .add(createTextCell(cityName))
@@ -292,92 +281,6 @@ public final class UserMovementReportBuildingService {
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             document.save(outputStream);
             return outputStream.toByteArray();
-        }
-    }
-
-    private static final class DistributedUserMovementTableBuilder extends DistributedTableBuilder {
-        private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 90;
-        private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 90;
-        private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 90;
-        private static final float TABLE_COLUMN_WIDTH_OF_CITY = 90;
-        private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 90;
-        private static final float[] TABLE_COLUMNS_WIDTHS = {
-                TABLE_COLUMN_WIDTH_OF_DATETIME,
-                TABLE_COLUMN_WIDTH_OF_LATITUDE,
-                TABLE_COLUMN_WIDTH_OF_LONGITUDE,
-                TABLE_COLUMN_WIDTH_OF_CITY,
-                TABLE_COLUMN_WIDTH_OF_COUNTRY
-        };
-
-        private static final Integer TABLE_FONT_SIZE = 10;
-        private static final Color TABLE_BORDER_COLOR = WHITE;
-        private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
-
-        //For row with name
-        private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
-        private static final Color TABLE_NAME_ROW_TEXT_COLOR = WHITE;
-        private static final Integer TABLE_NAME_ROW_FONT_SIZE = 11;
-        private static final HorizontalAlignment TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;
-        private static final int TABLE_NAME_ROW_COL_SPAN = TABLE_COLUMNS_WIDTHS.length;
-        private static final String TABLE_TEMPLATE_NAME_ROW_CONTENT = "User's movement(tracker's imei '%s')";
-
-        //For header row
-        private static final String TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME = "Datetime";
-        private static final String TABLE_HEADER_COLUMN_OF_LATITUDE_NAME = "Latitude";
-        private static final String TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME = "Longitude";
-        private static final String TABLE_HEADER_COLUMN_OF_CITY_NAME = "City";
-        private static final String TABLE_HEADER_COLUMN_OF_COUNTRY_NAME = "Country";
-        private static final Color TABLE_HEADER_ROW_BACKGROUND_COLOR = BLUE;
-        private static final Color TABLE_HEADER_ROW_TEXT_COLOR = WHITE;
-        private static final Integer TABLE_HEADER_ROW_FONT_SIZE = 11;
-        private static final HorizontalAlignment TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT = CENTER;
-
-        public DistributedUserMovementTableBuilder(final Tracker userTracker, final PDFont font) {
-            super(
-                    TABLE_COLUMNS_WIDTHS,
-                    font,
-                    TABLE_FONT_SIZE,
-                    TABLE_BORDER_COLOR,
-                    MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE,
-                    buildNameRow(userTracker, font),
-                    buildHeaderRow(font)
-            );
-        }
-
-        private static Row buildNameRow(final Tracker userTracker, final PDFont font) {
-            return Row.builder()
-                    .add(
-                            TextCell.builder()
-                                    .backgroundColor(TABLE_NAME_ROW_BACKGROUND_COLOR)
-                                    .textColor(TABLE_NAME_ROW_TEXT_COLOR)
-                                    .font(font)
-                                    .fontSize(TABLE_NAME_ROW_FONT_SIZE)
-                                    .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
-                                    .colSpan(TABLE_NAME_ROW_COL_SPAN)
-                                    .text(createTableName(userTracker))
-                                    .build()
-                    )
-                    .build();
-        }
-
-        private static String createTableName(final Tracker userTracker) {
-            final String trackerImei = userTracker.getImei();
-            return format(TABLE_TEMPLATE_NAME_ROW_CONTENT, trackerImei);
-        }
-
-        private static Row buildHeaderRow(final PDFont font) {
-            return Row.builder()
-                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_DATE_TIME_NAME))
-                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_LATITUDE_NAME))
-                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_LONGITUDE_NAME))
-                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_CITY_NAME))
-                    .add(createTextCell(TABLE_HEADER_COLUMN_OF_COUNTRY_NAME))
-                    .backgroundColor(TABLE_HEADER_ROW_BACKGROUND_COLOR)
-                    .textColor(TABLE_HEADER_ROW_TEXT_COLOR)
-                    .font(font)
-                    .fontSize(TABLE_HEADER_ROW_FONT_SIZE)
-                    .horizontalAlignment(TABLE_HEADER_ROW_HORIZONTAL_ALIGNMENT)
-                    .build();
         }
     }
 }
