@@ -64,7 +64,7 @@ public final class UserMovementReportBuildingService {
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final ReportBuildingContext context = this.contextFactory.create(user, dateInterval)) {
             addIntroduction(context);
-            addUserTrackersTable(dataGroupedByTrackers, document, font);
+            addUserTrackersTable(context);
             addUserMovementTable(dataGroupedByTrackers, document, font);
             return transformToByteArray(document);
         } catch (final IOException cause) {
@@ -77,7 +77,7 @@ public final class UserMovementReportBuildingService {
         final PDDocument document = context.getDocument();
         final PDPage page = addPage(document);
         try (final PDPageContentStream pageContentStream = new PDPageContentStream(document, page)) {
-            addIntroductionContentLines(pageContentStream, user, dateInterval, font);
+            addIntroductionContentLines(pageContentStream, context);
         }
     }
 
@@ -88,15 +88,13 @@ public final class UserMovementReportBuildingService {
     }
 
     private static void addIntroductionContentLines(final PDPageContentStream pageContentStream,
-                                                    final User user,
-                                                    final DateInterval dateInterval,
-                                                    final PDFont font)
+                                                    final ReportBuildingContext context)
             throws IOException {
-        final String rowWithUserEmail = createRowWithUserEmail(user);
-        final String rowWithDateInterval = createRowWithDateInterval(dateInterval);
+        final String rowWithUserEmail = createRowWithUserEmail(context.getUser());
+        final String rowWithDateInterval = createRowWithDateInterval(context.getDateInterval());
         addIntroductionContentLines(
                 pageContentStream,
-                font,
+                context.getFont(),
                 REPORT_NAME,
                 rowWithUserEmail,
                 rowWithDateInterval
@@ -139,17 +137,16 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static void addUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
-                                             final PDDocument document,
-                                             final PDFont font) {
-        final List<Table> pageTables = buildDistributedUserTrackersTable(dataGroupedByTrackers, font);
-        drawPageTables(document, pageTables);
+    private static void addUserTrackersTable(final ReportBuildingContext context) {
+        final List<Table> pageTables = buildDistributedUserTrackersTable(context);
+        drawPageTables(context.getDocument(), pageTables);
     }
 
-    private static List<Table> buildDistributedUserTrackersTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
-                                                                 final PDFont font) {
-        final DistributedUserTrackersTableBuilder tableBuilder = new DistributedUserTrackersTableBuilder(font);
-        dataGroupedByTrackers
+    private static List<Table> buildDistributedUserTrackersTable(final ReportBuildingContext context) {
+        final DistributedUserTrackersTableBuilder tableBuilder = new DistributedUserTrackersTableBuilder(
+                context.getFont()
+        );
+        context.getDataGroupedBySortedByImeiTrackers()
                 .forEach(
                         (tracker, trackerData) -> tableBuilder.addRow(
                                 createUserTrackersTableRow(tracker, trackerData)
