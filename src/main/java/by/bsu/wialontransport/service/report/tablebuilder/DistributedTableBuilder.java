@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.service.report.tablebuilder;
 
+import by.bsu.wialontransport.service.report.model.DistributedTable;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
@@ -48,9 +49,9 @@ public abstract class DistributedTableBuilder {
         this.amountOfRowsInCurrentTable++;
     }
 
-    public final List<Table> build() {
+    public final DistributedTable build() {
         this.finishBuildingPageTable();
-        return this.pageTables;
+        return new DistributedTable(this.pageTables);
     }
 
     private void finishBuildingPageTable() {

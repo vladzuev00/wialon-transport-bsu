@@ -7,12 +7,13 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.service.report.factory.exception.ReportBuildingContextCreatingException;
-import by.bsu.wialontransport.service.report.model.ReportBuildingContext;
+import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 
 @Component
 @RequiredArgsConstructor
-public final class ReportBuildingContextFactory {
+public final class UserMovementReportBuildingContextFactory {
     private static final String FONT_PATH = "fonts/Roboto-Regular.ttf";
     private static final Comparator<Tracker> COMPARATOR_TO_SORT_TRACKER_BY_IMEI = comparing(Tracker::getImei);
     private static final Supplier<Map<Tracker, List<Data>>> MAP_FACTORY_OF_DATA_GROUPED_BY_SORTED_BY_IMEI_TRACKERS
@@ -35,7 +36,7 @@ public final class ReportBuildingContextFactory {
     private final TrackerService trackerService;
     private final DataService dataService;
 
-    public ReportBuildingContext create(final User user, final DateInterval dateInterval) {
+    public UserMovementReportBuildingContext create(final User user, final DateInterval dateInterval) {
         final PDDocument document = new PDDocument();
         try {
             final PDFont font = loadFont(document, FONT_PATH);
@@ -45,7 +46,7 @@ public final class ReportBuildingContextFactory {
             final Map<Tracker, Integer> pointCountsByAllTrackers = this.findPointCountsByAllTrackers(
                     dataGroupedBySortedByImeiTrackers, user
             );
-            return ReportBuildingContext.builder()
+            return UserMovementReportBuildingContext.builder()
                     .user(user)
                     .dateInterval(dateInterval)
                     .document(document)
@@ -54,6 +55,7 @@ public final class ReportBuildingContextFactory {
                     .dataGroupedBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
                     .build();
         } catch (final Exception cause) {
+            closeDocumentBecauseOfException(document, cause);
             throw new ReportBuildingContextCreatingException(cause);
         }
     }
@@ -90,5 +92,13 @@ public final class ReportBuildingContextFactory {
                         userTracker, tracker -> 0
                 )
         );
+    }
+
+    private static void closeDocumentBecauseOfException(final PDDocument document, final Exception exception) {
+        try {
+            document.close();
+        } catch (final IOException closingException) {
+            exception.addSuppressed(closingException);
+        }
     }
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 @Builder
-public final class ReportBuildingContext implements AutoCloseable {
+public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final User user;
     private final DateInterval dateInterval;
     private final PDDocument document;
