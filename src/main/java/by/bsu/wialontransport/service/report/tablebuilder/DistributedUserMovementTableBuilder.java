@@ -30,7 +30,7 @@ public final class DistributedUserMovementTableBuilder extends DistributedTableB
 
     private static final Integer TABLE_FONT_SIZE = 10;
     private static final Color TABLE_BORDER_COLOR = WHITE;
-    private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 30;
+    private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 20;
 
     //For row with name
     private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
