@@ -11,7 +11,7 @@ import by.bsu.wialontransport.service.report.model.ReportTable;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserMovementTableBuilder;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserTrackersTableBuilder;
-import by.bsu.wialontransport.service.report.temp.DistributedReportTableDrawer;
+import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;

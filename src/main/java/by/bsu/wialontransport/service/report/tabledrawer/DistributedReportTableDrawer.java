@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.report.temp;
+package by.bsu.wialontransport.service.report.tabledrawer;
 
 import by.bsu.wialontransport.service.report.model.ReportTable;
 import by.bsu.wialontransport.service.report.tabledrawer.exception.DistributedTableDrawingException;
