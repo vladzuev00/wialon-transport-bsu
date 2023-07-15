@@ -15,8 +15,9 @@ import org.vandeseer.easytable.structure.Table.TableBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static by.bsu.wialontransport.util.PDFUtil.addPage;
@@ -36,6 +37,7 @@ public final class DistributedReportTableDrawer {
     private static List<Table> mapToPageTables(final ReportTable table) {
         final Supplier<TableBuilder> tableBuilderFactory = () -> createTableBuilder(table);
         return distributeRowsAmongPages(table.getRows())
+                .values()
                 .stream()
                 .map(pageTableRows -> createTablePage(pageTableRows, tableBuilderFactory))
                 .toList();
@@ -51,27 +53,12 @@ public final class DistributedReportTableDrawer {
 
     /**
      * @param rows - table's rows
-     * @return list of distributed rows among pages. List's element - list of rows of page's table
+     * @return map of page's numbers by page's rows
      */
-    //TODO: refactor
-    private static List<List<Row>> distributeRowsAmongPages(final List<Row> rows) {
-        final List<List<Row>> distributedRows = new ArrayList<>();
-        final Iterator<Row> rowIterator = rows.iterator();
-        List<Row> currentPageRows = new ArrayList<>();
-        float valueIteratingByPageY = PAGE_TABLE_START_Y;
-        while (rowIterator.hasNext()) {
-            final Row currentRow = rowIterator.next();
-            valueIteratingByPageY -= currentRow.getHeight();
-            if (compare(valueIteratingByPageY, PAGE_TABLE_END_Y) > 0) {
-                currentPageRows.add(currentRow);
-            } else {
-                distributedRows.add(currentPageRows);
-                currentPageRows = new ArrayList<>();
-                valueIteratingByPageY = PAGE_TABLE_START_Y;
-            }
-        }
-        distributedRows.add(currentPageRows);
-        return distributedRows;
+    private static Map<Integer, List<Row>> distributeRowsAmongPages(final List<Row> rows) {
+        final RowsAmongPagesDistributor distributor = new RowsAmongPagesDistributor();
+        rows.forEach(distributor::add);
+        return distributor.distribute();
     }
 
     private static Table createTablePage(final List<Row> rows, final Supplier<TableBuilder> tableBuilderFactory) {
@@ -132,4 +119,37 @@ public final class DistributedReportTableDrawer {
         float y;
     }
 
+    private static final class RowsAmongPagesDistributor {
+        private final Map<Integer, List<Row>> pageTableRowsByPageNumbers = new LinkedHashMap<>();
+        private float valueIteratingPageByY = PAGE_TABLE_END_Y;
+        private int currentPageNumber = -1;
+
+        public void add(final Row row) {
+            this.valueIteratingPageByY -= row.getHeight();
+            if (compare(this.valueIteratingPageByY, PAGE_TABLE_END_Y) <= 0) {
+                this.currentPageNumber++;
+                this.valueIteratingPageByY = PAGE_TABLE_START_Y;
+            }
+            this.pageTableRowsByPageNumbers.merge(
+                    this.currentPageNumber,
+                    createListWithRow(row),
+                    RowsAmongPagesDistributor::appendList
+            );
+        }
+
+        public Map<Integer, List<Row>> distribute() {
+            return this.pageTableRowsByPageNumbers;
+        }
+
+        private static List<Row> createListWithRow(final Row row) {
+            final List<Row> result = new ArrayList<>();
+            result.add(row);
+            return result;
+        }
+
+        private static List<Row> appendList(final List<Row> accumulator, final List<Row> appended) {
+            accumulator.addAll(appended);
+            return accumulator;
+        }
+    }
 }
