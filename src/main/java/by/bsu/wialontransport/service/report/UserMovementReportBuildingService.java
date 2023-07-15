@@ -10,7 +10,6 @@ import by.bsu.wialontransport.service.report.model.DistributedTable;
 import by.bsu.wialontransport.service.report.model.ReportTable;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserMovementTableBuilder;
-import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserTrackersTableBuilder;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -127,38 +126,36 @@ public final class UserMovementReportBuildingService {
         }
     }
 
-    private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 150;
-    private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
-    private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
-    private static final float[] TABLE_COLUMNS_WIDTHS = {
-            TABLE_COLUMN_WIDTH_OF_IMEI,
-            TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
-            TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
+    private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_IMEI = 150;
+    private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
+    private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
+    private static final float[] USER_TRACKERS_TABLE_COLUMNS_WIDTHS = {
+            USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_IMEI,
+            USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
+            USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
     };
 
     private void addUserTrackersTable(final UserMovementReportBuildingContext context) {
-        final DistributedTable table = buildDistributedUserTrackersTable(context);
-        final ReportTable reportTable = new ReportTable(
-                table.getPageTables().stream().map(Table::getRows).flatMap(Collection::stream).toList(),
-                TABLE_COLUMNS_WIDTHS,
-                context.getFont(),
-                25,
-                Color.blue
-        );
+        final ReportTable reportTable = buildUserTrackersTable(context);
         this.tableDrawer.draw(reportTable, context.getDocument());
     }
 
-    private static DistributedTable buildDistributedUserTrackersTable(final UserMovementReportBuildingContext context) {
-        final DistributedUserTrackersTableBuilder tableBuilder = new DistributedUserTrackersTableBuilder(
-                context.getFont()
-        );
-        context.getDataGroupedBySortedByImeiTrackers()
-                .forEach(
-                        (tracker, trackerData) -> tableBuilder.addRow(
-                                createUserTrackersTableRow(tracker, trackerData)
-                        )
-                );
-        return tableBuilder.build();
+    private static ReportTable buildUserTrackersTable(final UserMovementReportBuildingContext context) {
+        return ReportTable.builder()
+                .rows(createUserTrackersTableRows(context))
+                .columnWidths(USER_TRACKERS_TABLE_COLUMNS_WIDTHS)
+                .font(context.getFont())
+                .fontSize(context.getFontSize())
+                .borderColor(context.getBorderColor())
+                .build();
+    }
+
+    private static List<Row> createUserTrackersTableRows(final UserMovementReportBuildingContext context) {
+        return context.getDataGroupedBySortedByImeiTrackers()
+                .entrySet()
+                .stream()
+                .map(dataByTracker -> createUserTrackersTableRow(dataByTracker.getKey(), dataByTracker.getValue()))
+                .toList();
     }
 
     private static Row createUserTrackersTableRow(final Tracker tracker, final List<Data> trackerData) {
@@ -172,17 +169,17 @@ public final class UserMovementReportBuildingService {
                 .build();
     }
 
-    private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 110;
-    private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 110;
-    private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 110;
-    private static final float TABLE_COLUMN_WIDTH_OF_CITY = 110;
-    private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 110;
-    private static final float[] TABLE_COLUMNS_WIDTHS_2 = {
-            TABLE_COLUMN_WIDTH_OF_DATETIME,
-            TABLE_COLUMN_WIDTH_OF_LATITUDE,
-            TABLE_COLUMN_WIDTH_OF_LONGITUDE,
-            TABLE_COLUMN_WIDTH_OF_CITY,
-            TABLE_COLUMN_WIDTH_OF_COUNTRY
+    private static final float USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_DATETIME = 110;
+    private static final float USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_LATITUDE = 110;
+    private static final float USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_LONGITUDE = 110;
+    private static final float USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_CITY = 110;
+    private static final float USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_COUNTRY = 110;
+    private static final float[] USER_MOVEMENT_TABLE_COLUMNS_WIDTHS = {
+            USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_DATETIME,
+            USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_LATITUDE,
+            USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_LONGITUDE,
+            USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_CITY,
+            USER_MOVEMENT_TABLE_COLUMN_WIDTH_OF_COUNTRY
     };
 
     private void addUserMovementTable(final UserMovementReportBuildingContext context) {
@@ -192,7 +189,7 @@ public final class UserMovementReportBuildingService {
         );
         final ReportTable reportTable = new ReportTable(
                 table.getPageTables().stream().map(Table::getRows).flatMap(Collection::stream).toList(),
-                TABLE_COLUMNS_WIDTHS_2,
+                USER_MOVEMENT_TABLE_COLUMNS_WIDTHS,
                 context.getFont(),
                 25,
                 Color.blue

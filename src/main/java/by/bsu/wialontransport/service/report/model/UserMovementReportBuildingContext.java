@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,14 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final PDFont font;
     private final Map<Tracker, Integer> pointCountsByAllTrackers;
     private final Map<Tracker, List<Data>> dataGroupedBySortedByImeiTrackers;
+
+    public Integer getFontSize() {
+        return null;
+    }
+
+    public Color getBorderColor() {
+        return null;
+    }
 
     @Override
     public void close()
