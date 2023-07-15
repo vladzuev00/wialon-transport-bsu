@@ -126,6 +126,7 @@ public final class UserMovementReportBuildingService {
         }
     }
 
+    //TODO: add 2 classes of AbstractAdderTable
     private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_IMEI = 150;
     private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
     private static final float USER_TRACKERS_TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
