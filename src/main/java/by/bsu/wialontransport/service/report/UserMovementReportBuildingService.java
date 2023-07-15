@@ -54,6 +54,8 @@ public final class UserMovementReportBuildingService {
     private final UserMovementReportBuildingContextFactory contextFactory;
     private final DistributedTableDrawer distributedTableDrawer;
 
+    private final
+
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final UserMovementReportBuildingContext context = this.contextFactory.create(user, dateInterval)) {
             addIntroduction(context);
