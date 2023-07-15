@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
+import static by.bsu.wialontransport.util.NumberUtil.round;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.function.Function.identity;
 
@@ -14,6 +15,7 @@ import static java.util.function.Function.identity;
 public final class CellFactoryUtil {
     private static final float CELL_BORDER_WIDTH = 1;
     private static final Integer CELL_FONT_SIZE = 11;
+    private static final short CELL_PRECISION = 5;
 
     private static final String CELL_DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
     private static final DateTimeFormatter CELL_DATE_TIME_FORMATTER = ofPattern(CELL_DATE_TIME_PATTERN);
@@ -27,7 +29,7 @@ public final class CellFactoryUtil {
     }
 
     public static TextCell createTextCell(final double content) {
-        return createTextCell(content, value -> Double.toString(value));
+        return createTextCell(content, CellFactoryUtil::transformToStringWithRounding);
     }
 
     public static TextCell createTextCell(final String content) {
@@ -41,6 +43,11 @@ public final class CellFactoryUtil {
                 .borderWidth(CELL_BORDER_WIDTH)
                 .fontSize(CELL_FONT_SIZE)
                 .build();
+    }
+
+    private static String transformToStringWithRounding(final double content) {
+        final double roundedContent = round(content, CELL_PRECISION);
+        return Double.toString(roundedContent);
     }
 
 }
