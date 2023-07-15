@@ -13,6 +13,7 @@ import static java.util.function.Function.identity;
 @UtilityClass
 public final class CellFactoryUtil {
     private static final float CELL_BORDER_WIDTH = 1;
+    private static final Integer CELL_FONT_SIZE = 11;
 
     private static final String CELL_DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
     private static final DateTimeFormatter CELL_DATE_TIME_FORMATTER = ofPattern(CELL_DATE_TIME_PATTERN);
@@ -38,7 +39,7 @@ public final class CellFactoryUtil {
         return TextCell.builder()
                 .text(contentAsString)
                 .borderWidth(CELL_BORDER_WIDTH)
-                .minHeight(20)
+                .fontSize(CELL_FONT_SIZE)
                 .build();
     }
 

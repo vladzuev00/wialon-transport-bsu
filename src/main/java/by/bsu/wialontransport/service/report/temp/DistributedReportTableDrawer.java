@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static by.bsu.wialontransport.util.PDFUtil.addPage;
 import static java.lang.Float.compare;
@@ -27,15 +28,25 @@ public final class DistributedReportTableDrawer {
     private static final float PAGE_TABLE_END_Y = 50F;
 
     public void draw(final ReportTable table, final PDDocument document) {
-        final List<Table> pageTables = mapToPageTables(table.getRows());
-        drawPageTables(pageTables, document, table.getWidth());
+        final List<Table> pageTables = mapToPageTables(table);
+        final float tableWidth = findWidth(table);
+        drawPageTables(pageTables, document, tableWidth);
     }
 
-    private static List<Table> mapToPageTables(final List<Row> tableRows) {
-        return distributeRowsAmongPages(tableRows)
+    private static List<Table> mapToPageTables(final ReportTable table) {
+        final Supplier<TableBuilder> tableBuilderFactory = () -> createTableBuilder(table);
+        return distributeRowsAmongPages(table.getRows())
                 .stream()
-                .map(DistributedReportTableDrawer::createTablePage)
+                .map(pageTableRows -> createTablePage(pageTableRows, tableBuilderFactory))
                 .toList();
+    }
+
+    private static TableBuilder createTableBuilder(final ReportTable table) {
+        return Table.builder()
+                .addColumnsOfWidth(table.getColumnWidths())
+                .font(table.getFont())
+                .fontSize(table.getFontSize())
+                .borderColor(table.getBorderColor());
     }
 
     /**
@@ -50,21 +61,31 @@ public final class DistributedReportTableDrawer {
         float valueIteratingByPageY = PAGE_TABLE_START_Y;
         while (rowIterator.hasNext()) {
             final Row currentRow = rowIterator.next();
-            valueIteratingByPageY += currentRow.getHeight();
+            valueIteratingByPageY -= currentRow.getHeight();
             if (compare(valueIteratingByPageY, PAGE_TABLE_END_Y) > 0) {
                 currentPageRows.add(currentRow);
             } else {
                 distributedRows.add(currentPageRows);
                 currentPageRows = new ArrayList<>();
+                valueIteratingByPageY = PAGE_TABLE_START_Y;
             }
         }
+        distributedRows.add(currentPageRows);
         return distributedRows;
     }
 
-    private static Table createTablePage(final List<Row> rows) {
-        final TableBuilder tableBuilder = Table.builder();
+    private static Table createTablePage(final List<Row> rows, final Supplier<TableBuilder> tableBuilderFactory) {
+        final TableBuilder tableBuilder = tableBuilderFactory.get();
         rows.forEach(tableBuilder::addRow);
         return tableBuilder.build();
+    }
+
+    private static float findWidth(final ReportTable table) {
+        float result = 0;
+        for (final float columnWidth : table.getColumnWidths()) {
+            result += columnWidth;
+        }
+        return result;
     }
 
     private static void drawPageTables(final List<Table> pageTables, final PDDocument document, final float tableWidth) {
@@ -103,6 +124,7 @@ public final class DistributedReportTableDrawer {
                 .build()
                 .draw();
     }
+
 
     @Value
     private static class PDFPageCoordinate {

@@ -7,10 +7,11 @@ import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.service.report.exception.UserMovementReportBuildingException;
 import by.bsu.wialontransport.service.report.factory.UserMovementReportBuildingContextFactory;
 import by.bsu.wialontransport.service.report.model.DistributedTable;
+import by.bsu.wialontransport.service.report.model.ReportTable;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserMovementTableBuilder;
 import by.bsu.wialontransport.service.report.tablebuilder.DistributedUserTrackersTableBuilder;
-import by.bsu.wialontransport.service.report.tabledrawer.DistributedTableDrawer;
+import by.bsu.wialontransport.service.report.temp.DistributedReportTableDrawer;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -18,11 +19,14 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Service;
 import org.vandeseer.easytable.structure.Row;
+import org.vandeseer.easytable.structure.Table;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,9 +56,7 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 750;
 
     private final UserMovementReportBuildingContextFactory contextFactory;
-    private final DistributedTableDrawer distributedTableDrawer;
-
-    private final
+    private final DistributedReportTableDrawer tableDrawer;
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final UserMovementReportBuildingContext context = this.contextFactory.create(user, dateInterval)) {
@@ -125,9 +127,25 @@ public final class UserMovementReportBuildingService {
         }
     }
 
+    private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 150;
+    private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
+    private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
+    private static final float[] TABLE_COLUMNS_WIDTHS = {
+            TABLE_COLUMN_WIDTH_OF_IMEI,
+            TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
+            TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
+    };
+
     private void addUserTrackersTable(final UserMovementReportBuildingContext context) {
         final DistributedTable table = buildDistributedUserTrackersTable(context);
-        this.distributedTableDrawer.draw(context.getDocument(), table);
+        final ReportTable reportTable = new ReportTable(
+                table.getPageTables().stream().map(Table::getRows).flatMap(Collection::stream).toList(),
+                TABLE_COLUMNS_WIDTHS,
+                context.getFont(),
+                25,
+                Color.blue
+        );
+        this.tableDrawer.draw(reportTable, context.getDocument());
     }
 
     private static DistributedTable buildDistributedUserTrackersTable(final UserMovementReportBuildingContext context) {
@@ -154,12 +172,32 @@ public final class UserMovementReportBuildingService {
                 .build();
     }
 
+    private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_CITY = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 110;
+    private static final float[] TABLE_COLUMNS_WIDTHS_2 = {
+            TABLE_COLUMN_WIDTH_OF_DATETIME,
+            TABLE_COLUMN_WIDTH_OF_LATITUDE,
+            TABLE_COLUMN_WIDTH_OF_LONGITUDE,
+            TABLE_COLUMN_WIDTH_OF_CITY,
+            TABLE_COLUMN_WIDTH_OF_COUNTRY
+    };
+
     private void addUserMovementTable(final UserMovementReportBuildingContext context) {
-        final DistributedTable distributedTable = buildDistributedUserMovementTable(
+        final DistributedTable table = buildDistributedUserMovementTable(
                 context.getDataGroupedBySortedByImeiTrackers(),
                 context.getFont()
         );
-        this.distributedTableDrawer.draw(context.getDocument(), distributedTable);
+        final ReportTable reportTable = new ReportTable(
+                table.getPageTables().stream().map(Table::getRows).flatMap(Collection::stream).toList(),
+                TABLE_COLUMNS_WIDTHS_2,
+                context.getFont(),
+                25,
+                Color.blue
+        );
+        this.tableDrawer.draw(reportTable, context.getDocument());
     }
 
     private static DistributedTable buildDistributedUserMovementTable(final Map<Tracker, List<Data>> dataGroupedByTrackers,
