@@ -15,11 +15,11 @@ import static java.lang.String.format;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 public final class DistributedUserMovementTableBuilder extends DistributedTableBuilder {
-    private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 90;
-    private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 90;
-    private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 90;
-    private static final float TABLE_COLUMN_WIDTH_OF_CITY = 90;
-    private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 90;
+    private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_LONGITUDE = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_CITY = 110;
+    private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY = 110;
     private static final float[] TABLE_COLUMNS_WIDTHS = {
             TABLE_COLUMN_WIDTH_OF_DATETIME,
             TABLE_COLUMN_WIDTH_OF_LATITUDE,
@@ -30,7 +30,7 @@ public final class DistributedUserMovementTableBuilder extends DistributedTableB
 
     private static final Integer TABLE_FONT_SIZE = 10;
     private static final Color TABLE_BORDER_COLOR = WHITE;
-    private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 20;
+    private static final int MAX_AMOUNT_OF_ROWS_IN_ONE_TABLE = 10;
 
     //For row with name
     private static final Color TABLE_NAME_ROW_BACKGROUND_COLOR = BLUE;
@@ -74,6 +74,7 @@ public final class DistributedUserMovementTableBuilder extends DistributedTableB
                                 .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
                                 .colSpan(TABLE_NAME_ROW_COL_SPAN)
                                 .text(createTableName(userTracker))
+                                .minHeight(20)
                                 .build()
                 )
                 .build();

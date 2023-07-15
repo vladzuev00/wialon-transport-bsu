@@ -38,6 +38,7 @@ public final class CellFactoryUtil {
         return TextCell.builder()
                 .text(contentAsString)
                 .borderWidth(CELL_BORDER_WIDTH)
+                .minHeight(20)
                 .build();
     }
 

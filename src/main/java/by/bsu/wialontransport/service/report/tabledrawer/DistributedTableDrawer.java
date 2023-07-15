@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.springframework.stereotype.Service;
 import org.vandeseer.easytable.TableDrawer;
+import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.Table;
 
 import java.io.IOException;
@@ -15,8 +16,8 @@ import static by.bsu.wialontransport.util.PDFUtil.addPage;
 
 @Service
 public final class DistributedTableDrawer {
-    private static final float PAGE_TABLE_START_X = 75F;
-    private static final float PAGE_TABLE_START_Y = 650F;
+    private static final float PAGE_TABLE_START_X = 30F;
+    private static final float PAGE_TABLE_START_Y = 750F;
 
     public void draw(final PDDocument document, final DistributedTable table) {
         table.getPageTables()

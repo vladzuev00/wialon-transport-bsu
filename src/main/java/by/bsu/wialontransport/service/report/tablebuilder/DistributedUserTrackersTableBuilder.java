@@ -66,6 +66,7 @@ public final class DistributedUserTrackersTableBuilder extends DistributedTableB
                                 .horizontalAlignment(TABLE_NAME_ROW_HORIZONTAL_ALIGNMENT)
                                 .colSpan(TABLE_NAME_ROW_COL_SPAN)
                                 .text(TABLE_NAME_ROW_CONTENT)
+                                .minHeight(20)
                                 .build()
                 )
                 .build();
