@@ -36,7 +36,7 @@ public final class DistributedReportTableDrawer {
 
     private static List<Table> mapToPageTables(final ReportTable table) {
         final Supplier<TableBuilder> tableBuilderFactory = () -> createTableBuilder(table);
-        return distributeRowsAmongPages(table.getRows())
+        return distributeRowsAmongPages(table.getRows(), tableBuilderFactory)
                 .values()
                 .stream()
                 .map(pageTableRows -> createTablePage(pageTableRows, tableBuilderFactory))
@@ -53,11 +53,13 @@ public final class DistributedReportTableDrawer {
 
     /**
      * @param rows - table's rows
+     * @param tableBuilderFactory - table's builder factory to create temp table
      * @return map of page's numbers by page's rows
      */
-    private static Map<Integer, List<Row>> distributeRowsAmongPages(final List<Row> rows) {
+    private static Map<Integer, List<Row>> distributeRowsAmongPages(final List<Row> rows,
+                                                                    final Supplier<TableBuilder> tableBuilderFactory) {
         //to get height of rows. Without it TableNotYetBuiltException will be arisen
-        createTempTable(rows);
+        createTempTable(tableBuilderFactory, rows);
         final RowsAmongPagesDistributor distributor = new RowsAmongPagesDistributor();
         rows.forEach(distributor::add);
         return distributor.distribute();
@@ -114,8 +116,8 @@ public final class DistributedReportTableDrawer {
                 .draw();
     }
 
-    private static void createTempTable(final List<Row> rows) {
-        final TableBuilder builder = Table.builder();
+    private static void createTempTable(final Supplier<TableBuilder> tableBuilderFactory, final List<Row> rows) {
+        final TableBuilder builder = tableBuilderFactory.get();
         rows.forEach(builder::addRow);
         builder.build();
     }
