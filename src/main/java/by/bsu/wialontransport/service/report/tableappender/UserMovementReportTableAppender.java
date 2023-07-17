@@ -5,7 +5,8 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
-import org.springframework.stereotype.Service;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.vandeseer.easytable.settings.HorizontalAlignment;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.cell.AbstractCell;
@@ -21,7 +22,8 @@ import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
-@Service
+@Order(2)
+@Component
 public final class UserMovementReportTableAppender extends AbstractReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_TRACKER_IMEI = 100;
     private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 100;
