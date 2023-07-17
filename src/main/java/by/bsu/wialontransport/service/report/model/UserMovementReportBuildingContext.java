@@ -26,12 +26,9 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final Map<Tracker, Integer> pointCountsByAllTrackers;
     private final Map<Tracker, List<Data>> dataGroupedBySortedByImeiTrackers;
 
-    public Integer getFontSize() {
-        return null;
-    }
-
+    //TODO: refactor
     public Color getBorderColor() {
-        return null;
+        return Color.WHITE;
     }
 
     @Override

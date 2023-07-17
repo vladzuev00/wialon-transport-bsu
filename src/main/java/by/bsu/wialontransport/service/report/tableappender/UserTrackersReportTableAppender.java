@@ -28,7 +28,7 @@ public final class UserTrackersReportTableAppender extends AbstractReportTableAp
             TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS
     };
 
-    //for row with name
+    //for row with table's name
     private static final Color NAME_ROW_BACKGROUND_COLOR = GREEN;
     private static final Color NAME_ROW_TEXT_COLOR = WHITE;
     private static final Integer NAME_ROW_FONT_SIZE = 13;
