@@ -56,6 +56,8 @@ public final class DistributedReportTableDrawer {
      * @return map of page's numbers by page's rows
      */
     private static Map<Integer, List<Row>> distributeRowsAmongPages(final List<Row> rows) {
+        //to get height of rows. Without it TableNotYetBuiltException will be arisen
+        createTempTable(rows);
         final RowsAmongPagesDistributor distributor = new RowsAmongPagesDistributor();
         rows.forEach(distributor::add);
         return distributor.distribute();
@@ -112,6 +114,11 @@ public final class DistributedReportTableDrawer {
                 .draw();
     }
 
+    private static void createTempTable(final List<Row> rows) {
+        final TableBuilder builder = Table.builder();
+        rows.forEach(builder::addRow);
+        builder.build();
+    }
 
     @Value
     private static class PDFPageCoordinate {
