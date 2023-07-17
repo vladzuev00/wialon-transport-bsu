@@ -21,9 +21,9 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 @Order(1)
 @Component
 public final class UserTrackersReportTableAppender extends AbstractReportTableAppender {
-    private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 150;
-    private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 150;
-    private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 150;
+    private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 200;
+    private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 200;
+    private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 200;
     private static final float[] TABLE_COLUMNS_WIDTHS = {
             TABLE_COLUMN_WIDTH_OF_IMEI,
             TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER,
@@ -31,7 +31,7 @@ public final class UserTrackersReportTableAppender extends AbstractReportTableAp
     };
 
     //for row with table's name
-    private static final Color NAME_ROW_BACKGROUND_COLOR = GREEN;
+    private static final Color NAME_ROW_BACKGROUND_COLOR = BLUE;
     private static final Color NAME_ROW_TEXT_COLOR = WHITE;
     private static final Integer NAME_ROW_FONT_SIZE = 13;
     private static final HorizontalAlignment NAME_ROW_HORIZONTAL_ALIGNMENT = CENTER;

@@ -14,7 +14,7 @@ import static java.util.function.Function.identity;
 @UtilityClass
 public final class CellFactoryUtil {
     private static final float CELL_BORDER_WIDTH = 1;
-    private static final Integer CELL_FONT_SIZE = 11;
+    private static final Integer CELL_FONT_SIZE = 8;
     private static final short CELL_PRECISION = 5;
 
     private static final String CELL_DATE_TIME_PATTERN = "dd-MM-yyyy HH:mm:ss";
