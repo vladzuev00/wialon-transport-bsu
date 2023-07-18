@@ -4,6 +4,8 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.DateInterval;
+import de.redsix.pdfcompare.CompareResult;
+import de.redsix.pdfcompare.PdfComparator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -11,7 +13,10 @@ import org.springframework.test.context.jdbc.Sql;
 import java.io.*;
 import java.time.LocalDate;
 
+import static org.junit.Assert.assertTrue;
+
 public final class UserMovementReportBuildingIT extends AbstractContextTest {
+    private static final String EXPECTED_REPORT_FILE_PATH = "./src/test/resources/user-movement-report/expected-report.pdf";
 
     @Autowired
     private UserMovementReportBuildingService reportBuildingService;
@@ -21,7 +26,8 @@ public final class UserMovementReportBuildingIT extends AbstractContextTest {
 
     @Test
     @Sql("classpath:sql/user-movement-report.sql")
-    public void reportShouldBeCreated() throws IOException {
+    public void reportShouldBeCreated()
+            throws IOException {
         final Long givenUserId = 255L;
         final User givenUser = this.userService.findById(givenUserId).orElseThrow();
 
@@ -31,10 +37,15 @@ public final class UserMovementReportBuildingIT extends AbstractContextTest {
         );
 
         final byte[] actual = this.reportBuildingService.createReport(givenUser, givenDateInterval);
+        checkActualCreatedReport(actual);
+    }
 
-        try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream("temp.pdf"))) {
-            outputStream.write(actual);
-            outputStream.flush();
+    private static void checkActualCreatedReport(final byte[] actual)
+            throws IOException {
+        try (final InputStream actualAsStream = new ByteArrayInputStream(actual);
+             final InputStream expectedAsStream = new FileInputStream(EXPECTED_REPORT_FILE_PATH)) {
+            final CompareResult compareResult = new PdfComparator<>(expectedAsStream, actualAsStream).compare();
+            assertTrue(compareResult.isEqual());
         }
     }
 }
