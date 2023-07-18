@@ -36,8 +36,8 @@ public final class UserMovementReportBuildingService {
     private static final String TEMPLATE_ROW_WITH_DATE_INTERVAL = "Date interval: %s - %s";
 
     private static final float INTRODUCTION_CONTENT_LINES_LEADING = 14.5f;
-    private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 25;
-    private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 750;
+    private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_X = 170;
+    private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 450;
 
     private final UserMovementReportBuildingContextFactory contextFactory;
     private final List<AbstractReportTableAppender> tableAppenders;
