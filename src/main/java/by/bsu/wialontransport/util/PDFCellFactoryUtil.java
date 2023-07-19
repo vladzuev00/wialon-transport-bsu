@@ -12,7 +12,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.function.Function.identity;
 
 @UtilityClass
-public final class CellFactoryUtil {
+public final class PDFCellFactoryUtil {
     private static final float CELL_BORDER_WIDTH = 1;
     private static final Integer CELL_FONT_SIZE = 8;
     private static final short CELL_PRECISION = 5;
@@ -29,7 +29,7 @@ public final class CellFactoryUtil {
     }
 
     public static TextCell createTextCell(final double content) {
-        return createTextCell(content, CellFactoryUtil::transformToStringWithRounding);
+        return createTextCell(content, PDFCellFactoryUtil::transformToStringWithRounding);
     }
 
     public static TextCell createTextCell(final String content) {

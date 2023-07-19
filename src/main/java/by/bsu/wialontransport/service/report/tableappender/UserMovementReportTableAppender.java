@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.CellFactoryUtil.createTextCell;
+import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
