@@ -17,6 +17,7 @@ public interface CityRepository extends JpaRepository<CityEntity, Long> {
             nativeQuery = true)
     boolean isExistByGeometry(final Geometry geometry);
 
+    //TODO: test
     @Query(value = "SELECT geometry FROM cities "
             + "INNER JOIN addresses "
             + "ON cities.address_id = addresses.id "
