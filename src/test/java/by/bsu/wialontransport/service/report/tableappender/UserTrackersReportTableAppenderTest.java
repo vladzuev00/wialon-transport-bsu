@@ -4,9 +4,12 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import org.junit.Test;
 import org.vandeseer.easytable.structure.Row;
+import org.vandeseer.easytable.structure.cell.AbstractCell;
+import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CellFactoryUtil.createTextCell;
 import static by.bsu.wialontransport.util.CollectionUtil.createLinkedHashMap;
@@ -25,16 +28,18 @@ public final class UserTrackersReportTableAppenderTest {
         final UserMovementReportBuildingContext givenContext = createContext(givenPointCountsByAllTrackers);
 
         final List<Row> actual = this.reportTableAppender.createContentRows(givenContext);
-        final List<Row> expected = List.of(
-                createContentRow("11112222333344445555", "447736955", 10),
-                createContentRow("11112222333344445556", "447736956", 7),
-                createContentRow("11112222333344445554", "447736957", 15)
+        final List<String> actualRowsContents = findColumnContents(actual);
+        final List<String> expectedRowsContents = List.of(
+                "11112222333344445555", "447736955", "10",
+                "11112222333344445556", "447736956", "7",
+                "11112222333344445554", "447736957", "15"
         );
-        assertEquals(expected, actual);
+        assertEquals(expectedRowsContents, actualRowsContents);
     }
 
     @Test
     public void headerRowCellsShouldBeCreated() {
+        final AbstractCell[] actual = this.reportTableAppender.createHeaderRowCells();
         throw new RuntimeException();
     }
 
@@ -49,6 +54,19 @@ public final class UserTrackersReportTableAppenderTest {
         return UserMovementReportBuildingContext.builder()
                 .pointCountsByAllTrackers(pointCountsByAllTrackers)
                 .build();
+    }
+
+    private static List<String> findColumnContents(final List<Row> rows) {
+        return rows.stream()
+                .flatMap(UserTrackersReportTableAppenderTest::findColumnContentsAsStream)
+                .toList();
+    }
+
+    private static Stream<String> findColumnContentsAsStream(final Row row) {
+        return row.getCells()
+                .stream()
+                .map(cell -> (TextCell) cell)
+                .map(TextCell::getText);
     }
 
     private static Row createContentRow(final String trackerImei,
