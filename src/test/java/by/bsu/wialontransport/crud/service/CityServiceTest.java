@@ -7,7 +7,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

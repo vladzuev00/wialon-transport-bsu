@@ -9,7 +9,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 
 public final class SearchingCitiesProcessFactoryTest extends AbstractContextTest {

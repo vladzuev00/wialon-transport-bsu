@@ -5,14 +5,12 @@ import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingCon
 import org.junit.Test;
 import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.cell.AbstractCell;
-import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.CollectionUtil.createLinkedHashMap;
-import static java.util.Arrays.stream;
+import static by.bsu.wialontransport.util.CollectionTestUtil.createLinkedHashMap;
+import static by.bsu.wialontransport.util.PDFTestUtil.findCellsContents;
 import static org.junit.Assert.assertEquals;
 
 public final class UserTrackersReportTableAppenderTest {
@@ -56,28 +54,5 @@ public final class UserTrackersReportTableAppenderTest {
         return UserMovementReportBuildingContext.builder()
                 .pointCountsByAllTrackers(pointCountsByAllTrackers)
                 .build();
-    }
-
-    private static List<String> findCellsContents(final List<Row> rows) {
-        return rows.stream()
-                .flatMap(UserTrackersReportTableAppenderTest::findColumnContentsAsStream)
-                .toList();
-    }
-
-    private static Stream<String> findColumnContentsAsStream(final Row row) {
-        final List<AbstractCell> cells = row.getCells();
-        final Stream<AbstractCell> cellStream = cells.stream();
-        return findContentsAsStream(cellStream);
-    }
-
-    private static List<String> findCellsContents(final AbstractCell[] cells) {
-        final Stream<AbstractCell> cellStream = stream(cells);
-        return findContentsAsStream(cellStream).toList();
-    }
-
-    private static Stream<String> findContentsAsStream(final Stream<AbstractCell> cellStream) {
-        return cellStream
-                .map(cell -> (TextCell) cell)
-                .map(TextCell::getText);
     }
 }

@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 @UtilityClass
-public final class EntityUtil {
+public final class EntityTestUtil {
 
     public static void checkEquals(final SearchingCitiesProcessEntity expected,
                                    final SearchingCitiesProcessEntity actual) {

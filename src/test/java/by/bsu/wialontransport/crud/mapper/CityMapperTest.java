@@ -14,9 +14,9 @@ import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.EntityUtil.checkDeepEquals;
-import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.EntityTestUtil.checkDeepEquals;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

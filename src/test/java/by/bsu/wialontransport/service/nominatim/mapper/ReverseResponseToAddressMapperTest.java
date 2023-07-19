@@ -11,8 +11,8 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
-import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 
 public final class ReverseResponseToAddressMapperTest extends AbstractContextTest {

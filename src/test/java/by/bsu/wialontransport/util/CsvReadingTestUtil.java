@@ -11,7 +11,7 @@ import java.util.List;
 import static java.lang.Double.parseDouble;
 
 @UtilityClass
-public final class CsvReadingUtil {
+public final class CsvReadingTestUtil {
     private static final CoordinateFactory COORDINATE_FACTORY = new CoordinateFactory();
 
     public static Track readTrack(final String filePath)

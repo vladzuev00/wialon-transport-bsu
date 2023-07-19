@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.nominatim.model;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
-import by.bsu.wialontransport.util.GeometryUtil;
+import by.bsu.wialontransport.util.GeometryTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.wololo.geojson.Polygon;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -80,7 +80,7 @@ public final class NominatimReverseResponseTest extends AbstractContextTest {
         assertEquals(expected.getCenterLongitude(), actual.getCenterLongitude(), 0.);
         assertEquals(expected.getAddress(), actual.getAddress());
         assertArrayEquals(expected.getBoundingBoxCoordinates(), actual.getBoundingBoxCoordinates(), 0.);
-        GeometryUtil.checkEquals((Polygon) expected.getGeometry(), (Polygon) actual.getGeometry());
+        GeometryTestUtil.checkEquals((Polygon) expected.getGeometry(), (Polygon) actual.getGeometry());
         assertEquals(expected.getExtraTags(), actual.getExtraTags());
     }
 }

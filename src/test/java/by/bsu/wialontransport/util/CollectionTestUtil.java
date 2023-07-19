@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @UtilityClass
-public final class CollectionUtil {
+public final class CollectionTestUtil {
 
     public static <K, V> Map<K, V> createLinkedHashMap(final K firstKey, final V firstValue,
                                                        final K secondKey, final V secondValue) {

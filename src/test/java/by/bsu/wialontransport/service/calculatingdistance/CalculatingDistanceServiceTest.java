@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.util.CsvReadingUtil.readTrack;
+import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 

@@ -31,7 +31,7 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 import java.io.IOException;
 import java.util.List;
 
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.util.stream.IntStream.range;

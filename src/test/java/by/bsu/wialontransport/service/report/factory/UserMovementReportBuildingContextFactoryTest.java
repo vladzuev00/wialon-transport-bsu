@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static by.bsu.wialontransport.util.CollectionUtil.createLinkedHashMap;
+import static by.bsu.wialontransport.util.CollectionTestUtil.createLinkedHashMap;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;

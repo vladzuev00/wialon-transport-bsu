@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.model.Track.create;
-import static by.bsu.wialontransport.util.CsvReadingUtil.readTrack;
+import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static java.io.File.separator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;

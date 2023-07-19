@@ -11,11 +11,10 @@ import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.EntityUtil.createSearchingCitiesProcess;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.EntityTestUtil.createSearchingCitiesProcess;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.data.domain.Pageable.ofSize;
 
 public final class SearchingCitiesProcessServiceTest extends AbstractContextTest {
 

@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 

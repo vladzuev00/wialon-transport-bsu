@@ -12,7 +12,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 @UtilityClass
-public final class GeometryUtil {
+public final class GeometryTestUtil {
 
     public static Geometry createPolygon(final GeometryFactory geometryFactory,
                                          final double firstLongitude, final double firstLatitude,

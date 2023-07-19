@@ -9,8 +9,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.GeometryUtil.createPoint;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

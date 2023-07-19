@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.GeometryUtil.createPolygon;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static java.util.Optional.empty;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
