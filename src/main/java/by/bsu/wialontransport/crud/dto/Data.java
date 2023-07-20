@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.crud.dto;
 
 import by.bsu.wialontransport.crud.entity.DataEntity;
+import by.bsu.wialontransport.model.Coordinate;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -64,6 +65,12 @@ public class Data implements AbstractDto<Long> {
     //TODO: test
     public String findCountryName() {
         return this.address.getCountryName();
+    }
+
+    public Coordinate findCoordinate() {
+        final double latitudeAsDouble = this.findLatitudeAsDouble();
+        final double longitudeAsDouble = this.findLongitudeAsDouble();
+        return new Coordinate(latitudeAsDouble, longitudeAsDouble);
     }
 
     public static Data createWithTracker(final Data source, final Tracker tracker) {
