@@ -13,7 +13,6 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +26,6 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final PDFont font;
     private final Map<Tracker, Integer> pointCountsByAllTrackers;
     private final Map<Tracker, List<Data>> dataBySortedByImeiTrackers;
-    //TODO: add bar-chart for it
-    private final Map<Tracker, Map<LocalDate, List<Data>>> dataByDatesByTrackers;
     private final Map<Tracker, Mileage> mileagesByTrackers;
 
     //TODO: refactor

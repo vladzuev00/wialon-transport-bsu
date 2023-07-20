@@ -6,6 +6,8 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
+import by.bsu.wialontransport.model.Mileage;
+import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,8 +22,8 @@ import java.util.function.Supplier;
 
 import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import static java.util.Map.entry;
+import static java.util.stream.Collectors.*;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +35,9 @@ public final class UserMovementReportBuildingContextFactory {
 
     private final TrackerService trackerService;
     private final DataService dataService;
+    private final TrackFactory trackFactory;
+    private final MileageCalculatingService mileageCalculatingService;
+
 
     public UserMovementReportBuildingContext create(final User user, final DateInterval dateInterval) {
         final PDDocument document = new PDDocument();
@@ -40,6 +45,11 @@ public final class UserMovementReportBuildingContextFactory {
         final Map<Tracker, List<Data>> dataGroupedBySortedByImeiTrackers = this.findDataGroupedBySortedByImeiTrackers(
                 user, dateInterval
         );
+        final Map<Tracker, Mileage> mileagesByTrackers = dataGroupedBySortedByImeiTrackers.entrySet()
+                .stream()
+                .map(dataByTracker -> entry(dataByTracker.getKey(), this.trackFactory.create(dataByTracker.getValue())))
+                .map(trackByTracker -> entry(trackByTracker.getKey(), this.mileageCalculatingService.calculate(trackByTracker.getValue())))
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
         final Map<Tracker, Integer> pointCountsByAllTrackers = this.findPointCountsByAllTrackers(
                 dataGroupedBySortedByImeiTrackers, user
         );
@@ -50,6 +60,7 @@ public final class UserMovementReportBuildingContextFactory {
                 .font(font)
                 .pointCountsByAllTrackers(pointCountsByAllTrackers)
                 .dataBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
+                .mileagesByTrackers(mileagesByTrackers)
                 .build();
     }
 
