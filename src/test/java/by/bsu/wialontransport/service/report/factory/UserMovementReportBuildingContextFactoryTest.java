@@ -83,7 +83,7 @@ public final class UserMovementReportBuildingContextFactoryTest {
                 secondGivenTracker, List.of(thirdGivenFoundData),
                 firstGivenTracker, List.of(firstGivenFoundData, secondGivenFoundData)
         );
-        assertEquals(expectedDataGroupedBySortedByImeiTrackers, createdContext.getDataGroupedBySortedByImeiTrackers());
+        assertEquals(expectedDataGroupedBySortedByImeiTrackers, createdContext.getDataBySortedByImeiTrackers());
     }
 
     @Test

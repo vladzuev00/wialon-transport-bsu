@@ -49,7 +49,7 @@ public final class UserMovementReportBuildingContextFactory {
                 .document(document)
                 .font(font)
                 .pointCountsByAllTrackers(pointCountsByAllTrackers)
-                .dataGroupedBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
+                .dataBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
                 .build();
     }
 

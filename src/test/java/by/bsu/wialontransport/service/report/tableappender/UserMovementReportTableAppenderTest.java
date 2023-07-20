@@ -136,7 +136,7 @@ public final class UserMovementReportTableAppenderTest {
 
     private static UserMovementReportBuildingContext createContext(final Map<Tracker, List<Data>> dataGroupedBySortedByImeiTrackers) {
         return UserMovementReportBuildingContext.builder()
-                .dataGroupedBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
+                .dataBySortedByImeiTrackers(dataGroupedBySortedByImeiTrackers)
                 .build();
     }
 }

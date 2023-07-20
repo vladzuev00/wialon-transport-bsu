@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.model.DateInterval;
+import by.bsu.wialontransport.model.Mileage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,10 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final PDDocument document;
     private final PDFont font;
     private final Map<Tracker, Integer> pointCountsByAllTrackers;
-    private final Map<Tracker, List<Data>> dataGroupedBySortedByImeiTrackers;
+    private final Map<Tracker, List<Data>> dataBySortedByImeiTrackers;
     //TODO: add bar-chart for it
-    private final Map<LocalDate, Map<Tracker, List<Data>>>
+    private final Map<Tracker, Map<LocalDate, List<Data>>> dataByDatesByTrackers;
+    private final Map<Tracker, Mileage> mileagesByTrackers;
 
     //TODO: refactor
     public Integer getFontSize() {
