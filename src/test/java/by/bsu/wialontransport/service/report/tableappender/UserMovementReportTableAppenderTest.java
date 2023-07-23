@@ -24,7 +24,7 @@ import static by.bsu.wialontransport.util.PDFTestUtil.findCellsContents;
 import static org.junit.Assert.assertEquals;
 
 public final class UserMovementReportTableAppenderTest {
-    private final AbstractUserMovementReportTableAppender reportTableAppender = new UserMovementReportTableAppender(null);
+    private final AbstractUserMovementReportTableAppender reportTableAppender = new UserPointsReportTableAppender(null);
 
     @Test
     public void contentRowsShouldBeCreated() {

@@ -4,7 +4,6 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
-import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,13 +13,9 @@ import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
-import static by.bsu.wialontransport.util.collection.CollectionUtil.collectToTreeMap;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
 import static java.util.Comparator.comparing;
@@ -28,7 +23,7 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(3)
 @Component
-public final class UserMovementReportTableAppender extends AbstractUserMovementReportTableAppender {
+public final class UserPointsReportTableAppender extends AbstractUserMovementReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_TRACKER_IMEI = 100;
     private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 100;
     private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 100;
@@ -66,17 +61,17 @@ public final class UserMovementReportTableAppender extends AbstractUserMovementR
 
     private static final String TABLE_NAME = "Movement";
 
-    public UserMovementReportTableAppender(final DistributedReportTableDrawer tableDrawer) {
+    public UserPointsReportTableAppender(final DistributedReportTableDrawer tableDrawer) {
         super(tableDrawer, TABLE_COLUMNS_WIDTHS, createNameRowMetaData(), createHeaderRowMetaData(), TABLE_NAME);
     }
 
     @Override
-    protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
-        return findPointsBySortedByImeiTrackers(context)
-                .entrySet()
+    protected Stream<Row> createContentRowStream(final TrackerMovement movement) {
+        final Tracker tracker = movement.getTracker();
+        return movement.getData()
                 .stream()
-                .flatMap(UserMovementReportTableAppender::createTrackerMovementStreamRows)
-                .toList();
+                .sorted(comparing(Data::findDateTime))
+                .map(data -> createContentRow(tracker, data));
     }
 
     @Override
@@ -91,23 +86,7 @@ public final class UserMovementReportTableAppender extends AbstractUserMovementR
         };
     }
 
-    private static Map<Tracker, List<Data>> findPointsBySortedByImeiTrackers(final UserMovementReportBuildingContext context) {
-        return collectToTreeMap(
-                context.getTrackerMovements(),
-                TrackerMovement::getTracker,
-                TrackerMovement::getData,
-                comparing(Tracker::getImei)
-        );
-    }
-
-    private static Stream<Row> createTrackerMovementStreamRows(final Entry<Tracker, List<Data>> dataByTracker) {
-        final Tracker tracker = dataByTracker.getKey();
-        return dataByTracker.getValue()
-                .stream()
-                .map(data -> createTrackerMovementTableRow(tracker, data));
-    }
-
-    private static Row createTrackerMovementTableRow(final Tracker tracker, final Data data) {
+    private static Row createContentRow(final Tracker tracker, final Data data) {
         final String trackerImei = tracker.getImei();
         final LocalDateTime dateTime = data.findDateTime();
         final double latitudeAsDouble = data.findLatitudeAsDouble();
