@@ -3,7 +3,6 @@ package by.bsu.wialontransport.service.report.tableappender;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
-import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,15 +11,11 @@ import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
-import static by.bsu.wialontransport.util.collection.CollectionUtil.collectToTreeMap;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
-import static java.util.Comparator.comparing;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(1)
@@ -59,12 +54,9 @@ public final class UserTrackersReportTableAppender extends AbstractUserMovementR
     }
 
     @Override
-    protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
-        return findPointCountsByTrackersSortedByImei(context)
-                .entrySet()
-                .stream()
-                .map(UserTrackersReportTableAppender::createUserTrackersTableRow)
-                .toList();
+    protected Stream<Row> createContentRowStream(final TrackerMovement movement) {
+        final Row contentRow = createContentRow(movement);
+        return Stream.of(contentRow);
     }
 
     @Override
@@ -76,20 +68,11 @@ public final class UserTrackersReportTableAppender extends AbstractUserMovementR
         };
     }
 
-    private static Map<Tracker, Integer> findPointCountsByTrackersSortedByImei(final UserMovementReportBuildingContext context) {
-        return collectToTreeMap(
-                context.getTrackerMovements(),
-                TrackerMovement::getTracker,
-                TrackerMovement::findPointCounts,
-                comparing(Tracker::getImei)
-        );
-    }
-
-    private static Row createUserTrackersTableRow(final Entry<Tracker, Integer> pointCountsByTracker) {
-        final Tracker tracker = pointCountsByTracker.getKey();
+    private static Row createContentRow(final TrackerMovement movement) {
+        final Tracker tracker = movement.getTracker();
         final String trackerImei = tracker.getImei();
         final String trackerPhoneNumber = tracker.getPhoneNumber();
-        final int countOfPoints = pointCountsByTracker.getValue();
+        final int countOfPoints = movement.findPointCounts();
         return Row.builder()
                 .add(createTextCell(trackerImei))
                 .add(createTextCell(trackerPhoneNumber))
