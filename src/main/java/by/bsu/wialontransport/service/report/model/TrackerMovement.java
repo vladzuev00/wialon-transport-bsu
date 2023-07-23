@@ -16,4 +16,8 @@ public class TrackerMovement {
     public int findPointCounts() {
         return this.data.size();
     }
+
+    public String findTrackerImei() {
+        return this.tracker.getImei();
+    }
 }

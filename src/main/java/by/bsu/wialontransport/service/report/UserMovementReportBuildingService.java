@@ -5,7 +5,7 @@ import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.service.report.exception.UserMovementReportBuildingException;
 import by.bsu.wialontransport.service.report.factory.UserMovementReportBuildingContextFactory;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
-import by.bsu.wialontransport.service.report.tableappender.AbstractReportTableAppender;
+import by.bsu.wialontransport.service.report.tableappender.AbstractUserMovementReportTableAppender;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -40,7 +40,7 @@ public final class UserMovementReportBuildingService {
     private static final float INTRODUCTION_NEW_LINE_AT_OFFSET_Y = 450;
 
     private final UserMovementReportBuildingContextFactory contextFactory;
-    private final List<AbstractReportTableAppender> tableAppenders;
+    private final List<AbstractUserMovementReportTableAppender> tableAppenders;
 
     public byte[] createReport(final User user, final DateInterval dateInterval) {
         try (final UserMovementReportBuildingContext context = this.contextFactory.create(user, dateInterval)) {

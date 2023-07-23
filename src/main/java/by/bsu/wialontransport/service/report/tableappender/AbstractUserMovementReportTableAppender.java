@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+
 @RequiredArgsConstructor
-public abstract class AbstractReportTableAppender {
+public abstract class AbstractUserMovementReportTableAppender {
     private final DistributedReportTableDrawer tableDrawer;
     private final float[] columnWidths;
     private final TableRowMetaData nameRowMetaData;
@@ -93,6 +95,7 @@ public abstract class AbstractReportTableAppender {
     private List<Row> createContentRows(final UserMovementReportBuildingContext context) {
         return context.getTrackerMovements()
                 .stream()
+                .sorted(comparing(TrackerMovement::findTrackerImei))
                 .flatMap(this::createContentRowStream)
                 .toList();
     }

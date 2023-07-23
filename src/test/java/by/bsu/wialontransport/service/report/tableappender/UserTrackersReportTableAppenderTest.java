@@ -14,7 +14,7 @@ import static by.bsu.wialontransport.util.PDFTestUtil.findCellsContents;
 import static org.junit.Assert.assertEquals;
 
 public final class UserTrackersReportTableAppenderTest {
-    private final AbstractReportTableAppender reportTableAppender = new UserTrackersReportTableAppender(null);
+    private final AbstractUserMovementReportTableAppender reportTableAppender = new UserTrackersReportTableAppender(null);
 
     @Test
     public void contentRowsShouldBeCreated() {

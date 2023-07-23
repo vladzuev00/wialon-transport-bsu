@@ -37,7 +37,7 @@ public final class AbstractReportTableAppenderTest {
                 .build();
     }
 
-    private static final class TestReportTableAppender extends AbstractReportTableAppender {
+    private static final class TestReportTableAppender extends AbstractUserMovementReportTableAppender {
         private final List<Row> contentRows;
         private final AbstractCell[] headerRowCells;
 

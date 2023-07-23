@@ -25,7 +25,7 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(1)
 @Component
-public final class UserTrackersReportTableAppender extends AbstractReportTableAppender {
+public final class UserTrackersReportTableAppender extends AbstractUserMovementReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_IMEI = 200;
     private static final float TABLE_COLUMN_WIDTH_OF_PHONE_NUMBER = 200;
     private static final float TABLE_COLUMN_WIDTH_OF_COUNT_OF_POINTS = 200;

@@ -26,7 +26,7 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(2)
 @Component
-public final class UserMileageTableAppender extends AbstractReportTableAppender {
+public final class UserMileageTableAppender extends AbstractUserMovementReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_TRACKER_IMEI = 150;
     private static final float TABLE_COLUMN_WIDTH_OF_URBAN_MILEAGE = 150;
     private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY_MILEAGE = 150;

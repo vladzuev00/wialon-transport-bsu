@@ -28,7 +28,7 @@ import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(3)
 @Component
-public final class UserMovementReportTableAppender extends AbstractReportTableAppender {
+public final class UserMovementReportTableAppender extends AbstractUserMovementReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_TRACKER_IMEI = 100;
     private static final float TABLE_COLUMN_WIDTH_OF_DATETIME = 100;
     private static final float TABLE_COLUMN_WIDTH_OF_LATITUDE = 100;
