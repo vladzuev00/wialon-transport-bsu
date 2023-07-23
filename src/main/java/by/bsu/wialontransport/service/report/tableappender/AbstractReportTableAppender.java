@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.report.tableappender;
 
 import by.bsu.wialontransport.service.report.model.ReportTable;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
+import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public abstract class AbstractReportTableAppender {
@@ -27,7 +29,8 @@ public abstract class AbstractReportTableAppender {
         this.tableDrawer.draw(table, context.getDocument());
     }
 
-    protected abstract List<Row> createContentRows(final UserMovementReportBuildingContext context);
+    protected abstract Stream<Row> createContentRowStream(final TrackerMovement movement);
+
     protected abstract AbstractCell[] createHeaderRowCells();
 
     private ReportTable buildTable(final UserMovementReportBuildingContext context) {
@@ -85,5 +88,12 @@ public abstract class AbstractReportTableAppender {
         for (final AbstractCell cell : cells) {
             builder.add(cell);
         }
+    }
+
+    private List<Row> createContentRows(final UserMovementReportBuildingContext context) {
+        return context.getTrackerMovements()
+                .stream()
+                .flatMap(this::createContentRowStream)
+                .toList();
     }
 }
