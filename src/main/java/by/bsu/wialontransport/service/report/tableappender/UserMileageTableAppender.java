@@ -60,7 +60,7 @@ public final class UserMileageTableAppender extends AbstractReportTableAppender 
 
     @Override
     protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
-        return context.getMileagesByTrackers()
+        return context.findMileagesBySortedByImeiTrackers()
                 .entrySet()
                 .stream()
                 .map(UserMileageTableAppender::createContentRow)

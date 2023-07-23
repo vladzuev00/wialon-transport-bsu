@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
@@ -38,7 +39,7 @@ public final class UserMovementReportBuildingContextFactory {
     private final TrackFactory trackFactory;
     private final MileageCalculatingService mileageCalculatingService;
 
-
+    //TODO: refactor
     public UserMovementReportBuildingContext create(final User user, final DateInterval dateInterval) {
         final PDDocument document = new PDDocument();
         final PDFont font = loadFont(document, FONT_PATH);
@@ -49,7 +50,7 @@ public final class UserMovementReportBuildingContextFactory {
                 .stream()
                 .map(dataByTracker -> entry(dataByTracker.getKey(), this.trackFactory.create(dataByTracker.getValue())))
                 .map(trackByTracker -> entry(trackByTracker.getKey(), this.mileageCalculatingService.calculate(trackByTracker.getValue())))
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(toMap(Entry::getKey, Entry::getValue));
         final Map<Tracker, Integer> pointCountsByAllTrackers = this.findPointCountsByAllTrackers(
                 dataGroupedBySortedByImeiTrackers, user
         );

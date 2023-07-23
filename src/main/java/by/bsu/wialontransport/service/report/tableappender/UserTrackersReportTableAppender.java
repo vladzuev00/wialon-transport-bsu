@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.report.tableappender;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
+import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import org.springframework.core.annotation.Order;
@@ -12,10 +13,14 @@ import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
-import static java.awt.Color.*;
+import static by.bsu.wialontransport.util.collection.CollectionUtil.collectToTreeMap;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.WHITE;
+import static java.util.Comparator.comparing;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(1)
@@ -54,8 +59,8 @@ public final class UserTrackersReportTableAppender extends AbstractReportTableAp
     }
 
     @Override
-    protected List<Row> createContentRows(UserMovementReportBuildingContext context) {
-        return context.getPointCountsByAllTrackers()
+    protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
+        return findPointCountsByTrackersSortedByImei(context)
                 .entrySet()
                 .stream()
                 .map(UserTrackersReportTableAppender::createUserTrackersTableRow)
@@ -69,6 +74,15 @@ public final class UserTrackersReportTableAppender extends AbstractReportTableAp
                 createTextCell(HEADER_ROW_COLUMN_OF_PHONE_NUMBER_NAME),
                 createTextCell(HEADER_ROW_COLUMN_OF_COUNT_OF_POINTS_NAME)
         };
+    }
+
+    private static Map<Tracker, Integer> findPointCountsByTrackersSortedByImei(final UserMovementReportBuildingContext context) {
+        return collectToTreeMap(
+                context.getTrackerMovements(),
+                TrackerMovement::getTracker,
+                TrackerMovement::findPointCounts,
+                comparing(Tracker::getImei)
+        );
     }
 
     private static Row createUserTrackersTableRow(final Entry<Tracker, Integer> pointCountsByTracker) {
