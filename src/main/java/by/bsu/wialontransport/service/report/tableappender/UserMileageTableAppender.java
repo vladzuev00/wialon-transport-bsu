@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.report.tableappender;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
+import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import org.springframework.core.annotation.Order;
@@ -13,11 +14,14 @@ import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
+import static by.bsu.wialontransport.util.collection.CollectionUtil.collectToTreeMap;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
+import static java.util.Comparator.comparing;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(2)
@@ -60,7 +64,7 @@ public final class UserMileageTableAppender extends AbstractReportTableAppender 
 
     @Override
     protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
-        return context.findMileagesBySortedByImeiTrackers()
+        return findMileagesByTrackersSortedByImei(context)
                 .entrySet()
                 .stream()
                 .map(UserMileageTableAppender::createContentRow)
@@ -75,6 +79,15 @@ public final class UserMileageTableAppender extends AbstractReportTableAppender 
                 createTextCell(HEADER_ROW_COLUMN_OF_COUNTRY_MILEAGE_NAME),
                 createTextCell(HEADER_ROW_COLUMN_OF_TOTAL_MILEAGE_NAME)
         };
+    }
+
+    private static Map<Tracker, Mileage> findMileagesByTrackersSortedByImei(final UserMovementReportBuildingContext context) {
+        return collectToTreeMap(
+                context.getTrackerMovements(),
+                TrackerMovement::getTracker,
+                TrackerMovement::getMileage,
+                comparing(Tracker::getImei)
+        );
     }
 
     private static Row createContentRow(final Entry<Tracker, Mileage> mileageByTracker) {

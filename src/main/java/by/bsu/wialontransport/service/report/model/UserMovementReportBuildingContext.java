@@ -4,7 +4,6 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.model.DateInterval;
-import by.bsu.wialontransport.model.Mileage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,19 +49,6 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
                         toMap(
                                 TrackerMovement::getTracker,
                                 TrackerMovement::getData,
-                                //TODO: throw exception
-                                (existing, replacement) -> existing,
-                                UserMovementReportBuildingContext::createTreeMapWithKeyAsTrackerSortedByImei
-                        )
-                );
-    }
-
-    public Map<Tracker, Mileage> findMileagesBySortedByImeiTrackers() {
-        return this.trackerMovements.stream()
-                .collect(
-                        toMap(
-                                TrackerMovement::getTracker,
-                                TrackerMovement::getMileage,
                                 //TODO: throw exception
                                 (existing, replacement) -> existing,
                                 UserMovementReportBuildingContext::createTreeMapWithKeyAsTrackerSortedByImei
