@@ -4,7 +4,6 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
-import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import by.bsu.wialontransport.service.report.tabledrawer.DistributedReportTableDrawer;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,20 +12,16 @@ import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
-import static by.bsu.wialontransport.util.collection.CollectionUtil.collectToTreeMap;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
-import static java.util.Comparator.comparing;
 import static org.vandeseer.easytable.settings.HorizontalAlignment.CENTER;
 
 @Order(2)
 @Component
-public final class UserMileageTableAppender extends AbstractUserMovementReportTableAppender {
+public final class UserMileageReportTableAppender extends AbstractUserMovementReportTableAppender {
     private static final float TABLE_COLUMN_WIDTH_OF_TRACKER_IMEI = 150;
     private static final float TABLE_COLUMN_WIDTH_OF_URBAN_MILEAGE = 150;
     private static final float TABLE_COLUMN_WIDTH_OF_COUNTRY_MILEAGE = 150;
@@ -58,17 +53,14 @@ public final class UserMileageTableAppender extends AbstractUserMovementReportTa
 
     private static final String TABLE_NAME = "Mileage";
 
-    public UserMileageTableAppender(final DistributedReportTableDrawer tableDrawer) {
+    public UserMileageReportTableAppender(final DistributedReportTableDrawer tableDrawer) {
         super(tableDrawer, TABLE_COLUMNS_WIDTHS, createNameRowMetaData(), createHeaderRowMetaData(), TABLE_NAME);
     }
 
     @Override
-    protected List<Row> createContentRows(final UserMovementReportBuildingContext context) {
-        return findMileagesByTrackersSortedByImei(context)
-                .entrySet()
-                .stream()
-                .map(UserMileageTableAppender::createContentRow)
-                .toList();
+    protected Stream<Row> createContentRowStream(final TrackerMovement movement) {
+        final Row contentRow = createContentRow(movement);
+        return Stream.of(contentRow);
     }
 
     @Override
@@ -81,19 +73,10 @@ public final class UserMileageTableAppender extends AbstractUserMovementReportTa
         };
     }
 
-    private static Map<Tracker, Mileage> findMileagesByTrackersSortedByImei(final UserMovementReportBuildingContext context) {
-        return collectToTreeMap(
-                context.getTrackerMovements(),
-                TrackerMovement::getTracker,
-                TrackerMovement::getMileage,
-                comparing(Tracker::getImei)
-        );
-    }
-
-    private static Row createContentRow(final Entry<Tracker, Mileage> mileageByTracker) {
-        final Tracker tracker = mileageByTracker.getKey();
+    private static Row createContentRow(final TrackerMovement movement) {
+        final Tracker tracker = movement.getTracker();
         final String trackerImei = tracker.getImei();
-        final Mileage mileage = mileageByTracker.getValue();
+        final Mileage mileage = movement.getMileage();
         final double urbanMileage = mileage.getUrban();
         final double countryMileage = mileage.getCountry();
         final double totalMileage = urbanMileage + countryMileage;
