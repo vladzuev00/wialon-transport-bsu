@@ -26,16 +26,16 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
         return super.repository.isExistByGeometry(geometry);
     }
 
-    //TODO: test
     @Transactional(readOnly = true)
     public List<PreparedGeometry> findPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        final List<Geometry> foundGeometries = super.repository.findCitiesIntersectedByLineString(lineString)
-                .stream().map(CityEntity::getAddress).map(AddressEntity::getGeometry).toList();
-        return mapToPreparedGeometries(foundGeometries);
+        final List<CityEntity> foundCities = super.repository.findCitiesIntersectedByLineString(lineString);
+        return mapToPreparedGeometries(foundCities);
     }
 
-    private static List<PreparedGeometry> mapToPreparedGeometries(final List<Geometry> geometries) {
+    private static List<PreparedGeometry> mapToPreparedGeometries(final List<CityEntity> geometries) {
         return geometries.stream()
+                .map(CityEntity::getAddress)
+                .map(AddressEntity::getGeometry)
                 .map(PreparedGeometryFactory::prepare)
                 .toList();
     }
