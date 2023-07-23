@@ -1,10 +1,7 @@
 package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
-import org.locationtech.jts.geom.CoordinateXY;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 
 import static java.util.Arrays.copyOf;
 import static java.util.Arrays.deepEquals;
@@ -50,6 +47,17 @@ public final class GeometryTestUtil {
                                     final double longitude, final double latitude) {
         final CoordinateXY coordinate = new CoordinateXY(longitude, latitude);
         return geometryFactory.createPoint(coordinate);
+    }
+
+    public static LineString createLineString(final GeometryFactory geometryFactory,
+                                              final double firstLongitude, final double firstLatitude,
+                                              final double secondLongitude, final double secondLatitude,
+                                              final double thirdLongitude, final double thirdLatitude) {
+        return geometryFactory.createLineString(new Coordinate[]{
+                new CoordinateXY(firstLongitude, firstLatitude),
+                new CoordinateXY(secondLongitude, secondLatitude),
+                new CoordinateXY(thirdLongitude, thirdLatitude)
+        });
     }
 
     public static void checkEquals(org.wololo.geojson.Polygon expected, org.wololo.geojson.Polygon actual) {

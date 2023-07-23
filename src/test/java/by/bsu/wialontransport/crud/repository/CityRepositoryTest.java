@@ -14,6 +14,7 @@ import java.util.List;
 
 import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
 import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
+import static by.bsu.wialontransport.util.GeometryTestUtil.createLineString;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.*;
 
@@ -143,11 +144,10 @@ public final class CityRepositoryTest extends AbstractContextTest {
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
             + "VALUES(260, 259, 254)")
     public void citiesIntersectedByLineStringShouldBeFound() {
-        final LineString givenLineString = this.geometryFactory.createLineString(new Coordinate[]{
-                new CoordinateXY(1.5, 1.5),
-                new CoordinateXY(3.5, 3.5),
-                new CoordinateXY(4.5, 4.5)
-        });
+        final LineString givenLineString = createLineString(
+                this.geometryFactory,
+                1.5, 1.5, 3.5, 3.5, 4.5, 4.5
+        );
 
         super.startQueryCount();
         final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
@@ -190,11 +190,10 @@ public final class CityRepositoryTest extends AbstractContextTest {
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
             + "VALUES(260, 259, 254)")
     public void citiesIntersectedByLineStringShouldNotBeFound() {
-        final LineString givenLineString = this.geometryFactory.createLineString(new Coordinate[]{
-                new CoordinateXY(1.5, 1.5),
-                new CoordinateXY(2, 4),
-                new CoordinateXY(3, 5)
-        });
+        final LineString givenLineString = createLineString(
+                this.geometryFactory,
+                1.5, 1.5, 2, 4, 3, 5
+        );
 
         super.startQueryCount();
         final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
