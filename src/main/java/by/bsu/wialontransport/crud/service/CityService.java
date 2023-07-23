@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.crud.dto.City;
+import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.mapper.CityMapper;
 import by.bsu.wialontransport.crud.repository.CityRepository;
@@ -28,7 +29,8 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
     //TODO: test
     @Transactional(readOnly = true)
     public List<PreparedGeometry> findPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        final List<Geometry> foundGeometries = super.repository.findGeometriesIntersectedByLineString(lineString);
+        final List<Geometry> foundGeometries = super.repository.findCitiesIntersectedByLineString(lineString)
+                .stream().map(CityEntity::getAddress).map(AddressEntity::getGeometry).toList();
         return mapToPreparedGeometries(foundGeometries);
     }
 

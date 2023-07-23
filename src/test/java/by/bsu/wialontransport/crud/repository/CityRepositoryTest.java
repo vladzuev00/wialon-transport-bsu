@@ -109,4 +109,6 @@ public final class CityRepositoryTest extends AbstractContextTest {
         final boolean exists = this.repository.isExistByGeometry(givenGeometry);
         assertFalse(exists);
     }
+
+
 }
