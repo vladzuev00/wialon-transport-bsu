@@ -20,11 +20,18 @@ public final class CalculatingDistanceServiceTest {
         final Coordinate firstGivenCoordinate = new Coordinate(55.534343, 23.54545);
         final Coordinate secondGivenCoordinate = new Coordinate(55.554344, 23.57544);
 
-        final List<Coordinate> givenCoordinates = List.of(firstGivenCoordinate, secondGivenCoordinate);
-        final Track givenTrack = new Track(givenCoordinates);
+        final double actual = this.service.calculate(firstGivenCoordinate, secondGivenCoordinate);
+        final double expected = 2.919738716964184;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void bigDistanceShouldBeCalculated()
+            throws Exception {
+        final Track givenTrack = readTrack(FILE_PATH_WITH_TRACK);
 
         final double actual = this.service.calculate(givenTrack);
-        final double expected = 2.919738716964184;
+        final double expected = 2231133.2720121145;
         assertEquals(expected, actual, 0.);
     }
 
@@ -45,16 +52,6 @@ public final class CalculatingDistanceServiceTest {
 
         final double actual = this.service.calculate(givenTrack);
         final double expected = 0.;
-        assertEquals(expected, actual, 0.);
-    }
-
-    @Test
-    public void bigDistanceShouldBeCalculated()
-            throws Exception {
-        final Track givenTrack = readTrack(FILE_PATH_WITH_TRACK);
-
-        final double actual = this.service.calculate(givenTrack);
-        final double expected = 2231133.2720121145;
         assertEquals(expected, actual, 0.);
     }
 

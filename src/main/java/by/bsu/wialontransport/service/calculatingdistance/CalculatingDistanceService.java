@@ -20,7 +20,6 @@ public final class CalculatingDistanceService {
                 .sum();
     }
 
-    //TODO: test
     public double calculate(final Coordinate first, final Coordinate second) {
         final double latitudeDistance = toRadians(second.getLatitude() - first.getLatitude());
         final double longitudeDistance = toRadians(second.getLongitude() - first.getLongitude());
