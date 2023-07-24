@@ -10,7 +10,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.springframework.stereotype.Service;
 
-//TODO: test
 @Service
 @RequiredArgsConstructor
 public final class GeometryCreatingService {
