@@ -1,0 +1,90 @@
+package by.bsu.wialontransport.service.mileage;
+
+import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.Mileage;
+import by.bsu.wialontransport.model.Track;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
+
+import static by.bsu.wialontransport.model.Track.create;
+import static org.junit.Assert.assertEquals;
+
+//TODO: correct N+1
+public final class MileageCalculatingServiceIT extends AbstractContextTest {
+
+    @Autowired
+    private MileageCalculatingService mileageCalculatingService;
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326), "
+            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO searching_cities_processes("
+            + "id, bounds, search_step, total_points, handled_points, status) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 1000, 'SUCCESS')")
+    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
+    public void case1() {
+        final Track givenTrack = create(
+                new Coordinate(1.015, 2.025),
+                new Coordinate(1.025, 2.025)
+        );
+
+        final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
+        final Mileage expected = new Mileage(0, 1.1131947333998116);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326), "
+            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO searching_cities_processes("
+            + "id, bounds, search_step, total_points, handled_points, status) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 1000, 'SUCCESS')")
+    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
+    public void case2() {
+        final Track givenTrack = create(
+                new Coordinate(1.005, 2.015),
+                new Coordinate(1.015, 2.015)
+        );
+
+        final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
+        final Mileage expected = new Mileage(1.1131947333998116, 0);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO addresses"
+            + "(id, bounding_box, center, city_name, country_name, geometry) "
+            + "VALUES(255, ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326), "
+            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), 'city', 'country', "
+            + "ST_GeomFromText('POLYGON((2.01 1.01, 2.01 1.02, 2.02 1.02, 2.02 1.01, 2.01 1.01))', 4326)"
+            + ")")
+    @Sql(statements = "INSERT INTO searching_cities_processes("
+            + "id, bounds, search_step, total_points, handled_points, status) "
+            + "VALUES(256, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 1000, 'SUCCESS')")
+    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
+    public void case3() {
+        final Track givenTrack = create(
+                new Coordinate(1.005, 2.015),
+                new Coordinate(1.025, 2.015)
+        );
+
+        final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
+        final Mileage expected = new Mileage(0, 2.226389466799623);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void case4() {
+        throw new RuntimeException();
+    }
+}

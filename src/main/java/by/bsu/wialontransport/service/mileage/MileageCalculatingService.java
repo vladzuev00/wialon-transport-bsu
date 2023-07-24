@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
 import static java.util.stream.IntStream.rangeClosed;
 
-//TODO: test
 @Service
 @RequiredArgsConstructor
 public final class MileageCalculatingService {
