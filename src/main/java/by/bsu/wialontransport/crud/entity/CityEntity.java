@@ -9,6 +9,10 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Table(name = "cities")
+@NamedEntityGraph(
+        name = "CityEntity.address",
+        attributeNodes = @NamedAttributeNode("address")
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
