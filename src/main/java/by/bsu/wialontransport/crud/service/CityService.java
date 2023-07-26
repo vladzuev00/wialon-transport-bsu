@@ -26,7 +26,7 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
         return super.repository.isExistByGeometry(geometry);
     }
 
-    //TODO: correct N+1
+    //TODO: correct N+1(maybe use AddressRepository instead)
     @Transactional(readOnly = true)
     public List<PreparedGeometry> findPreparedGeometriesIntersectedByLineString(final LineString lineString) {
         final List<CityEntity> foundCities = super.repository.findCitiesIntersectedByLineString(lineString);
