@@ -28,6 +28,12 @@ public final class CollectionUtil {
                 );
     }
 
+    public static <S, P> List<P> extractProperties(final List<S> sources, final Function<S, P> propertyExtractor) {
+        return sources.stream()
+                .map(propertyExtractor)
+                .toList();
+    }
+
     private static <V> V throwExceptionOnKeyDuplication(final V existing, final V replacement) {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }

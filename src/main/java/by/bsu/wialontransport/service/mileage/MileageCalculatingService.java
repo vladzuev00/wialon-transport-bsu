@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.mileage;
 
-import by.bsu.wialontransport.crud.service.CityService;
+import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
@@ -27,7 +27,7 @@ public final class MileageCalculatingService {
     private final SimplifyingTrackService simplifyingTrackService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;
-    private final CityService cityService;
+    private final AddressService addressService;
 
     public Mileage calculate(final Track track) {
         final Map<Boolean, Double> mileagesByLocatedInCity = this.findMileagesByLocatedInCity(track);
@@ -59,7 +59,7 @@ public final class MileageCalculatingService {
 
     private List<PreparedGeometry> findCitiesGeometriesIntersectedBySimplifiedTrack(final Track track) {
         final LineString lineString = this.createLineStringBySimplifiedTrack(track);
-        return this.cityService.findPreparedGeometriesIntersectedByLineString(lineString);
+        return this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
     }
 
     private LineString createLineStringBySimplifiedTrack(final Track track) {

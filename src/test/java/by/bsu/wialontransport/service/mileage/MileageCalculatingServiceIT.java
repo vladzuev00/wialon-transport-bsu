@@ -217,5 +217,8 @@ public final class MileageCalculatingServiceIT extends AbstractContextTest {
         assertEquals(expected, actual);
     }
 
-
+    @Test
+    public void case10() {
+        throw new RuntimeException();
+    }
 }
