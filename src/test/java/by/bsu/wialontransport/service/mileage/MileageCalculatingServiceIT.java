@@ -4,15 +4,26 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.util.CsvReadingTestUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import static by.bsu.wialontransport.model.Track.create;
+import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static org.junit.Assert.assertEquals;
 
 //TODO: для каждого case-а нарисовать картинку
 public final class MileageCalculatingServiceIT extends AbstractContextTest {
+    private static final String FOLDER_PATH_WITH_TRACK_POINTS = "./src/test/resources/tracks";
+
+    private static final String FILE_NAME_WITH_FIRST_TRACK_POINTS = "track_460_40000.csv";
+    private static final String FILE_PATH_WITH_FIRST_TRACK_POINTS = FOLDER_PATH_WITH_TRACK_POINTS
+            + FILE_NAME_WITH_FIRST_TRACK_POINTS;
+
+    private static final String FILE_NAME_WITH_SECOND_TRACK_POINTS = "track_460_64000.csv";
+    private static final String FILE_NAME_WITH_THIRD_TRACK_POINTS = "track_460_131000.csv";
+    private static final String FILE_NAME_WITH_FOURTH_TRACK_POINTS = "unit_460_13000.csv";
 
     @Autowired
     private MileageCalculatingService mileageCalculatingService;
@@ -370,6 +381,17 @@ public final class MileageCalculatingServiceIT extends AbstractContextTest {
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
         final Mileage expected = new Mileage(0, 2.226389466799623);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql("classpath:sql/insert-belarus-city.sql")
+    public void mileageShouldBeCalculatedForFirstTrackPoints()
+            throws Exception {
+        final Track givenTrack = readTrack(FILE_PATH_WITH_FIRST_TRACK_POINTS);
+
+        final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
+        final Mileage expected = new Mileage(355.72511991398096, 357.73277661649564);
         assertEquals(expected, actual);
     }
 }

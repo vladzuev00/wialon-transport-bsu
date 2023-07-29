@@ -97,11 +97,11 @@ ALTER TABLE trackers
 CREATE TABLE addresses
 (
     id           BIGSERIAL PRIMARY KEY,
-    bounding_box GEOMETRY(POLYGON, 4326) NOT NULL,
-    center       GEOMETRY(POINT, 4326) NOT NULL,
+    bounding_box GEOMETRY NOT NULL,
+    center       GEOMETRY NOT NULL,
     city_name    VARCHAR(256) NOT NULL,
     country_name VARCHAR(256) NOT NULL,
-    geometry     GEOMETRY(POLYGON, 4326) NOT NULL
+    geometry     GEOMETRY NOT NULL
 );
 
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
@@ -198,7 +198,7 @@ CREATE TYPE searching_cities_process_type AS ENUM('HANDLING', 'SUCCESS', 'ERROR'
 CREATE TABLE searching_cities_processes
 (
     id             BIGSERIAL PRIMARY KEY,
-    bounds         GEOMETRY(POLYGON, 4326) NOT NULL,
+    bounds         GEOMETRY NOT NULL,
     search_step    DOUBLE PRECISION              NOT NULL,
     total_points   BIGINT                        NOT NULL,
     handled_points BIGINT                        NOT NULL,

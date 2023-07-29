@@ -39,6 +39,5 @@ public final class CsvReadingTestUtil {
             final double longitude = parseDouble(readProperties[INDEX_READ_PROPERTY_LONGITUDE]);
             return new Coordinate(latitude, longitude);
         }
-
     }
 }
