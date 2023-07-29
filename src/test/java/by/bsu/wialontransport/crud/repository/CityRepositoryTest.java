@@ -4,19 +4,16 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
-
 import org.junit.Test;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
-
 import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
-import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
-import static by.bsu.wialontransport.util.GeometryTestUtil.createLineString;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public final class CityRepositoryTest extends AbstractContextTest {
 
@@ -112,93 +109,94 @@ public final class CityRepositoryTest extends AbstractContextTest {
         assertFalse(exists);
     }
 
-    @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(254, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "1, 36, 36, 'SUCCESS'"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, "
-            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(258, 257, 254)")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(259, "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(260, 259, 254)")
-    public void citiesIntersectedByLineStringShouldBeFound() {
-        final LineString givenLineString = createLineString(
-                this.geometryFactory,
-                1.5, 1.5, 3.5, 3.5, 4.5, 4.5
-        );
-
-        super.startQueryCount();
-        final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
-        super.checkQueryCount(1);
-
-        final List<Long> actual = findEntityIds(foundCities);
-        final List<Long> expected = List.of(258L);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(254, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "1, 36, 36, 'SUCCESS'"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, "
-            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(258, 257, 254)")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(259, "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(260, 259, 254)")
-    public void citiesIntersectedByLineStringShouldNotBeFound() {
-        final LineString givenLineString = createLineString(
-                this.geometryFactory,
-                1.5, 1.5, 2, 4, 3, 5
-        );
-
-        super.startQueryCount();
-        final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
-        super.checkQueryCount(1);
-
-        assertTrue(foundCities.isEmpty());
-    }
+    //TODO: remove after tests for addresses
+//    @Test
+//    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
+//            + "VALUES(254, "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
+//            + "1, 36, 36, 'SUCCESS'"
+//            + ")")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(255, "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(257, "
+//            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
+//            + "VALUES(258, 257, 254)")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(259, "
+//            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
+//            + "VALUES(260, 259, 254)")
+//    public void citiesIntersectedByLineStringShouldBeFound() {
+//        final LineString givenLineString = createLineString(
+//                this.geometryFactory,
+//                1.5, 1.5, 3.5, 3.5, 4.5, 4.5
+//        );
+//
+//        super.startQueryCount();
+//        final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
+//        super.checkQueryCount(1);
+//
+//        final List<Long> actual = findEntityIds(foundCities);
+//        final List<Long> expected = List.of(258L);
+//        assertEquals(expected, actual);
+//    }
+//
+//    @Test
+//    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
+//            + "VALUES(254, "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
+//            + "1, 36, 36, 'SUCCESS'"
+//            + ")")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(255, "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(257, "
+//            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
+//            + "VALUES(258, 257, 254)")
+//    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
+//            + "VALUES(259, "
+//            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
+//            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
+//            + "'first-city', 'first-country', "
+//            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
+//            + ")")
+//    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
+//            + "VALUES(260, 259, 254)")
+//    public void citiesIntersectedByLineStringShouldNotBeFound() {
+//        final LineString givenLineString = createLineString(
+//                this.geometryFactory,
+//                1.5, 1.5, 2, 4, 3, 5
+//        );
+//
+//        super.startQueryCount();
+//        final List<CityEntity> foundCities = this.repository.findCitiesIntersectedByLineString(givenLineString);
+//        super.checkQueryCount(1);
+//
+//        assertTrue(foundCities.isEmpty());
+//    }
 }
