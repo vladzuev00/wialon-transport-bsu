@@ -385,7 +385,7 @@ public final class MileageCalculatingServiceIT extends AbstractContextTest {
     }
 
     @Test
-    @Sql("classpath:sql/temp-insert-belarus-city.sql")
+    @Sql("classpath:sql/insert-belarus-city.sql")
     public void mileageShouldBeCalculatedForFirstTrackPoints()
             throws Exception {
         final Track givenTrack = readTrack(FILE_PATH_WITH_FIRST_TRACK_POINTS);
