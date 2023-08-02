@@ -24,14 +24,14 @@ public final class SearchingCitiesService {
 
     public List<City> findByCoordinates(final List<Coordinate> coordinates) {
         return coordinates.stream()
-                .map(this::reverseWithCheckingInterrupted)
+                .map(this::reverseInterruptibly)
                 .filter(SearchingCitiesService::isCity)
                 .map(this.responseToAddressMapper::map)
                 .map(City::createWithAddress)
                 .toList();
     }
 
-    private NominatimReverseResponse reverseWithCheckingInterrupted(final Coordinate coordinate) {
+    private NominatimReverseResponse reverseInterruptibly(final Coordinate coordinate) {
         checkInterrupted();
         return this.nominatimService.reverse(coordinate);
     }
