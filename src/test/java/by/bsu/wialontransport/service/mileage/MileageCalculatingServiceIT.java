@@ -11,7 +11,7 @@ import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static org.junit.Assert.assertEquals;
 
 public final class MileageCalculatingServiceIT extends AbstractContextTest {
-
+    private static final String FOLDER_PATH_WITH_TRACK_POINTS = "./src/test/resources/tracks";
     private static final String SLASH = "/";
 
     private static final String FILE_NAME_WITH_FIRST_TRACK_POINTS = "track_460_40000.csv";

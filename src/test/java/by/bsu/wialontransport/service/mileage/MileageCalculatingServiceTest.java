@@ -13,8 +13,6 @@ import static org.junit.Assert.assertEquals;
 
 //TODO: для каждого case-а нарисовать картинку
 public final class MileageCalculatingServiceTest extends AbstractContextTest {
-    private static final String FOLDER_PATH_WITH_TRACK_POINTS = "./src/test/resources/tracks";
-
     @Autowired
     private MileageCalculatingService mileageCalculatingService;
 
