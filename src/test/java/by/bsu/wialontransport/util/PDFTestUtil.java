@@ -13,13 +13,13 @@ import static java.util.Arrays.stream;
 @UtilityClass
 public final class PDFTestUtil {
 
-    public static List<String> findCellsContents(final List<Row> rows) {
-        return rows.stream()
+    public static List<String> findCellContents(final Stream<Row> rowStream) {
+        return rowStream
                 .flatMap(PDFTestUtil::findColumnContentsAsStream)
                 .toList();
     }
 
-    public static List<String> findCellsContents(final AbstractCell[] cells) {
+    public static List<String> findCellContents(final AbstractCell[] cells) {
         final Stream<AbstractCell> cellStream = stream(cells);
         return findContentsAsStream(cellStream).toList();
     }
