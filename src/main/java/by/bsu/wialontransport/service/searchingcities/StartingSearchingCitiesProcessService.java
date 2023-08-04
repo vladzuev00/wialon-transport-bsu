@@ -96,7 +96,7 @@ public final class StartingSearchingCitiesProcessService {
         }
 
         private List<Coordinate> extractSubAreaCoordinatesByItsIndex(final List<Coordinate> coordinates,
-                                                                     final int subAreaIndex) {
+                                                                     int subAreaIndex) {
             return coordinates.subList(
                     subAreaIndex * amountHandledPointsToSaveState,
                     min(amountHandledPointsToSaveState * (subAreaIndex + 1), coordinates.size())
