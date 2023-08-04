@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.report.tableappender;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import org.junit.Test;
 import org.vandeseer.easytable.structure.Row;
@@ -13,24 +13,21 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.PDFTestUtil.findCellContents;
 import static org.junit.Assert.assertEquals;
 
-public final class UserTrackersReportTableAppenderTest {
-    private final UserTrackersReportTableAppender tableAppender = new UserTrackersReportTableAppender(null);
+public final class UserMileageReportTableAppenderTest {
+    private final UserMileageReportTableAppender tableAppender = new UserMileageReportTableAppender(null);
 
     @Test
     public void contentRowStreamShouldBeCreated() {
         final String givenTrackerImei = "11112222333344445555";
-        final String givenPhoneNumber = "447336934";
-        final Tracker givenTracker = createTracker(givenTrackerImei, givenPhoneNumber);
+        final Tracker givenTracker = createTracker(givenTrackerImei);
 
-        final List<Data> givenData = List.of(createData(), createData(), createData(), createData(), createData());
+        final Mileage givenMileage = new Mileage(5.5, 6.6);
 
-        final TrackerMovement givenTrackerMovement = createTrackerMovement(givenTracker, givenData);
+        final TrackerMovement givenTrackerMovement = createTrackerMovement(givenTracker, givenMileage);
 
         final Stream<Row> actual = this.tableAppender.createContentRowStream(givenTrackerMovement);
         final List<String> actualCellContents = findCellContents(actual);
-        final List<String> expectedCellContents = List.of(
-                givenTrackerImei, givenPhoneNumber, "5"
-        );
+        final List<String> expectedCellContents = List.of(givenTrackerImei, "5.5", "6.6", "12.1");
         assertEquals(expectedCellContents, actualCellContents);
     }
 
@@ -38,25 +35,22 @@ public final class UserTrackersReportTableAppenderTest {
     public void headerRowCellsShouldBeCreated() {
         final AbstractCell[] actual = this.tableAppender.createHeaderRowCells();
         final List<String> actualCellContents = findCellContents(actual);
-        final List<String> expectedCellContents = List.of("Imei", "Phone number", "Count of points");
+        final List<String> expectedCellContents = List.of(
+                "Tracker's imei", "Urban mileage", "Country's mileage", "Total mileage"
+        );
         assertEquals(expectedCellContents, actualCellContents);
     }
 
-    private static Tracker createTracker(final String imei, final String phoneNumber) {
+    private static Tracker createTracker(final String imei) {
         return Tracker.builder()
                 .imei(imei)
-                .phoneNumber(phoneNumber)
                 .build();
     }
 
-    private static Data createData() {
-        return Data.builder().build();
-    }
-
-    private static TrackerMovement createTrackerMovement(final Tracker tracker, final List<Data> data) {
+    private static TrackerMovement createTrackerMovement(final Tracker tracker, final Mileage mileage) {
         return TrackerMovement.builder()
                 .tracker(tracker)
-                .data(data)
+                .mileage(mileage)
                 .build();
     }
 }
