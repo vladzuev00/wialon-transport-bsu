@@ -16,6 +16,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,12 +24,13 @@ import java.util.Map.Entry;
 import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.*;
 
 @Component
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingContextFactory {
     private static final String FONT_PATH = "fonts/Roboto-Regular.ttf";
+    private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
 
     private final TrackerService trackerService;
     private final DataService dataService;
@@ -71,8 +73,20 @@ public final class UserMovementReportBuildingContextFactory {
 
     private static Map<Tracker, List<Data>> groupSortedByDateTimeDataByTrackers(final List<Data> data) {
         return data.stream()
-                .sorted(comparing(Data::findDateTime))
-                .collect(groupingBy(Data::getTracker));
+                .collect(
+                        groupingBy(
+                                Data::getTracker,
+                                collectingAndThen(
+                                        toList(),
+                                        UserMovementReportBuildingContextFactory::sortByDateTime
+                                )
+                        )
+                );
+    }
+
+    private static List<Data> sortByDateTime(final List<Data> data) {
+        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
+        return data;
     }
 
     private void insertLackedTrackers(final Map<Tracker, List<Data>> dataByTrackers, final User user) {
