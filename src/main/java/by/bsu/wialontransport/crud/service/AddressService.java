@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.collection.CollectionUtil.extractProperties;
+import static by.bsu.wialontransport.util.collection.CollectionUtil.mapList;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service
@@ -47,7 +47,7 @@ public class AddressService
         final List<AddressEntity> foundEntities = super.repository.findCitiesAddressesIntersectedByLineString(
                 lineString
         );
-        return extractProperties(foundEntities, AddressService::extractPreparedGeometry);
+        return mapList(foundEntities, AddressService::extractPreparedGeometry);
     }
 
     private static PreparedGeometry extractPreparedGeometry(final AddressEntity entity) {

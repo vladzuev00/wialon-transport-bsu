@@ -2,10 +2,7 @@ package by.bsu.wialontransport.util.collection;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
@@ -28,9 +25,9 @@ public final class CollectionUtil {
                 );
     }
 
-    public static <S, P> List<P> extractProperties(final List<S> sources, final Function<S, P> propertyExtractor) {
+    public static <S, P> List<P> mapList(final List<S> sources, final Function<S, P> elementMapper) {
         return sources.stream()
-                .map(propertyExtractor)
+                .map(elementMapper)
                 .toList();
     }
 
