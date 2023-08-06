@@ -27,7 +27,6 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             nativeQuery = true)
     boolean isExistByGeometry(final Geometry geometry);
 
-    //TODO: test
     @Query(value = "SELECT addresses.id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
             + "FROM cities "
             + "INNER JOIN addresses "
