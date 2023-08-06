@@ -9,9 +9,11 @@ import de.redsix.pdfcompare.PdfComparator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
-import org.testcontainers.shaded.com.google.common.io.Files;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertTrue;
@@ -38,7 +40,6 @@ public final class UserMovementReportBuildingIT extends AbstractContextTest {
         );
 
         final byte[] actual = this.reportBuildingService.createReport(givenUser, givenDateInterval);
-        Files.write(actual, new File("temp.pdf"));
         checkActualCreatedReport(actual);
     }
 
