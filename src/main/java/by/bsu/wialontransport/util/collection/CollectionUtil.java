@@ -25,10 +25,15 @@ public final class CollectionUtil {
                 );
     }
 
-    public static <S, P> List<P> mapList(final List<S> sources, final Function<S, P> elementMapper) {
+    public static <S, P> List<P> mapToList(final List<S> sources, final Function<S, P> elementMapper) {
         return sources.stream()
                 .map(elementMapper)
                 .toList();
+    }
+
+    public static <S, P> Set<P> mapToSet(final List<S> sources, final Function<S, P> elementMapper) {
+        final List<P> elements = mapToList(sources, elementMapper);
+        return new HashSet<>(elements);
     }
 
     private static <V> V throwExceptionOnKeyDuplication(final V existing, final V replacement) {
