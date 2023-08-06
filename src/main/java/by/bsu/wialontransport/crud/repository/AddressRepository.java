@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
 import by.bsu.wialontransport.crud.entity.AddressEntity;
-import by.bsu.wialontransport.crud.entity.CityEntity;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,5 +34,5 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             + "ON cities.address_id = addresses.id "
             + "WHERE ST_Intersects(geometry, :lineString)",
             nativeQuery = true)
-    List<AddressEntity> findCitiesAddressesIntersectedByLineString(final LineString lineString);
+    List<AddressEntity> findCityAddressesIntersectedByLineString(final LineString lineString);
 }

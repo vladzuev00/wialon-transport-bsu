@@ -44,7 +44,7 @@ public class AddressService
     //TODO: test
     @Transactional(readOnly = true)
     public List<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        final List<AddressEntity> foundEntities = super.repository.findCitiesAddressesIntersectedByLineString(
+        final List<AddressEntity> foundEntities = super.repository.findCityAddressesIntersectedByLineString(
                 lineString
         );
         return mapList(foundEntities, AddressService::extractPreparedGeometry);
