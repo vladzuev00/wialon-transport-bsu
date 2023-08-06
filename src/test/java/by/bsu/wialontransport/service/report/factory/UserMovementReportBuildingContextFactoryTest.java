@@ -129,6 +129,8 @@ public final class UserMovementReportBuildingContextFactoryTest {
         assertSame(givenDateInterval, createdContext.getDateInterval());
         assertNotNull(createdContext.getDocument());
         assertNotNull(createdContext.getFont());
+        assertNotNull(createdContext.getFontSize());
+        assertNotNull(createdContext.getBorderColor());
 
         final Set<TrackerMovement> expectedTrackerMovements = Set.of(
                 new TrackerMovement(firstGivenTracker, expectedFirstTrackerData, givenFirstTrackerMileage),

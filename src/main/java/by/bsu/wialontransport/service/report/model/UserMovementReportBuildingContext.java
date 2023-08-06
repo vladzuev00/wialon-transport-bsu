@@ -21,16 +21,8 @@ public final class UserMovementReportBuildingContext implements AutoCloseable {
     private final PDDocument document;
     private final PDFont font;
     private final List<TrackerMovement> trackerMovements;
-
-    //TODO: refactor
-    public Integer getFontSize() {
-        return 11;
-    }
-
-    //TODO: refactor
-    public Color getBorderColor() {
-        return Color.WHITE;
-    }
+    private final Integer fontSize;
+    private final Color borderColor;
 
     @Override
     public void close()

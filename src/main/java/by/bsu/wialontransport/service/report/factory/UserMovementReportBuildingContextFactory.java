@@ -16,12 +16,14 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
+import static java.awt.Color.WHITE;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
@@ -31,6 +33,8 @@ import static java.util.stream.Collectors.*;
 public final class UserMovementReportBuildingContextFactory {
     private static final String FONT_PATH = "fonts/Roboto-Regular.ttf";
     private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
+    private static final Integer FONT_SIZE = 11;
+    private static final Color BORDER_COLOR = WHITE;
 
     private final TrackerService trackerService;
     private final DataService dataService;
@@ -47,6 +51,8 @@ public final class UserMovementReportBuildingContextFactory {
                 .document(document)
                 .font(font)
                 .trackerMovements(trackerMovements)
+                .fontSize(FONT_SIZE)
+                .borderColor(BORDER_COLOR)
                 .build();
     }
 
