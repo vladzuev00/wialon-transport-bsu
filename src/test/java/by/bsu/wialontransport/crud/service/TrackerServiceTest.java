@@ -43,7 +43,47 @@ public final class TrackerServiceTest extends AbstractContextTest {
             + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
     @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
             + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
-    public void trackersShouldBeFoundByUserId() {
+    public void allTrackersShouldBeFoundByUser() {
+        final User givenUser = createUser(255L);
+
+        final List<Tracker> actual = this.service.findByUser(givenUser);
+        final List<Tracker> expected = List.of(
+                Tracker.builder()
+                        .id(255L)
+                        .imei("11112222333344445555")
+                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
+                        .phoneNumber("447336934")
+                        .build(),
+                Tracker.builder()
+                        .id(355L)
+                        .imei("11111222223333344444")
+                        .password("password")
+                        .phoneNumber("447336935")
+                        .build(),
+                Tracker.builder()
+                        .id(356L)
+                        .imei("11111222223333344445")
+                        .password("password")
+                        .phoneNumber("447336936")
+                        .build()
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void allTrackersShouldNotBeFoundByUser() {
+        final User givenUser = createUser(256L);
+
+        final List<Tracker> actual = this.service.findByUser(givenUser);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
+            + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
+    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
+            + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
+    public void trackersShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
 
         final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5);
@@ -71,7 +111,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void trackersShouldNotBeFoundByUserId() {
+    public void trackersShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
 
         final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5);
@@ -83,7 +123,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
             + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
     @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
             + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
-    public void sortedTrackersShouldBeFoundByUserId() {
+    public void sortedTrackersShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
         final Comparator<Tracker> givenComparator = comparing(Tracker::getImei).reversed();
 
@@ -112,7 +152,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void sortedTrackersShouldNotBeFoundByUserId() {
+    public void sortedTrackersShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
         final Comparator<Tracker> givenComparator = comparing(Tracker::getImei).reversed();
 

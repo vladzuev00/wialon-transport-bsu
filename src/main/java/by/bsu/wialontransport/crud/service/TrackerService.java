@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 public class TrackerService
@@ -31,19 +32,20 @@ public class TrackerService
         return optionalFoundEntity.map(super.mapper::mapToDto);
     }
 
-    //TODO: test and refactor with next method
-
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user) {
-        final List<TrackerEntity> foundEntities = super.repository.findByUserId(user.getId());
-        return super.mapper.mapToDto(foundEntities);
+        return this.findByUser(
+                user,
+                Pageable::unpaged
+        );
     }
 
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user, final int pageNumber, final int pageSize) {
-        final Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        final List<TrackerEntity> foundEntities = super.repository.findByUserId(user.getId(), pageable);
-        return super.mapper.mapToDto(foundEntities);
+        return this.findByUser(
+                user,
+                () -> PageRequest.of(pageNumber, pageSize)
+        );
     }
 
     @Transactional(readOnly = true)
@@ -68,4 +70,10 @@ public class TrackerService
         return optionalEntity.map(super.mapper::mapToDto);
     }
 
+    private List<Tracker> findByUser(final User user, final Supplier<Pageable> pageableSupplier) {
+        final Long userId = user.getId();
+        final Pageable pageable = pageableSupplier.get();
+        final List<TrackerEntity> foundEntities = super.repository.findByUserId(userId, pageable);
+        return super.mapper.mapToDto(foundEntities);
+    }
 }
