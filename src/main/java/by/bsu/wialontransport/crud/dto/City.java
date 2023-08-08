@@ -11,7 +11,6 @@ public class City implements AbstractDto<Long> {
     Address address;
     SearchingCitiesProcess searchingCitiesProcess;
 
-    //TODO: test
     public Geometry findGeometry() {
         return this.address.getGeometry();
     }
