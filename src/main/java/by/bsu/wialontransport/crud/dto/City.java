@@ -11,12 +11,9 @@ public class City implements AbstractDto<Long> {
     Address address;
     SearchingCitiesProcess searchingCitiesProcess;
 
-    public Geometry getGeometry() {
+    //TODO: test
+    public Geometry findGeometry() {
         return this.address.getGeometry();
-    }
-
-    public String getCityName() {
-        return this.address.getCityName();
     }
 
     public static City copyWithAddressAndProcess(final City source,

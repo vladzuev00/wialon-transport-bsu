@@ -113,7 +113,7 @@ public final class StartingSearchingCitiesProcessService {
         private static List<City> removeDuplicatesByGeometries(final List<City> foundCities,
                                                                final Set<Geometry> geometriesAlreadyFoundCities) {
             return foundCities.stream()
-                    .filter(city -> geometriesAlreadyFoundCities.add(city.getGeometry()))
+                    .filter(city -> geometriesAlreadyFoundCities.add(city.findGeometry()))
                     .toList();
         }
 

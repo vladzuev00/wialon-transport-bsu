@@ -22,7 +22,6 @@ import static by.bsu.wialontransport.crud.dto.City.copyWithAddressAndProcess;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.SUCCESS;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
-import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 
 
 /**
@@ -114,7 +113,7 @@ public class EventListenerSearchingCitiesProcess {
     }
 
     private boolean isCityNotExist(final City city) {
-        return !this.cityService.isExistByGeometry(city.getGeometry());
+        return !this.cityService.isExistByGeometry(city.findGeometry());
     }
 
     private City mapToCityWithSavedAddressAndProcess(final City city, final SearchingCitiesProcess process) {
@@ -123,7 +122,7 @@ public class EventListenerSearchingCitiesProcess {
     }
 
     private Address findSavedAddressOfCity(final City city) {
-        final Optional<Address> optionalAddress = this.addressService.findByGeometry(city.getGeometry());
+        final Optional<Address> optionalAddress = this.addressService.findByGeometry(city.findGeometry());
         return optionalAddress.orElseGet(() -> this.addressService.save(city.getAddress()));
     }
 }

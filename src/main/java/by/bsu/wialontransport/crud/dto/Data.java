@@ -14,55 +14,48 @@ import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.WESTE
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
+@Value
 @AllArgsConstructor
-@Getter
-@EqualsAndHashCode
-@ToString
 @Builder
 public class Data implements AbstractDto<Long> {
-    private final Long id;
-    private final LocalDate date;
-    private final LocalTime time;
-    private final Latitude latitude;
-    private final Longitude longitude;
-    private final int speed;
-    private final int course;
-    private final int altitude;
-    private final int amountOfSatellites;
-    private final double reductionPrecision;
-    private final int inputs;
-    private final int outputs;
-    private final double[] analogInputs;
-    private final String driverKeyCode;
+    Long id;
+    LocalDate date;
+    LocalTime time;
+    Latitude latitude;
+    Longitude longitude;
+    int speed;
+    int course;
+    int altitude;
+    int amountOfSatellites;
+    double reductionPrecision;
+    int inputs;
+    int outputs;
+    double[] analogInputs;
+    String driverKeyCode;
 
     /**
      * parameter's name to parameter
      */
-    private final Map<String, Parameter> parametersByNames;
-    private final Tracker tracker;
-    private final Address address;
+    Map<String, Parameter> parametersByNames;
+    Tracker tracker;
+    Address address;
 
-    //TODO: test
     public LocalDateTime findDateTime() {
         return LocalDateTime.of(this.date, this.time);
     }
 
-    //TODO: test
     public double findLatitudeAsDouble() {
         return this.latitude.findDoubleValue();
     }
 
-    //TODO: test
     public double findLongitudeAsDouble() {
         return this.longitude.findDoubleValue();
     }
 
-    //TODO: test
     public String findCityName() {
         return this.address.getCityName();
     }
 
-    //TODO: test
     public String findCountryName() {
         return this.address.getCountryName();
     }

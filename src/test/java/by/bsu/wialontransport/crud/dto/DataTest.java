@@ -5,6 +5,7 @@ import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
@@ -157,6 +158,76 @@ public final class DataTest {
         final double actual = givenLongitude.findDoubleValue();
         final double expected = 44.76277777777778;
         assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void dateTimeShouldBeFound() {
+        final Data givenData = Data.builder()
+                .date(LocalDate.of(2023, 10, 9))
+                .time(LocalTime.of(11, 12, 13))
+                .build();
+
+        final LocalDateTime actual = givenData.findDateTime();
+        final LocalDateTime expected = LocalDateTime.of(2023, 10, 9, 11, 12, 13);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void latitudeShouldBeFoundAsDouble() {
+        final Data givenData = Data.builder()
+                .latitude(Latitude.builder()
+                        .degrees(54)
+                        .minutes(33)
+                        .minuteShare(22)
+                        .type(SOUTH)
+                        .build())
+                .build();
+
+        final double actual = givenData.findLatitudeAsDouble();
+        final double expected = -54.55611111111111;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void longitudeShouldBeFoundAsDouble() {
+        final Data givenData = Data.builder()
+                .longitude(Longitude.builder()
+                        .degrees(54)
+                        .minutes(33)
+                        .minuteShare(22)
+                        .type(EAST)
+                        .build())
+                .build();
+
+        final double actual = givenData.findLongitudeAsDouble();
+        final double expected = 54.55611111111111;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void cityNameShouldBeFound() {
+        final Data givenData = Data.builder()
+                .address(Address.builder()
+                        .cityName("city")
+                        .build())
+                .build();
+
+        final String actual = givenData.findCityName();
+        final String expected = "city";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void countryNameShouldBeFound() {
+        final Data givenData = Data.builder()
+                .address(Address.builder()
+                        .countryName("country")
+                        .build())
+                .build();
+
+        final String actual = givenData.findCountryName();
+        final String expected = "country";
+        assertEquals(expected, actual);
     }
 
     private static Address createAddress(final Long id) {
