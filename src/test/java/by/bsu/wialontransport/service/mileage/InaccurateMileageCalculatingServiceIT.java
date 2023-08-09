@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class MileageCalculatingServiceIT extends AbstractContextTest {
+public final class InaccurateMileageCalculatingServiceIT extends AbstractContextTest {
     private static final String FOLDER_PATH_WITH_TRACK_POINTS = "./src/test/resources/tracks";
     private static final String SLASH = "/";
 
@@ -35,7 +35,7 @@ public final class MileageCalculatingServiceIT extends AbstractContextTest {
             + SLASH + FILE_NAME_WITH_FOURTH_TRACK_POINTS;
 
     @Autowired
-    private MileageCalculatingService mileageCalculatingService;
+    private InaccurateMileageCalculatingService mileageCalculatingService;
 
     @ParameterizedTest
     @Sql("classpath:sql/insert-belarus-cities.sql")

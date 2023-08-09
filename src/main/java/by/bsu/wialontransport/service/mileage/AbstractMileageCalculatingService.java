@@ -6,49 +6,46 @@ import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
+import by.bsu.wialontransport.service.mileage.model.TrackSlice;
 import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingTrackService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
-import static java.util.stream.IntStream.rangeClosed;
 
-@Service
 @RequiredArgsConstructor
-public final class MileageCalculatingService {
+public abstract class AbstractMileageCalculatingService {
     private final SimplifyingTrackService simplifyingTrackService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;
     private final AddressService addressService;
 
-    public Mileage calculate(final Track track) {
+    public final Mileage calculate(final Track track) {
         final Map<Boolean, Double> mileagesByLocatedInCity = this.findMileagesByLocatedInCity(track);
         final double urban = mileagesByLocatedInCity.get(true);
         final double country = mileagesByLocatedInCity.get(false);
         return new Mileage(urban, country);
     }
 
+    protected abstract Stream<TrackSlice> createTrackSliceStream(final Track track,
+                                                                 final Predicate<Coordinate> locatedInCity);
+
     private Map<Boolean, Double> findMileagesByLocatedInCity(final Track track) {
         final List<PreparedGeometry> intersectedCitiesGeometries = this.findCitiesGeometriesIntersectedBySimplifiedTrack(
                 track
         );
-        final List<Coordinate> trackCoordinates = track.getCoordinates();
-        final int indexPenultimateCoordinate = trackCoordinates.size() - 2;
-        return rangeClosed(0, indexPenultimateCoordinate)
-                .mapToObj(i -> new TrackSlice(
-                        trackCoordinates.get(i),
-                        trackCoordinates.get(i + 1),
-                        //slices, which is located in city, must have second coordinate, which is located in city
-                        this.isAnyGeometryContainCoordinate(trackCoordinates.get(i + 1), intersectedCitiesGeometries)
-                ))
+        return this.createTrackSliceStream(
+                        track,
+                        coordinate -> this.isAnyGeometryContainCoordinate(coordinate, intersectedCitiesGeometries)
+                )
                 .collect(
                         partitioningBy(
                                 TrackSlice::isLocatedInCity,
@@ -77,12 +74,5 @@ public final class MileageCalculatingService {
         final Coordinate first = trackSlice.getFirst();
         final Coordinate second = trackSlice.getSecond();
         return this.calculatingDistanceService.calculate(first, second);
-    }
-
-    @Value
-    private static class TrackSlice {
-        Coordinate first;
-        Coordinate second;
-        boolean locatedInCity;
     }
 }

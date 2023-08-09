@@ -4,11 +4,13 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.model.form.ChangePasswordForm;
 import by.bsu.wialontransport.model.form.TrackerForm;
 import by.bsu.wialontransport.model.form.mapper.TrackerFormMapper;
 import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
 import by.bsu.wialontransport.security.service.SecurityService;
+import by.bsu.wialontransport.service.report.UserMovementReportBuildingService;
 import by.bsu.wialontransport.service.useraction.changeinfo.ChangingUserInfoService;
 import by.bsu.wialontransport.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExistsException;
@@ -40,6 +42,7 @@ public final class UserActionService {
     private final TrackerService trackerService;
     private final TrackerFormMapper trackerFormMapper;
     private final ChangingUserInfoService changingUserInfoService;
+    private final UserMovementReportBuildingService userMovementReportBuildingService;
 
     public void addAttributeOfTrackersToShowProfilePage(final int pageNumber,
                                                         final int pageSize,
@@ -94,6 +97,12 @@ public final class UserActionService {
             addErrorAttribute(model, exception);
             throw exception;
         }
+    }
+
+    //TODO: test
+    public byte[] buildUserMovementReport(final DateInterval dateInterval) {
+        final User loggedOnUser = this.securityService.findLoggedOnUser();
+        return this.userMovementReportBuildingService.createReport(loggedOnUser, dateInterval);
     }
 
     private List<Tracker> findListedTrackers(final int pageNumber,

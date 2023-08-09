@@ -12,9 +12,9 @@ import static by.bsu.wialontransport.model.Track.create;
 import static org.junit.Assert.assertEquals;
 
 //TODO: для каждого case-а нарисовать картинку
-public final class MileageCalculatingServiceTest extends AbstractContextTest {
+public final class InaccurateMileageCalculatingServiceTest extends AbstractContextTest {
     @Autowired
-    private MileageCalculatingService mileageCalculatingService;
+    private InaccurateMileageCalculatingService mileageCalculatingService;
 
     @Test
     @Sql(statements = "INSERT INTO addresses"
