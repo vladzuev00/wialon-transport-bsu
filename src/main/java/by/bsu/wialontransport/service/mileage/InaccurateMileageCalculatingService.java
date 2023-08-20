@@ -7,10 +7,11 @@ import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceSer
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
 import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingTrackService;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.stream.IntStream.rangeClosed;
@@ -26,7 +27,9 @@ public final class InaccurateMileageCalculatingService extends AbstractMileageCa
     }
 
     @Override
-    protected Stream<TrackSlice> createTrackSliceStream(final Track track, final Predicate<Coordinate> locatedInCity) {
+    protected Stream<TrackSlice> createTrackSliceStream(final Track track,
+                                                        final List<PreparedGeometry> cityGeometries,
+                                                        final GeometryCreatingService geometryCreatingService) {
         final List<Coordinate> trackCoordinates = track.getCoordinates();
         final int indexPenultimateCoordinate = trackCoordinates.size() - 2;
         return rangeClosed(0, indexPenultimateCoordinate)
@@ -34,7 +37,19 @@ public final class InaccurateMileageCalculatingService extends AbstractMileageCa
                         trackCoordinates.get(i),
                         trackCoordinates.get(i + 1),
                         //slices, which is located in city, must have second coordinate, which is located in city
-                        locatedInCity.test(trackCoordinates.get(i + 1))
+                        isAnyGeometryContainCoordinate(
+                                trackCoordinates.get(i + 1),
+                                cityGeometries,
+                                geometryCreatingService
+                        )
                 ));
+    }
+
+    private static boolean isAnyGeometryContainCoordinate(final Coordinate coordinate,
+                                                          final List<PreparedGeometry> cityGeometries,
+                                                          final GeometryCreatingService geometryCreatingService) {
+        final Point point = geometryCreatingService.createPoint(coordinate);
+        return cityGeometries.stream()
+                .anyMatch(geometry -> geometry.contains(point));
     }
 }

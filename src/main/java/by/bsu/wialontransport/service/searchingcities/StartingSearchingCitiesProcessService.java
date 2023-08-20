@@ -28,6 +28,7 @@ import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.IntStream.range;
 
+//TODO: draw working schema
 @Service
 public final class StartingSearchingCitiesProcessService {
     private final SearchingCitiesProcessFactory processFactory;

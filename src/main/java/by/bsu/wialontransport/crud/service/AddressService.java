@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.collection.CollectionUtil.mapToList;
+import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service

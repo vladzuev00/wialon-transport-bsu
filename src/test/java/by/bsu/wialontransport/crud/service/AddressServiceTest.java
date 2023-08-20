@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
-import static by.bsu.wialontransport.util.collection.CollectionUtil.mapToSet;
+import static by.bsu.wialontransport.util.CollectionUtil.mapToSet;
 import static org.junit.Assert.*;
 
 public final class AddressServiceTest extends AbstractContextTest {

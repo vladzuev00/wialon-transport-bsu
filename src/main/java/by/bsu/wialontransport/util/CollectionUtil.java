@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.util.collection;
+package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
 

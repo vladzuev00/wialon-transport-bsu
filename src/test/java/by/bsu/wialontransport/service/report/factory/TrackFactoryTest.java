@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.util.collection.CollectionUtil.mapToList;
+import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

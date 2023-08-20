@@ -15,7 +15,6 @@ import org.locationtech.jts.geom.prep.PreparedGeometry;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
@@ -36,16 +35,12 @@ public abstract class AbstractMileageCalculatingService {
     }
 
     protected abstract Stream<TrackSlice> createTrackSliceStream(final Track track,
-                                                                 final Predicate<Coordinate> locatedInCity);
+                                                                 final List<PreparedGeometry> cityGeometries,
+                                                                 final GeometryCreatingService geometryCreatingService);
 
     private Map<Boolean, Double> findMileagesByLocatedInCity(final Track track) {
-        final List<PreparedGeometry> intersectedCitiesGeometries = this.findCitiesGeometriesIntersectedBySimplifiedTrack(
-                track
-        );
-        return this.createTrackSliceStream(
-                        track,
-                        coordinate -> this.isAnyGeometryContainCoordinate(coordinate, intersectedCitiesGeometries)
-                )
+        final List<PreparedGeometry> intersectedCityGeometries = this.findCityGeometriesIntersectedBySimplifiedTrack(track);
+        return this.createTrackSliceStream(track, intersectedCityGeometries, this.geometryCreatingService)
                 .collect(
                         partitioningBy(
                                 TrackSlice::isLocatedInCity,
@@ -54,7 +49,7 @@ public abstract class AbstractMileageCalculatingService {
                 );
     }
 
-    private List<PreparedGeometry> findCitiesGeometriesIntersectedBySimplifiedTrack(final Track track) {
+    private List<PreparedGeometry> findCityGeometriesIntersectedBySimplifiedTrack(final Track track) {
         final LineString lineString = this.createLineStringBySimplifiedTrack(track);
         return this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
     }
@@ -64,9 +59,11 @@ public abstract class AbstractMileageCalculatingService {
         return this.geometryCreatingService.createLineString(simplifiedTrack);
     }
 
-    private boolean isAnyGeometryContainCoordinate(final Coordinate coordinate, final List<PreparedGeometry> geometries) {
-        final Point point = this.geometryCreatingService.createPoint(coordinate);
-        return geometries.stream()
+    private static boolean isAnyGeometryContainCoordinate(final Coordinate coordinate,
+                                                          final List<PreparedGeometry> cityGeometries,
+                                                          final GeometryCreatingService geometryCreatingService) {
+        final Point point = geometryCreatingService.createPoint(coordinate);
+        return cityGeometries.stream()
                 .anyMatch(geometry -> geometry.contains(point));
     }
 
