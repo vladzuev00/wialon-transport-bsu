@@ -35,6 +35,7 @@ public abstract class AbstractMileageCalculatingService {
     }
 
     protected abstract Stream<TrackSlice> createTrackSliceStream(final Track track,
+                                                                 //TODO: replace by List<Geometry>
                                                                  final List<PreparedGeometry> cityGeometries,
                                                                  final GeometryCreatingService geometryCreatingService);
 
