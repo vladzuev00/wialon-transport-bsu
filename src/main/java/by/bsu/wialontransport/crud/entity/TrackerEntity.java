@@ -16,8 +16,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class TrackerEntity extends AbstractEntityWithPassword<Long> {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "imei")
@@ -31,16 +31,23 @@ public class TrackerEntity extends AbstractEntityWithPassword<Long> {
     @ToString.Exclude
     private UserEntity user;
 
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "odometer_id")
+    @ToString.Exclude
+    private TrackerOdometerEntity odometer;
+
     @Builder
     public TrackerEntity(final Long id,
                          final String imei,
                          final String password,
                          final String phoneNumber,
-                         final UserEntity user) {
+                         final UserEntity user,
+                         final TrackerOdometerEntity odometer) {
         super(password);
         this.id = id;
         this.imei = imei;
         this.phoneNumber = phoneNumber;
         this.user = user;
+        this.odometer = odometer;
     }
 }
