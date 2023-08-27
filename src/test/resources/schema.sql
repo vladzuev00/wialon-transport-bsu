@@ -69,13 +69,20 @@ ALTER TABLE users
 ALTER TABLE users
     ADD CONSTRAINT email_should_be_unique UNIQUE(email);
 
+CREATE TABLE tracker_odometers(
+	id SERIAL PRIMARY KEY,
+	urban DOUBLE PRECISION NOT NULL,
+	country DOUBLE PRECISION NOT NULL
+);
+
 CREATE TABLE trackers
 (
     id                 SERIAL       NOT NULL PRIMARY KEY,
     imei               CHAR(20)     NOT NULL,
     encrypted_password VARCHAR(256) NOT NULL,
     phone_number       CHAR(9)      NOT NULL,
-    user_id            INTEGER      NOT NULL
+    user_id            INTEGER      NOT NULL,
+    odometer_id        INTEGER      NOT NULL
 );
 
 ALTER TABLE trackers
@@ -93,6 +100,13 @@ ALTER TABLE trackers
 
 ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
+
+ALTER TABLE trackers
+	ADD CONSTRAINT odometer_id_should_be_unique UNIQUE(odometer_id);
+
+ALTER TABLE trackers
+	ADD CONSTRAINT fk_trackers_to_tracker_odometers
+		FOREIGN KEY (odometer_id) REFERENCES tracker_odometers(id);
 
 CREATE TABLE addresses
 (

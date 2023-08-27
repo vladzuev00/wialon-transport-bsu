@@ -95,9 +95,9 @@ public abstract class AbstractMapper<EntityType extends AbstractEntity<?>, DtoTy
     }
 
 
-    @SuppressWarnings("unchecked")
     private void configureMapper() {
         this.modelMapper.createTypeMap(this.entityType, this.dtoType)
+                //TODO: cast by class-object
                 .setProvider(request -> this.createDto((EntityType) request.getSource()));
         this.modelMapper.createTypeMap(this.dtoType, this.entityType)
                 .setPostConverter(this.createConverterDtoToEntity());
