@@ -241,7 +241,22 @@ ALTER TABLE cities
             REFERENCES searching_cities_processes (id);
 
 CREATE
-OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
+OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
+'
+    BEGIN
+		INSERT INTO tracker_odometers(urban, country) VALUES(0, 0) RETURNING id INTO NEW.odometer_id;
+        RETURN NEW;
+    END;
+' LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_before_insert_tracker
+    BEFORE INSERT
+    ON trackers
+    FOR EACH ROW
+    EXECUTE PROCEDURE before_insert_tracker();
+
+CREATE
+OR REPLACE FUNCTION after_insert_tracker() RETURNS TRIGGER AS
 '
     BEGIN
         INSERT INTO trackers_last_data(tracker_id)
@@ -250,14 +265,14 @@ OR REPLACE FUNCTION on_insert_tracker() RETURNS TRIGGER AS
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_on_insert_tracker
+CREATE TRIGGER tr_after_insert_tracker
     AFTER INSERT
     ON trackers
     FOR EACH ROW
-    EXECUTE PROCEDURE on_insert_tracker();
+    EXECUTE PROCEDURE after_insert_tracker();
 
 CREATE
-OR REPLACE FUNCTION on_insert_data() RETURNS TRIGGER AS
+OR REPLACE FUNCTION after_insert_data() RETURNS TRIGGER AS
 '
     BEGIN
 		UPDATE trackers_last_data
@@ -267,8 +282,8 @@ OR REPLACE FUNCTION on_insert_data() RETURNS TRIGGER AS
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_on_insert_data
+CREATE TRIGGER tr_after_insert_data
     AFTER INSERT
     ON data
     FOR EACH ROW
-    EXECUTE PROCEDURE on_insert_data();
+    EXECUTE PROCEDURE after_insert_data();

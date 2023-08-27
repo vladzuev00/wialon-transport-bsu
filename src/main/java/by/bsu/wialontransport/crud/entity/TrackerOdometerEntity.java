@@ -7,7 +7,7 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "cities")
+@Table(name = "tracker_odometers")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
