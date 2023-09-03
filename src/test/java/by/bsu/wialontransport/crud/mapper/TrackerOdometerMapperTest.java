@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 public final class TrackerOdometerMapperTest extends AbstractContextTest {
 
     @Autowired
-    private TrackerOdometerMapper mapper;
+    private TrackerMileageMapper mapper;
 
     @Test
     public void dtoShouldBeMappedToEntity() {
