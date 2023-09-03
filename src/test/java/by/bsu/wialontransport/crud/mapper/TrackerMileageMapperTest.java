@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public final class TrackerOdometerMapperTest extends AbstractContextTest {
+public final class TrackerMileageMapperTest extends AbstractContextTest {
 
     @Autowired
     private TrackerMileageMapper mapper;
