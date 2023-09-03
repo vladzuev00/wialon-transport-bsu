@@ -33,7 +33,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -45,7 +45,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password("password")
                 .phoneNumber("447336935")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
 
         super.startQueryCount();
@@ -65,7 +65,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -121,7 +121,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -149,7 +149,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -179,7 +179,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .password(givenNewPassword)
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -190,6 +190,6 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
-        assertEquals(expected.getOdometer(), actual.getOdometer());
+        assertEquals(expected.getMileage(), actual.getMileage());
     }
 }
