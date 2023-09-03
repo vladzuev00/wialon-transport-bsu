@@ -153,7 +153,6 @@ public final class KafkaInboundDataConsumerTest {
 
     @Test(expected = DataConsumingException.class)
     public void genericRecordShouldNotBeMappedToDateBecauseOfAddressWasNotReceived() {
-        final Long givenId = 255L;
         final LocalDate givenDate = LocalDate.of(2023, 5, 18);
         final LocalTime givenTime = LocalTime.of(17, 37, 20);
         final Latitude givenLatitude = createLatitude(1, 2, 3, SOUTH);
@@ -246,6 +245,7 @@ public final class KafkaInboundDataConsumerTest {
         assertEquals(givenSavedData, this.dataArgumentCaptor.getAllValues());
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Latitude createLatitude(final int degrees, final int minutes, final int minuteShare,
                                            final DataEntity.Latitude.Type type) {
         return Latitude.builder()
@@ -256,6 +256,7 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Longitude createLongitude(final int degrees, final int minutes, final int minuteShare,
                                              final DataEntity.Longitude.Type type) {
         return Longitude.builder()
@@ -318,6 +319,7 @@ public final class KafkaInboundDataConsumerTest {
         return address.getId() == null;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static GenericRecord createGenericRecord(final LocalDate date,
                                                      final LocalTime time,
                                                      final Latitude latitude,
