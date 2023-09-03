@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.model.Track.create;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
 
@@ -26,6 +27,12 @@ public abstract class AbstractMileageCalculatingService {
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;
     private final AddressService addressService;
+
+    //TODO: test
+    public final Mileage calculate(final Coordinate firstCoordinate, final Coordinate secondCoordinate) {
+        final Track track = create(firstCoordinate, secondCoordinate);
+        return this.calculate(track);
+    }
 
     public final Mileage calculate(final Track track) {
         final Map<Boolean, Double> mileagesByLocatedInCity = this.findMileagesByLocatedInCity(track);
