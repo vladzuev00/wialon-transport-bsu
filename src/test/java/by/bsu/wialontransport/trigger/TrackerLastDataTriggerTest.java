@@ -61,8 +61,8 @@ public final class TrackerLastDataTriggerTest extends AbstractContextTest {
                 .collect(toSet());
     }
 
-    @SuppressWarnings("all")
-    private TrackerLastDataEntity findTrackerLastDataByTrackerId(Long trackerId) {
+    @SuppressWarnings("SameParameterValue")
+    private TrackerLastDataEntity findTrackerLastDataByTrackerId(final Long trackerId) {
         return (TrackerLastDataEntity) super.entityManager
                 .createQuery(HQL_QUERY_TO_FIND_TRACKER_LAST_DATA_BY_TRACKER_ID)
                 .setParameter(NAME_NAMED_PARAMETER_TRACKER_ID, trackerId)
