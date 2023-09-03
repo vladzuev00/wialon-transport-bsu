@@ -7,10 +7,10 @@ import by.bsu.wialontransport.crud.repository.TrackerMileageRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrackerOdometerService
+public class TrackerMileageService
         extends AbstractCRUDService<Long, TrackerMileageEntity, TrackerMileage, TrackerMileageMapper, TrackerMileageRepository> {
 
-    public TrackerOdometerService(final TrackerMileageMapper mapper, final TrackerMileageRepository repository) {
+    public TrackerMileageService(final TrackerMileageMapper mapper, final TrackerMileageRepository repository) {
         super(mapper, repository);
     }
 
