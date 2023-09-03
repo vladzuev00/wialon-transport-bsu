@@ -58,7 +58,7 @@ public final class DataServiceTest extends AbstractContextTest {
     @Sql(statements = "INSERT INTO parameters(id, name, type, value, data_id) "
             + "VALUES(257, 'name', 'INTEGER', '44', 256)")
     public void trackerLastDataShouldBeFoundByTrackerId() {
-        final Data actual = this.dataService.findTrackerLastDataByTrackerId(255L).orElseThrow();
+        final Data actual = this.dataService.findTrackerLastData(255L).orElseThrow();
         final Data expected = Data.builder()
                 .id(256L)
                 .date(LocalDate.of(2019, 10, 24))
@@ -98,7 +98,7 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerLastDataShouldNotBeFoundByTrackerId() {
-        final Optional<Data> optionalActual = this.dataService.findTrackerLastDataByTrackerId(255L);
+        final Optional<Data> optionalActual = this.dataService.findTrackerLastData(255L);
         assertTrue(optionalActual.isEmpty());
     }
 

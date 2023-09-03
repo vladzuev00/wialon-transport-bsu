@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.mapper.DataMapper;
@@ -19,8 +20,10 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
         super(mapper, repository);
     }
 
+    //TODO: refactor tests
     @Transactional(readOnly = true)
-    public Optional<Data> findTrackerLastDataByTrackerId(final Long trackerId) {
+    public Optional<Data> findTrackerLastData(final Tracker tracker) {
+        final Long trackerId = tracker.getId();
         final Optional<DataEntity> optionalEntity = super.repository.findTrackerLastDataByTrackerId(trackerId);
         return optionalEntity.map(super.mapper::mapToDto);
     }

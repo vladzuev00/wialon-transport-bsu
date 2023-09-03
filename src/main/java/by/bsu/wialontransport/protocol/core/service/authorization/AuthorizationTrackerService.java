@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status.*;
 
+//TODO: refactor tests
 @Service
 @RequiredArgsConstructor
 public final class AuthorizationTrackerService {
@@ -50,7 +51,7 @@ public final class AuthorizationTrackerService {
     }
 
     private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
-        final Optional<Data> optionalLastData = this.dataService.findTrackerLastDataByTrackerId(tracker.getId());
+        final Optional<Data> optionalLastData = this.dataService.findTrackerLastData(tracker);
         optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
     }
 

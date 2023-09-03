@@ -94,7 +94,7 @@ public final class AuthorizationTrackerServiceTest {
         final Data givenData = Data.builder()
                 .id(256L)
                 .build();
-        when(this.mockedDataService.findTrackerLastDataByTrackerId(anyLong())).thenReturn(Optional.of(givenData));
+        when(this.mockedDataService.findTrackerLastData(anyLong())).thenReturn(Optional.of(givenData));
 
         this.authorizationTrackerService.authorize(givenPackage, givenContext);
 
@@ -107,7 +107,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedConnectionManager, times(1))
                 .add(this.contextArgumentCaptor.capture());
         verify(this.mockedDataService, times(1))
-                .findTrackerLastDataByTrackerId(this.longArgumentCaptor.capture());
+                .findTrackerLastData(this.longArgumentCaptor.capture());
         verify(this.mockedContextAttributeManager, times(1))
                 .putLastData(this.contextArgumentCaptor.capture(), this.dataArgumentCaptor.capture());
         verify(givenContext, times(1))
@@ -146,7 +146,7 @@ public final class AuthorizationTrackerServiceTest {
 
         when(this.mockedPasswordEncoder.matches("password", "password")).thenReturn(true);
 
-        when(this.mockedDataService.findTrackerLastDataByTrackerId(anyLong())).thenReturn(empty());
+        when(this.mockedDataService.findTrackerLastData(anyLong())).thenReturn(empty());
 
         this.authorizationTrackerService.authorize(givenPackage, givenContext);
 
@@ -159,7 +159,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedConnectionManager, times(1))
                 .add(this.contextArgumentCaptor.capture());
         verify(this.mockedDataService, times(1))
-                .findTrackerLastDataByTrackerId(this.longArgumentCaptor.capture());
+                .findTrackerLastData(this.longArgumentCaptor.capture());
         verify(this.mockedContextAttributeManager, times(0))
                 .putLastData(any(ChannelHandlerContext.class), any(Data.class));
         verify(givenContext, times(1))
@@ -209,7 +209,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedConnectionManager, times(0))
                 .add(any(ChannelHandlerContext.class));
         verify(this.mockedDataService, times(0))
-                .findTrackerLastDataByTrackerId(anyLong());
+                .findTrackerLastData(anyLong());
         verify(this.mockedContextAttributeManager, times(0))
                 .putLastData(any(ChannelHandlerContext.class), any(Data.class));
         verify(givenContext, times(1))
@@ -242,7 +242,7 @@ public final class AuthorizationTrackerServiceTest {
         verify(this.mockedConnectionManager, times(0))
                 .add(any(ChannelHandlerContext.class));
         verify(this.mockedDataService, times(0))
-                .findTrackerLastDataByTrackerId(anyLong());
+                .findTrackerLastData(anyLong());
         verify(this.mockedContextAttributeManager, times(0))
                 .putLastData(any(ChannelHandlerContext.class), any(Data.class));
         verify(givenContext, times(1))

@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
 
 @RequiredArgsConstructor
-public abstract class AbstractMileageCalculatingService {
+public abstract class MileageCalculatingService {
     private final SimplifyingTrackService simplifyingTrackService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;

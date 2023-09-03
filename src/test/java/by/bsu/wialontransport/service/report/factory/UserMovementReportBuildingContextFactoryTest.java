@@ -9,7 +9,7 @@ import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
-import by.bsu.wialontransport.service.mileage.AbstractMileageCalculatingService;
+import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public final class UserMovementReportBuildingContextFactoryTest {
     private TrackFactory mockedTrackFactory;
 
     @Mock
-    private AbstractMileageCalculatingService mockedMileageCalculatingService;
+    private MileageCalculatingService mockedMileageCalculatingService;
 
     private UserMovementReportBuildingContextFactory contextFactory;
 

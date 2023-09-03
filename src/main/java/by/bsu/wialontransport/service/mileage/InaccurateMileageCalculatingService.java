@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import static java.util.stream.IntStream.rangeClosed;
 
 @Service
-public final class InaccurateMileageCalculatingService extends AbstractMileageCalculatingService {
+public final class InaccurateMileageCalculatingService extends MileageCalculatingService {
 
     public InaccurateMileageCalculatingService(final SimplifyingTrackService simplifyingTrackService,
                                                final GeometryCreatingService geometryCreatingService,
