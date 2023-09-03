@@ -5,7 +5,6 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
-import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.addressId;
 import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.id;
 import static java.lang.String.format;
 
@@ -83,6 +83,6 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     private static Long extractAddressId(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, TransportableSavedData.Fields.addressId);
+        return extractValue(genericRecord, addressId);
     }
 }
