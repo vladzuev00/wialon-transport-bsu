@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.dto.TrackerOdometer;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import org.modelmapper.ModelMapper;
@@ -20,7 +21,8 @@ public final class TrackerMapper extends AbstractMapper<TrackerEntity, Tracker> 
                 entity.getImei(),
                 entity.getPassword(),
                 entity.getPhoneNumber(),
-                super.mapPropertyIfLoadedOrElseNull(entity.getUser(), User.class)
+                super.mapPropertyIfLoadedOrElseNull(entity.getUser(), User.class),
+                super.mapPropertyIfLoadedOrElseNull(entity.getOdometer(), TrackerOdometer.class)
         );
     }
 }
