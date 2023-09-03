@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.trigger;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.entity.TrackerOdometerEntity;
+import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import org.junit.Test;
 
 import java.util.Set;
@@ -14,16 +14,16 @@ public final class TrackerOdometerTriggerTest extends AbstractContextTest {
 
     @Test
     public void trackerOdometersShouldBeInserted() {
-        final Set<TrackerOdometerEntity> actual = this.findAllTrackerOdometers();
+        final Set<TrackerMileageEntity> actual = this.findAllTrackerOdometers();
         assertEquals(1, actual.size());
-        final TrackerOdometerEntity foundTrackerOdometer = actual.iterator().next();
+        final TrackerMileageEntity foundTrackerOdometer = actual.iterator().next();
         assertEquals(0, foundTrackerOdometer.getUrban(), 0);
         assertEquals(0, foundTrackerOdometer.getCountry(), 0);
     }
 
-    private Set<TrackerOdometerEntity> findAllTrackerOdometers() {
+    private Set<TrackerMileageEntity> findAllTrackerOdometers() {
         return super.entityManager
-                .createQuery(HQL_QUERY_TO_FIND_ALL_TRACKER_ODOMETERS, TrackerOdometerEntity.class)
+                .createQuery(HQL_QUERY_TO_FIND_ALL_TRACKER_ODOMETERS, TrackerMileageEntity.class)
                 .getResultStream()
                 .collect(toSet());
     }

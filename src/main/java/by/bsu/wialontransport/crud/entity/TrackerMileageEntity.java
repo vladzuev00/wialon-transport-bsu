@@ -7,14 +7,14 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "tracker_odometers")
+@Table(name = "tracker_mileages")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
 @Builder
-public class TrackerOdometerEntity extends AbstractEntity<Long> {
+public class TrackerMileageEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

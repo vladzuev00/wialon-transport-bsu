@@ -34,7 +34,7 @@ public class TrackerEntity extends AbstractEntityWithPassword<Long> {
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "odometer_id")
     @ToString.Exclude
-    private TrackerOdometerEntity odometer;
+    private TrackerMileageEntity odometer;
 
     @Builder
     public TrackerEntity(final Long id,
@@ -42,7 +42,7 @@ public class TrackerEntity extends AbstractEntityWithPassword<Long> {
                          final String password,
                          final String phoneNumber,
                          final UserEntity user,
-                         final TrackerOdometerEntity odometer) {
+                         final TrackerMileageEntity odometer) {
         super(password);
         this.id = id;
         this.imei = imei;

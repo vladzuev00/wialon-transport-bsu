@@ -3,7 +3,7 @@ package by.bsu.wialontransport.crud.mapper;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
-import by.bsu.wialontransport.crud.entity.TrackerOdometerEntity;
+import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .password("password")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerOdometerEntity.class, 0L))
+                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 0L))
                 .build();
 
         final Tracker actual = this.mapper.mapToDto(givenEntity);
