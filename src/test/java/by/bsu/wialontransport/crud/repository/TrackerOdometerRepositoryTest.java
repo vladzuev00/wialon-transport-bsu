@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 public final class TrackerOdometerRepositoryTest extends AbstractContextTest {
 
     @Autowired
-    private TrackerOdometerRepository repository;
+    private TrackerMileageRepository repository;
 
     @Test
     @Sql(statements = "INSERT INTO tracker_odometers(id, urban, country) VALUES(255, 100.1, 200.2)")
