@@ -22,7 +22,7 @@ public final class TrackerMapper extends AbstractMapper<TrackerEntity, Tracker> 
                 entity.getPassword(),
                 entity.getPhoneNumber(),
                 super.mapPropertyIfLoadedOrElseNull(entity.getUser(), User.class),
-                super.mapPropertyIfLoadedOrElseNull(entity.getOdometer(), TrackerMileage.class)
+                super.mapPropertyIfLoadedOrElseNull(entity.getMileage(), TrackerMileage.class)
         );
     }
 }
