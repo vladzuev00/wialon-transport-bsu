@@ -69,7 +69,7 @@ ALTER TABLE users
 ALTER TABLE users
     ADD CONSTRAINT email_should_be_unique UNIQUE(email);
 
-CREATE TABLE tracker_odometers(
+CREATE TABLE tracker_mileages(
 	id SERIAL PRIMARY KEY,
 	urban DOUBLE PRECISION NOT NULL,
 	country DOUBLE PRECISION NOT NULL
@@ -82,7 +82,7 @@ CREATE TABLE trackers
     encrypted_password VARCHAR(256) NOT NULL,
     phone_number       CHAR(9)      NOT NULL,
     user_id            INTEGER      NOT NULL,
-    odometer_id        INTEGER      NOT NULL
+    mileage_id        INTEGER      NOT NULL
 );
 
 ALTER TABLE trackers
@@ -102,11 +102,11 @@ ALTER TABLE trackers
     ADD CONSTRAINT correct_phone_number CHECK (phone_number ~ '[0-9]{9}');
 
 ALTER TABLE trackers
-	ADD CONSTRAINT odometer_id_should_be_unique UNIQUE(odometer_id);
+	ADD CONSTRAINT mileage_id_should_be_unique UNIQUE(mileage_id);
 
 ALTER TABLE trackers
-	ADD CONSTRAINT fk_trackers_to_tracker_odometers
-		FOREIGN KEY (odometer_id) REFERENCES tracker_odometers(id);
+	ADD CONSTRAINT fk_trackers_to_tracker_mileages
+		FOREIGN KEY (mileage_id) REFERENCES tracker_mileages(id);
 
 CREATE TABLE addresses
 (
@@ -244,7 +244,7 @@ CREATE
 OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
 '
     BEGIN
-		INSERT INTO tracker_odometers(urban, country) VALUES(0, 0) RETURNING id INTO NEW.odometer_id;
+		INSERT INTO tracker_mileages(urban, country) VALUES(0, 0) RETURNING id INTO NEW.mileage_id;
         RETURN NEW;
     END;
 ' LANGUAGE plpgsql;

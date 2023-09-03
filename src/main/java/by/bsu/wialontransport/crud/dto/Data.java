@@ -66,6 +66,11 @@ public class Data implements AbstractDto<Long> {
         return new Coordinate(latitudeAsDouble, longitudeAsDouble);
     }
 
+    //TODO: test
+    public Long findTrackerId() {
+        return this.tracker.getId();
+    }
+
     public static Data createWithTracker(final Data source, final Tracker tracker) {
         return new Data(
                 source.id, source.date, source.time, source.latitude, source.longitude, source.speed, source.course,
