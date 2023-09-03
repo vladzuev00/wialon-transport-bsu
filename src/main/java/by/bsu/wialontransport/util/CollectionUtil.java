@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toMap;
 
 @UtilityClass
@@ -34,6 +35,11 @@ public final class CollectionUtil {
 
     public static <S, P> Set<P> mapToSet(final Collection<S> sources, final Function<S, P> elementMapper) {
         return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableSet);
+    }
+
+    public static <T> Optional<T> findLast(final List<T> elements) {
+        final int indexLastElement = elements.size() - 1;
+        return !elements.isEmpty() ? Optional.of(elements.get(indexLastElement)) : empty();
     }
 
     private static <V> V throwExceptionOnKeyDuplication(final V existing, final V replacement) {
