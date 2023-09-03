@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.dto.Data.createWithTracker;
+import static by.bsu.wialontransport.util.CollectionUtil.findLast;
 import static java.util.Optional.empty;
 
 public abstract class AbstractReceivingDataPackageService<
@@ -107,9 +108,5 @@ public abstract class AbstractReceivingDataPackageService<
     private Tracker findTracker(final ChannelHandlerContext context) {
         final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
         return optionalTracker.orElseThrow(NoTrackerInContextException::new);
-    }
-
-    private static Optional<Data> findLast(final List<Data> data) {
-        return !data.isEmpty() ? Optional.of(data.get(data.size() - 1)) : empty();
     }
 }
