@@ -8,14 +8,14 @@ import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.Assert.assertEquals;
 
-public final class TrackerOdometerRepositoryTest extends AbstractContextTest {
+public final class TrackerMileageRepositoryTest extends AbstractContextTest {
 
     @Autowired
     private TrackerMileageRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_odometers(id, urban, country) VALUES(255, 100.1, 200.2)")
-    public void odometerShouldBeFoundById() {
+    @Sql(statements = "INSERT INTO tracker_mileages(id, urban, country) VALUES(255, 100.1, 200.2)")
+    public void mileageShouldBeFoundById() {
         super.startQueryCount();
         final TrackerMileageEntity actual = this.repository.findById(255L).orElseThrow();
         super.checkQueryCount(1);
@@ -29,14 +29,14 @@ public final class TrackerOdometerRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    public void odometerShouldBeInserted() {
-        final TrackerMileageEntity givenOdometer = TrackerMileageEntity.builder()
+    public void mileageShouldBeInserted() {
+        final TrackerMileageEntity givenMileage = TrackerMileageEntity.builder()
                 .urban(100.1)
                 .country(200.2)
                 .build();
 
         super.startQueryCount();
-        this.repository.save(givenOdometer);
+        this.repository.save(givenMileage);
         super.checkQueryCount(1);
     }
 
