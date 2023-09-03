@@ -4,6 +4,9 @@ import lombok.experimental.UtilityClass;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -25,19 +28,24 @@ public final class CollectionUtil {
                 );
     }
 
-    public static <S, P> List<P> mapToList(final List<S> sources, final Function<S, P> elementMapper) {
-        return sources.stream()
-                .map(elementMapper)
-                .toList();
+    public static <S, P> List<P> mapToList(final Collection<S> sources, final Function<S, P> elementMapper) {
+        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableList);
     }
 
-    public static <S, P> Set<P> mapToSet(final List<S> sources, final Function<S, P> elementMapper) {
-        final List<P> elements = mapToList(sources, elementMapper);
-        return new HashSet<>(elements);
+    public static <S, P> Set<P> mapToSet(final Collection<S> sources, final Function<S, P> elementMapper) {
+        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableSet);
     }
 
     private static <V> V throwExceptionOnKeyDuplication(final V existing, final V replacement) {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }
 
+    private static <S, P, C extends Collection<P>> C mapToCollection(final Collection<S> sources,
+                                                                     final Function<S, P> elementMapper,
+                                                                     final Supplier<Collector<P, ?, C>> collectorSupplier) {
+        final Collector<P, ?, C> collector = collectorSupplier.get();
+        return sources.stream()
+                .map(elementMapper)
+                .collect(collector);
+    }
 }
