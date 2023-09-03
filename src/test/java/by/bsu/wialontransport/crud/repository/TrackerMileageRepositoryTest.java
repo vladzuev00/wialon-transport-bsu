@@ -40,6 +40,21 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
         super.checkQueryCount(1);
     }
 
+    @Test
+    public void mileageShouldBeIncreased() {
+        super.startQueryCount();
+        this.repository.increaseMileage(255L, 50.5, 60.6);
+        super.checkQueryCount(1);
+
+        final TrackerMileageEntity actual = this.repository.findById(1L).orElseThrow();
+        final TrackerMileageEntity expected = TrackerMileageEntity.builder()
+                .id(1L)
+                .urban(50.5)
+                .country(60.6)
+                .build();
+        checkEquals(expected, actual);
+    }
+
     private static void checkEquals(final TrackerMileageEntity expected, final TrackerMileageEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getUrban(), actual.getUrban(), 0.);
