@@ -45,7 +45,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .password("password")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .odometer(super.entityManager.getReference(TrackerMileageEntity.class, 0L))
+                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 0L))
                 .build();
 
         final Tracker actual = this.mapper.mapToDto(givenEntity);
@@ -64,6 +64,6 @@ public final class TrackerMapperTest extends AbstractContextTest {
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
-        assertEquals(expected.getOdometer(), actual.getOdometer());
+        assertEquals(expected.getMileage(), actual.getMileage());
     }
 }
