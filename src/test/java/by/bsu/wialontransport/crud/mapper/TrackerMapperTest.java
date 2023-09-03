@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.mapper;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
+import by.bsu.wialontransport.crud.entity.TrackerOdometerEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,14 @@ public final class TrackerMapperTest extends AbstractContextTest {
 
     @Test
     public void dtoShouldBeMappedToEntity() {
-        final Tracker givenTracker = Tracker.builder()
+        final Tracker givenDto = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
                 .phoneNumber("447336934")
                 .build();
 
-        final TrackerEntity actual = this.mapper.mapToEntity(givenTracker);
+        final TrackerEntity actual = this.mapper.mapToEntity(givenDto);
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
@@ -44,6 +45,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .password("password")
                 .phoneNumber("447336934")
                 .user(super.entityManager.getReference(UserEntity.class, 255L))
+                .odometer(super.entityManager.getReference(TrackerOdometerEntity.class, 0L))
                 .build();
 
         final Tracker actual = this.mapper.mapToDto(givenEntity);
@@ -62,5 +64,6 @@ public final class TrackerMapperTest extends AbstractContextTest {
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
+        assertEquals(expected.getOdometer(), actual.getOdometer());
     }
 }

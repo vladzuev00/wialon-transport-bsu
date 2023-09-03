@@ -18,13 +18,13 @@ public final class TrackerFormMapper {
     }
 
     public Tracker map(final TrackerForm trackerForm, final User user) {
-        return new Tracker(
-                trackerForm.getId(),
-                trackerForm.getImei(),
-                trackerForm.getPassword(),
-                trackerForm.getPhoneNumber(),
-                user
-        );
+        return Tracker.builder()
+                .id(trackerForm.getId())
+                .imei(trackerForm.getImei())
+                .password(trackerForm.getPassword())
+                .phoneNumber(trackerForm.getPhoneNumber())
+                .user(user)
+                .build();
     }
 
 }
