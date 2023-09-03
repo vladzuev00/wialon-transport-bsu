@@ -13,5 +13,5 @@ public class Tracker implements AbstractDto<Long> {
     String password;
     String phoneNumber;
     User user;
-    TrackerMileage trackerMileage;
+    TrackerMileage mileage;
 }
