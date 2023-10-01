@@ -42,6 +42,11 @@ public final class CollectionUtil {
         return !elements.isEmpty() ? Optional.of(elements.get(indexLastElement)) : empty();
     }
 
+//    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {
+//        final Set<P> properties = mapToSet(sources, propertyExtractor);
+//        if(properties.size() != 1)
+//    }
+
     private static <V> V throwExceptionOnKeyDuplication(final V existing, final V replacement) {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }
