@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import lombok.Value;
 
 @Value
-public class RequestLoginPackage implements WialonPackage {
+public class WialonRequestLoginPackage implements WialonPackage {
     public static final String PREFIX = "#L#";
 
     String imei;

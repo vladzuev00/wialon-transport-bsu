@@ -8,7 +8,7 @@ import java.util.Objects;
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseLoginPackage implements WialonPackage {
+public class WialonResponseLoginPackage implements WialonPackage {
     public static final String PREFIX = "#AL#";
 
     Status status;
