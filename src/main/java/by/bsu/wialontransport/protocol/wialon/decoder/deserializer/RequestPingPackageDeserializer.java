@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
 import org.springframework.stereotype.Component;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage.PREFIX;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage.PREFIX;
 
 @Component
 public final class RequestPingPackageDeserializer extends AbstractPackageDeserializer {
@@ -13,7 +13,7 @@ public final class RequestPingPackageDeserializer extends AbstractPackageDeseria
     }
 
     @Override
-    protected RequestPingPackage deserializeByMessage(final String message) {
-        return new RequestPingPackage();
+    protected WialonRequestPingPackage deserializeByMessage(final String message) {
+        return new WialonRequestPingPackage();
     }
 }

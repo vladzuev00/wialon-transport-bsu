@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.handler.chain;
 import by.bsu.wialontransport.protocol.core.service.authorization.AuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public final class RequestLoginPackageHandlerTest {
 
     @Test(expected = ClassCastException.class)
     public void packageShouldNotBeHandledIndependentlyBecauseOfNotSuitableType() {
-        final WialonPackage givenPackage = new RequestPingPackage();
+        final WialonPackage givenPackage = new WialonRequestPingPackage();
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         this.handler.handleIndependently(givenPackage, givenContext);
