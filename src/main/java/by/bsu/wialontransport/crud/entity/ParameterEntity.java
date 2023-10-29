@@ -48,19 +48,14 @@ public class ParameterEntity extends AbstractEntity<Long> {
     @ToString.Exclude
     private DataEntity data;
 
+    @RequiredArgsConstructor
     public enum Type {
         NOT_DEFINED(MIN_VALUE), INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);
 
+        @Getter
         private final byte value;
 
-        Type(final byte value) {
-            this.value = value;
-        }
-
-        public final byte getValue() {
-            return this.value;
-        }
-
+        //TODO: remove
         public static Type findByValue(byte value) {
             return stream(values())
                     .filter(type -> type.value == value)

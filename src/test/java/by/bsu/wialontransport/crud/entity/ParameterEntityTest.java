@@ -9,7 +9,7 @@ import static org.junit.Assert.assertSame;
 public final class ParameterEntityTest {
 
     @Test
-    public void typeShouldBeFoundBeValue() {
+    public void typeShouldBeFoundByValue() {
         final byte givenValue = 1;
 
         final Type actual = findByValue(givenValue);
