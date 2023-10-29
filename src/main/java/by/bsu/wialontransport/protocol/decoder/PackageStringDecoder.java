@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.decoder;
 
-import by.bsu.wialontransport.protocol.Package;
+import by.bsu.wialontransport.protocol.protocolpackage.Package;
 
 public abstract class PackageStringDecoder<P extends Package> extends PackageDecoder<String, P> {
 
