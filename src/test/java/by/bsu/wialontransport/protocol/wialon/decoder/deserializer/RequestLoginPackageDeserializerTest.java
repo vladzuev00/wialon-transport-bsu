@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -18,8 +18,8 @@ public final class RequestLoginPackageDeserializerTest {
     public void requestLoginPackageShouldBeDeserialized() {
         final String givenSource = "#L#imei;password";
 
-        final Package actual = this.deserializer.deserialize(givenSource);
-        final RequestLoginPackage expected = new RequestLoginPackage("imei", "password");
+        final WialonPackage actual = this.deserializer.deserialize(givenSource);
+        final WialonRequestLoginPackage expected = new WialonRequestLoginPackage("imei", "password");
         assertEquals(expected, actual);
     }
 }

@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
 import by.bsu.wialontransport.protocol.core.service.authorization.AuthorizationTrackerService;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public final class RequestLoginPackageHandlerTest {
     private RequestLoginPackageHandler handler;
 
     @Captor
-    private ArgumentCaptor<RequestLoginPackage> requestLoginPackageArgumentCaptor;
+    private ArgumentCaptor<WialonRequestLoginPackage> requestLoginPackageArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<ChannelHandlerContext> contextArgumentCaptor;
@@ -41,7 +41,7 @@ public final class RequestLoginPackageHandlerTest {
 
     @Test
     public void packageShouldBeHandledIndependently() {
-        final Package givenPackage = new RequestLoginPackage("11111222223333344444", "password");
+        final WialonPackage givenPackage = new WialonRequestLoginPackage("11111222223333344444", "password");
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         this.handler.handleIndependently(givenPackage, givenContext);
@@ -55,7 +55,7 @@ public final class RequestLoginPackageHandlerTest {
 
     @Test(expected = ClassCastException.class)
     public void packageShouldNotBeHandledIndependentlyBecauseOfNotSuitableType() {
-        final Package givenPackage = new RequestPingPackage();
+        final WialonPackage givenPackage = new WialonRequestPingPackage();
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         this.handler.handleIndependently(givenPackage, givenContext);

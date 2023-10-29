@@ -5,15 +5,15 @@ import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public final class ReceivingBlackBoxPackageService
-        extends AbstractReceivingDataPackageService<RequestBlackBoxPackage, ResponseBlackBoxPackage> {
+        extends AbstractReceivingDataPackageService<WialonRequestBlackBoxPackage, WialonResponseBlackBoxPackage> {
 
     public ReceivingBlackBoxPackageService(final ContextAttributeManager contextAttributeManager,
                                            final DataFilter dataFilter,
@@ -23,7 +23,7 @@ public final class ReceivingBlackBoxPackageService
     }
 
     @Override
-    protected ResponseBlackBoxPackage createResponse(final List<Data> receivedData) {
-        return new ResponseBlackBoxPackage(receivedData.size());
+    protected WialonResponseBlackBoxPackage createResponse(final List<Data> receivedData) {
+        return new WialonResponseBlackBoxPackage(receivedData.size());
     }
 }

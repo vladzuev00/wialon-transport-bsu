@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +15,7 @@ public final class ResponseBlackBoxPackageEncoderTest extends AbstractContextTes
 
     @Test
     public void packageShouldBeEncodedIndependentlyWithoutPostfix() {
-        final ResponseBlackBoxPackage givenPackage = new ResponseBlackBoxPackage(10);
+        final WialonResponseBlackBoxPackage givenPackage = new WialonResponseBlackBoxPackage(10);
 
         final String actual = this.encoder.encodeIndependentlyWithoutPostfix(givenPackage);
         final String expected = "#AB#10";
@@ -24,7 +24,7 @@ public final class ResponseBlackBoxPackageEncoderTest extends AbstractContextTes
 
     @Test(expected = ClassCastException.class)
     public void packageShouldNotBeEncodedIndependentlyWithoutPostfixBecauseOfNotSuitableType() {
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
 
         this.encoder.encodeIndependentlyWithoutPostfix(givenPackage);

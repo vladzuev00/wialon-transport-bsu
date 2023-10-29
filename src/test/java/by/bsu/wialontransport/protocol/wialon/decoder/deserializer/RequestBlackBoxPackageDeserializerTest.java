@@ -4,8 +4,8 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,8 @@ public final class RequestBlackBoxPackageDeserializerTest extends AbstractContex
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
 
-        final Package actual = this.deserializer.deserialize(givenSource);
-        final RequestBlackBoxPackage expected = new RequestBlackBoxPackage(List.of(
+        final WialonPackage actual = this.deserializer.deserialize(givenSource);
+        final WialonRequestBlackBoxPackage expected = new WialonRequestBlackBoxPackage(List.of(
                 Data.builder()
                         .date(LocalDate.of(2022, 11, 15))
                         .time(LocalTime.of(14, 56, 43))

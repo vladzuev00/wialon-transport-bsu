@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,14 +26,14 @@ public final class PackageEncoderTest {
 
     @Test
     public void packageShouldBeEncodedByEncoder() {
-        final Package givenPackage = new TestPackage();
+        final WialonPackage givenPackage = new TestPackage();
 
         final String actual = this.packageEncoder.encode(givenPackage);
         final String expected = "#TEST_PACKAGE#\r\n";
         assertEquals(expected, actual);
 
         verify(this.mockedNextEncoder, times(0))
-                .encodeIndependentlyWithoutPostfix(any(Package.class));
+                .encodeIndependentlyWithoutPostfix(any(WialonPackage.class));
     }
 
     //TODO: add test the same as PackageDecoderTests
@@ -50,12 +50,12 @@ public final class PackageEncoderTest {
         }
 
         @Override
-        protected String encodeIndependentlyWithoutPostfix(final Package encodedPackage) {
+        protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
             return ENCODED_PACKAGE_WITHOUT_PREFIX;
         }
     }
 
-    private static final class TestPackage implements Package {
+    private static final class TestPackage implements WialonPackage {
 
     }
 }

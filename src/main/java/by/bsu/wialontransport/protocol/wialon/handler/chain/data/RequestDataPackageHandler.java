@@ -1,16 +1,16 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
 import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataPackageService;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public final class RequestDataPackageHandler
-        extends AbstractRequestDataPackageHandler<RequestDataPackage> {
+        extends AbstractRequestDataPackageHandler<WialonRequestDataPackage> {
 
     public RequestDataPackageHandler(final RequestBlackBoxPackageHandler nextHandler,
                                      final ReceivingDataPackageService receivingDataService) {
-        super(RequestDataPackage.class, nextHandler, receivingDataService);
+        super(WialonRequestDataPackage.class, nextHandler, receivingDataService);
     }
 }

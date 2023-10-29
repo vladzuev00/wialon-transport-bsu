@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.deserializer;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -16,7 +16,7 @@ public final class RequestPingPackageDeserializerTest {
     public void requestPingPackageShouldBeDeserialized() {
         final String givenSource = "#P#";
 
-        final Package actual = this.deserializer.deserialize(givenSource);
+        final WialonPackage actual = this.deserializer.deserialize(givenSource);
         assertNotNull(actual);
     }
 }

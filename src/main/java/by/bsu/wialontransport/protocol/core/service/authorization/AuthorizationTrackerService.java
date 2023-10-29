@@ -6,9 +6,9 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.RequestLoginPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status.*;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status.*;
 
 //TODO: refactor tests
 @Service
@@ -28,7 +28,7 @@ public final class AuthorizationTrackerService {
     private final DataService dataService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public void authorize(final RequestLoginPackage requestPackage, final ChannelHandlerContext context) {
+    public void authorize(final WialonRequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());
         final Status status = optionalTracker
@@ -56,7 +56,7 @@ public final class AuthorizationTrackerService {
     }
 
     private static void sendResponse(final ChannelHandlerContext context, final Status status) {
-        final ResponseLoginPackage responseLoginPackage = new ResponseLoginPackage(status);
+        final WialonResponseLoginPackage responseLoginPackage = new WialonResponseLoginPackage(status);
         context.writeAndFlush(responseLoginPackage);
     }
 }

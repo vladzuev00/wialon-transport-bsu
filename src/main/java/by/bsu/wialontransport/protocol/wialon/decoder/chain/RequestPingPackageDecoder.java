@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.chain;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.RequestPingPackageDeserializer;
 import org.springframework.stereotype.Component;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage.PREFIX;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage.PREFIX;
 
 @Component
 public final class RequestPingPackageDecoder extends PackageDecoder {

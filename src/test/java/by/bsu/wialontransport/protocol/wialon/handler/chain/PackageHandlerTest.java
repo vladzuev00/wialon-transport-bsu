@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
 import by.bsu.wialontransport.protocol.wialon.handler.chain.exception.NoSuitablePackageHandlerException;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public final class PackageHandlerTest {
     private Marker mockedMarker;
 
     @Captor
-    private ArgumentCaptor<Package> packageArgumentCaptor;
+    private ArgumentCaptor<WialonPackage> packageArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<ChannelHandlerContext> contextArgumentCaptor;
@@ -41,7 +41,7 @@ public final class PackageHandlerTest {
             private final Marker marker = mockedMarker;
 
             @Override
-            protected void handleIndependently(final Package requestPackage, final ChannelHandlerContext context) {
+            protected void handleIndependently(final WialonPackage requestPackage, final ChannelHandlerContext context) {
                 this.marker.mark();
             }
         };
@@ -56,12 +56,12 @@ public final class PackageHandlerTest {
 
         verify(this.mockedMarker, times(1)).mark();
         verify(this.mockedNextHandler, times(0))
-                .handle(any(Package.class), any(ChannelHandlerContext.class));
+                .handle(any(WialonPackage.class), any(ChannelHandlerContext.class));
     }
 
     @Test
     public void handlerShouldDelegateHandlingPackageToNextHandlerBecauseOfNotSuitableType() {
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
@@ -96,7 +96,7 @@ public final class PackageHandlerTest {
             throws Exception {
         setNullInField(this.packageHandler, FIELD_NAME_NEXT_HANDLER);
 
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
@@ -104,7 +104,7 @@ public final class PackageHandlerTest {
     }
 
     @SuppressWarnings("all")
-    private static final class HandledPackage implements Package {
+    private static final class HandledPackage implements WialonPackage {
 
     }
 

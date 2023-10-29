@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.chain;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.exception.NoSuitablePackageDecoderException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.AbstractPackageDeserializer;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,12 +44,12 @@ public final class PackageDecoderTest {
     @Test
     public void packageShouldBeDecodedByDecoder() {
         final String givenPackage = "#PREFIX#date\r\n";
-        final Package givenResultPackage = new Package() {
+        final WialonPackage givenResultPackage = new WialonPackage() {
         };
 
         when(this.mockedDeserializer.deserialize(anyString())).thenReturn(givenResultPackage);
 
-        final Package actual = this.decoder.decode(givenPackage);
+        final WialonPackage actual = this.decoder.decode(givenPackage);
         assertSame(givenResultPackage, actual);
 
         verify(this.mockedDeserializer, times(1))
@@ -62,12 +62,12 @@ public final class PackageDecoderTest {
     @Test
     public void packageShouldBeDecodedByNextDecoderBecauseOfNotSuitablePrefix() {
         final String givenPackage = "#CANNOT_DECODE#date\r\n";
-        final Package givenResultPackage = new Package() {
+        final WialonPackage givenResultPackage = new WialonPackage() {
         };
 
         when(this.mockedNextDecoder.decode(anyString())).thenReturn(givenResultPackage);
 
-        final Package actual = this.decoder.decode(givenPackage);
+        final WialonPackage actual = this.decoder.decode(givenPackage);
         assertSame(givenResultPackage, actual);
 
         verify(this.mockedDeserializer, times(0)).deserialize(anyString());
@@ -81,12 +81,12 @@ public final class PackageDecoderTest {
         setNullAsField(this.decoder, FIELD_NAME_PACKAGE_PREFIX);
 
         final String givenPackage = "#OTHERPREFIX#date\r\n";
-        final Package givenResultPackage = new Package() {
+        final WialonPackage givenResultPackage = new WialonPackage() {
         };
 
         when(this.mockedNextDecoder.decode(anyString())).thenReturn(givenResultPackage);
 
-        final Package actual = this.decoder.decode(givenPackage);
+        final WialonPackage actual = this.decoder.decode(givenPackage);
         assertSame(givenResultPackage, actual);
 
         verify(this.mockedDeserializer, times(0)).deserialize(anyString());

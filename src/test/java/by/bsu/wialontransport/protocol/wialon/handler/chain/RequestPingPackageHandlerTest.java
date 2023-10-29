@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
 import by.bsu.wialontransport.protocol.wialon.handler.chain.data.RequestDataPackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.ResponsePingPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonResponsePingPackage;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public final class RequestPingPackageHandlerTest {
     private RequestDataPackageHandler mockedNextHandler;
 
     @Captor
-    private ArgumentCaptor<ResponsePingPackage> responsePingPackageArgumentCaptor;
+    private ArgumentCaptor<WialonResponsePingPackage> responsePingPackageArgumentCaptor;
 
     public RequestPingPackageHandlerTest() {
         this.handler = new RequestPingPackageHandler(this.mockedNextHandler);
@@ -33,7 +33,7 @@ public final class RequestPingPackageHandlerTest {
 
     @Test
     public void packageShouldBeHandledIndependently() {
-        final Package givenRequestPackage = new RequestPingPackage();
+        final WialonPackage givenRequestPackage = new WialonRequestPingPackage();
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         this.handler.handle(givenRequestPackage, givenContext);

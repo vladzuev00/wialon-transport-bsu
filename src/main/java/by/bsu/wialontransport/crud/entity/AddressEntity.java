@@ -1,9 +1,7 @@
 package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
-
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.spatial.JTSGeometryType;
+import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
@@ -13,10 +11,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @Table(name = "addresses")
-@TypeDef(
-        name = "geometry-type",
-        typeClass = JTSGeometryType.class
-)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -35,6 +29,7 @@ public class AddressEntity extends AbstractEntity<Long> {
     private Geometry boundingBox;
 
     @Column(name = "center")
+    @Type(type = "jts_geometry")
     private Point center;
 
     @Column(name = "city_name")

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public final class FinisherPackageHandlerTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void packageShouldNotBeHandledIndependently() {
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 

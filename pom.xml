@@ -72,6 +72,7 @@
       <artifactId>jts</artifactId>
       <version>1.13</version>
     </dependency>
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-spatial</artifactId>

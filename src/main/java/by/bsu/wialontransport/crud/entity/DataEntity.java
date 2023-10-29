@@ -8,12 +8,11 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static java.util.Arrays.stream;
+import static by.bsu.wialontransport.util.EnumUtil.findByValueOrDefault;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -163,24 +162,20 @@ public class DataEntity extends AbstractEntity<Long> {
             this.type = other.type;
         }
 
+        @RequiredArgsConstructor
         public enum Type {
             NOT_DEFINED('-'), NORTH('N'), SOUTH('S');
 
+            @Getter
             private final char value;
 
-            Type(final char value) {
-                this.value = value;
-            }
-
-            public final char getValue() {
-                return this.value;
-            }
-
             public static Type findByValue(final char value) {
-                return stream(Type.values())
-                        .filter(type -> type.value == value)
-                        .findAny()
-                        .orElse(NOT_DEFINED);
+                return findByValueOrDefault(
+                        value,
+                        Type::getValue,
+                        Type.class,
+                        NOT_DEFINED
+                );
             }
         }
     }
@@ -211,24 +206,20 @@ public class DataEntity extends AbstractEntity<Long> {
             this.type = other.type;
         }
 
+        @RequiredArgsConstructor
         public enum Type {
             NOT_DEFINED('-'), EAST('E'), WESTERN('W');
 
+            @Getter
             private final char value;
 
-            Type(final char value) {
-                this.value = value;
-            }
-
-            public final char getValue() {
-                return this.value;
-            }
-
             public static Type findByValue(final char value) {
-                return stream(Type.values())
-                        .filter(type -> type.value == value)
-                        .findAny()
-                        .orElse(NOT_DEFINED);
+                return findByValueOrDefault(
+                        value,
+                        Type::getValue,
+                        Type.class,
+                        NOT_DEFINED
+                );
             }
         }
     }
