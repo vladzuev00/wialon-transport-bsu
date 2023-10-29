@@ -12,7 +12,7 @@ import static java.util.Arrays.stream;
 
 public final class WialonRequestBlackBoxPackageDecoder
         extends AbstractWialonRequestDataPackageDecoder<WialonRequestBlackBoxPackage, WialonResponseBlackBoxPackage> {
-    private static final String REGEX_MESSAGES_DELIMITER = "\\|";
+    private static final String REGEX_SUB_MESSAGES_DELIMITER = "\\|";
 
     public WialonRequestBlackBoxPackageDecoder(final String packagePrefix, final DataParser dataParser) {
         super(packagePrefix, dataParser);
@@ -20,7 +20,7 @@ public final class WialonRequestBlackBoxPackageDecoder
 
     @Override
     protected Stream<String> splitIntoSubMessages(final String message) {
-        final String[] subMessages = message.split(REGEX_MESSAGES_DELIMITER);
+        final String[] subMessages = message.split(REGEX_SUB_MESSAGES_DELIMITER);
         return stream(subMessages);
     }
 
