@@ -7,7 +7,7 @@ import static java.lang.Byte.MIN_VALUE;
 import static java.util.Arrays.stream;
 
 @Value
-public class ResponseDataPackage implements WialonPackage {
+public class WialonResponseDataPackage implements WialonPackage {
     public static final String PREFIX = "#AD#";
 
     Status status;

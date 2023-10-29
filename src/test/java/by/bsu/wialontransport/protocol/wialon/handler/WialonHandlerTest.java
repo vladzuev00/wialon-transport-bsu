@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.handler;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
+import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.StarterPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
@@ -126,7 +126,7 @@ public final class WialonHandlerTest {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         final WialonPackage givenAnswer = mock(WialonPackage.class);
-        final AnswerableException givenException = new AnswerableException(givenAnswer);
+        final AnsweredException givenException = new AnsweredException(givenAnswer);
 
         this.handler.exceptionCaught(givenContext, givenException);
 
@@ -216,7 +216,7 @@ public final class WialonHandlerTest {
     }
 
     private static DecoderException createDecoderAnswerableException(final WialonPackage answer) {
-        final AnswerableException answerableException = new AnswerableException(answer);
+        final AnsweredException answerableException = new AnsweredException(answer);
         return new DecoderException(answerableException);
     }
 

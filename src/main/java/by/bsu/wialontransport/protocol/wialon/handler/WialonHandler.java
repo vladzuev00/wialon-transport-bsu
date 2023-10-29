@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.handler;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
+import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.StarterPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,7 +47,7 @@ public final class WialonHandler extends ChannelInboundHandlerAdapter {
         if (exception instanceof DecoderException) {  //exceptions in decoders are wrapped in DecoderException
             exception = exception.getCause();
         }
-        if (exception instanceof final AnswerableException answerableException) {
+        if (exception instanceof final AnsweredException answerableException) {
             context.writeAndFlush(answerableException.getAnswer());
         } else {
             context.fireExceptionCaught(exception);

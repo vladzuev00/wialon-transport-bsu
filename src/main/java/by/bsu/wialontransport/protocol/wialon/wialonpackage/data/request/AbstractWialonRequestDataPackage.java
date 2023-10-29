@@ -13,6 +13,6 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode
 @ToString
-public abstract class AbstractRequestDataPackage implements WialonPackage {
+public abstract class AbstractWialonRequestDataPackage implements WialonPackage {
     private final List<Data> data;
 }

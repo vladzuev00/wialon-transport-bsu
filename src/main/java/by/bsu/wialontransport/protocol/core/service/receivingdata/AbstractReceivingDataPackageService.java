@@ -8,7 +8,7 @@ import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTr
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.findLast;
 import static java.util.Optional.empty;
 
 public abstract class AbstractReceivingDataPackageService<
-        RequestPackageType extends AbstractRequestDataPackage,
+        RequestPackageType extends AbstractWialonRequestDataPackage,
         ResponsePackageType extends WialonPackage> {
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;

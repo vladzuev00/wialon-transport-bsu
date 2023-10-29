@@ -1,10 +1,10 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 import org.springframework.stereotype.Component;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage.PREFIX;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage.PREFIX;
 import static java.lang.String.format;
 
 @Component
@@ -13,12 +13,12 @@ public final class ResponseBlackBoxPackageEncoder extends PackageEncoder {
     private static final String TEMPLATE_ENCODED_PACKAGE_WITHOUT_POSTFIX = PREFIX + "%d";
 
     public ResponseBlackBoxPackageEncoder(final FinisherPackageEncoder nextEncoder) {
-        super(ResponseBlackBoxPackage.class, nextEncoder);
+        super(WialonResponseBlackBoxPackage.class, nextEncoder);
     }
 
     @Override
     protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
-        final ResponseBlackBoxPackage responseBlackBoxPackage = (ResponseBlackBoxPackage) encodedPackage;
+        final WialonResponseBlackBoxPackage responseBlackBoxPackage = (WialonResponseBlackBoxPackage) encodedPackage;
         return format(TEMPLATE_ENCODED_PACKAGE_WITHOUT_POSTFIX, responseBlackBoxPackage.getAmountFixedMessages());
     }
 }

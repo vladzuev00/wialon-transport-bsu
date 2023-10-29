@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ public final class ReceivingBlackBoxPackageServiceTest extends AbstractContextTe
                 createData(), createData(), createData()
         );
 
-        final ResponseBlackBoxPackage actual = this.receivingBlackBoxPackageService.createResponse(givenData);
-        final ResponseBlackBoxPackage expected = new ResponseBlackBoxPackage(3);
+        final WialonResponseBlackBoxPackage actual = this.receivingBlackBoxPackageService.createResponse(givenData);
+        final WialonResponseBlackBoxPackage expected = new WialonResponseBlackBoxPackage(3);
         assertEquals(expected, actual);
     }
 

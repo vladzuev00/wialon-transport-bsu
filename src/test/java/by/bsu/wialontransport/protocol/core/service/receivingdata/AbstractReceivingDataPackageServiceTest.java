@@ -7,7 +7,7 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Value;
 import org.junit.Before;
@@ -312,7 +312,7 @@ public final class AbstractReceivingDataPackageServiceTest {
                 .build();
     }
 
-    private static final class TestRequestDataPackage extends AbstractRequestDataPackage {
+    private static final class TestRequestDataPackage extends AbstractWialonRequestDataPackage {
 
         public TestRequestDataPackage(final List<Data> data) {
             super(data);

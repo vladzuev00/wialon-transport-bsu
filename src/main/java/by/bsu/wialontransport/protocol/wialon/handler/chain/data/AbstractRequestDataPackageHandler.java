@@ -3,10 +3,10 @@ package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.AbstractReceivingDataPackageService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 
-public abstract class AbstractRequestDataPackageHandler<RequestPackageType extends AbstractRequestDataPackage>
+public abstract class AbstractRequestDataPackageHandler<RequestPackageType extends AbstractWialonRequestDataPackage>
         extends PackageHandler {
     private final AbstractReceivingDataPackageService<RequestPackageType, ?> receivingPackageService;
 

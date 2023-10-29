@@ -7,7 +7,7 @@ import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +33,7 @@ public final class RequestDataPackageDeserializerTest extends AbstractContextTes
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
 
         final WialonPackage actual = this.deserializer.deserialize(givenSource);
-        final RequestDataPackage expected = new RequestDataPackage(Data.builder()
+        final WialonRequestDataPackage expected = new WialonRequestDataPackage(Data.builder()
                 .date(LocalDate.of(2022, 11, 15))
                 .time(LocalTime.of(14, 56, 43))
                 .latitude(Latitude.builder()
