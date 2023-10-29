@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.decoder.wialon;
+package by.bsu.wialontransport.protocol.wialon.newest;
 
-import by.bsu.wialontransport.protocol.decoder.PackageStringDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.PackageStringDecoder;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import lombok.RequiredArgsConstructor;
 

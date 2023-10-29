@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.decoder.wialon.data;
+package by.bsu.wialontransport.protocol.wialon.newest.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataParser;
