@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.server;
 
-import by.bsu.wialontransport.protocol.wialon.decoder.WialonDecoder;
+import by.bsu.wialontransport.protocol.wialon.tempdecoder.WialonDecoder;
 import by.bsu.wialontransport.protocol.wialon.encoder.WialonEncoder;
 import by.bsu.wialontransport.protocol.wialon.handler.WialonExceptionHandler;
 import by.bsu.wialontransport.protocol.wialon.handler.WialonHandler;
