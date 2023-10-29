@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.AbstractReceivingDataPackageService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -58,7 +58,7 @@ public final class AbstractRequestDataPackageHandlerTest {
 
     @Test(expected = ClassCastException.class)
     public void packageShouldNotBeHandledIndependentlyBecauseOfNotSuitableType() {
-        final Package givenRequestPackage = new Package() {
+        final WialonPackage givenRequestPackage = new WialonPackage() {
         };
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 

@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
 import by.bsu.wialontransport.protocol.core.service.receivingdata.AbstractReceivingDataPackageService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,7 +19,7 @@ public abstract class AbstractRequestDataPackageHandler<RequestPackageType exten
 
     @Override
     @SuppressWarnings("unchecked")
-    protected final void handleIndependently(final Package requestPackage, final ChannelHandlerContext context) {
+    protected final void handleIndependently(final WialonPackage requestPackage, final ChannelHandlerContext context) {
         final RequestPackageType requestDataPackage = (RequestPackageType) requestPackage;
         this.receivingPackageService.receive(requestDataPackage, context);
     }

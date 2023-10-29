@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,7 +11,7 @@ public final class StarterPackageEncoder extends PackageEncoder {
     }
 
     @Override
-    protected String encodeIndependentlyWithoutPostfix(final Package encodedPackage) {
+    protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
         throw new UnsupportedOperationException();
     }
 }

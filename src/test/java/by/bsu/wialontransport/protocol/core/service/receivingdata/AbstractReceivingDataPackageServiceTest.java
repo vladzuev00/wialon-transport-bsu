@@ -6,7 +6,7 @@ import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Value;
@@ -320,7 +320,7 @@ public final class AbstractReceivingDataPackageServiceTest {
     }
 
     @Value
-    private static class TestResponseDataPackage implements Package {
+    private static class TestResponseDataPackage implements WialonPackage {
         boolean successReceived;
     }
 

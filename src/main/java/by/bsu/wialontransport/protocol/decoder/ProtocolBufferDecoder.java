@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.decoder;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.Package;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;

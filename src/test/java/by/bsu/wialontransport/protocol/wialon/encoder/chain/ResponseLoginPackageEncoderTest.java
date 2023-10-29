@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public final class ResponseLoginPackageEncoderTest extends AbstractContextTest {
 
     @Test(expected = ClassCastException.class)
     public void packageShouldNotBeEncodedIndependentlyWithoutPostfixBecauseOfNotSuitableType() {
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
 
         this.encoder.encodeIndependentlyWithoutPostfix(givenPackage);

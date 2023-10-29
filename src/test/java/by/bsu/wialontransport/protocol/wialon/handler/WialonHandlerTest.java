@@ -5,7 +5,7 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.StarterPackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public final class WialonHandlerTest {
     @Test
     public void channelShouldBeRead() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Package givenPackage = mock(Package.class);
+        final WialonPackage givenPackage = mock(WialonPackage.class);
 
         this.handler.channelRead(givenContext, givenPackage);
 
@@ -100,7 +100,7 @@ public final class WialonHandlerTest {
     public void decoderAnswerableExceptionShouldBeCaught() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final Package givenAnswer = new Package() {
+        final WialonPackage givenAnswer = new WialonPackage() {
         };
         final DecoderException givenDecoderException = createDecoderAnswerableException(givenAnswer);
 
@@ -125,7 +125,7 @@ public final class WialonHandlerTest {
     public void answerableExceptionShouldBeCaught() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final Package givenAnswer = mock(Package.class);
+        final WialonPackage givenAnswer = mock(WialonPackage.class);
         final AnswerableException givenException = new AnswerableException(givenAnswer);
 
         this.handler.exceptionCaught(givenContext, givenException);
@@ -215,12 +215,12 @@ public final class WialonHandlerTest {
         assertEquals(expectedLoggedMessage, this.stringArgumentCaptor.getValue());
     }
 
-    private static DecoderException createDecoderAnswerableException(final Package answer) {
+    private static DecoderException createDecoderAnswerableException(final WialonPackage answer) {
         final AnswerableException answerableException = new AnswerableException(answer);
         return new DecoderException(answerableException);
     }
 
-    private static void verifyAnswerWasSent(final ChannelHandlerContext context, final Package answer) {
+    private static void verifyAnswerWasSent(final ChannelHandlerContext context, final WialonPackage answer) {
         verify(context, times(1)).writeAndFlush(answer);
         verify(context, times(0)).fireExceptionCaught(any(Throwable.class));
     }

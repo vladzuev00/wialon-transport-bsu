@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.encoder;
 
 import by.bsu.wialontransport.protocol.wialon.encoder.chain.StarterPackageEncoder;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public final class WialonEncoderTest {
     private StarterPackageEncoder mockedStarterPackageEncoder;
 
     @Captor
-    private ArgumentCaptor<Package> packageArgumentCaptor;
+    private ArgumentCaptor<WialonPackage> packageArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<String> stringArgumentCaptor;
@@ -41,12 +41,12 @@ public final class WialonEncoderTest {
     @Test
     public void packageShouldBeEncoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
         final ByteBuf givenByteBuf = mock(ByteBuf.class);
 
         final String givenEncodedPackage = "#RESPONSE#\r\n";
-        when(this.mockedStarterPackageEncoder.encode(any(Package.class))).thenReturn(givenEncodedPackage);
+        when(this.mockedStarterPackageEncoder.encode(any(WialonPackage.class))).thenReturn(givenEncodedPackage);
 
         this.encoder.encode(givenContext, givenPackage, givenByteBuf);
 

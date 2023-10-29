@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.StarterPackageDecoder;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.Package.POSTFIX;
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage.POSTFIX;
 import static java.util.stream.IntStream.range;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class WialonDecoder extends ReplayingDecoder<Package> {
+public final class WialonDecoder extends ReplayingDecoder<WialonPackage> {
     private static final String TEMPLATE_MESSAGE_START_DECODING_INBOUND_PACKAGE
             = "Start decoding inbound package: '{}'.";
     private static final char CHARACTER_OF_END_REQUEST_PACKAGE = '\n';
@@ -26,7 +26,7 @@ public final class WialonDecoder extends ReplayingDecoder<Package> {
     protected void decode(final ChannelHandlerContext context, final ByteBuf byteBuf, final List<Object> outObjects) {
         final String serializedPackage = findSerializedPackage(byteBuf);
         log.info(TEMPLATE_MESSAGE_START_DECODING_INBOUND_PACKAGE, serializedPackage);
-        final Package requestPackage = this.starterPackageDecoder.decode(serializedPackage);
+        final WialonPackage requestPackage = this.starterPackageDecoder.decode(serializedPackage);
         outObjects.add(requestPackage);
     }
 

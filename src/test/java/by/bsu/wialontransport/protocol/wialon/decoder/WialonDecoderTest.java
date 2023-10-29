@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.StarterPackageDecoder;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public final class WialonDecoderTest {
         final ByteBuf givenByteBuf = wrappedBuffer(givenSerializedPackageWithPostfix.getBytes(UTF_8));
 
         final List<Object> givenOutObjects = new ArrayList<>();
-        final Package givenPackage = new Package() {
+        final WialonPackage givenPackage = new WialonPackage() {
         };
 
         when(this.mockedStarterPackageDecoder.decode(anyString()))

@@ -7,7 +7,7 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.service.receivingdata.exception.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractRequestDataPackage;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -21,7 +21,7 @@ import static java.util.Optional.empty;
 
 public abstract class AbstractReceivingDataPackageService<
         RequestPackageType extends AbstractRequestDataPackage,
-        ResponsePackageType extends Package> {
+        ResponsePackageType extends WialonPackage> {
     private final ContextAttributeManager contextAttributeManager;
     private final DataFilter dataFilter;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;

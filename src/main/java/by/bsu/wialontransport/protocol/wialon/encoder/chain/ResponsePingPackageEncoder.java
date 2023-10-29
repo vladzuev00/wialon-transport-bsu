@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.ResponsePingPackage;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public final class ResponsePingPackageEncoder extends PackageEncoder {
     }
 
     @Override
-    protected String encodeIndependentlyWithoutPostfix(final Package encodedPackage) {
+    protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
         return PREFIX;
     }
 }

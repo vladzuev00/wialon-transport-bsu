@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.DataParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.parser.exception.NotValidDataException;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.RequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
     }
 
     @Override
-    protected Package deserializeByMessage(final String message) {
+    protected WialonPackage deserializeByMessage(final String message) {
         try {
             final List<Data> data = this.parseData(message);
             return new RequestBlackBoxPackage(data);

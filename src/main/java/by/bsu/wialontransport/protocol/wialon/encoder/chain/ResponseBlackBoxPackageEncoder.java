@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.ResponseBlackBoxPackage;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public final class ResponseBlackBoxPackageEncoder extends PackageEncoder {
     }
 
     @Override
-    protected String encodeIndependentlyWithoutPostfix(final Package encodedPackage) {
+    protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
         final ResponseBlackBoxPackage responseBlackBoxPackage = (ResponseBlackBoxPackage) encodedPackage;
         return format(TEMPLATE_ENCODED_PACKAGE_WITHOUT_POSTFIX, responseBlackBoxPackage.getAmountFixedMessages());
     }

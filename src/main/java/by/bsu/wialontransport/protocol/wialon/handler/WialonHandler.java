@@ -5,7 +5,7 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.StarterPackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
@@ -37,7 +37,7 @@ public final class WialonHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext context, final Object requestObject) {
-        final Package requestPackage = (Package) requestObject;
+        final WialonPackage requestPackage = (WialonPackage) requestObject;
         log.info(format(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, requestPackage));
         this.starterPackageHandler.handle(requestPackage, context);
     }

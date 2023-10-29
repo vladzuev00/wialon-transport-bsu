@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.chain;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.ResponseLoginPackage.Status;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public final class ResponseLoginPackageEncoder extends PackageEncoder {
     }
 
     @Override
-    protected String encodeIndependentlyWithoutPostfix(final Package encodedPackage) {
+    protected String encodeIndependentlyWithoutPostfix(final WialonPackage encodedPackage) {
         final ResponseLoginPackage responseLoginPackage = (ResponseLoginPackage) encodedPackage;
         final Status status = responseLoginPackage.getStatus();
         return format(TEMPLATE_ENCODED_PACKAGE_WITHOUT_POSTFIX, status.getValue());

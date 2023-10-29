@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
 import by.bsu.wialontransport.protocol.wialon.handler.chain.data.RequestDataPackageHandler;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.RequestPingPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.ResponsePingPackage;
 
@@ -33,7 +33,7 @@ public final class RequestPingPackageHandlerTest {
 
     @Test
     public void packageShouldBeHandledIndependently() {
-        final Package givenRequestPackage = new RequestPingPackage();
+        final WialonPackage givenRequestPackage = new RequestPingPackage();
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         this.handler.handle(givenRequestPackage, givenContext);

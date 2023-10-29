@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.chain;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.deserializer.AbstractPackageDeserializer;
 import by.bsu.wialontransport.protocol.wialon.decoder.chain.exception.NoSuitablePackageDecoderException;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.Package;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 
 public abstract class PackageDecoder {
     private final PackageDecoder nextDecoder;
@@ -16,7 +16,7 @@ public abstract class PackageDecoder {
         this.packageDeserializer = packageDeserializer;
     }
 
-    public final Package decode(final String decoded) {
+    public final WialonPackage decode(final String decoded) {
         if (this.isAbleToDecode(decoded)) {
             return this.decodeIndependently(decoded);
         }
@@ -28,11 +28,11 @@ public abstract class PackageDecoder {
         return this.packagePrefix != null && decoded.startsWith(this.packagePrefix);
     }
 
-    private Package decodeIndependently(final String decoded) {
+    private WialonPackage decodeIndependently(final String decoded) {
         return this.packageDeserializer.deserialize(decoded);
     }
 
-    private Package delegateToNextDecoder(final String decoded) {
+    private WialonPackage delegateToNextDecoder(final String decoded) {
         if (this.nextDecoder != null) {
             return this.nextDecoder.decode(decoded);
         }
