@@ -8,14 +8,15 @@ import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.Wialon
 import java.util.List;
 import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage.PREFIX;
 import static java.util.Arrays.stream;
 
 public final class WialonRequestBlackBoxPackageDecoder
         extends AbstractWialonRequestDataPackageDecoder<WialonRequestBlackBoxPackage, WialonResponseBlackBoxPackage> {
     private static final String REGEX_SUB_MESSAGES_DELIMITER = "\\|";
 
-    public WialonRequestBlackBoxPackageDecoder(final String packagePrefix, final DataParser dataParser) {
-        super(packagePrefix, dataParser);
+    public WialonRequestBlackBoxPackageDecoder(final DataParser dataParser) {
+        super(PREFIX, dataParser);
     }
 
     @Override
