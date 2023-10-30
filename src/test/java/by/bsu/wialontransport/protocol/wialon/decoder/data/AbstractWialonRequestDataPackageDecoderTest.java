@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.exception.NotValidDataException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 import org.junit.Before;
@@ -14,6 +16,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class AbstractWialonRequestDataPackageDecoderTest {
@@ -24,7 +29,7 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
     @Mock
     private DataParser mockedDataParser;
 
-    private AbstractWialonRequestDataPackageDecoder<?, ?> decoder;
+    private AbstractWialonRequestDataPackageDecoder<TestWialonRequestDataPackage, WialonPackage> decoder;
 
     @Before
     public void initializeDecoder() {
@@ -37,7 +42,56 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
 
     @Test
     public void messageShouldBeDecoded() {
-        throw new RuntimeException();
+        final String givenMessage = "first|second|third";
+
+        final Data firstGivenData = createData(1L);
+        when(this.mockedDataParser.parse(eq("first"))).thenReturn(firstGivenData);
+
+        final Data secondGivenData = createData(2L);
+        when(this.mockedDataParser.parse(eq("second"))).thenReturn(secondGivenData);
+
+        final Data thirdGivenData = createData(3L);
+        when(this.mockedDataParser.parse(eq("third"))).thenReturn(thirdGivenData);
+
+        final TestWialonRequestDataPackage actual = this.decoder.decodeMessage(givenMessage);
+        final TestWialonRequestDataPackage expected = new TestWialonRequestDataPackage(
+                List.of(
+                        firstGivenData,
+                        secondGivenData,
+                        thirdGivenData
+                )
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void messageShouldNotBeDecodedBecauseOfNotValidDataException() {
+        final String givenMessage = "first|second|third";
+
+        final Data firstGivenData = createData(1L);
+        when(this.mockedDataParser.parse(eq("first"))).thenReturn(firstGivenData);
+
+        final Data secondGivenData = createData(2L);
+        when(this.mockedDataParser.parse(eq("second"))).thenReturn(secondGivenData);
+
+        when(this.mockedDataParser.parse(eq("third"))).thenThrow(NotValidDataException.class);
+
+        boolean exceptionArisen;
+        try {
+            this.decoder.decodeMessage(givenMessage);
+            exceptionArisen = false;
+        } catch (final AnsweredException exception) {
+            assertSame(GIVEN_RESPONSE_NOT_VALID_DATA_PACKAGE, exception.getAnswer());
+            assertNotNull(exception.getCause());
+            exceptionArisen = true;
+        }
+        assertTrue(exceptionArisen);
+    }
+
+    private static Data createData(final Long id) {
+        return Data.builder()
+                .id(id)
+                .build();
     }
 
     private static class TestWialonRequestDataPackage extends AbstractWialonRequestDataPackage {
