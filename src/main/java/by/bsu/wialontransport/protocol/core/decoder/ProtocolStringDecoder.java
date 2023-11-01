@@ -9,11 +9,11 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public abstract class ProtocolStringDecoder<P extends Package, D extends PackageStringDecoder<P>>
-        extends ProtocolDecoder<String, P, D> {
+public abstract class ProtocolStringDecoder<PACKAGE extends Package, DECODER extends PackageStringDecoder<PACKAGE>>
+        extends ProtocolDecoder<String, String, PACKAGE, DECODER> {
     private static final Charset CHARSET_TO_DECODE_BUFFER = UTF_8;
 
-    public ProtocolStringDecoder(final List<D> packageDecoders) {
+    public ProtocolStringDecoder(final List<DECODER> packageDecoders) {
         super(packageDecoders);
     }
 
