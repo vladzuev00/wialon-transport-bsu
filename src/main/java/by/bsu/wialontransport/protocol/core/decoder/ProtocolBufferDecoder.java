@@ -6,10 +6,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-public abstract class ProtocolBufferDecoder<P extends Package, D extends PackageBufferDecoder<P>>
-        extends ProtocolDecoder<ByteBuf, P, D> {
+public abstract class ProtocolBufferDecoder<
+        PREFIX,
+        PACKAGE extends Package,
+        DECODER extends PackageBufferDecoder<PREFIX, PACKAGE>
+        >
+        extends ProtocolDecoder<PREFIX, ByteBuf, PACKAGE, DECODER> {
 
-    public ProtocolBufferDecoder(final List<D> packageDecoders) {
+    public ProtocolBufferDecoder(final List<DECODER> packageDecoders) {
         super(packageDecoders);
     }
 
