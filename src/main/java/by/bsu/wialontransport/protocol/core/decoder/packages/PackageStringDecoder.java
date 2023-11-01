@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.decoder;
+package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import by.bsu.wialontransport.protocol.protocolpackage.Package;
 
