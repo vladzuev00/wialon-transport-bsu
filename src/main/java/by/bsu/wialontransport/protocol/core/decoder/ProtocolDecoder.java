@@ -10,24 +10,33 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class ProtocolDecoder<S, P extends Package, D extends PackageDecoder<S, P>> extends ReplayingDecoder<P> {
-    private final List<D> packageDecoders;
+public abstract class ProtocolDecoder<
+        PREFIX,
+        SOURCE,
+        PACKAGE extends Package,
+        DECODER extends PackageDecoder<PREFIX, SOURCE, PACKAGE>
+        >
+        extends ReplayingDecoder<PACKAGE> {
+    private final List<DECODER> packageDecoders;
 
     @Override
     protected final void decode(final ChannelHandlerContext context,
                                 final ByteBuf byteBuf,
                                 final List<Object> outObjects) {
-        final S source = this.createSource(byteBuf);
-        final D decoder = this.findPackageDecoder(source);
-        final P requestPackage = decoder.decode(source);
+        final SOURCE source = this.createSource(byteBuf);
+        final DECODER decoder = this.findPackageDecoder(source);
+        final PACKAGE requestPackage = decoder.decode(source);
         outObjects.add(requestPackage);
     }
 
-    protected abstract S createSource(final ByteBuf byteBuf);
+    protected abstract SOURCE createSource(final ByteBuf byteBuf);
 
-    private D findPackageDecoder(final S source) {
+    protected abstract PREFIX extractPackagePrefix(final SOURCE source);
+
+    private DECODER findPackageDecoder(final SOURCE source) {
+        final PREFIX packagePrefix = this.extractPackagePrefix(source);
         return this.packageDecoders.stream()
-                .filter(packageDecoder -> packageDecoder.isAbleToDecode(source))
+                .filter(packageDecoder -> packageDecoder.isAbleToDecode(packagePrefix))
                 .findFirst()
                 .orElseThrow(
                         () -> new NoSuitablePackageDecoderException(
