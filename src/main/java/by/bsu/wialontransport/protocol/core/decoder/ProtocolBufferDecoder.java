@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class ProtocolBufferDecoder<
         PREFIX,
         PACKAGE extends Package,
-        DECODER extends PackageBufferDecoder<PREFIX, PACKAGE>
+        DECODER extends PackageBufferDecoder<PREFIX, ? extends PACKAGE>
         >
         extends ProtocolDecoder<PREFIX, ByteBuf, PACKAGE, DECODER> {
 

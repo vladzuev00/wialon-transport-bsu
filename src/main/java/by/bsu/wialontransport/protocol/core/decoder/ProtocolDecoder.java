@@ -14,7 +14,7 @@ public abstract class ProtocolDecoder<
         PREFIX,
         SOURCE,
         PACKAGE extends Package,
-        DECODER extends PackageDecoder<PREFIX, SOURCE, PACKAGE>
+        DECODER extends PackageDecoder<PREFIX, SOURCE, ? extends PACKAGE>
         >
         extends ReplayingDecoder<PACKAGE> {
     private final List<DECODER> packageDecoders;
