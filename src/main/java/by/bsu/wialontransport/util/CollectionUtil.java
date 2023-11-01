@@ -9,7 +9,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.empty;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.StreamSupport.stream;
 
 @UtilityClass
 public final class CollectionUtil {
@@ -40,6 +42,13 @@ public final class CollectionUtil {
     public static <T> Optional<T> findLast(final List<T> elements) {
         final int indexLastElement = elements.size() - 1;
         return !elements.isEmpty() ? Optional.of(elements.get(indexLastElement)) : empty();
+    }
+
+    //TODO: refactor with StreamUtil
+    public static <T> List<T> convertToList(final Iterator<T> iterator) {
+        final Iterable<T> iterable = () -> iterator;
+        final Spliterator<T> spliterator = iterable.spliterator();
+        return stream(spliterator, false).collect(toList());
     }
 
 //    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {
