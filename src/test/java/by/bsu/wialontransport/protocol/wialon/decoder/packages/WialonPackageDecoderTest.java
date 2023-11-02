@@ -1,10 +1,11 @@
-package by.bsu.wialontransport.protocol.wialon.decoder;
+package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import lombok.Getter;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
 public final class WialonPackageDecoderTest {

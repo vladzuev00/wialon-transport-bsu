@@ -1,4 +1,4 @@
-//package by.bsu.wialontransport.protocol.wialon.decoder.data;
+//package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 //
 //
 //import by.bsu.wialontransport.crud.dto.Data;
