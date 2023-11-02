@@ -18,7 +18,7 @@ public abstract class ProtocolBufferDecoder<
     }
 
     @Override
-    public final ByteBuf createSource(final ByteBuf byteBuf) {
-        return byteBuf;
+    public final ByteBuf createSource(final ByteBuf buffer) {
+        return buffer;
     }
 }

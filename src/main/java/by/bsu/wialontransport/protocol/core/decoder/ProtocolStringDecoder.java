@@ -18,7 +18,7 @@ public abstract class ProtocolStringDecoder<PACKAGE extends Package, DECODER ext
     }
 
     @Override
-    public final String createSource(final ByteBuf byteBuf) {
-        return byteBuf.toString(CHARSET_TO_DECODE_BUFFER);
+    public final String createSource(final ByteBuf buffer) {
+        return buffer.toString(CHARSET_TO_DECODE_BUFFER);
     }
 }

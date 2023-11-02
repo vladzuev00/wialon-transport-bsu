@@ -85,7 +85,7 @@ public final class ProtocolDecoderTest {
         }
 
         @Override
-        protected Object createSource(final ByteBuf byteBuf) {
+        protected Object createSource(final ByteBuf buffer) {
             return this.source;
         }
     }

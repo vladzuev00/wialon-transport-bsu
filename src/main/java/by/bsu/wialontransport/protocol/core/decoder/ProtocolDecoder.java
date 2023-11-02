@@ -21,15 +21,15 @@ public abstract class ProtocolDecoder<
 
     @Override
     protected final void decode(final ChannelHandlerContext context,
-                                final ByteBuf byteBuf,
+                                final ByteBuf buffer,
                                 final List<Object> outObjects) {
-        final SOURCE source = this.createSource(byteBuf);
+        final SOURCE source = this.createSource(buffer);
         final DECODER decoder = this.findPackageDecoder(source);
         final PACKAGE requestPackage = decoder.decode(source);
         outObjects.add(requestPackage);
     }
 
-    protected abstract SOURCE createSource(final ByteBuf byteBuf);
+    protected abstract SOURCE createSource(final ByteBuf buffer);
 
     protected abstract PREFIX extractPackagePrefix(final SOURCE source);
 
