@@ -48,7 +48,7 @@ public final class ProtocolDecoderTest {
     @SuppressWarnings("unchecked")
     public void bufferShouldBeDecoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final ByteBuf givenByteBuf = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
         when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
@@ -57,7 +57,7 @@ public final class ProtocolDecoderTest {
         final Package givenPackage = mock(Package.class);
         when(this.secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
 
-        this.protocolDecoder.decode(givenContext, givenByteBuf, givenOutObjects);
+        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
 
         verifyNoInteractions(this.thirdMockedPackageDecoder);
         verify(givenOutObjects, times(1)).add(same(givenPackage));
@@ -67,14 +67,14 @@ public final class ProtocolDecoderTest {
     @Test(expected = RuntimeException.class)
     public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final ByteBuf givenByteBuf = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
         when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(this.thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
 
-        this.protocolDecoder.decode(givenContext, givenByteBuf, givenOutObjects);
+        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
     }
 
     private static final class TestProtocolDecoder
