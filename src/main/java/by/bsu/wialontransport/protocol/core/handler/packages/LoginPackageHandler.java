@@ -15,6 +15,7 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
         this.authorizationTrackerService = authorizationTrackerService;
     }
 
+    //TODO: подумать как обработать исключительные ситуации
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final String trackerImei = requestPackage.getImei();
