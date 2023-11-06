@@ -6,14 +6,16 @@ import io.netty.buffer.ByteBuf;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static java.lang.String.format;
+
 public final class NewWingDataIterator implements Iterator<NewWingData> {
-    private final NewWingDataDecoder dataReader;
+    private final NewWingDataDecoder dataDecoder;
     private final ByteBuf buffer;
     private final int dataCount;
     private int readDataCount;
 
-    public NewWingDataIterator(final NewWingDataDecoder dataReader, final ByteBuf buffer, final int dataCount) {
-        this.dataReader = dataReader;
+    public NewWingDataIterator(final NewWingDataDecoder dataDecoder, final ByteBuf buffer, final int dataCount) {
+        this.dataDecoder = dataDecoder;
         this.buffer = buffer;
         this.dataCount = dataCount;
         this.readDataCount = 0;
@@ -27,7 +29,7 @@ public final class NewWingDataIterator implements Iterator<NewWingData> {
     @Override
     public NewWingData next() {
         this.checkNext();
-        final NewWingData data = this.dataReader.decodeNext(this.buffer);
+        final NewWingData data = this.dataDecoder.decodeNext(this.buffer);
         this.readDataCount++;
         return data;
     }
@@ -35,7 +37,7 @@ public final class NewWingDataIterator implements Iterator<NewWingData> {
     private void checkNext() {
         if (!this.hasNext()) {
             throw new NoSuchElementException(
-                    "%d data have been already read from given buffer".formatted(this.dataCount)
+                    format("%d data have been already read from given buffer", this.dataCount)
             );
         }
     }
