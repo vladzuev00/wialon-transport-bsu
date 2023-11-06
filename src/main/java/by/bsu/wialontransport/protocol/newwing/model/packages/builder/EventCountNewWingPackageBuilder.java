@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.newwing.model.packages.EventCountNewWingP
 import lombok.Setter;
 
 @Setter
-public final class EventCountNewWingPackageBuilder extends NewWingPackageBuilder<EventCountNewWingPackage> {
+public final class EventCountNewWingPackageBuilder extends NewWingRequestPackageBuilder<EventCountNewWingPackage> {
     private short eventCount;
     private short frameEventCount;
 

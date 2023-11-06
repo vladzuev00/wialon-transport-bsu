@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.newwing.model.packages;
 import lombok.Getter;
 
 @Getter
-public final class EventCountNewWingPackage extends NewWingPackage {
+public final class EventCountNewWingPackage extends NewWingRequestPackage {
     private final short eventCount;
     private final short frameEventCount;
 
