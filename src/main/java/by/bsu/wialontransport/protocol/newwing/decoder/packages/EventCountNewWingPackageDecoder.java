@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
 import by.bsu.wialontransport.function.ShortConsumer;
-import by.bsu.wialontransport.protocol.newwing.model.packages.EventCountNewWingPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.builder.EventCountNewWingPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.EventCountNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.EventCountNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
 public final class EventCountNewWingPackageDecoder

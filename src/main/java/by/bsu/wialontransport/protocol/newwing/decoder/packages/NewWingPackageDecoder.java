@@ -1,15 +1,15 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageBufferDecoder;
-import by.bsu.wialontransport.protocol.newwing.model.packages.NewWingPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.builder.NewWingPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingRequestPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
 import java.util.function.Supplier;
 
 public abstract class NewWingPackageDecoder<
-        PACKAGE extends NewWingPackage,
-        BUILDER extends NewWingPackageBuilder<PACKAGE>
+        PACKAGE extends NewWingRequestPackage,
+        BUILDER extends NewWingRequestPackageBuilder<PACKAGE>
         >
         extends PackageBufferDecoder<String, PACKAGE> {
     private final Supplier<BUILDER> packageBuilderSupplier;
@@ -30,7 +30,7 @@ public abstract class NewWingPackageDecoder<
     protected abstract void decodeUntilChecksum(final ByteBuf buffer, final BUILDER packageBuilder);
 
     private void decodeChecksum(final ByteBuf buffer, final BUILDER packageBuilder) {
-        final int checksum = buffer.readInt();
+        final int checksum = buffer.readIntLE();
         packageBuilder.setChecksum(checksum);
     }
 }

@@ -1,12 +1,16 @@
 package by.bsu.wialontransport.protocol.newwing.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 
 @Value
+@AllArgsConstructor
+@Builder
 public class NewWingData {
-    byte hours;
-    byte minutes;
-    byte seconds;
+    byte hour;
+    byte minute;
+    byte second;
     short latitudeIntegerPart;
     short latitudeFractionalPart;
     short longitudeIntegerPart;
