@@ -7,7 +7,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
 public final class ProtocolBufferDecoderTest {
-    private final ProtocolBufferDecoder<?, ?, ?> decoder = new ProtocolBufferDecoder<>(null) {
+    private final ProtocolBufferDecoder<?, ?> decoder = new ProtocolBufferDecoder<>(null) {
 
         @Override
         protected Object extractPackagePrefix(final ByteBuf buffer) {

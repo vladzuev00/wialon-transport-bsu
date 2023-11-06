@@ -29,7 +29,7 @@ public final class ProtocolDecoderTest {
     @Mock
     private PackageDecoder<Object, Object, Package> thirdMockedPackageDecoder;
 
-    private ProtocolDecoder<Object, Object, Package, PackageDecoder<Object, Object, Package>> protocolDecoder;
+    private ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> protocolDecoder;
 
     @Before
     public void initializeProtocolDecoder() {
@@ -78,7 +78,7 @@ public final class ProtocolDecoderTest {
     }
 
     private static final class TestProtocolDecoder
-            extends ProtocolDecoder<Object, Object, Package, PackageDecoder<Object, Object, Package>> {
+            extends ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> {
         private final Object source;
         private final Object prefix;
 

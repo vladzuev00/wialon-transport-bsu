@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 public final class ProtocolStringDecoderTest {
     private static final Charset EXPECTED_CHARSET = UTF_8;
 
-    private final ProtocolStringDecoder<?, ?> decoder = new ProtocolStringDecoder<>(null) {
+    private final ProtocolStringDecoder<?> decoder = new ProtocolStringDecoder<>(null) {
 
         @Override
         protected String extractPackagePrefix(final String source) {
