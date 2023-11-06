@@ -10,13 +10,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class ProtocolDecoder<
-        PREFIX,
-        SOURCE,
-        PACKAGE extends Package,
-        DECODER extends PackageDecoder<PREFIX, SOURCE, ? extends PACKAGE>
-        >
-        extends ReplayingDecoder<PACKAGE> {
+public abstract class ProtocolDecoder<PREFIX, SOURCE, DECODER extends PackageDecoder<PREFIX, SOURCE, ?>>
+        extends ReplayingDecoder<Package> {
     private final List<DECODER> packageDecoders;
 
     @Override
@@ -25,7 +20,7 @@ public abstract class ProtocolDecoder<
                                 final List<Object> outObjects) {
         final SOURCE source = this.createSource(buffer);
         final DECODER decoder = this.findPackageDecoder(source);
-        final PACKAGE requestPackage = decoder.decode(source);
+        final Package requestPackage = decoder.decode(source);
         outObjects.add(requestPackage);
     }
 
