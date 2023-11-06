@@ -8,13 +8,19 @@ import static org.mockito.Mockito.mock;
 
 public final class ProtocolBufferDecoderTest {
     private final ProtocolBufferDecoder<?, ?> decoder = new ProtocolBufferDecoder<>(null) {
+
+        @Override
+        protected Object extractPackagePrefix(final ByteBuf buffer) {
+            throw new UnsupportedOperationException();
+        }
+
     };
 
     @Test
     public void sourceShouldBeCreated() {
-        final ByteBuf givenByteBuf = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final ByteBuf actual = this.decoder.createSource(givenByteBuf);
-        assertSame(givenByteBuf, actual);
+        final ByteBuf actual = this.decoder.createSource(givenBuffer);
+        assertSame(givenBuffer, actual);
     }
 }

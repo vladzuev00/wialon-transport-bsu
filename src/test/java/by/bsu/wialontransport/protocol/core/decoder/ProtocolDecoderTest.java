@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.protocolpackage.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,18 +17,19 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class ProtocolDecoderTest {
+    private static final Object GIVEN_PREFIX = new Object();
     private static final Object GIVEN_SOURCE = new Object();
 
     @Mock
-    private PackageDecoder<Object, Package> firstMockedPackageDecoder;
+    private PackageDecoder<Object, Object, Package> firstMockedPackageDecoder;
 
     @Mock
-    private PackageDecoder<Object, Package> secondMockedPackageDecoder;
+    private PackageDecoder<Object, Object, Package> secondMockedPackageDecoder;
 
     @Mock
-    private PackageDecoder<Object, Package> thirdMockedPackageDecoder;
+    private PackageDecoder<Object, Object, Package> thirdMockedPackageDecoder;
 
-    private ProtocolDecoder<?, ?, ?> protocolDecoder;
+    private ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> protocolDecoder;
 
     @Before
     public void initializeProtocolDecoder() {
@@ -37,6 +39,7 @@ public final class ProtocolDecoderTest {
                         this.secondMockedPackageDecoder,
                         this.thirdMockedPackageDecoder
                 ),
+                GIVEN_PREFIX,
                 GIVEN_SOURCE
         );
     }
@@ -45,16 +48,16 @@ public final class ProtocolDecoderTest {
     @SuppressWarnings("unchecked")
     public void bufferShouldBeDecoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final ByteBuf givenByteBuf = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
-        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_SOURCE))).thenReturn(false);
-        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_SOURCE))).thenReturn(true);
+        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(true);
 
         final Package givenPackage = mock(Package.class);
         when(this.secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
 
-        this.protocolDecoder.decode(givenContext, givenByteBuf, givenOutObjects);
+        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
 
         verifyNoInteractions(this.thirdMockedPackageDecoder);
         verify(givenOutObjects, times(1)).add(same(givenPackage));
@@ -64,28 +67,37 @@ public final class ProtocolDecoderTest {
     @Test(expected = RuntimeException.class)
     public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final ByteBuf givenByteBuf = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
-        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_SOURCE))).thenReturn(false);
-        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_SOURCE))).thenReturn(false);
-        when(this.thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_SOURCE))).thenReturn(false);
+        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(this.thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
 
-        this.protocolDecoder.decode(givenContext, givenByteBuf, givenOutObjects);
+        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
     }
 
     private static final class TestProtocolDecoder
-            extends ProtocolDecoder<Object, Package, PackageDecoder<Object, Package>> {
+            extends ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> {
         private final Object source;
+        private final Object prefix;
 
-        public TestProtocolDecoder(final List<PackageDecoder<Object, Package>> packageDecoders, final Object source) {
+        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, Package>> packageDecoders,
+                                   final Object prefix,
+                                   final Object source) {
             super(packageDecoders);
+            this.prefix = prefix;
             this.source = source;
         }
 
         @Override
-        protected Object createSource(final ByteBuf byteBuf) {
+        protected Object createSource(final ByteBuf buffer) {
             return this.source;
+        }
+
+        @Override
+        protected Object extractPackagePrefix(final Object source) {
+            return this.prefix;
         }
     }
 }
