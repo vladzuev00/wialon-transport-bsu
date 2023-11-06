@@ -1,7 +1,6 @@
-package by.bsu.wialontransport.protocol.newwing.model.packages.builder;
+package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingRequestPackageBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
