@@ -5,7 +5,7 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-import by.bsu.wialontransport.protocol.protocolpackage.Package;
+import by.bsu.wialontransport.protocol.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
