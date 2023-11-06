@@ -2,8 +2,8 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages.data;
 
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
-import by.bsu.wialontransport.protocol.newwing.model.packages.DataNewWingPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.builder.DataNewWingPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.DataNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.DataNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 

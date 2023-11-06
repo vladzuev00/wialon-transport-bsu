@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.builder.LoginNewWingPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.LoginNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 

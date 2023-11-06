@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.NewWingRequestPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.builder.NewWingRequestPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingRequestPackageBuilder;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.Setter;

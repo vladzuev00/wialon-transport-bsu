@@ -1,7 +1,7 @@
-package by.bsu.wialontransport.protocol.newwing.model.packages.builder;
+package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
-import by.bsu.wialontransport.protocol.newwing.model.packages.DataNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.DataNewWingPackage;
 import lombok.Setter;
 
 import java.util.List;

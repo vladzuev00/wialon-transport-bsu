@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.model.packages;
+package by.bsu.wialontransport.protocol.newwing.model.packages.request;
 
 import lombok.Getter;
 
