@@ -18,9 +18,9 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>> extends ChannelInboundHandlerAdapter {
-    private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE = "Start handling request package: '%s'";
-    private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected.";
-    private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '%s' was disconnected.";
+    private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE = "Start handling request package: '{}'";
+    private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
+    private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
     private static final String ALIAS_NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
     private final List<PACKAGE_HANDLER> packageHandlers;
@@ -57,8 +57,7 @@ public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>>
     }
 
     private static void logStartHandlingPackage(final Package requestPackage) {
-        final String message = TEMPLATE_MESSAGE_START_HANDLING_PACKAGE.formatted(requestPackage);
-        log.info(message);
+        log.info(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, requestPackage);
     }
 
     private PACKAGE_HANDLER findPackageHandler(final Package requestPackage) {
@@ -84,16 +83,16 @@ public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>>
     private void logAboutInactiveChannel(final ChannelHandlerContext context) {
         final Optional<String> optionalTrackerImei = this.contextAttributeManager.findTrackerImei(context);
         final String trackerImei = optionalTrackerImei.orElse(ALIAS_NOT_DEFINED_TRACKER_IMEI);
-        final String message = TEMPLATE_MESSAGE_INACTIVE_CHANNEL.formatted(trackerImei);
-        log.info(message);
+        log.info(TEMPLATE_MESSAGE_INACTIVE_CHANNEL, trackerImei);
     }
 
     private void removeConnectionInfoIfTrackerWasAuthorized(final ChannelHandlerContext context) {
-        final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
-        optionalTracker.ifPresent(tracker -> this.connectionManager.remove(tracker.getId()));
+        this.contextAttributeManager.findTracker(context)
+                .map(Tracker::getId)
+                .ifPresent(this.connectionManager::remove);
     }
 
-    private static final class NoSuitablePackageHandlerException extends RuntimeException {
+    static final class NoSuitablePackageHandlerException extends RuntimeException {
 
         @SuppressWarnings("unused")
         public NoSuitablePackageHandlerException() {

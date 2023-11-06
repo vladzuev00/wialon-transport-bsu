@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
+import sun.misc.Unsafe;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.stream;
 import static java.util.stream.Stream.iterate;
 
+//TODO: refactor
 @UtilityClass
 public final class ReflectionUtil {
 
@@ -31,8 +33,8 @@ public final class ReflectionUtil {
     }
 
     public static <T> void setProperty(final T object,
-                                       final Object propertyValue,
-                                       final String fieldName) {
+                                       final String fieldName,
+                                       final Object propertyValue) {
         try {
             final Field field = findField(object, fieldName);
             field.setAccessible(true);
@@ -40,6 +42,24 @@ public final class ReflectionUtil {
                 field.set(object, propertyValue);
             } finally {
                 field.setAccessible(false);
+            }
+        } catch (final Exception cause) {
+            throw new RuntimeException(cause);
+        }
+    }
+
+    public static void setStaticFieldValue(final Class<?> owner, final String fieldName, final Object value) {
+        try {
+            final Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            try {
+                final Unsafe unsafe = (Unsafe) unsafeField.get(null);
+                final Field ourField = owner.getDeclaredField(fieldName);
+                final Object staticFieldBase = unsafe.staticFieldBase(ourField);
+                final long staticFieldOffset = unsafe.staticFieldOffset(ourField);
+                unsafe.putObject(staticFieldBase, staticFieldOffset, value);
+            } finally {
+                unsafeField.setAccessible(false);
             }
         } catch (final Exception cause) {
             throw new RuntimeException(cause);

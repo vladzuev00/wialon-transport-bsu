@@ -57,6 +57,6 @@ public final class CurrentFrameEventCountTest {
     @SuppressWarnings("SameParameterValue")
     private static void setValue(final CurrentFrameEventCount currentFrameEventCount, final int value) {
         final AtomicInteger atomicInteger = new AtomicInteger(value);
-        setProperty(currentFrameEventCount, atomicInteger, FIELD_NAME_VALUE);
+        setProperty(currentFrameEventCount, FIELD_NAME_VALUE, atomicInteger);
     }
 }
