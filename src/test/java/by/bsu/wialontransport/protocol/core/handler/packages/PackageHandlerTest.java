@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages;
 
-import by.bsu.wialontransport.protocol.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.Setter;

@@ -6,7 +6,7 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler.NoSuitablePackageHandlerException;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-import by.bsu.wialontransport.protocol.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import lombok.Value;

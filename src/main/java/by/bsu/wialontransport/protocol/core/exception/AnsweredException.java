@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.exception;
 
-import by.bsu.wialontransport.protocol.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 
 public final class AnsweredException extends RuntimeException {
     private final Package answer;

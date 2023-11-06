@@ -28,6 +28,17 @@ public final class AuthorizationTrackerService {
     private final DataService dataService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    public void authorize(final String trackerImei, final ChannelHandlerContext context) {
+
+    }
+
+    public void authorize(final String trackerImei,
+                          final String password,
+                          final ChannelHandlerContext context) {
+
+    }
+
+    //TODO: remove
     public void authorize(final WialonRequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());
