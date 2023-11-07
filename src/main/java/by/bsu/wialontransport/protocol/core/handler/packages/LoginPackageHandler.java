@@ -1,16 +1,16 @@
 package by.bsu.wialontransport.protocol.core.handler.packages;
 
-import by.bsu.wialontransport.protocol.core.service.authorization.AuthorizationTrackerService;
+import by.bsu.wialontransport.protocol.core.service.authorization.TEMPAuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;
 
 public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends PackageHandler<PACKAGE> {
-    private final AuthorizationTrackerService authorizationTrackerService;
+    private final TEMPAuthorizationTrackerService authorizationTrackerService;
 
     public LoginPackageHandler(final Class<PACKAGE> handledPackageType,
-                               final AuthorizationTrackerService authorizationTrackerService) {
+                               final TEMPAuthorizationTrackerService authorizationTrackerService) {
         super(handledPackageType);
         this.authorizationTrackerService = authorizationTrackerService;
     }

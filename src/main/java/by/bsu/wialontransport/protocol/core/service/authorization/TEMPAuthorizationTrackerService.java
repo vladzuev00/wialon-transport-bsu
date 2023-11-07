@@ -21,7 +21,7 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonR
 //TODO: refactor tests
 @Service
 @RequiredArgsConstructor
-public final class AuthorizationTrackerService {
+public final class TEMPAuthorizationTrackerService {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;
