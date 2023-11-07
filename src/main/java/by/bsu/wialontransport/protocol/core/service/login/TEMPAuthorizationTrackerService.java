@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.authorization;
+package by.bsu.wialontransport.protocol.core.service.login;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;

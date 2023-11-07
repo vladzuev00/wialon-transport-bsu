@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.authorization;
+package by.bsu.wialontransport.protocol.core.service.login;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
@@ -15,18 +15,18 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
-public abstract class TrackerAuthorizationService<PACKAGE extends LoginPackage> {
+public abstract class TrackerLoginService<PACKAGE extends LoginPackage> {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;
     private final DataService dataService;
 
-    public final void authorize(final PACKAGE loginPackage, final ChannelHandlerContext context) {
+    public final void login(final PACKAGE loginPackage, final ChannelHandlerContext context) {
         final String trackerImei = loginPackage.getImei();
         this.contextAttributeManager.putTrackerImei(context, trackerImei);
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(trackerImei);
         optionalTracker.ifPresentOrElse(
-                tracker -> this.authorizeExistingTracker(tracker, loginPackage, context),
+                tracker -> this.loginExistingTracker(tracker, loginPackage, context),
                 () -> this.sendNoSuchImeiResponse(context)
         );
     }
@@ -35,19 +35,19 @@ public abstract class TrackerAuthorizationService<PACKAGE extends LoginPackage> 
 
     protected abstract Package createSuccessResponse();
 
-    protected abstract Optional<Package> checkPackageAndCreateResponseIfAuthorizationFailed(final Tracker tracker,
-                                                                                            final PACKAGE loginPackage);
+    protected abstract Optional<Package> checkPackageAndCreateResponseIfLoginFailed(final Tracker tracker,
+                                                                                    final PACKAGE loginPackage);
 
-    private void authorizeExistingTracker(final Tracker tracker,
-                                          final PACKAGE loginPackage,
-                                          final ChannelHandlerContext context) {
-        final Optional<Package> optionalFailedResponse = this.checkPackageAndCreateResponseIfAuthorizationFailed(
+    private void loginExistingTracker(final Tracker tracker,
+                                      final PACKAGE loginPackage,
+                                      final ChannelHandlerContext context) {
+        final Optional<Package> optionalFailedResponse = this.checkPackageAndCreateResponseIfLoginFailed(
                 tracker,
                 loginPackage
         );
         optionalFailedResponse.ifPresentOrElse(
                 context::writeAndFlush,
-                () -> this.handleSuccessAuthorization(tracker, context)
+                () -> this.handleSuccessLogin(tracker, context)
         );
     }
 
@@ -64,7 +64,7 @@ public abstract class TrackerAuthorizationService<PACKAGE extends LoginPackage> 
         context.writeAndFlush(response);
     }
 
-    private void handleSuccessAuthorization(final Tracker tracker, final ChannelHandlerContext context) {
+    private void handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTracker(context, tracker);
         this.connectionManager.add(context);
         this.putLastDataInContextIfExist(tracker, context);

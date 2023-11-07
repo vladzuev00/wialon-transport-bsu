@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.authorization;
+package by.bsu.wialontransport.protocol.core.service.login;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
@@ -13,22 +13,22 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-public abstract class TrackerProtectedAuthorizationService<PACKAGE extends ProtectedLoginPackage>
-        extends TrackerAuthorizationService<PACKAGE> {
+public abstract class TrackerProtectedLoginService<PACKAGE extends ProtectedLoginPackage>
+        extends TrackerLoginService<PACKAGE> {
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public TrackerProtectedAuthorizationService(final ContextAttributeManager contextAttributeManager,
-                                                final TrackerService trackerService,
-                                                final ConnectionManager connectionManager,
-                                                final DataService dataService,
-                                                final BCryptPasswordEncoder passwordEncoder) {
+    public TrackerProtectedLoginService(final ContextAttributeManager contextAttributeManager,
+                                        final TrackerService trackerService,
+                                        final ConnectionManager connectionManager,
+                                        final DataService dataService,
+                                        final BCryptPasswordEncoder passwordEncoder) {
         super(contextAttributeManager, trackerService, connectionManager, dataService);
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    protected final Optional<Package> checkPackageAndCreateResponseIfAuthorizationFailed(final Tracker tracker,
-                                                                                         final PACKAGE loginPackage) {
+    protected final Optional<Package> checkPackageAndCreateResponseIfLoginFailed(final Tracker tracker,
+                                                                                 final PACKAGE loginPackage) {
         return this.isPasswordCorrect(tracker, loginPackage)
                 ? empty()
                 : Optional.of(this.createWrongPasswordResponse());
