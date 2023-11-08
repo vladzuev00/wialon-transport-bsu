@@ -19,8 +19,16 @@ public final class NewWingDataIteratorTest {
     public void bufferShouldBeIterated() {
         final NewWingDataDecoder givenDataDecoder = mock(NewWingDataDecoder.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final int givenDataCount = 3;
-        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDataDecoder, givenBuffer, givenDataCount);
+        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDataDecoder, givenBuffer);
+
+        when(givenBuffer.isReadable())
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(true)
+                .thenReturn(false);
 
         final NewWingData firstGivenData = createData(2, 9, 20);
         final NewWingData secondGivenData = createData(3, 10, 21);
@@ -39,12 +47,10 @@ public final class NewWingDataIteratorTest {
     public void bufferShouldNotBeIteratedBecauseOfNoSuchElementException() {
         final NewWingDataDecoder givenDataDecoder = mock(NewWingDataDecoder.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final int givenDataCount = 3;
-        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDataDecoder, givenBuffer, givenDataCount);
+        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDataDecoder, givenBuffer);
 
-        givenIterator.next();
-        givenIterator.next();
-        givenIterator.next();
+        when(givenBuffer.isReadable()).thenReturn(false);
+
         givenIterator.next();
     }
 
