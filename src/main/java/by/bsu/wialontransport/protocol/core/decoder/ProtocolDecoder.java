@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
-import by.bsu.wialontransport.protocol.protocolpackage.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;

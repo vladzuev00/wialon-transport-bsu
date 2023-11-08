@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
-import by.bsu.wialontransport.protocol.core.service.authorization.AuthorizationTrackerService;
+import by.bsu.wialontransport.protocol.core.service.login.TEMPAuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
@@ -24,7 +24,7 @@ public final class RequestLoginPackageHandlerTest {
     private RequestPingPackageHandler mockedNextHandler;
 
     @Mock
-    private AuthorizationTrackerService mockedAuthorizationTrackerService;
+    private TEMPAuthorizationTrackerService mockedAuthorizationTrackerService;
 
     private RequestLoginPackageHandler handler;
 

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.authorization;
+package by.bsu.wialontransport.protocol.core.service.login;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
@@ -21,13 +21,24 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonR
 //TODO: refactor tests
 @Service
 @RequiredArgsConstructor
-public final class AuthorizationTrackerService {
+public final class TEMPAuthorizationTrackerService {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ConnectionManager connectionManager;
     private final DataService dataService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    public void authorize(final String trackerImei, final ChannelHandlerContext context) {
+
+    }
+
+    public void authorize(final String trackerImei,
+                          final String password,
+                          final ChannelHandlerContext context) {
+
+    }
+
+    //TODO: remove
     public void authorize(final WialonRequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
         final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());

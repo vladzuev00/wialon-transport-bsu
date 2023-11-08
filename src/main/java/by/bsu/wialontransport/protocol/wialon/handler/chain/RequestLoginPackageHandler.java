@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain;
 
-import by.bsu.wialontransport.protocol.core.service.authorization.AuthorizationTrackerService;
+import by.bsu.wialontransport.protocol.core.service.login.TEMPAuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class RequestLoginPackageHandler extends PackageHandler {
-    private final AuthorizationTrackerService authorizationTrackerService;
+    private final TEMPAuthorizationTrackerService authorizationTrackerService;
 
     public RequestLoginPackageHandler(final RequestPingPackageHandler nextHandler,
-                                      final AuthorizationTrackerService authorizationTrackerService) {
+                                      final TEMPAuthorizationTrackerService authorizationTrackerService) {
         super(WialonRequestLoginPackage.class, nextHandler);
         this.authorizationTrackerService = authorizationTrackerService;
     }

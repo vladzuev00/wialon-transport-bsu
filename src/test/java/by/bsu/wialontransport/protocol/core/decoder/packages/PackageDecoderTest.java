@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.protocolpackage.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

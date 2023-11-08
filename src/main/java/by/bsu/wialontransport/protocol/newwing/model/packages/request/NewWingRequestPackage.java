@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request;
 
-import by.bsu.wialontransport.protocol.protocolpackage.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
