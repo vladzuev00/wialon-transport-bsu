@@ -8,7 +8,7 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.core.service.login.responseprovider.LoginResponseProvider;
+import by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider.LoginResponseProvider;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 

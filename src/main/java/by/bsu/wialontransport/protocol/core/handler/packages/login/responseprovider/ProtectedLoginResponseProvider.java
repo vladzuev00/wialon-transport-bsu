@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.service.login.responseprovider;
+package by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider;
 
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import lombok.Getter;

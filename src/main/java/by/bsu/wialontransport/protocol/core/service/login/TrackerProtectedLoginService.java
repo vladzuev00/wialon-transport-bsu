@@ -7,7 +7,7 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.core.model.packages.ProtectedLoginPackage;
-import by.bsu.wialontransport.protocol.core.service.login.responseprovider.ProtectedLoginResponseProvider;
+import by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider.ProtectedLoginResponseProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
