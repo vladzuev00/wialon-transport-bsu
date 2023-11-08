@@ -7,14 +7,17 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.core.model.packages.ProtectedLoginPackage;
+import by.bsu.wialontransport.protocol.core.service.login.responseprovider.ProtectedLoginResponseProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-public abstract class TrackerProtectedLoginService<PACKAGE extends ProtectedLoginPackage>
-        extends TrackerLoginService<PACKAGE> {
+@Service
+public final class TrackerProtectedLoginService
+        extends TrackerLoginService<ProtectedLoginPackage, ProtectedLoginResponseProvider> {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public TrackerProtectedLoginService(final ContextAttributeManager contextAttributeManager,
@@ -27,16 +30,16 @@ public abstract class TrackerProtectedLoginService<PACKAGE extends ProtectedLogi
     }
 
     @Override
-    protected final Optional<Package> checkPackageAndCreateResponseIfLoginFailed(final Tracker tracker,
-                                                                                 final PACKAGE loginPackage) {
-        return this.isPasswordCorrect(tracker, loginPackage)
-                ? empty()
-                : Optional.of(this.createWrongPasswordResponse());
+    protected Optional<Package> checkPackageAndTakeResponseIfLoginFailed(
+            final Tracker tracker,
+            final ProtectedLoginPackage loginPackage,
+            final ProtectedLoginResponseProvider responseProvider
+    ) {
+        final Package wrongPasswordResponse = responseProvider.getWrongPasswordResponse();
+        return this.isPasswordCorrect(tracker, loginPackage) ? empty() : Optional.of(wrongPasswordResponse);
     }
 
-    protected abstract Package createWrongPasswordResponse();
-
-    private boolean isPasswordCorrect(final Tracker tracker, final PACKAGE loginPackage) {
+    private boolean isPasswordCorrect(final Tracker tracker, final ProtectedLoginPackage loginPackage) {
         final String packagePassword = loginPackage.getPassword();
         final String trackerEncodedPassword = tracker.getPassword();
         return this.passwordEncoder.matches(packagePassword, trackerEncodedPassword);
