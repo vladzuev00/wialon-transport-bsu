@@ -7,13 +7,16 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.core.service.login.responseprovider.UnprotectedLoginResponseProvider;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-public abstract class TrackerUnprotectedLoginService<PACKAGE extends LoginPackage>
-        extends TrackerLoginService<PACKAGE> {
+@Service
+public final class TrackerUnprotectedLoginService
+        extends TrackerLoginService<LoginPackage, UnprotectedLoginResponseProvider> {
 
     public TrackerUnprotectedLoginService(final ContextAttributeManager contextAttributeManager,
                                           final TrackerService trackerService,
@@ -23,8 +26,11 @@ public abstract class TrackerUnprotectedLoginService<PACKAGE extends LoginPackag
     }
 
     @Override
-    protected final Optional<Package> checkPackageAndCreateResponseIfLoginFailed(final Tracker tracker,
-                                                                                 final PACKAGE loginPackage) {
+    protected Optional<Package> checkPackageAndTakeResponseIfLoginFailed(
+            final Tracker tracker,
+            final LoginPackage loginPackage,
+            final UnprotectedLoginResponseProvider responseProvider
+    ) {
         return empty();
     }
 }
