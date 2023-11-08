@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Optional;
 
-//TODO: сделать ProtocolHandler<PACKAGE extends Package>
 @Slf4j
 @RequiredArgsConstructor
 public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>> extends ChannelInboundHandlerAdapter {
@@ -24,7 +23,6 @@ public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>>
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
     private static final String ALIAS_NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
-    //TODO: сделать List<PackageHandler<PACKAGE>>
     private final List<PACKAGE_HANDLER> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
     private final ConnectionManager connectionManager;
