@@ -45,7 +45,7 @@ public final class ProtocolHandlerTest {
     @Mock
     private ConnectionManager mockedConnectionManager;
 
-    private ProtocolHandler<?> protocolHandler;
+    private ProtocolHandler protocolHandler;
 
     @Before
     public void initializeProtocolHandler() {
@@ -219,7 +219,7 @@ public final class ProtocolHandlerTest {
         long id;
     }
 
-    private static final class TestProtocolHandler extends ProtocolHandler<PackageHandler<TestPackage>> {
+    private static final class TestProtocolHandler extends ProtocolHandler {
 
         public TestProtocolHandler(final List<PackageHandler<TestPackage>> packageHandlers,
                                    final ContextAttributeManager contextAttributeManager,

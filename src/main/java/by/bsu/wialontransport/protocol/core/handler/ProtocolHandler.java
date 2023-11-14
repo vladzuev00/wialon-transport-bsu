@@ -17,13 +17,13 @@ import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>> extends ChannelInboundHandlerAdapter {
+public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE = "Start handling request package: '{}'";
     private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
     private static final String ALIAS_NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
-    private final List<PACKAGE_HANDLER> packageHandlers;
+    private final List<PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
     private final ConnectionManager connectionManager;
 
@@ -31,7 +31,7 @@ public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>>
     public final void channelRead(final ChannelHandlerContext context, final Object requestObject) {
         final Package requestPackage = (Package) requestObject;
         logStartHandlingPackage(requestPackage);
-        final PACKAGE_HANDLER packageHandler = this.findPackageHandler(requestPackage);
+        final PackageHandler<?> packageHandler = this.findPackageHandler(requestPackage);
         packageHandler.handle(requestPackage, context);
     }
 
@@ -60,7 +60,7 @@ public abstract class ProtocolHandler<PACKAGE_HANDLER extends PackageHandler<?>>
         log.info(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, requestPackage);
     }
 
-    private PACKAGE_HANDLER findPackageHandler(final Package requestPackage) {
+    private PackageHandler<?> findPackageHandler(final Package requestPackage) {
         return this.packageHandlers.stream()
                 .filter(packageHandler -> packageHandler.isAbleToHandle(requestPackage))
                 .findFirst()
