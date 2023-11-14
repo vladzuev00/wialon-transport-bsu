@@ -49,7 +49,9 @@ public class SearchingCitiesProcessController {
             @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
             @RequestParam(name = "pageSize") @Min(1) final Integer pageSize) {
         final List<SearchingCitiesProcess> foundProcesses = this.processService.findByStatus(
-                status, pageNumber, pageSize
+                status,
+                pageNumber,
+                pageSize
         );
         return ok(this.mapper.mapToResponse(pageNumber, pageSize, foundProcesses));
     }
@@ -59,7 +61,8 @@ public class SearchingCitiesProcessController {
             @Valid @RequestBody final StartSearchingCitiesRequest request) {
         this.validator.validate(request);
         final SearchingCitiesProcess createdProcess = this.startingProcessService.start(
-                request.getAreaCoordinate(), request.getSearchStep()
+                request.getAreaCoordinate(),
+                request.getSearchStep()
         );
         return ok(this.mapper.mapToResponse(createdProcess));
     }
