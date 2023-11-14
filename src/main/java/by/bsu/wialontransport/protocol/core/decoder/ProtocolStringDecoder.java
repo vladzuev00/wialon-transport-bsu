@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageStringDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -16,8 +16,7 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
 
     private final Pattern packagePrefixPattern;
 
-    public ProtocolStringDecoder(final List<PackageDecoder<String, String, ?>> packageDecoders,
-                                 final String packagePrefixRegex) {
+    public ProtocolStringDecoder(final List<PackageStringDecoder<?>> packageDecoders, final String packagePrefixRegex) {
         super(packageDecoders);
         this.packagePrefixPattern = compile(packagePrefixRegex);
     }
