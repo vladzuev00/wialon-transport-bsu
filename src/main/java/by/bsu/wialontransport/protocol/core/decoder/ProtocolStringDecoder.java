@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageStringDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -11,12 +11,13 @@ import java.util.regex.Pattern;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Pattern.compile;
 
-public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, String, PackageStringDecoder<?>> {
+public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, String> {
     private static final Charset CHARSET_TO_DECODE_BUFFER = UTF_8;
 
     private final Pattern packagePrefixPattern;
 
-    public ProtocolStringDecoder(final List<PackageStringDecoder<?>> packageDecoders, final String packagePrefixRegex) {
+    public ProtocolStringDecoder(final List<PackageDecoder<String, String, ?>> packageDecoders,
+                                 final String packagePrefixRegex) {
         super(packageDecoders);
         this.packagePrefixPattern = compile(packagePrefixRegex);
     }

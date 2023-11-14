@@ -1,13 +1,13 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageBufferDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-public abstract class ProtocolBufferDecoder<PREFIX> extends ProtocolDecoder<PREFIX, ByteBuf, PackageBufferDecoder<PREFIX, ?>> {
+public abstract class ProtocolBufferDecoder<PREFIX> extends ProtocolDecoder<PREFIX, ByteBuf> {
 
-    public ProtocolBufferDecoder(final List<PackageBufferDecoder<PREFIX, ?>> packageDecoders) {
+    public ProtocolBufferDecoder(final List<PackageDecoder<PREFIX, ByteBuf, ?>> packageDecoders) {
         super(packageDecoders);
     }
 
