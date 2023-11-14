@@ -11,13 +11,12 @@ import java.util.regex.Pattern;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Pattern.compile;
 
-public abstract class ProtocolStringDecoder<DECODER extends PackageStringDecoder<?>>
-        extends ProtocolDecoder<String, String, DECODER> {
+public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, String, PackageStringDecoder<?>> {
     private static final Charset CHARSET_TO_DECODE_BUFFER = UTF_8;
 
     private final Pattern packagePrefixPattern;
 
-    public ProtocolStringDecoder(final List<DECODER> packageDecoders, final String packagePrefixRegex) {
+    public ProtocolStringDecoder(final List<PackageStringDecoder<?>> packageDecoders, final String packagePrefixRegex) {
         super(packageDecoders);
         this.packagePrefixPattern = compile(packagePrefixRegex);
     }
