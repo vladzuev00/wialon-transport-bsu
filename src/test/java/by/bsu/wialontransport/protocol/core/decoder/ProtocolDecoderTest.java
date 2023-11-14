@@ -30,7 +30,7 @@ public final class ProtocolDecoderTest {
     @Mock
     private PackageDecoder<Object, Object, Package> thirdMockedPackageDecoder;
 
-    private ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> protocolDecoder;
+    private ProtocolDecoder<Object, Object> protocolDecoder;
 
     @Before
     public void initializeProtocolDecoder() {
@@ -78,12 +78,11 @@ public final class ProtocolDecoderTest {
         this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
     }
 
-    private static final class TestProtocolDecoder
-            extends ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> {
+    private static final class TestProtocolDecoder extends ProtocolDecoder<Object, Object> {
         private final Object source;
         private final Object prefix;
 
-        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, Package>> packageDecoders,
+        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, ?>> packageDecoders,
                                    final Object prefix,
                                    final Object source) {
             super(packageDecoders);
