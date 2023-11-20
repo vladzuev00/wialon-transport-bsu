@@ -5,21 +5,22 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public abstract class ProtocolDecoder<PREFIX, SOURCE, DECODER extends PackageDecoder<PREFIX, SOURCE, ?>>
-        extends ReplayingDecoder<Package> {
-    private final List<DECODER> packageDecoders;
+public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ReplayingDecoder<Package> {
+    private final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders;
+
+    public ProtocolDecoder(final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders) {
+        this.packageDecoders = packageDecoders;
+    }
 
     @Override
     protected final void decode(final ChannelHandlerContext context,
                                 final ByteBuf buffer,
                                 final List<Object> outObjects) {
         final SOURCE source = this.createSource(buffer);
-        final DECODER decoder = this.findPackageDecoder(source);
+        final PackageDecoder<PREFIX, SOURCE, ?> decoder = this.findPackageDecoder(source);
         final Package requestPackage = decoder.decode(source);
         outObjects.add(requestPackage);
     }
@@ -28,7 +29,7 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE, DECODER extends PackageDec
 
     protected abstract PREFIX extractPackagePrefix(final SOURCE source);
 
-    private DECODER findPackageDecoder(final SOURCE source) {
+    private PackageDecoder<PREFIX, SOURCE, ?> findPackageDecoder(final SOURCE source) {
         final PREFIX packagePrefix = this.extractPackagePrefix(source);
         return this.packageDecoders.stream()
                 .filter(packageDecoder -> packageDecoder.isAbleToDecode(packagePrefix))
@@ -40,7 +41,7 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE, DECODER extends PackageDec
                 );
     }
 
-    private static final class NoSuitablePackageDecoderException extends RuntimeException {
+    static final class NoSuitablePackageDecoderException extends RuntimeException {
 
         @SuppressWarnings("unused")
         public NoSuitablePackageDecoderException() {

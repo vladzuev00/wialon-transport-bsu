@@ -17,7 +17,7 @@ public final class ProtocolStringDecoderTest {
     private static final String GIVEN_PACKAGE_PREFIX_REGEX = "^#.+#";
     private static final Charset EXPECTED_CHARSET = UTF_8;
 
-    private final ProtocolStringDecoder<?> decoder = new ProtocolStringDecoder<>(null, GIVEN_PACKAGE_PREFIX_REGEX) {
+    private final ProtocolStringDecoder decoder = new ProtocolStringDecoder(null, GIVEN_PACKAGE_PREFIX_REGEX) {
 
     };
 
