@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
+import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder.NoSuitablePackageDecoderException;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
@@ -29,7 +30,7 @@ public final class ProtocolDecoderTest {
     @Mock
     private PackageDecoder<Object, Object, Package> thirdMockedPackageDecoder;
 
-    private ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> protocolDecoder;
+    private ProtocolDecoder<Object, Object> protocolDecoder;
 
     @Before
     public void initializeProtocolDecoder() {
@@ -64,7 +65,7 @@ public final class ProtocolDecoderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NoSuitablePackageDecoderException.class)
     public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
@@ -77,12 +78,11 @@ public final class ProtocolDecoderTest {
         this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
     }
 
-    private static final class TestProtocolDecoder
-            extends ProtocolDecoder<Object, Object, PackageDecoder<Object, Object, Package>> {
+    private static final class TestProtocolDecoder extends ProtocolDecoder<Object, Object> {
         private final Object source;
         private final Object prefix;
 
-        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, Package>> packageDecoders,
+        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, ?>> packageDecoders,
                                    final Object prefix,
                                    final Object source) {
             super(packageDecoders);

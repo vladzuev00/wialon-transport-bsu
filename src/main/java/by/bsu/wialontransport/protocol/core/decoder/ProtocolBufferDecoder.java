@@ -5,13 +5,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-public abstract class ProtocolBufferDecoder<
-        PREFIX,
-        DECODER extends PackageBufferDecoder<PREFIX, ?>
-        >
-        extends ProtocolDecoder<PREFIX, ByteBuf, DECODER> {
+public abstract class ProtocolBufferDecoder<PREFIX> extends ProtocolDecoder<PREFIX, ByteBuf> {
 
-    public ProtocolBufferDecoder(final List<DECODER> packageDecoders) {
+    public ProtocolBufferDecoder(final List<PackageBufferDecoder<PREFIX, ?>> packageDecoders) {
         super(packageDecoders);
     }
 
