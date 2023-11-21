@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.handler;
+package by.bsu.wialontransport.protocol.wialon.temphandler;
 
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;

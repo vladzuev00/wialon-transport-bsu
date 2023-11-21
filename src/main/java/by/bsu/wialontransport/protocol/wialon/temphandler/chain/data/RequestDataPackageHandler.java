@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain.data;
 
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 

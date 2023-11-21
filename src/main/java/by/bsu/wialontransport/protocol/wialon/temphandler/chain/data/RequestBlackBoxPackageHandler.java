@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain.data;
 
-import by.bsu.wialontransport.protocol.wialon.handler.chain.FinisherPackageHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.chain.FinisherPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 
 import org.springframework.stereotype.Component;

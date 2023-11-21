@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain;
 
 import by.bsu.wialontransport.protocol.core.service.login.TEMPAuthorizationTrackerService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;

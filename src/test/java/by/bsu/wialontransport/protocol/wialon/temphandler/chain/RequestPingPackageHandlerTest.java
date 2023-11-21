@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain;
 
-import by.bsu.wialontransport.protocol.wialon.handler.chain.data.RequestDataPackageHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.chain.data.RequestDataPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonResponsePingPackage;

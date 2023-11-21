@@ -2,8 +2,8 @@ package by.bsu.wialontransport.protocol.wialon.server;
 
 import by.bsu.wialontransport.protocol.wialon.tempdecoder.WialonDecoder;
 import by.bsu.wialontransport.protocol.wialon.encoder.WialonEncoder;
-import by.bsu.wialontransport.protocol.wialon.handler.WialonExceptionHandler;
-import by.bsu.wialontransport.protocol.wialon.handler.WialonHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.WialonExceptionHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.WialonHandler;
 import by.bsu.wialontransport.protocol.wialon.server.exception.WialonRunningServerException;
 import by.bsu.wialontransport.protocol.wialon.server.exception.WialonServerShutdownException;
 import io.netty.bootstrap.ServerBootstrap;

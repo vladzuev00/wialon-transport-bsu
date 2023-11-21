@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataService;
-import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 

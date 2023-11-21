@@ -1,10 +1,10 @@
-package by.bsu.wialontransport.protocol.wialon.handler;
+package by.bsu.wialontransport.protocol.wialon.temphandler;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
-import by.bsu.wialontransport.protocol.wialon.handler.chain.StarterPackageHandler;
+import by.bsu.wialontransport.protocol.wialon.temphandler.chain.StarterPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

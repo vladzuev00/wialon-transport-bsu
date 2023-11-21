@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.handler.chain.exception;
+package by.bsu.wialontransport.protocol.wialon.temphandler.chain.exception;
 
 public final class NoSuitablePackageHandlerException extends RuntimeException {
     public NoSuitablePackageHandlerException() {
