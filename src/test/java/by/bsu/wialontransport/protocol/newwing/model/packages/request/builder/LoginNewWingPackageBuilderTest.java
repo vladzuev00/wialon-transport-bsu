@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.LoginNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLoginPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -16,8 +16,8 @@ public final class LoginNewWingPackageBuilderTest {
 
         final int givenChecksum = 111;
 
-        final LoginNewWingPackage actual = givenBuilder.build(givenChecksum);
-        final LoginNewWingPackage expected = new LoginNewWingPackage(givenChecksum, givenImei);
+        final NewWingLoginPackage actual = givenBuilder.build(givenChecksum);
+        final NewWingLoginPackage expected = new NewWingLoginPackage(givenChecksum, givenImei);
         assertEquals(expected, actual);
     }
 }

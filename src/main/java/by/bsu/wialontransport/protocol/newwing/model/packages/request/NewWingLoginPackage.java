@@ -4,10 +4,10 @@ import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 import lombok.Getter;
 
 @Getter
-public final class LoginNewWingPackage extends NewWingRequestPackage implements LoginPackage {
+public final class NewWingLoginPackage extends NewWingRequestPackage implements LoginPackage {
     private final String imei;
 
-    public LoginNewWingPackage(final int checksum, final String imei) {
+    public NewWingLoginPackage(final int checksum, final String imei) {
         super(checksum);
         this.imei = imei;
     }

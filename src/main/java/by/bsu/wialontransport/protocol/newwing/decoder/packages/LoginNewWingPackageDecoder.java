@@ -1,13 +1,13 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.LoginNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLoginPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.LoginNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
 import static java.lang.String.format;
 
 public final class LoginNewWingPackageDecoder
-        extends NewWingPackageDecoder<LoginNewWingPackage, LoginNewWingPackageBuilder> {
+        extends NewWingPackageDecoder<NewWingLoginPackage, LoginNewWingPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSGC";
     private static final String TEMPLATE_IMEI = "%020d";
 

@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.response;
 
-public final class FailureResponseNewWingPackage extends ResponseNewWingPackage {
+public final class NewWingFailureResponsePackage extends ResponseNewWingPackage {
     private static final String VALUE = "FFFFF";
 
-    public FailureResponseNewWingPackage() {
+    public NewWingFailureResponsePackage() {
         super(VALUE);
     }
 
