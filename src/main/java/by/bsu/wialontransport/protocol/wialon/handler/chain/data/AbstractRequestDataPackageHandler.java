@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
-import by.bsu.wialontransport.protocol.core.service.receivingdata.AbstractReceivingDataPackageService;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
@@ -8,11 +8,11 @@ import io.netty.channel.ChannelHandlerContext;
 
 public abstract class AbstractRequestDataPackageHandler<RequestPackageType extends AbstractWialonRequestDataPackage>
         extends PackageHandler {
-    private final AbstractReceivingDataPackageService<RequestPackageType, ?> receivingPackageService;
+    private final ReceivingDataService<RequestPackageType, ?> receivingPackageService;
 
     public AbstractRequestDataPackageHandler(final Class<RequestPackageType> requestPackageType,
                                              final PackageHandler nextHandler,
-                                             final AbstractReceivingDataPackageService<RequestPackageType, ?> receivingPackageService) {
+                                             final ReceivingDataService<RequestPackageType, ?> receivingPackageService) {
         super(requestPackageType, nextHandler);
         this.receivingPackageService = receivingPackageService;
     }

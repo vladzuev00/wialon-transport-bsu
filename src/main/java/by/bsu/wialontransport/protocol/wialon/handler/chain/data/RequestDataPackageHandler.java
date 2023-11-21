@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
-import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataPackageService;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 
 import org.springframework.stereotype.Component;

@@ -5,7 +5,7 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider.LoginResponseProvider;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
-import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingBlackBoxPackageService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.FinisherPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 

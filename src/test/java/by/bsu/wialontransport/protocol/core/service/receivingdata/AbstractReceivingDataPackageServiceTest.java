@@ -47,7 +47,7 @@ public final class AbstractReceivingDataPackageServiceTest {
     @Captor
     private ArgumentCaptor<Data> dataArgumentCaptor;
 
-    private AbstractReceivingDataPackageService<TestRequestDataPackage, TestResponseDataPackage> receivingService;
+    private ReceivingDataService<TestRequestDataPackage, TestResponseDataPackage> receivingService;
 
     @Before
     public void initializeReceivingService() {
@@ -325,7 +325,7 @@ public final class AbstractReceivingDataPackageServiceTest {
     }
 
     private static final class TestReceivingDataPackageService
-            extends AbstractReceivingDataPackageService<TestRequestDataPackage, TestResponseDataPackage> {
+            extends ReceivingDataService<TestRequestDataPackage, TestResponseDataPackage> {
 
         public TestReceivingDataPackageService(final ContextAttributeManager contextAttributeManager,
                                                final DataFilter dataFilter,

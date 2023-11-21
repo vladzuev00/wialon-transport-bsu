@@ -1,7 +1,7 @@
 //package by.bsu.wialontransport.protocol.core.handler.packages;
 //
 //import by.bsu.wialontransport.protocol.core.handler.packages.login.LoginPackageHandler;
-//import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
+//import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 //import by.bsu.wialontransport.protocol.core.service.login.TrackerLoginService;
 //import io.netty.channel.ChannelHandlerContext;
 //import org.junit.Before;

@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
 import by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider.ProtectedLoginResponseProvider;
-import by.bsu.wialontransport.protocol.core.model.packages.ProtectedLoginPackage;
+import by.bsu.wialontransport.protocol.core.model.packages.login.ProtectedLoginPackage;
 import by.bsu.wialontransport.protocol.core.service.login.TrackerProtectedLoginService;
 
 public abstract class ProtectedLoginPackageHandler<

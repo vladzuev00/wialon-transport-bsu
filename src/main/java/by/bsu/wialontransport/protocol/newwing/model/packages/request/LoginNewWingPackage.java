@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request;
 
-import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 import lombok.Getter;
 
 @Getter

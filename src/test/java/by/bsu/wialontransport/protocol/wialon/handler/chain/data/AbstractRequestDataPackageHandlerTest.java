@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.handler.chain.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.AbstractReceivingDataPackageService;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataService;
 import by.bsu.wialontransport.protocol.wialon.handler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
@@ -28,7 +28,7 @@ public final class AbstractRequestDataPackageHandlerTest {
     private PackageHandler mockedNextHandler;
 
     @Mock
-    private AbstractReceivingDataPackageService<TestRequestDataPackage, ?> mockedReceivingPackageService;
+    private ReceivingDataService<TestRequestDataPackage, ?> mockedReceivingPackageService;
 
     private TestRequestDataPackageHandler handler;
 
@@ -75,7 +75,7 @@ public final class AbstractRequestDataPackageHandlerTest {
             extends AbstractRequestDataPackageHandler<TestRequestDataPackage> {
 
         public TestRequestDataPackageHandler(final PackageHandler nextHandler,
-                                             final AbstractReceivingDataPackageService<TestRequestDataPackage, ?> receivingPackageService) {
+                                             final ReceivingDataService<TestRequestDataPackage, ?> receivingPackageService) {
             super(TestRequestDataPackage.class, nextHandler, receivingPackageService);
         }
     }
