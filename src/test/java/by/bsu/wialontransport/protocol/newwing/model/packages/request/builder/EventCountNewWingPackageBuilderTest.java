@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.EventCountNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,8 +19,8 @@ public final class EventCountNewWingPackageBuilderTest {
 
         final int givenChecksum = 100;
 
-        final EventCountNewWingPackage actual = givenBuilder.build(givenChecksum);
-        final EventCountNewWingPackage expected = new EventCountNewWingPackage(
+        final NewWingEventCountPackage actual = givenBuilder.build(givenChecksum);
+        final NewWingEventCountPackage expected = new NewWingEventCountPackage(
                 givenChecksum,
                 givenEventCount,
                 givenFrameEventCount
