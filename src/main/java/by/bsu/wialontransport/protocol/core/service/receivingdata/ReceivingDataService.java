@@ -25,7 +25,7 @@ public final class ReceivingDataService {
         this.dataFixer = dataFixer;
     }
 
-    public final void receive(final List<Data> receivedData, final ChannelHandlerContext context) {
+    public void receive(final List<Data> receivedData, final ChannelHandlerContext context) {
 //        final Optional<Data> optionalPreviousData = this.contextAttributeManager.findLastData(context);
 //
 //        final List<Data> filteredAndFixedData = optionalPreviousData
