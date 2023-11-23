@@ -1,15 +1,15 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.EventCountNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import lombok.Setter;
 
 @Setter
-public final class EventCountNewWingPackageBuilder extends NewWingRequestPackageBuilder<EventCountNewWingPackage> {
+public final class EventCountNewWingPackageBuilder extends NewWingRequestPackageBuilder<NewWingEventCountPackage> {
     private short eventCount;
     private short frameEventCount;
 
     @Override
-    protected EventCountNewWingPackage build(final int checksum) {
-        return new EventCountNewWingPackage(checksum, this.eventCount, this.frameEventCount);
+    protected NewWingEventCountPackage build(final int checksum) {
+        return new NewWingEventCountPackage(checksum, this.eventCount, this.frameEventCount);
     }
 }

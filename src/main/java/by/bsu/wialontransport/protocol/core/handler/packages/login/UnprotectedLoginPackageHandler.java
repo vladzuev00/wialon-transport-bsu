@@ -1,19 +1,30 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
-import by.bsu.wialontransport.protocol.core.handler.packages.login.responseprovider.LoginResponseProvider;
-import by.bsu.wialontransport.protocol.core.model.packages.LoginPackage;
-import by.bsu.wialontransport.protocol.core.service.login.TrackerUnprotectedLoginService;
+import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
+import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 
-public abstract class UnprotectedLoginPackageHandler<
-        PACKAGE extends LoginPackage,
-        RESPONSE_PROVIDER extends LoginResponseProvider
-        >
-        extends LoginPackageHandler<PACKAGE, RESPONSE_PROVIDER, TrackerUnprotectedLoginService> {
+import java.util.Optional;
 
-    public UnprotectedLoginPackageHandler(final Class<PACKAGE> handledPackageType,
-                                          final TrackerUnprotectedLoginService loginService,
-                                          final RESPONSE_PROVIDER responseProvider) {
-        super(handledPackageType, loginService, responseProvider);
+import static java.util.Optional.empty;
+
+public abstract class UnprotectedLoginPackageHandler extends LoginPackageHandler<LoginPackage> {
+
+    public UnprotectedLoginPackageHandler(final ContextAttributeManager contextAttributeManager,
+                                          final TrackerService trackerService,
+                                          final ConnectionManager connectionManager,
+                                          final DataService dataService) {
+        super(LoginPackage.class, contextAttributeManager, trackerService, connectionManager, dataService);
+    }
+
+    @Override
+    protected final Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
+                                                                         final LoginPackage loginPackage) {
+        return empty();
     }
 
 }

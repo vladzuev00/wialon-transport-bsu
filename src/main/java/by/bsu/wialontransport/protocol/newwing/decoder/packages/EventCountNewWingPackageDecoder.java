@@ -1,12 +1,12 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
 import by.bsu.wialontransport.function.ShortConsumer;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.EventCountNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.EventCountNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
 public final class EventCountNewWingPackageDecoder
-        extends NewWingPackageDecoder<EventCountNewWingPackage, EventCountNewWingPackageBuilder> {
+        extends NewWingPackageDecoder<NewWingEventCountPackage, EventCountNewWingPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSGI";
 
     public EventCountNewWingPackageDecoder() {
