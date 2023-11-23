@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 public final class RequestDataPackageHandler
         extends AbstractRequestDataPackageHandler<WialonRequestDataPackage> {
 
-    public RequestDataPackageHandler(final RequestBlackBoxPackageHandler nextHandler,
-                                     final ReceivingDataPackageService receivingDataService) {
-        super(WialonRequestDataPackage.class, nextHandler, receivingDataService);
+    public RequestDataPackageHandler(final RequestBlackBoxPackageHandler nextHandler) {
+        super(WialonRequestDataPackage.class, nextHandler);
     }
 }

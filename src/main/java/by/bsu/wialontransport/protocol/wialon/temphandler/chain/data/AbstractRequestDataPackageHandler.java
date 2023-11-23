@@ -8,19 +8,18 @@ import io.netty.channel.ChannelHandlerContext;
 
 public abstract class AbstractRequestDataPackageHandler<RequestPackageType extends AbstractWialonRequestDataPackage>
         extends PackageHandler {
-    private final ReceivingDataService<RequestPackageType, ?> receivingPackageService;
+//    private final ReceivingDataService<RequestPackageType, ?> receivingPackageService;
 
     public AbstractRequestDataPackageHandler(final Class<RequestPackageType> requestPackageType,
-                                             final PackageHandler nextHandler,
-                                             final ReceivingDataService<RequestPackageType, ?> receivingPackageService) {
+                                             final PackageHandler nextHandler) {
         super(requestPackageType, nextHandler);
-        this.receivingPackageService = receivingPackageService;
+//        this.receivingPackageService = receivingPackageService;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected final void handleIndependently(final WialonPackage requestPackage, final ChannelHandlerContext context) {
         final RequestPackageType requestDataPackage = (RequestPackageType) requestPackage;
-        this.receivingPackageService.receive(requestDataPackage, context);
+//        this.receivingPackageService.receive(requestDataPackage, context);
     }
 }

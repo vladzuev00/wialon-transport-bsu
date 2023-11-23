@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 public final class RequestBlackBoxPackageHandler
         extends AbstractRequestDataPackageHandler<WialonRequestBlackBoxPackage> {
 
-    public RequestBlackBoxPackageHandler(final FinisherPackageHandler nextHandler,
-                                         final ReceivingBlackBoxPackageService receivingBlackBoxPackageService) {
-        super(WialonRequestBlackBoxPackage.class, nextHandler, receivingBlackBoxPackageService);
+    public RequestBlackBoxPackageHandler(final FinisherPackageHandler nextHandler) {
+        super(WialonRequestBlackBoxPackage.class, nextHandler);
     }
 }
