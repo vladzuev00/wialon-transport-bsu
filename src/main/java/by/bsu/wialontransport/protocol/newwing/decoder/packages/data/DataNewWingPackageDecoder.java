@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages.data;
 
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.DataNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.DataNewWingPackageBuilder;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
 
 @Component
 public final class DataNewWingPackageDecoder
-        extends NewWingPackageDecoder<DataNewWingPackage, DataNewWingPackageBuilder> {
+        extends NewWingPackageDecoder<NewWingDataPackage, DataNewWingPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSSI";
 
     private final NewWingDataIteratorFactory dataIteratorFactory;

@@ -18,8 +18,7 @@ import static java.lang.Math.signum;
 public class Data implements AbstractDto<Long> {
     Long id;
     LocalDateTime dateTime;
-    double latitude;
-    double longitude;
+    GpsCoordinate gpsCoordinate;
     int course;
     int altitude;
     int amountOfSatellites;
@@ -81,6 +80,12 @@ public class Data implements AbstractDto<Long> {
                 source.altitude, source.amountOfSatellites, source.reductionPrecision, source.inputs, source.outputs,
                 source.analogInputs, source.driverKeyCode, source.parametersByNames, source.tracker, address
         );
+    }
+
+    @Value
+    public static class GpsCoordinate {
+        double latitude;
+        double longitude;
     }
 
     @AllArgsConstructor
