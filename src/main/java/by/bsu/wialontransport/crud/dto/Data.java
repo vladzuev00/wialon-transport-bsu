@@ -4,9 +4,7 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.model.Coordinate;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Map;
 
 import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
@@ -19,11 +17,9 @@ import static java.lang.Math.signum;
 @Builder
 public class Data implements AbstractDto<Long> {
     Long id;
-    LocalDate date;
-    LocalTime time;
-    Latitude latitude;
-    Longitude longitude;
-    int speed;
+    LocalDateTime dateTime;
+    double latitude;
+    double longitude;
     int course;
     int altitude;
     int amountOfSatellites;
