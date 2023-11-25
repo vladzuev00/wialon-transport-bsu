@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.BiIntToDoubleFunction;
 import by.bsu.wialontransport.function.ToShortFunction;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivingDataPackageHandler;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
@@ -49,7 +50,7 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
     @Override
     protected void accumulateComponents(final ReceivedDataBuilder builder, final NewWingData data) {
         accumulateDateTime(builder, data);
-        accumulateGpsCoordinate(builder, data);
+        accumulateCoordinate(builder, data);
         accumulateHdop(builder, data);
         accumulateCourse(builder, data);
         accumulateSpeed(builder, data);
@@ -64,11 +65,11 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
         );
     }
 
-    private static void accumulateGpsCoordinate(final ReceivedDataBuilder builder, final NewWingData data) {
+    private static void accumulateCoordinate(final ReceivedDataBuilder builder, final NewWingData data) {
         builder.accumulateComponent(
                 data,
-                NewWingDataPackageHandler::extractGpsCoordinate,
-                ReceivedDataBuilder::gpsCoordinate
+                NewWingDataPackageHandler::extractCoordinate,
+                ReceivedDataBuilder::coordinate
         );
     }
 
@@ -114,10 +115,10 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
         return LocalDateTime.of(year, month, day, hour, minute, second);
     }
 
-    private static GpsCoordinate extractGpsCoordinate(final NewWingData data) {
+    private static Coordinate extractCoordinate(final NewWingData data) {
         final double latitude = extractLatitude(data);
         final double longitude = extractLongitude(data);
-        return new GpsCoordinate(latitude, longitude);
+        return new Coordinate(latitude, longitude);
     }
 
     private static double extractLatitude(final NewWingData data) {

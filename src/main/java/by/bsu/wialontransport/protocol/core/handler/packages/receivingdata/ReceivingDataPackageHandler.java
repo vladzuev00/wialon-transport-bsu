@@ -1,10 +1,11 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
 import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultPropertyConfiguration;
-import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Data.GpsCoordinate;
 import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
@@ -12,12 +13,12 @@ import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFil
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
-import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -46,9 +47,8 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
 
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
-        final List<ReceivedData> receivedData = this.extractDataSources(requestPackage)
-                .map(this::createReceivedData)
-                .toList();
+        final Tracker tracker = this.extractTracker(context);
+        final Stream<ReceivedData> receivedData = this.extractReceivedData(requestPackage, tracker);
 
     }
 
@@ -56,14 +56,19 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
 
     protected abstract void accumulateComponents(final ReceivedDataBuilder builder, final DATA_SOURCE source);
 
-    private ReceivedData createReceivedData(final DATA_SOURCE source) {
-        final ReceivedDataBuilder builder = new ReceivedDataBuilder(this.receivedDataDefaultPropertyConfiguration);
-        this.accumulateComponents(builder, source);
-        return builder.build();
+    private Tracker extractTracker(final ChannelHandlerContext context) {
+        final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
+        return optionalTracker.orElseThrow(() -> new ReceivingDataException("There is no tracker in context"));
     }
 
-    private Data createData(final ReceivedData data) {
+    private Stream<ReceivedData> extractReceivedData(final PACKAGE requestPackage, final Tracker tracker) {
+        return this.extractDataSources(requestPackage).map(source -> this.createReceivedData(source, tracker));
+    }
 
+    private ReceivedData createReceivedData(final DATA_SOURCE source, final Tracker tracker) {
+        final ReceivedDataBuilder builder = new ReceivedDataBuilder(this.receivedDataDefaultPropertyConfiguration);
+        this.accumulateComponents(builder, source);
+        return builder.build(tracker);
     }
 
     protected static final class ReceivedDataBuilder {
@@ -72,7 +77,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         private LocalDateTime dateTime;
 
         @Getter(PRIVATE)
-        private GpsCoordinate gpsCoordinate;
+        private Coordinate coordinate;
 
         private int course;
         private int altitude;
@@ -102,8 +107,8 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
             this.dateTime = dateTime;
         }
 
-        public void gpsCoordinate(final GpsCoordinate gpsCoordinate) {
-            this.gpsCoordinate = gpsCoordinate;
+        public void coordinate(final Coordinate coordinate) {
+            this.coordinate = coordinate;
         }
 
         public void course(final int course) {
@@ -172,12 +177,12 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
             componentAccumulator.accumulate(this, component);
         }
 
-        ReceivedData build() {
+        ReceivedData build(final Tracker tracker) {
             final LocalDateTime dateTime = this.getRequiredProperty(ReceivedDataBuilder::getDateTime);
-            final GpsCoordinate gpsCoordinate = this.getRequiredProperty(ReceivedDataBuilder::getGpsCoordinate);
+            final Coordinate coordinate = this.getRequiredProperty(ReceivedDataBuilder::getCoordinate);
             return new ReceivedData(
                     dateTime,
-                    gpsCoordinate,
+                    coordinate,
                     this.course,
                     this.altitude,
                     this.speed,
@@ -187,7 +192,8 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
                     this.outputs,
                     this.analogInputs,
                     this.driverKeyCode,
-                    this.parametersByNames
+                    this.parametersByNames,
+                    tracker
             );
         }
 
@@ -230,19 +236,25 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         }
     }
 
-    @Value
-    private static class ReceivedData {
-        LocalDateTime dateTime;
-        GpsCoordinate gpsCoordinate;
-        int course;
-        int altitude;
-        double speed;
-        int amountOfSatellites;
-        double reductionPrecision;
-        int inputs;
-        int outputs;
-        double[] analogInputs;
-        String driverKeyCode;
-        Map<String, Parameter> parametersByNames;
+    private static final class ReceivingDataException extends RuntimeException {
+
+        @SuppressWarnings("unused")
+        public ReceivingDataException() {
+
+        }
+
+        public ReceivingDataException(final String description) {
+            super(description);
+        }
+
+        @SuppressWarnings("unused")
+        public ReceivingDataException(final Exception cause) {
+            super(cause);
+        }
+
+        @SuppressWarnings("unused")
+        public ReceivingDataException(final String description, final Exception cause) {
+            super(description, cause);
+        }
     }
 }

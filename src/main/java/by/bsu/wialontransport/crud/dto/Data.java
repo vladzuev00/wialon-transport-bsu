@@ -18,7 +18,7 @@ import static java.lang.Math.signum;
 public class Data implements AbstractDto<Long> {
     Long id;
     LocalDateTime dateTime;
-    GpsCoordinate gpsCoordinate;
+    Coordinate coordinate;
     int course;
     double speed;
     int altitude;
@@ -36,18 +36,6 @@ public class Data implements AbstractDto<Long> {
     Tracker tracker;
     Address address;
 
-    public LocalDateTime findDateTime() {
-        return LocalDateTime.of(this.date, this.time);
-    }
-
-    public double findLatitudeAsDouble() {
-        return this.latitude.findDoubleValue();
-    }
-
-    public double findLongitudeAsDouble() {
-        return this.longitude.findDoubleValue();
-    }
-
     public String findCityName() {
         return this.address.getCityName();
     }
@@ -56,37 +44,12 @@ public class Data implements AbstractDto<Long> {
         return this.address.getCountryName();
     }
 
-    public Coordinate findCoordinate() {
-        final double latitudeAsDouble = this.findLatitudeAsDouble();
-        final double longitudeAsDouble = this.findLongitudeAsDouble();
-        return new Coordinate(latitudeAsDouble, longitudeAsDouble);
-    }
-
-    //TODO: test
-    public Long findTrackerId() {
-        return this.tracker.getId();
-    }
-
-    public static Data createWithTracker(final Data source, final Tracker tracker) {
-        return new Data(
-                source.id, source.date, source.time, source.latitude, source.longitude, source.speed, source.course,
-                source.altitude, source.amountOfSatellites, source.reductionPrecision, source.inputs, source.outputs,
-                source.analogInputs, source.driverKeyCode, source.parametersByNames, tracker, source.address
-        );
-    }
-
     public static Data createWithAddress(final Data source, final Address address) {
         return new Data(
                 source.id, source.date, source.time, source.latitude, source.longitude, source.speed, source.course,
                 source.altitude, source.amountOfSatellites, source.reductionPrecision, source.inputs, source.outputs,
                 source.analogInputs, source.driverKeyCode, source.parametersByNames, source.tracker, address
         );
-    }
-
-    @Value
-    public static class GpsCoordinate {
-        double latitude;
-        double longitude;
     }
 
     @AllArgsConstructor
