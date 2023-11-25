@@ -20,6 +20,7 @@ public class Data implements AbstractDto<Long> {
     LocalDateTime dateTime;
     GpsCoordinate gpsCoordinate;
     int course;
+    double speed;
     int altitude;
     int amountOfSatellites;
     double reductionPrecision;

@@ -18,7 +18,7 @@ public final class NewWingCoordinateUtil {
     private static final String LONGITUDE_INTEGER_PART_TEMPLATE = "%05d";
     private static final int LONGITUDE_FIRST_PART_INTEGER_PART_NEXT_LAST_INDEX = 3;
 
-    public static float calculateLatitude(final int integerPart, final int fractionalPart) {
+    public static double calculateLatitude(final int integerPart, final int fractionalPart) {
         return calculateGpsCoordinate(
                 integerPart,
                 fractionalPart,
@@ -27,7 +27,7 @@ public final class NewWingCoordinateUtil {
         );
     }
 
-    public static float calculateLongitude(final int integerPart, final int fractionalPart) {
+    public static double calculateLongitude(final int integerPart, final int fractionalPart) {
         return calculateGpsCoordinate(
                 integerPart,
                 fractionalPart,
@@ -36,14 +36,14 @@ public final class NewWingCoordinateUtil {
         );
     }
 
-    private static float calculateGpsCoordinate(final int integerPart,
-                                                final int fractionalPart,
-                                                final String integerPartTemplate,
-                                                final int firstPartIntegerPartNextLastIndex) {
+    private static double calculateGpsCoordinate(final int integerPart,
+                                                 final int fractionalPart,
+                                                 final String integerPartTemplate,
+                                                 final int firstPartIntegerPartNextLastIndex) {
         final String fractionalPartAsString = Integer.toString(fractionalPart);
         final int absIntegerPart = abs(integerPart);
         final String integerPartAsString = format(integerPartTemplate, absIntegerPart);
-        final float absGpsCoordinate =
+        final double absGpsCoordinate =
                 parseInt(integerPartAsString.substring(0, firstPartIntegerPartNextLastIndex))
                         +
                         parseFloat(

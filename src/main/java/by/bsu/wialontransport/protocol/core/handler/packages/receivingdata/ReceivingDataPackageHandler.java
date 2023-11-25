@@ -46,9 +46,8 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
 
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
-        final List<Data> data = this.extractDataSources(requestPackage)
+        final List<ReceivedData> receivedData = this.extractDataSources(requestPackage)
                 .map(this::createReceivedData)
-                .map(this::createData)
                 .toList();
 
     }
@@ -77,6 +76,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
 
         private int course;
         private int altitude;
+        private double speed;
         private int amountOfSatellites;
         private double reductionPrecision;
         private int inputs;
@@ -88,6 +88,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         public ReceivedDataBuilder(final ReceivedDataDefaultPropertyConfiguration defaultPropertyConfiguration) {
             this.course = defaultPropertyConfiguration.getCourse();
             this.altitude = defaultPropertyConfiguration.getAltitude();
+            this.speed = defaultPropertyConfiguration.getSpeed();
             this.amountOfSatellites = defaultPropertyConfiguration.getAmountOfSatellites();
             this.reductionPrecision = defaultPropertyConfiguration.getReductionPrecision();
             this.inputs = defaultPropertyConfiguration.getInputs();
@@ -97,63 +98,81 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
             this.parametersByNames = new HashMap<>();
         }
 
-        public ReceivedDataBuilder dateTime(final LocalDateTime dateTime) {
+        public void dateTime(final LocalDateTime dateTime) {
             this.dateTime = dateTime;
-            return this;
         }
 
-        public ReceivedDataBuilder gpsCoordinate(final GpsCoordinate gpsCoordinate) {
+        public void gpsCoordinate(final GpsCoordinate gpsCoordinate) {
             this.gpsCoordinate = gpsCoordinate;
-            return this;
         }
 
-        public ReceivedDataBuilder course(final int course) {
+        public void course(final int course) {
             this.course = course;
-            return this;
         }
 
-        public ReceivedDataBuilder altitude(final int altitude) {
+        public void altitude(final int altitude) {
             this.altitude = altitude;
-            return this;
         }
 
-        public ReceivedDataBuilder amountOfSatellites(final int amountOfSatellites) {
+        public void speed(final double speed) {
+            this.speed = speed;
+        }
+
+        public void amountOfSatellites(final int amountOfSatellites) {
             this.amountOfSatellites = amountOfSatellites;
-            return this;
         }
 
-        public ReceivedDataBuilder reductionPrecision(final double reductionPrecision) {
+        public void reductionPrecision(final double reductionPrecision) {
             this.reductionPrecision = reductionPrecision;
-            return this;
         }
 
-        public ReceivedDataBuilder inputs(final int inputs) {
+        public void inputs(final int inputs) {
             this.inputs = inputs;
-            return this;
         }
 
-        public ReceivedDataBuilder outputs(final int outputs) {
+        public void outputs(final int outputs) {
             this.outputs = outputs;
-            return this;
         }
 
-        public ReceivedDataBuilder analogInputs(final double[] analogInputs) {
+        public void analogInputs(final double[] analogInputs) {
             this.analogInputs = analogInputs;
-            return this;
         }
 
-        public ReceivedDataBuilder driverKeyCode(final String driverKeyCode) {
+        public void driverKeyCode(final String driverKeyCode) {
             this.driverKeyCode = driverKeyCode;
-            return this;
         }
 
-        public ReceivedDataBuilder parameter(final Parameter parameter) {
+        public void parameter(final Parameter parameter) {
             final String parameterName = parameter.getName();
             this.parametersByNames.put(parameterName, parameter);
-            return this;
         }
 
-        public ReceivedData build() {
+        public <DATA_SOURCE, COMPONENT> void accumulateComponent(
+                final DATA_SOURCE source,
+                final ComponentExtractor<DATA_SOURCE, COMPONENT> componentExtractor,
+                final ComponentAccumulator<COMPONENT> componentAccumulator
+        ) {
+            final COMPONENT component = componentExtractor.extract(source);
+            componentAccumulator.accumulate(this, component);
+        }
+
+        public <DATA_SOURCE> void accumulateDoubleComponent(
+                final DATA_SOURCE source,
+                final DoubleComponentExtractor<DATA_SOURCE> componentExtractor,
+                final DoubleComponentAccumulator componentAccumulator
+        ) {
+            final double component = componentExtractor.extract(source);
+            componentAccumulator.accumulate(this, component);
+        }
+
+        public <DATA_SOURCE> void accumulateIntComponent(final DATA_SOURCE source,
+                                                         final IntComponentExtractor<DATA_SOURCE> componentExtractor,
+                                                         final IntComponentAccumulator componentAccumulator) {
+            final int component = componentExtractor.extract(source);
+            componentAccumulator.accumulate(this, component);
+        }
+
+        ReceivedData build() {
             final LocalDateTime dateTime = this.getRequiredProperty(ReceivedDataBuilder::getDateTime);
             final GpsCoordinate gpsCoordinate = this.getRequiredProperty(ReceivedDataBuilder::getGpsCoordinate);
             return new ReceivedData(
@@ -161,6 +180,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
                     gpsCoordinate,
                     this.course,
                     this.altitude,
+                    this.speed,
                     this.amountOfSatellites,
                     this.reductionPrecision,
                     this.inputs,
@@ -178,6 +198,36 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
             }
             return value;
         }
+
+        @FunctionalInterface
+        public interface ComponentExtractor<DATA_SOURCE, COMPONENT> {
+            COMPONENT extract(final DATA_SOURCE source);
+        }
+
+        @FunctionalInterface
+        public interface DoubleComponentExtractor<DATA_SOURCE> {
+            double extract(final DATA_SOURCE data);
+        }
+
+        @FunctionalInterface
+        public interface IntComponentExtractor<DATA_SOURCE> {
+            int extract(final DATA_SOURCE data);
+        }
+
+        @FunctionalInterface
+        public interface ComponentAccumulator<T> {
+            void accumulate(final ReceivedDataBuilder builder, final T component);
+        }
+
+        @FunctionalInterface
+        public interface DoubleComponentAccumulator {
+            void accumulate(final ReceivedDataBuilder builder, final double component);
+        }
+
+        @FunctionalInterface
+        public interface IntComponentAccumulator {
+            void accumulate(final ReceivedDataBuilder builder, final int component);
+        }
     }
 
     @Value
@@ -186,6 +236,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         GpsCoordinate gpsCoordinate;
         int course;
         int altitude;
+        double speed;
         int amountOfSatellites;
         double reductionPrecision;
         int inputs;

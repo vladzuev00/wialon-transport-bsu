@@ -21,6 +21,7 @@ import java.util.Map;
 public class ReceivedDataDefaultPropertyConfiguration {
     private int course;
     private int altitude;
+    private double speed;
     private int amountOfSatellites;
     private double reductionPrecision;
     private int inputs;
