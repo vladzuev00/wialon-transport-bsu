@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
 import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultPropertyConfiguration;
-import by.bsu.wialontransport.crud.dto.Data.GpsCoordinate;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.BiIntToDoubleFunction;
 import by.bsu.wialontransport.function.ToShortFunction;
