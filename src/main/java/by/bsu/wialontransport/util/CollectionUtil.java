@@ -9,6 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.empty;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
@@ -49,6 +50,22 @@ public final class CollectionUtil {
         final Iterable<T> iterable = () -> iterator;
         final Spliterator<T> spliterator = iterable.spliterator();
         return stream(spliterator, false).collect(toList());
+    }
+
+    public static <K, V> Map<K, V> convertToMap(final Collection<V> sources, final Function<V, K> keyExtractor) {
+        return sources.stream()
+                .collect(
+                        toMap(
+                                keyExtractor,
+                                identity()
+                        )
+                );
+    }
+
+    public static <S, R> List<R> collectMappedValuesToList(final Map<?, S> sourceMap,
+                                                           final Function<S, R> valueMapper) {
+        final Collection<S> source = sourceMap.values();
+        return mapToList(source, valueMapper);
     }
 
 //    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {
