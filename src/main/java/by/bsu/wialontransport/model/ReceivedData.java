@@ -12,8 +12,8 @@ public class ReceivedData {
     LocalDateTime dateTime;
     Coordinate coordinate;
     int course;
-    int altitude;
     double speed;
+    int altitude;
     int amountOfSatellites;
     double reductionPrecision;
     int inputs;

@@ -16,7 +16,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -184,8 +183,8 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
                     dateTime,
                     coordinate,
                     this.course,
-                    this.altitude,
                     this.speed,
+                    this.altitude,
                     this.amountOfSatellites,
                     this.reductionPrecision,
                     this.inputs,

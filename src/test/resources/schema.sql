@@ -125,30 +125,18 @@ CREATE INDEX ON addresses using GIST(geometry);
 CREATE TABLE data
 (
     id                     BIGSERIAL    NOT NULL PRIMARY KEY,
-    date                   DATE         NOT NULL,
-    time                   TIME         NOT NULL,
-
-    latitude_degrees       INTEGER      NOT NULL,
-    latitude_minutes       INTEGER      NOT NULL,
-    latitude_minute_share  INTEGER      NOT NULL,
-    latitude_type          CHAR(1)      NOT NULL,
-
-    longitude_degrees      INTEGER      NOT NULL,
-    longitude_minutes      INTEGER      NOT NULL,
-    longitude_minute_share INTEGER      NOT NULL,
-    longitude_type         CHAR(1)      NOT NULL,
-
-    speed                  INTEGER      NOT NULL,
+    date_time              TIMESTAMP(0) NOT NULL,
+    latitude               DECIMAL      NOT NULL,
+    longitude              DECIMAL      NOT NULL,
+    speed                  DECIMAL      NOT NULL,
     course                 INTEGER      NOT NULL,
     altitude               INTEGER      NOT NULL,
     amount_of_satellites   INTEGER      NOT NULL,
-
     reduction_precision    DECIMAL      NOT NULL,
     inputs                 INTEGER      NOT NULL,
     outputs                INTEGER      NOT NULL,
     analog_inputs          DOUBLE PRECISION[] NOT NULL,
     driver_key_code        VARCHAR(256) NOT NULL,
-
     tracker_id             INTEGER      NOT NULL,
     address_id             BIGINT       NOT NULL
 );
