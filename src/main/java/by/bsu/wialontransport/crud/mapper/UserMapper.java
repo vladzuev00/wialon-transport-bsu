@@ -13,12 +13,17 @@ public final class UserMapper extends Mapper<UserEntity, User> {
     }
 
     @Override
-    protected User createDto(final UserEntity entity) {
+    protected User createDto(final UserEntity source) {
         return new User(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getPassword(),
-                entity.getRole()
+                source.getId(),
+                source.getEmail(),
+                source.getPassword(),
+                source.getRole()
         );
+    }
+
+    @Override
+    protected void mapSpecificFields(final User source, final UserEntity destination) {
+
     }
 }
