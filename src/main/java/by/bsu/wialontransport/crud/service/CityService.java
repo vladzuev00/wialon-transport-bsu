@@ -19,4 +19,9 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
     public boolean isExistByGeometry(final Geometry geometry) {
         return super.repository.isExistByGeometry(geometry);
     }
+
+    @Override
+    protected CityEntity configureBeforeSave(final CityEntity entity) {
+        return entity;
+    }
 }
