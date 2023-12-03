@@ -30,9 +30,8 @@ public abstract class AbstractCRUDEncryptingPasswordService<
     }
 
     @Override
-    protected final ENTITY configureBeforeSave(final ENTITY entity) {
+    protected final void configureBeforeSave(final ENTITY entity) {
         this.injectEncryptedPassword(entity);
-        return entity;
     }
 
     private void injectEncryptedPassword(final ENTITY entity) {

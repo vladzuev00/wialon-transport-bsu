@@ -55,18 +55,24 @@ public abstract class AbstractReadService<
     }
 
     protected final List<DTO> find(final Function<REPOSITORY, Collection<ENTITY>> operation) {
-        return this.findPage(unpaged(), (repository, pageable) -> operation.apply(repository));
+        final Collection<ENTITY> entities = operation.apply(this.repository);
+        return mapToList(entities, this.mapper::mapToDto);
     }
 
-    protected final List<DTO> findPage(final int pageNumber,
-                                       final int pageSize,
-                                       final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation) {
+    protected final List<DTO> findPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
+                                        final int pageNumber,
+                                        final int pageSize) {
         final Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return this.findPage(pageable, operation);
+        return this.find(operation, pageable);
     }
 
-    private List<DTO> findPage(final Pageable pageable,
-                               final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation) {
+    protected final List<DTO> findUnPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation) {
+        final Pageable pageable = unpaged();
+        return this.find(operation, pageable);
+    }
+
+    private List<DTO> find(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
+                           final Pageable pageable) {
         final Collection<ENTITY> entities = operation.apply(this.repository, pageable);
         return mapToList(entities, this.mapper::mapToDto);
     }
