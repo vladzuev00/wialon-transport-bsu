@@ -11,7 +11,7 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @ToString
 @MappedSuperclass
-public abstract class AbstractEntityWithPassword<IdType> extends AbstractEntity<IdType> {
+public abstract class EntityWithPassword<IdType> extends Entity<IdType> {
 
     @Column(name = "encrypted_password")
     private String password;

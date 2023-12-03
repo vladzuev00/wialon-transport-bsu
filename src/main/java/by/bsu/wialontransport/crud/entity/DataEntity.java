@@ -13,7 +13,7 @@ import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "data")
 @TypeDef(
         name = "double-array",
@@ -25,7 +25,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class DataEntity extends AbstractEntity<Long> {
+public class DataEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")

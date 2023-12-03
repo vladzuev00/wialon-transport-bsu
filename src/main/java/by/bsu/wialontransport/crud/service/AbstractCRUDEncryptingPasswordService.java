@@ -1,16 +1,16 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.crud.dto.AbstractDto;
-import by.bsu.wialontransport.crud.entity.AbstractEntityWithPassword;
-import by.bsu.wialontransport.crud.mapper.AbstractMapper;
+import by.bsu.wialontransport.crud.dto.Dto;
+import by.bsu.wialontransport.crud.entity.EntityWithPassword;
+import by.bsu.wialontransport.crud.mapper.Mapper;
 import by.bsu.wialontransport.crud.repository.EntityWithPasswordRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public abstract class AbstractCRUDEncryptingPasswordService<
         IdType,
-        EntityType extends AbstractEntityWithPassword<IdType>,
-        DtoType extends AbstractDto<IdType>,
-        MapperType extends AbstractMapper<EntityType, DtoType>,
+        EntityType extends EntityWithPassword<IdType>,
+        DtoType extends Dto<IdType>,
+        MapperType extends Mapper<EntityType, DtoType>,
         RepositoryType extends EntityWithPasswordRepository<IdType, EntityType>
         >
         extends AbstractCRUDService<IdType, EntityType, DtoType, MapperType, RepositoryType> {

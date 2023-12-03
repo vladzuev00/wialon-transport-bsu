@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import static java.util.Objects.hash;
 
-public abstract class AbstractEntity<IdType> {
+public abstract class Entity<IdType> {
 
     public abstract void setId(final IdType id);
 
@@ -24,7 +24,7 @@ public abstract class AbstractEntity<IdType> {
         if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
-        final AbstractEntity<IdType> other = (AbstractEntity<IdType>) otherObject;
+        final Entity<IdType> other = (Entity<IdType>) otherObject;
         return Objects.equals(this.getId(), other.getId());
     }
 

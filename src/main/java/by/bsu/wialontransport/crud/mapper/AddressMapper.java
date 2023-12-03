@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class AddressMapper extends AbstractMapper<AddressEntity, Address> {
+public final class AddressMapper extends Mapper<AddressEntity, Address> {
 
     public AddressMapper(final ModelMapper modelMapper) {
         super(modelMapper, AddressEntity.class, Address.class);

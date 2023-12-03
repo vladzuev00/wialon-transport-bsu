@@ -62,8 +62,7 @@ public final class CollectionUtil {
                 );
     }
 
-    public static <S, R> List<R> collectMappedValuesToList(final Map<?, S> sourceMap,
-                                                           final Function<S, R> valueMapper) {
+    public static <S, R> List<R> collectValuesToList(final Map<?, S> sourceMap, final Function<S, R> valueMapper) {
         final Collection<S> source = sourceMap.values();
         return mapToList(source, valueMapper);
     }
@@ -77,9 +76,9 @@ public final class CollectionUtil {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }
 
-    private static <S, P, C extends Collection<P>> C mapToCollection(final Collection<S> sources,
-                                                                     final Function<S, P> elementMapper,
-                                                                     final Supplier<Collector<P, ?, C>> collectorSupplier) {
+    public static <S, P, C extends Collection<P>> C mapToCollection(final Collection<S> sources,
+                                                                    final Function<S, P> elementMapper,
+                                                                    final Supplier<Collector<P, ?, C>> collectorSupplier) {
         final Collector<P, ?, C> collector = collectorSupplier.get();
         return sources.stream()
                 .map(elementMapper)

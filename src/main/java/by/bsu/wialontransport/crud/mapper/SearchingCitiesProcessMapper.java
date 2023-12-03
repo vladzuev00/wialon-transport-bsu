@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class SearchingCitiesProcessMapper
-        extends AbstractMapper<SearchingCitiesProcessEntity, SearchingCitiesProcess> {
+        extends Mapper<SearchingCitiesProcessEntity, SearchingCitiesProcess> {
 
     public SearchingCitiesProcessMapper(final ModelMapper modelMapper) {
         super(modelMapper, SearchingCitiesProcessEntity.class, SearchingCitiesProcess.class);

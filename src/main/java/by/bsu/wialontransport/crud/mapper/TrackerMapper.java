@@ -8,7 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TrackerMapper extends AbstractMapper<TrackerEntity, Tracker> {
+public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
 
     public TrackerMapper(final ModelMapper modelMapper) {
         super(modelMapper, TrackerEntity.class, Tracker.class);
@@ -21,8 +21,8 @@ public final class TrackerMapper extends AbstractMapper<TrackerEntity, Tracker> 
                 entity.getImei(),
                 entity.getPassword(),
                 entity.getPhoneNumber(),
-                super.mapPropertyIfLoadedOrElseNull(entity.getUser(), User.class),
-                super.mapPropertyIfLoadedOrElseNull(entity.getMileage(), TrackerMileage.class)
+                super.mapLazyProperty(entity.getUser(), User.class),
+                super.mapLazyProperty(entity.getMileage(), TrackerMileage.class)
         );
     }
 }

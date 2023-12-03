@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static by.bsu.wialontransport.util.CollectionUtil.collectMappedValuesToList;
+import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static by.bsu.wialontransport.util.CollectionUtil.convertToMap;
 
 @Component
-public final class DataMapper extends AbstractMapper<DataEntity, Data> {
+public final class DataMapper extends Mapper<DataEntity, Data> {
 
     public DataMapper(final ModelMapper modelMapper) {
         super(modelMapper, DataEntity.class, Data.class);
@@ -60,7 +60,7 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
 
     private Map<String, Parameter> mapParameters(final DataEntity source) {
         final List<ParameterEntity> sourceEntities = source.getParameters();
-        final List<Parameter> dtos = super.mapCollectionPropertyIfLoadedOrElseNull(
+        final List<Parameter> dtos = super.mapLazyCollectionProperty(
                 sourceEntities,
                 Parameter.class,
                 ArrayList::new
@@ -77,18 +77,18 @@ public final class DataMapper extends AbstractMapper<DataEntity, Data> {
 
     private List<ParameterEntity> mapParameters(final Data source) {
         final Map<String, Parameter> parametersByNames = source.getParametersByNames();
-        return collectMappedValuesToList(
+        return collectValuesToList(
                 parametersByNames,
-                parameter -> super.mapProperty(parameter, ParameterEntity.class)
+                parameter -> super.mapNullable(parameter, ParameterEntity.class)
         );
     }
 
     private Tracker mapTracker(final DataEntity source) {
-        return super.mapPropertyIfLoadedOrElseNull(source, DataEntity::getTracker, Tracker.class);
+        return super.mapLazyProperty(source, DataEntity::getTracker, Tracker.class);
     }
 
     private Address mapAddress(final DataEntity source) {
-        return super.mapPropertyIfLoadedOrElseNull(source, DataEntity::getAddress, Address.class);
+        return super.mapLazyProperty(source, DataEntity::getAddress, Address.class);
     }
 
     private void mapCoordinateAndSet(final Data source, final DataEntity entity) {

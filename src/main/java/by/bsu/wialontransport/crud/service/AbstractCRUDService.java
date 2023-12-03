@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.crud.dto.AbstractDto;
-import by.bsu.wialontransport.crud.entity.AbstractEntity;
-import by.bsu.wialontransport.crud.mapper.AbstractMapper;
+import by.bsu.wialontransport.crud.dto.Dto;
+import by.bsu.wialontransport.crud.entity.Entity;
+import by.bsu.wialontransport.crud.mapper.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public abstract class AbstractCRUDService<
         IdType,
-        EntityType extends AbstractEntity<IdType>,
-        DtoType extends AbstractDto<IdType>,
-        MapperType extends AbstractMapper<EntityType, DtoType>,
+        EntityType extends Entity<IdType>,
+        DtoType extends Dto<IdType>,
+        MapperType extends Mapper<EntityType, DtoType>,
         RepositoryType extends JpaRepository<EntityType, IdType>
         >
         extends AbstractRUDService<IdType, EntityType, DtoType, MapperType, RepositoryType> {

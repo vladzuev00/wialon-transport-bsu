@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @Builder
-public class Tracker implements AbstractDto<Long> {
+public class Tracker implements Dto<Long> {
     Long id;
     String imei;
     String password;

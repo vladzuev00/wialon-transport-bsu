@@ -7,7 +7,7 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "trackers_last_data")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +15,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class TrackerLastDataEntity extends AbstractEntity<Long> {
+public class TrackerLastDataEntity extends Entity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

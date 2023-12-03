@@ -10,7 +10,7 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 @Value
 @AllArgsConstructor
 @Builder
-public class Parameter implements AbstractDto<Long> {
+public class Parameter implements Dto<Long> {
     Long id;
     String name;
     Type type;

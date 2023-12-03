@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TrackerMileageMapper extends AbstractMapper<TrackerMileageEntity, TrackerMileage> {
+public final class TrackerMileageMapper extends Mapper<TrackerMileageEntity, TrackerMileage> {
 
     public TrackerMileageMapper(final ModelMapper modelMapper) {
         super(modelMapper, TrackerMileageEntity.class, TrackerMileage.class);

@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class TrackerEntity extends AbstractEntityWithPassword<Long> {
+public class TrackerEntity extends EntityWithPassword<Long> {
 
     @Id
     @Column(name = "id")

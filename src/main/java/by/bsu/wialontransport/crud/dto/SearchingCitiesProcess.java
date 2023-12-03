@@ -10,7 +10,7 @@ import org.locationtech.jts.geom.Geometry;
 @Value
 @AllArgsConstructor
 @Builder
-public class SearchingCitiesProcess implements AbstractDto<Long> {
+public class SearchingCitiesProcess implements Dto<Long> {
     Long id;
     Geometry bounds;
     double searchStep;

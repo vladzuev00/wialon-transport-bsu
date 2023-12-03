@@ -11,7 +11,7 @@ import java.util.Map;
 @Value
 @AllArgsConstructor
 @Builder
-public class Data implements AbstractDto<Long> {
+public class Data implements Dto<Long> {
     Long id;
     LocalDateTime dateTime;
     Coordinate coordinate;

@@ -12,7 +12,7 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "parameters")
 @TypeDef(
         name = "pgsql_enum",
@@ -24,7 +24,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class ParameterEntity extends AbstractEntity<Long> {
+public class ParameterEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")

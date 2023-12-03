@@ -6,7 +6,7 @@ import org.locationtech.jts.geom.Geometry;
 @Value
 @AllArgsConstructor
 @Builder
-public class City implements AbstractDto<Long> {
+public class City implements Dto<Long> {
     Long id;
     Address address;
     SearchingCitiesProcess searchingCitiesProcess;

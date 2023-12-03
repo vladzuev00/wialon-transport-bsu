@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.util;
 
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.crud.entity.AbstractEntity;
+import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
@@ -52,7 +52,7 @@ public final class EntityTestUtil {
                 .build();
     }
 
-    public static <ID, ENTITY extends AbstractEntity<ID>> List<ID> findEntityIds(final List<ENTITY> entities) {
+    public static <ID, ENTITY extends Entity<ID>> List<ID> findEntityIds(final List<ENTITY> entities) {
         return entities.stream()
                 .map(ENTITY::getId)
                 .toList();

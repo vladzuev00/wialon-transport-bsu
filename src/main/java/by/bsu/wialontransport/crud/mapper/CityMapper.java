@@ -10,7 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class CityMapper extends AbstractMapper<CityEntity, City> {
+public final class CityMapper extends Mapper<CityEntity, City> {
 
     public CityMapper(final ModelMapper modelMapper) {
         super(modelMapper, CityEntity.class, City.class);
@@ -27,11 +27,11 @@ public final class CityMapper extends AbstractMapper<CityEntity, City> {
 
     private Address mapAddress(final CityEntity source) {
         final AddressEntity mapped = source.getAddress();
-        return super.mapPropertyIfLoadedOrElseNull(mapped, Address.class);
+        return super.mapLazyProperty(mapped, Address.class);
     }
 
     private SearchingCitiesProcess mapSearchingCitiesProcess(final CityEntity source) {
         final SearchingCitiesProcessEntity mapped = source.getSearchingCitiesProcess();
-        return super.mapPropertyIfLoadedOrElseNull(mapped, SearchingCitiesProcess.class);
+        return super.mapLazyProperty(mapped, SearchingCitiesProcess.class);
     }
 }

@@ -20,7 +20,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class UserEntity extends AbstractEntityWithPassword<Long> {
+public class UserEntity extends EntityWithPassword<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

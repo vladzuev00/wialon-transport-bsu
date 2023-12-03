@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class UserMapper extends AbstractMapper<UserEntity, User> {
+public final class UserMapper extends Mapper<UserEntity, User> {
 
     public UserMapper(final ModelMapper modelMapper) {
         super(modelMapper, UserEntity.class, User.class);

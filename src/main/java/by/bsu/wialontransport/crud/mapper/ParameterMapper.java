@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class ParameterMapper extends AbstractMapper<ParameterEntity, Parameter> {
+public final class ParameterMapper extends Mapper<ParameterEntity, Parameter> {
 
     public ParameterMapper(final ModelMapper modelMapper) {
         super(modelMapper, ParameterEntity.class, Parameter.class);

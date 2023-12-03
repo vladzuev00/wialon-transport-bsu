@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class AddressEntity extends AbstractEntity<Long> {
+public class AddressEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")
