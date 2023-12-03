@@ -22,8 +22,7 @@ public class UserService
 
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(final String email) {
-        final Optional<UserEntity> optionalEntity = super.repository.findByEmail(email);
-        return optionalEntity.map(super.mapper::mapToDto);
+        return super.findUnique(repository -> repository.findByEmail(email));
     }
 
     @Transactional(readOnly = true)
