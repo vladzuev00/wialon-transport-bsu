@@ -74,6 +74,6 @@ public class TrackerService
         final Long userId = user.getId();
         final Pageable pageable = pageableSupplier.get();
         final List<TrackerEntity> foundEntities = super.repository.findByUserId(userId, pageable);
-        return super.mapper.mapToDto(foundEntities);
+        return super.mapper.mapToDtos(foundEntities);
     }
 }

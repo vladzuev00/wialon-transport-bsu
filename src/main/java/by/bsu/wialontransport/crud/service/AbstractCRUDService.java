@@ -30,7 +30,7 @@ public abstract class AbstractCRUDService<
     public List<DtoType> saveAll(final Collection<DtoType> saved) {
         final List<EntityType> entitiesToBeSaved = this.mapToConfiguredEntities(saved);
         final List<EntityType> savedEntities = super.repository.saveAll(entitiesToBeSaved);
-        return super.mapper.mapToDto(savedEntities);
+        return super.mapper.mapToDtos(savedEntities);
     }
 
     protected EntityType configureBeforeSave(final EntityType source) {

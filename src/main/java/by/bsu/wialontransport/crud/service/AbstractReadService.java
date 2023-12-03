@@ -33,7 +33,7 @@ public abstract class AbstractReadService<
     @Transactional(readOnly = true)
     public List<DtoType> findById(final Collection<IdType> ids) {
         final List<EntityType> foundEntities = this.repository.findAllById(ids);
-        return this.mapper.mapToDto(foundEntities);
+        return this.mapper.mapToDtos(foundEntities);
     }
 
     @Transactional(readOnly = true)

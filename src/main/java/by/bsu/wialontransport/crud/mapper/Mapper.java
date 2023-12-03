@@ -10,6 +10,7 @@ import org.modelmapper.spi.MappingContext;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -18,7 +19,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static by.bsu.wialontransport.util.CollectionUtil.mapToCollection;
+import static by.bsu.wialontransport.util.CollectionUtil.mapAndCollect;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
     private final ModelMapper modelMapper;
@@ -36,34 +39,21 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         return this.mapNullable(source, this.dtoType);
     }
 
-    public final List<DTO> mapToDto(final Collection<ENTITY> sources) {
-        return this.mapNullable(sources, this.dtoType);
+    public final List<DTO> mapToDtos(final Collection<ENTITY> sources) {
+        return this.mapNullableToList(sources, this.dtoType);
     }
 
     public final ENTITY mapToEntity(final DTO source) {
         return this.mapNullable(source, this.entityType);
     }
 
-    public final List<ENTITY> mapToEntity(final Collection<DTO> sources) {
-        return this.mapNullable(sources, this.entityType);
+    public final List<ENTITY> mapToEntities(final Collection<DTO> sources) {
+        return this.mapNullableToList(sources, this.entityType);
     }
 
     protected abstract DTO createDto(final ENTITY entity);
 
     protected abstract void mapSpecificFields(final DTO source, final ENTITY destination);
-
-    protected final <D> D mapNullable(final Object source, final Class<D> destinationType) {
-        return this.mapIfMatchOrElseNull(source, Objects::nonNull, destinationType);
-    }
-
-    protected final <D> List<D> mapNullable(final Collection<?> sources, final Class<D> destinationElementType) {
-        return this.mapIfMatchOrElseNull(
-                sources,
-                Objects::nonNull,
-                destinationElementType,
-                Collectors::toUnmodifiableList
-        );
-    }
 
     protected final <S extends Entity<?>, D extends Dto<?>> D mapLazyProperty(final ENTITY entity,
                                                                               final Function<ENTITY, S> propertyGetter,
@@ -72,12 +62,31 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         return this.mapIfMatchOrElseNull(source, HibernateUtil::isLoaded, destinationType);
     }
 
-    protected final <S extends Entity<?>, E extends Dto<?>, C extends Collection<E>> C mapLazyCollectionProperty(
-            final Collection<S> sources,
-            final Class<E> destinationElementType,
-            final Supplier<Collector<E, ?, C>> collectorSupplier
+    protected final <S extends Entity<?>, E extends Dto<?>> List<E> mapLazyCollectionPropertyToList(
+            final ENTITY entity,
+            final Function<ENTITY, Collection<S>> propertyGetter,
+            final Class<E> destinationValueType
     ) {
-        return this.mapIfMatchOrElseNull(sources, HibernateUtil::isLoaded, destinationElementType, collectorSupplier);
+        return this.mapLazyCollectionProperty(
+                entity,
+                propertyGetter,
+                destinationValueType,
+                Collectors::toUnmodifiableList
+        );
+    }
+
+    protected final <S extends Entity<?>, E extends Dto<?>, K> Map<K, E> mapLazyCollectionPropertyToMap(
+            final ENTITY entity,
+            final Function<ENTITY, Collection<S>> propertyGetter,
+            final Class<E> destinationValueType,
+            final Function<E, K> keyExtractor
+    ) {
+        return this.mapLazyCollectionProperty(
+                entity,
+                propertyGetter,
+                destinationValueType,
+                () -> toMap(keyExtractor, identity())
+        );
     }
 
     private void configureBiDirectionalMapping() {
@@ -112,16 +121,39 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         converterSetter.accept(typeMap, converter);
     }
 
+    private <D> D mapNullable(final Object source, final Class<D> destinationType) {
+        return this.mapIfMatchOrElseNull(source, Objects::nonNull, destinationType);
+    }
+
     private <S, D> D mapIfMatchOrElseNull(final S source, final Predicate<S> matcher, final Class<D> destinationType) {
         return matcher.test(source) ? this.modelMapper.map(source, destinationType) : null;
     }
 
-    private <E, D extends Collection<E>> D mapIfMatchOrElseNull(final Collection<?> sources,
-                                                                final Predicate<Collection<?>> matcher,
-                                                                final Class<E> destinationElementType,
-                                                                final Supplier<Collector<E, ?, D>> collectorSupplier) {
+    private <E> List<E> mapNullableToList(final Collection<?> sources, final Class<E> destinationElementType) {
+        return this.mapIfMatchOrElseNull(
+                sources,
+                Objects::nonNull,
+                destinationElementType,
+                Collectors::toUnmodifiableList
+        );
+    }
+
+    private <S extends Entity<?>, E extends Dto<?>, D> D mapLazyCollectionProperty(
+            final ENTITY entity,
+            final Function<ENTITY, Collection<S>> propertyGetter,
+            final Class<E> destinationElementType,
+            final Supplier<Collector<E, ?, D>> collectorSupplier
+    ) {
+        final Collection<S> sources = propertyGetter.apply(entity);
+        return this.mapIfMatchOrElseNull(sources, HibernateUtil::isLoaded, destinationElementType, collectorSupplier);
+    }
+
+    private <E, D> D mapIfMatchOrElseNull(final Collection<?> sources,
+                                          final Predicate<Collection<?>> matcher,
+                                          final Class<E> destinationElementType,
+                                          final Supplier<Collector<E, ?, D>> collectorSupplier) {
         return matcher.test(sources)
-                ? mapToCollection(sources, source -> this.mapNullable(source, destinationElementType), collectorSupplier)
+                ? mapAndCollect(sources, source -> this.mapNullable(source, destinationElementType), collectorSupplier)
                 : null;
     }
 

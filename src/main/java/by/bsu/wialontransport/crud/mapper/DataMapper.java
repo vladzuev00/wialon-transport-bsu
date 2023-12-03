@@ -10,12 +10,10 @@ import by.bsu.wialontransport.model.Coordinate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
-import static by.bsu.wialontransport.util.CollectionUtil.convertToMap;
 
 @Component
 public final class DataMapper extends Mapper<DataEntity, Data> {
@@ -25,23 +23,23 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
     }
 
     @Override
-    protected Data createDto(final DataEntity entity) {
+    protected Data createDto(final DataEntity source) {
         return new Data(
-                entity.getId(),
-                entity.getDateTime(),
-                mapCoordinate(entity),
-                entity.getCourse(),
-                entity.getSpeed(),
-                entity.getAltitude(),
-                entity.getAmountOfSatellites(),
-                entity.getReductionPrecision(),
-                entity.getInputs(),
-                entity.getOutputs(),
-                entity.getAnalogInputs(),
-                entity.getDriverKeyCode(),
-                this.mapParameters(entity),
-                this.mapTracker(entity),
-                this.mapAddress(entity)
+                source.getId(),
+                source.getDateTime(),
+                mapCoordinate(source),
+                source.getCourse(),
+                source.getSpeed(),
+                source.getAltitude(),
+                source.getAmountOfSatellites(),
+                source.getReductionPrecision(),
+                source.getInputs(),
+                source.getOutputs(),
+                source.getAnalogInputs(),
+                source.getDriverKeyCode(),
+                this.mapParameters(source),
+                this.mapTracker(source),
+                this.mapAddress(source)
         );
     }
 
@@ -59,13 +57,20 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
     }
 
     private Map<String, Parameter> mapParameters(final DataEntity source) {
-        final List<ParameterEntity> sourceEntities = source.getParameters();
-        final List<Parameter> dtos = super.mapLazyCollectionProperty(
-                sourceEntities,
+        return super.mapLazyCollectionPropertyToMap(
+                source,
+                DataEntity::getParameters,
                 Parameter.class,
-                ArrayList::new
+                Parameter::getName
         );
-        return dtos != null ? convertToMap(dtos, Parameter::getName) : null;
+    }
+
+    private Tracker mapTracker(final DataEntity source) {
+        return super.mapLazyProperty(source, DataEntity::getTracker, Tracker.class);
+    }
+
+    private Address mapAddress(final DataEntity source) {
+        return super.mapLazyProperty(source, DataEntity::getAddress, Address.class);
     }
 
     private static DataEntity.Coordinate mapCoordinate(final Data source) {
@@ -81,14 +86,6 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
                 parametersByNames,
                 parameter -> super.mapNullable(parameter, ParameterEntity.class)
         );
-    }
-
-    private Tracker mapTracker(final DataEntity source) {
-        return super.mapLazyProperty(source, DataEntity::getTracker, Tracker.class);
-    }
-
-    private Address mapAddress(final DataEntity source) {
-        return super.mapLazyProperty(source, DataEntity::getAddress, Address.class);
     }
 
     private void mapCoordinateAndSet(final Data source, final DataEntity entity) {

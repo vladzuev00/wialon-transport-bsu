@@ -37,6 +37,6 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
     public List<SearchingCitiesProcess> findByStatus(final Status status, final int pageNumber, final int pageSize) {
         final Pageable pageable = PageRequest.of(pageNumber, pageSize);
         final List<SearchingCitiesProcessEntity> foundEntities = this.repository.findByStatus(status, pageable);
-        return super.mapper.mapToDto(foundEntities);
+        return super.mapper.mapToDtos(foundEntities);
     }
 }

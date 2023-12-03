@@ -33,11 +33,11 @@ public final class CollectionUtil {
     }
 
     public static <S, P> List<P> mapToList(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableList);
+        return mapAndCollect(sources, elementMapper, Collectors::toUnmodifiableList);
     }
 
     public static <S, P> Set<P> mapToSet(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableSet);
+        return mapAndCollect(sources, elementMapper, Collectors::toUnmodifiableSet);
     }
 
     public static <T> Optional<T> findLast(final List<T> elements) {
@@ -76,10 +76,10 @@ public final class CollectionUtil {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }
 
-    public static <S, P, C extends Collection<P>> C mapToCollection(final Collection<S> sources,
-                                                                    final Function<S, P> elementMapper,
-                                                                    final Supplier<Collector<P, ?, C>> collectorSupplier) {
-        final Collector<P, ?, C> collector = collectorSupplier.get();
+    public static <S, P, D> D mapAndCollect(final Collection<S> sources,
+                                            final Function<S, P> elementMapper,
+                                            final Supplier<Collector<P, ?, D>> collectorSupplier) {
+        final Collector<P, ?, D> collector = collectorSupplier.get();
         return sources.stream()
                 .map(elementMapper)
                 .collect(collector);

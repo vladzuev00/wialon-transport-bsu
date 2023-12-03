@@ -35,6 +35,6 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
                 dateInterval.getStart(),
                 dateInterval.getEnd()
         );
-        return super.mapper.mapToDto(foundEntities);
+        return super.mapper.mapToDtos(foundEntities);
     }
 }
