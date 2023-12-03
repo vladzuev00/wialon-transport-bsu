@@ -3,9 +3,7 @@ package by.bsu.wialontransport.crud.mapper;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
-import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -25,13 +23,16 @@ public final class CityMapper extends Mapper<CityEntity, City> {
         );
     }
 
+    @Override
+    protected void mapSpecificFields(final City source, final CityEntity destination) {
+
+    }
+
     private Address mapAddress(final CityEntity source) {
-        final AddressEntity mapped = source.getAddress();
-        return super.mapLazyProperty(mapped, Address.class);
+        return super.mapLazyProperty(source, CityEntity::getAddress, Address.class);
     }
 
     private SearchingCitiesProcess mapSearchingCitiesProcess(final CityEntity source) {
-        final SearchingCitiesProcessEntity mapped = source.getSearchingCitiesProcess();
-        return super.mapLazyProperty(mapped, SearchingCitiesProcess.class);
+        return super.mapLazyProperty(source, CityEntity::getSearchingCitiesProcess, SearchingCitiesProcess.class);
     }
 }
