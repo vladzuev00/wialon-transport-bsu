@@ -9,8 +9,13 @@ import by.bsu.wialontransport.model.Mileage;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrackerMileageService
-        extends AbstractCRUDService<Long, TrackerMileageEntity, TrackerMileage, TrackerMileageMapper, TrackerMileageRepository> {
+public class TrackerMileageService extends AbstractCRUDService<
+        Long,
+        TrackerMileageEntity,
+        TrackerMileage,
+        TrackerMileageMapper,
+        TrackerMileageRepository
+        > {
 
     public TrackerMileageService(final TrackerMileageMapper mapper, final TrackerMileageRepository repository) {
         super(mapper, repository);
@@ -21,5 +26,10 @@ public class TrackerMileageService
         final double urbanDelta = mileageDelta.getUrban();
         final double countryDelta = mileageDelta.getCountry();
         this.repository.increaseMileage(trackerId, urbanDelta, countryDelta);
+    }
+
+    @Override
+    protected void configureBeforeSave(final TrackerMileageEntity entity) {
+
     }
 }
