@@ -55,6 +55,14 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
 
     protected abstract void mapSpecificFields(final DTO source, final ENTITY destination);
 
+    protected final <D> D map(final Object source, final Class<D> destinationType) {
+        return this.modelMapper.map(source, destinationType);
+    }
+
+    protected final <D> D mapNullable(final Object source, final Class<D> destinationType) {
+        return this.mapIfMatchOrElseNull(source, Objects::nonNull, destinationType);
+    }
+
     protected final <S extends Entity<?>, D extends Dto<?>> D mapLazyProperty(final ENTITY entity,
                                                                               final Function<ENTITY, S> propertyGetter,
                                                                               final Class<D> destinationType) {
@@ -121,12 +129,8 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         converterSetter.accept(typeMap, converter);
     }
 
-    private <D> D mapNullable(final Object source, final Class<D> destinationType) {
-        return this.mapIfMatchOrElseNull(source, Objects::nonNull, destinationType);
-    }
-
     private <S, D> D mapIfMatchOrElseNull(final S source, final Predicate<S> matcher, final Class<D> destinationType) {
-        return matcher.test(source) ? this.modelMapper.map(source, destinationType) : null;
+        return matcher.test(source) ? this.map(source, destinationType) : null;
     }
 
     private <E> List<E> mapNullableToList(final Collection<?> sources, final Class<E> destinationElementType) {
@@ -153,7 +157,7 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
                                           final Class<E> destinationElementType,
                                           final Supplier<Collector<E, ?, D>> collectorSupplier) {
         return matcher.test(sources)
-                ? mapAndCollect(sources, source -> this.mapNullable(source, destinationElementType), collectorSupplier)
+                ? mapAndCollect(sources, source -> this.map(source, destinationElementType), collectorSupplier)
                 : null;
     }
 
