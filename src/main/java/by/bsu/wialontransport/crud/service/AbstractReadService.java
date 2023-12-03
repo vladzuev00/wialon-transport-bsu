@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class AbstractReadService<
         ID,
@@ -40,5 +41,10 @@ public abstract class AbstractReadService<
     @Transactional(readOnly = true)
     public boolean isExist(final ID id) {
         return this.repository.existsById(id);
+    }
+
+    protected final Optional<DTO> findUnique(final Function<REPOSITORY, Optional<ENTITY>> operation) {
+        final Optional<ENTITY> optionalEntity = operation.apply(this.repository);
+        return optionalEntity.map(this.mapper::mapToDto);
     }
 }

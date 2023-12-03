@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.mapper.AddressMapper;
 import by.bsu.wialontransport.crud.repository.AddressRepository;
+import by.bsu.wialontransport.model.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
@@ -17,23 +18,22 @@ import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service
-public class AddressService
-        extends AbstractCRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
+public class AddressService extends AbstractCRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
 
     public AddressService(final AddressMapper mapper, final AddressRepository repository) {
         super(mapper, repository);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findByGpsCoordinates(final double latitude, final double longitude) {
-        final Optional<AddressEntity> optionalEntity = super.repository.findByGpsCoordinates(latitude, longitude);
-        return optionalEntity.map(super.mapper::mapToDto);
+    public Optional<Address> findByGpsCoordinates(final Coordinate coordinate) {
+        final double latitude = coordinate.getLatitude();
+        final double longitude = coordinate.getLongitude();
+        return super.findUnique(repository -> repository.findByGpsCoordinates(latitude, longitude));
     }
 
     @Transactional(readOnly = true)
     public Optional<Address> findByGeometry(final Geometry geometry) {
-        final Optional<AddressEntity> optionalEntity = super.repository.findByGeometry(geometry);
-        return optionalEntity.map(super.mapper::mapToDto);
+        return super.findUnique(repository -> repository.findByGeometry(geometry));
     }
 
     @Transactional(readOnly = true)
@@ -47,6 +47,11 @@ public class AddressService
                 lineString
         );
         return mapToList(foundEntities, AddressService::extractPreparedGeometry);
+    }
+
+    @Override
+    protected AddressEntity configureBeforeSave(final AddressEntity source) {
+        return source;
     }
 
     private static PreparedGeometry extractPreparedGeometry(final AddressEntity entity) {

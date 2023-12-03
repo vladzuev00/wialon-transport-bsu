@@ -35,14 +35,14 @@ public abstract class AbstractCRUDService<
         return super.mapper.mapToDtos(savedEntities);
     }
 
-    protected abstract ENTITY configureBeforeSave(final ENTITY source);
+    protected abstract ENTITY configureBeforeSave(final ENTITY entity);
 
-    private ENTITY mapToConfiguredEntity(final DTO source) {
-        final ENTITY sourceEntity = super.mapper.mapToEntity(source);
-        return this.configureBeforeSave(sourceEntity);
+    private ENTITY mapToConfiguredEntity(final DTO dto) {
+        final ENTITY entity = super.mapper.mapToEntity(dto);
+        return this.configureBeforeSave(entity);
     }
 
-    private List<ENTITY> mapToConfiguredEntities(final Collection<DTO> sources) {
-        return mapToList(sources, this::mapToConfiguredEntity);
+    private List<ENTITY> mapToConfiguredEntities(final Collection<DTO> dtos) {
+        return mapToList(dtos, this::mapToConfiguredEntity);
     }
 }
