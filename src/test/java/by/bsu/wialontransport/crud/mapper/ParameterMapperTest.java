@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
+import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.checkEquals;
 import static org.junit.Assert.*;
 
 public final class ParameterMapperTest extends AbstractContextTest {
@@ -52,12 +53,5 @@ public final class ParameterMapperTest extends AbstractContextTest {
 
         assertNotNull(actual);
         checkEquals(expected, actual);
-    }
-
-    private static void checkEquals(final ParameterEntity expected, final ParameterEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertSame(expected.getType(), actual.getType());
-        assertEquals(expected.getValue(), actual.getValue());
     }
 }
