@@ -73,21 +73,6 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return super.mapLazyProperty(source, DataEntity::getAddress, Address.class);
     }
 
-    private static DataEntity.Coordinate mapCoordinate(final Data source) {
-        final Coordinate sourceCoordinate = source.getCoordinate();
-        final double latitude = sourceCoordinate.getLatitude();
-        final double longitude = sourceCoordinate.getLongitude();
-        return new DataEntity.Coordinate(latitude, longitude);
-    }
-
-    private List<ParameterEntity> mapParameters(final Data source) {
-        final Map<String, Parameter> parametersByNames = source.getParametersByNames();
-        return collectValuesToList(
-                parametersByNames,
-                parameter -> super.mapNullable(parameter, ParameterEntity.class)
-        );
-    }
-
     private void mapCoordinateAndSet(final Data source, final DataEntity entity) {
         super.mapPropertyAndSet(
                 source,
@@ -103,6 +88,21 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
                 this::mapParameters,
                 entity,
                 DataEntity::setParameters
+        );
+    }
+
+    private static DataEntity.Coordinate mapCoordinate(final Data source) {
+        final Coordinate sourceCoordinate = source.getCoordinate();
+        final double latitude = sourceCoordinate.getLatitude();
+        final double longitude = sourceCoordinate.getLongitude();
+        return new DataEntity.Coordinate(latitude, longitude);
+    }
+
+    private List<ParameterEntity> mapParameters(final Data source) {
+        final Map<String, Parameter> parametersByNames = source.getParametersByNames();
+        return collectValuesToList(
+                parametersByNames,
+                parameter -> super.mapNullable(parameter, ParameterEntity.class)
         );
     }
 }
