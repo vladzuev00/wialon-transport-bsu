@@ -1,244 +1,36 @@
-//package by.bsu.wialontransport.crud.dto;
-//
-//import by.bsu.wialontransport.crud.dto.Data.Latitude;
-//import by.bsu.wialontransport.crud.dto.Data.Longitude;
-//import org.junit.Test;
-//
-//import java.time.LocalDate;
-//import java.time.LocalDateTime;
-//import java.time.LocalTime;
-//
-//import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
-//import static by.bsu.wialontransport.crud.dto.Data.createWithTracker;
-//import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-//import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.SOUTH;
-//import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
-//import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.WESTERN;
-//import static org.junit.Assert.assertEquals;
-//
-//public final class DataTest {
-//
-//    @Test
-//    public void dataShouldBeCopiedWithNewTracker() {
-//        final Data givenData = Data.builder()
-//                .id(255L)
-//                .date(LocalDate.of(2022, 11, 15))
-//                .time(LocalTime.of(15, 44, 22))
-//                .latitude(Latitude.builder()
-//                        .degrees(30)
-//                        .minutes(31)
-//                        .minuteShare(32)
-//                        .type(NORTH)
-//                        .build())
-//                .longitude(Longitude.builder()
-//                        .degrees(33)
-//                        .minutes(34)
-//                        .minuteShare(35)
-//                        .type(EAST)
-//                        .build())
-//                .speed(36)
-//                .course(37)
-//                .altitude(38)
-//                .amountOfSatellites(39)
-//                .address(createAddress(258L))
-//                .build();
-//        final Tracker givenTracker = createTracker(259L);
-//
-//        final Data actual = createWithTracker(givenData, givenTracker);
-//        final Data expected = Data.builder()
-//                .id(255L)
-//                .date(LocalDate.of(2022, 11, 15))
-//                .time(LocalTime.of(15, 44, 22))
-//                .latitude(Latitude.builder()
-//                        .degrees(30)
-//                        .minutes(31)
-//                        .minuteShare(32)
-//                        .type(NORTH)
-//                        .build())
-//                .longitude(Longitude.builder()
-//                        .degrees(33)
-//                        .minutes(34)
-//                        .minuteShare(35)
-//                        .type(EAST)
-//                        .build())
-//                .speed(36)
-//                .course(37)
-//                .altitude(38)
-//                .amountOfSatellites(39)
-//                .address(createAddress(258L))
-//                .tracker(givenTracker)
-//                .build();
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void dataShouldBeCopiedWithNewAddress() {
-//        final Data givenData = Data.builder()
-//                .id(255L)
-//                .date(LocalDate.of(2022, 11, 15))
-//                .time(LocalTime.of(15, 44, 22))
-//                .latitude(Latitude.builder()
-//                        .degrees(30)
-//                        .minutes(31)
-//                        .minuteShare(32)
-//                        .type(NORTH)
-//                        .build())
-//                .longitude(Longitude.builder()
-//                        .degrees(33)
-//                        .minutes(34)
-//                        .minuteShare(35)
-//                        .type(EAST)
-//                        .build())
-//                .speed(36)
-//                .course(37)
-//                .altitude(38)
-//                .amountOfSatellites(39)
-//                .tracker(createTracker(259L))
-//                .build();
-//        final Address givenAddress = createAddress(258L);
-//
-//        final Data actual = createWithAddress(givenData, givenAddress);
-//        final Data expected = Data.builder()
-//                .id(255L)
-//                .date(LocalDate.of(2022, 11, 15))
-//                .time(LocalTime.of(15, 44, 22))
-//                .latitude(Latitude.builder()
-//                        .degrees(30)
-//                        .minutes(31)
-//                        .minuteShare(32)
-//                        .type(NORTH)
-//                        .build())
-//                .longitude(Longitude.builder()
-//                        .degrees(33)
-//                        .minutes(34)
-//                        .minuteShare(35)
-//                        .type(EAST)
-//                        .build())
-//                .speed(36)
-//                .course(37)
-//                .altitude(38)
-//                .amountOfSatellites(39)
-//                .tracker(createTracker(259L))
-//                .address(givenAddress)
-//                .build();
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void latitudeWithTypeSouthShouldBeConvertedToDouble() {
-//        final Latitude givenLatitude = new Latitude(44, 45, 46, SOUTH);
-//
-//        final double actual = givenLatitude.findDoubleValue();
-//        final double expected = -44.76277777777778;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void latitudeWithTypeNorthShouldBeConvertedToDouble() {
-//        final Latitude givenLatitude = new Latitude(44, 45, 46, NORTH);
-//
-//        final double actual = givenLatitude.findDoubleValue();
-//        final double expected = 44.76277777777778;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void longitudeWithTypeWesternShouldBeConvertedToDouble() {
-//        final Longitude givenLongitude = new Longitude(44, 45, 46, WESTERN);
-//
-//        final double actual = givenLongitude.findDoubleValue();
-//        final double expected = -44.76277777777778;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void longitudeWithTypeEastShouldBeConverted() {
-//        final Longitude givenLongitude = new Longitude(44, 45, 46, EAST);
-//
-//        final double actual = givenLongitude.findDoubleValue();
-//        final double expected = 44.76277777777778;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void dateTimeShouldBeFound() {
-//        final Data givenData = Data.builder()
-//                .date(LocalDate.of(2023, 10, 9))
-//                .time(LocalTime.of(11, 12, 13))
-//                .build();
-//
-//        final LocalDateTime actual = givenData.findDateTime();
-//        final LocalDateTime expected = LocalDateTime.of(2023, 10, 9, 11, 12, 13);
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void latitudeShouldBeFoundAsDouble() {
-//        final Data givenData = Data.builder()
-//                .latitude(Latitude.builder()
-//                        .degrees(54)
-//                        .minutes(33)
-//                        .minuteShare(22)
-//                        .type(SOUTH)
-//                        .build())
-//                .build();
-//
-//        final double actual = givenData.findLatitudeAsDouble();
-//        final double expected = -54.55611111111111;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void longitudeShouldBeFoundAsDouble() {
-//        final Data givenData = Data.builder()
-//                .longitude(Longitude.builder()
-//                        .degrees(54)
-//                        .minutes(33)
-//                        .minuteShare(22)
-//                        .type(EAST)
-//                        .build())
-//                .build();
-//
-//        final double actual = givenData.findLongitudeAsDouble();
-//        final double expected = 54.55611111111111;
-//        assertEquals(expected, actual, 0.);
-//    }
-//
-//    @Test
-//    public void cityNameShouldBeFound() {
-//        final Data givenData = Data.builder()
-//                .address(Address.builder()
-//                        .cityName("city")
-//                        .build())
-//                .build();
-//
-//        final String actual = givenData.findCityName();
-//        final String expected = "city";
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void countryNameShouldBeFound() {
-//        final Data givenData = Data.builder()
-//                .address(Address.builder()
-//                        .countryName("country")
-//                        .build())
-//                .build();
-//
-//        final String actual = givenData.findCountryName();
-//        final String expected = "country";
-//        assertEquals(expected, actual);
-//    }
-//
-//    private static Address createAddress(final Long id) {
-//        return Address.builder()
-//                .id(id)
-//                .build();
-//    }
-//
-//    private static Tracker createTracker(final Long id) {
-//        return Tracker.builder()
-//                .id(id)
-//                .build();
-//    }
-//}
+package by.bsu.wialontransport.crud.dto;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public final class DataTest {
+
+    @Test
+    public void cityNameShouldBeFound() {
+        final Data givenData = Data.builder()
+                .address(
+                        Address.builder()
+                                .cityName("city")
+                                .build())
+                .build();
+
+        final String actual = givenData.findCityName();
+        final String expected = "city";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void countryNameShouldBeFound() {
+        final Data givenData = Data.builder()
+                .address(
+                        Address.builder()
+                                .countryName("country")
+                                .build())
+                .build();
+
+        final String actual = givenData.findCountryName();
+        final String expected = "country";
+        assertEquals(expected, actual);
+    }
+}
