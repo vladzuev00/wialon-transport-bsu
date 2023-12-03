@@ -8,8 +8,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+import static by.bsu.wialontransport.util.entity.SearchingCitiesProcessEntityUtil.checkEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

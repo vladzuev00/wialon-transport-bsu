@@ -12,7 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
+import static by.bsu.wialontransport.util.entity.EntityUtil.findEntityIds;
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
 import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
 import static org.junit.Assert.*;

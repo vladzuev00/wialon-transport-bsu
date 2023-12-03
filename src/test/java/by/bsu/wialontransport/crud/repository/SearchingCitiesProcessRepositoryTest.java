@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
-import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+import static by.bsu.wialontransport.util.entity.SearchingCitiesProcessEntityUtil.checkEquals;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

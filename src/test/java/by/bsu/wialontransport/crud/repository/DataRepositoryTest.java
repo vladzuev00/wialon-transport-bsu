@@ -19,7 +19,7 @@
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-//import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
+//import static by.bsu.wialontransport.util.entity.EntityTestUtil.findEntityIds;
 //import static by.bsu.wialontransport.util.HibernateTestUtil.areEntityPropertiesLoaded;
 //import static java.util.Collections.emptyList;
 //import static org.junit.Assert.*;
