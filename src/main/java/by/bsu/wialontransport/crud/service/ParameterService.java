@@ -13,4 +13,9 @@ public class ParameterService
     public ParameterService(final ParameterMapper mapper, final ParameterRepository repository) {
         super(mapper, repository);
     }
+
+    @Override
+    protected void configureBeforeSave(final ParameterEntity entity) {
+
+    }
 }
