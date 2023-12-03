@@ -11,33 +11,34 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class AbstractReadService<
-        IdType,
-        EntityType extends Entity<IdType>,
-        DtoType extends Dto<IdType>,
-        MapperType extends Mapper<EntityType, DtoType>,
-        RepositoryType extends JpaRepository<EntityType, IdType>> {
-    protected final MapperType mapper;
-    protected final RepositoryType repository;
+        ID,
+        ENTITY extends Entity<ID>,
+        DTO extends Dto<ID>,
+        MAPPER extends Mapper<ENTITY, DTO>,
+        REPOSITORY extends JpaRepository<ENTITY, ID>
+        > {
+    protected final MAPPER mapper;
+    protected final REPOSITORY repository;
 
-    public AbstractReadService(final MapperType mapper, final RepositoryType repository) {
+    public AbstractReadService(final MAPPER mapper, final REPOSITORY repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
 
     @Transactional(readOnly = true)
-    public Optional<DtoType> findById(final IdType id) {
-        final Optional<EntityType> optionalEntity = this.repository.findById(id);
+    public Optional<DTO> findById(final ID id) {
+        final Optional<ENTITY> optionalEntity = this.repository.findById(id);
         return optionalEntity.map(this.mapper::mapToDto);
     }
 
     @Transactional(readOnly = true)
-    public List<DtoType> findById(final Collection<IdType> ids) {
-        final List<EntityType> foundEntities = this.repository.findAllById(ids);
+    public List<DTO> findById(final Collection<ID> ids) {
+        final List<ENTITY> foundEntities = this.repository.findAllById(ids);
         return this.mapper.mapToDtos(foundEntities);
     }
 
     @Transactional(readOnly = true)
-    public boolean isExist(final IdType id) {
+    public boolean isExist(final ID id) {
         return this.repository.existsById(id);
     }
 }
