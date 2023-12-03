@@ -7,7 +7,6 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 
 import static java.lang.Byte.MIN_VALUE;
-import static java.util.Arrays.stream;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -54,13 +53,5 @@ public class ParameterEntity extends Entity<Long> {
 
         @Getter
         private final byte value;
-
-        //TODO: remove
-        public static Type findByValue(byte value) {
-            return stream(values())
-                    .filter(type -> type.value == value)
-                    .findAny()
-                    .orElse(NOT_DEFINED);
-        }
     }
 }

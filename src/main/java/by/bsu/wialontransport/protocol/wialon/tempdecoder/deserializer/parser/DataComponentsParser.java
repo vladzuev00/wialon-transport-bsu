@@ -307,8 +307,10 @@ public final class DataComponentsParser {
         }
 
         private static ParameterEntity.Type parseType(final String[] components) {
-            final String typeString = components[PARAMETER_TYPE_INDEX];
-            return ParameterEntity.Type.findByValue(parseByte(typeString));
+//TODO: use EnumUtil
+            //            final String typeString = components[PARAMETER_TYPE_INDEX];
+//            return ParameterEntity.Type.findByValue(parseByte(typeString));
+            return null;
         }
     }
 }

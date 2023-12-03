@@ -264,9 +264,12 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         }
 
         private static ParameterEntity.Type extractType(final Matcher matcher) {
-            final String typeValueString = matcher.group(GROUP_NUMBER_TYPE_VALUE);
-            final byte typeValue = parseByte(typeValueString);
-            return ParameterEntity.Type.findByValue(typeValue);
+//TODO: use EnumUtil
+
+            //            final String typeValueString = matcher.group(GROUP_NUMBER_TYPE_VALUE);
+//            final byte typeValue = parseByte(typeValueString);
+//            return ParameterEntity.Type.findByValue(typeValue);
+            return null;
         }
 
         private static String extractValue(final Matcher matcher) {
