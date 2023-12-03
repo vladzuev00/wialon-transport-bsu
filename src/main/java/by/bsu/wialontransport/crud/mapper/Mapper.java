@@ -97,6 +97,14 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         );
     }
 
+    protected final <P> void mapPropertyAndSet(final DTO source,
+                                               final Function<DTO, P> mapper,
+                                               final ENTITY destination,
+                                               final BiConsumer<ENTITY, P> setter) {
+        final P property = mapper.apply(source);
+        setter.accept(destination, property);
+    }
+
     private void configureBiDirectionalMapping() {
         this.configureMappingEntityToDto();
         this.configureMappingDtoToEntity();
