@@ -10,6 +10,7 @@ import by.bsu.wialontransport.model.DateInterval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +25,17 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
         final Long trackerId = tracker.getId();
-        final Optional<DataEntity> optionalEntity = super.repository.findTrackerLastDataByTrackerId(trackerId);
-        return optionalEntity.map(super.mapper::mapToDto);
+        return super.findUnique(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
     }
 
     @Transactional(readOnly = true)
     public List<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
-        final List<DataEntity> foundEntities = super.repository.findDataWithTrackerAndAddressOfUser(
-                user.getId(),
-                dateInterval.getStart(),
-                dateInterval.getEnd()
+        final Long userId = user.getId();
+        final LocalDate startDateTime = dateInterval.getStart();
+        final LocalDate endDateTime = dateInterval.getEnd();
+        return super.find(
+                repository -> repository.findDataWithTrackerAndAddressOfUser(userId, startDateTime, endDateTime)
         );
-        return super.mapper.mapToDtos(foundEntities);
     }
 
     @Override

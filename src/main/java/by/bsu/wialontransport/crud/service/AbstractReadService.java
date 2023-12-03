@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
+
 public abstract class AbstractReadService<
         ID,
         ENTITY extends Entity<ID>,
@@ -46,5 +48,10 @@ public abstract class AbstractReadService<
     protected final Optional<DTO> findUnique(final Function<REPOSITORY, Optional<ENTITY>> operation) {
         final Optional<ENTITY> optionalEntity = operation.apply(this.repository);
         return optionalEntity.map(this.mapper::mapToDto);
+    }
+
+    protected final List<DTO> find(final Function<REPOSITORY, Collection<ENTITY>> operation) {
+        final Collection<ENTITY> entities = operation.apply(this.repository);
+        return mapToList(entities, this.mapper::mapToDto);
     }
 }
