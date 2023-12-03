@@ -11,7 +11,6 @@ import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.EntityTestUtil.createSearchingCitiesProcess;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +29,8 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
     public void statusOfProcessShouldBeUpdated() {
         final Long givenId = 255L;
-        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
+        final SearchingCitiesProcess givenProcess = null;
+//        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
         this.service.updateStatus(givenProcess, ERROR);
 
@@ -52,7 +52,8 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
             + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
     public void handledPointsShouldBeIncreased() {
         final Long givenId = 255L;
-        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
+//        final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
+        final SearchingCitiesProcess givenProcess = null;
 
         this.service.increaseHandledPoints(givenProcess, 100);
 

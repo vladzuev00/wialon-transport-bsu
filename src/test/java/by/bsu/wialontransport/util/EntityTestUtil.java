@@ -1,17 +1,18 @@
 package by.bsu.wialontransport.util;
 
-import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
+import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
+import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+//TODO: split on several entity utils and remove all checkEquals and create
 @UtilityClass
 public final class EntityTestUtil {
 
@@ -46,15 +47,7 @@ public final class EntityTestUtil {
         checkEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
     }
 
-    public static SearchingCitiesProcess createSearchingCitiesProcess(final Long id) {
-        return SearchingCitiesProcess.builder()
-                .id(id)
-                .build();
-    }
-
     public static <ID, ENTITY extends Entity<ID>> List<ID> findEntityIds(final List<ENTITY> entities) {
-        return entities.stream()
-                .map(ENTITY::getId)
-                .toList();
+        return mapToList(entities, ENTITY::getId);
     }
 }

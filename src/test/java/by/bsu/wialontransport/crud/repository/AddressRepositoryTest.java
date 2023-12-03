@@ -12,9 +12,9 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
 import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
+import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
 import static org.junit.Assert.*;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
@@ -277,7 +277,9 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         super.startQueryCount();
-        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(givenLineString);
+        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
+                givenLineString
+        );
         super.checkQueryCount(1);
 
         final List<Long> actual = findEntityIds(foundAddresses);
@@ -323,7 +325,9 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         super.startQueryCount();
-        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(givenLineString);
+        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
+                givenLineString
+        );
         super.checkQueryCount(1);
 
         assertTrue(foundAddresses.isEmpty());
