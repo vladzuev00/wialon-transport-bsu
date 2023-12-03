@@ -15,14 +15,27 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
     }
 
     @Override
-    protected Tracker createDto(final TrackerEntity entity) {
+    protected Tracker createDto(final TrackerEntity source) {
         return new Tracker(
-                entity.getId(),
-                entity.getImei(),
-                entity.getPassword(),
-                entity.getPhoneNumber(),
-                super.mapLazyProperty(entity.getUser(), User.class),
-                super.mapLazyProperty(entity.getMileage(), TrackerMileage.class)
+                source.getId(),
+                source.getImei(),
+                source.getPassword(),
+                source.getPhoneNumber(),
+                this.mapUser(source),
+                this.mapMileage(source)
         );
+    }
+
+    @Override
+    protected void mapSpecificFields(final Tracker source, final TrackerEntity destination) {
+
+    }
+
+    private User mapUser(final TrackerEntity source) {
+        return super.mapLazyProperty(source, TrackerEntity::getUser, User.class);
+    }
+
+    private TrackerMileage mapMileage(final TrackerEntity source) {
+        return super.mapLazyProperty(source, TrackerEntity::getMileage, TrackerMileage.class);
     }
 }
