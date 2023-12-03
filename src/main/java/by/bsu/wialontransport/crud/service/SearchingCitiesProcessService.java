@@ -5,8 +5,6 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.mapper.SearchingCitiesProcessMapper;
 import by.bsu.wialontransport.crud.repository.SearchingCitiesProcessRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +16,8 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
         SearchingCitiesProcessEntity,
         SearchingCitiesProcess,
         SearchingCitiesProcessMapper,
-        SearchingCitiesProcessRepository> {
+        SearchingCitiesProcessRepository
+        > {
 
     public SearchingCitiesProcessService(final SearchingCitiesProcessMapper mapper,
                                          final SearchingCitiesProcessRepository repository) {
@@ -26,17 +25,26 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
     }
 
     public void updateStatus(final SearchingCitiesProcess process, final Status newStatus) {
-        super.repository.updateStatus(process.getId(), newStatus);
+        final Long processId = process.getId();
+        super.repository.updateStatus(processId, newStatus);
     }
 
     public void increaseHandledPoints(final SearchingCitiesProcess process, final long delta) {
-        this.repository.increaseHandledPoints(process.getId(), delta);
+        final Long processId = process.getId();
+        super.repository.increaseHandledPoints(processId, delta);
     }
 
     @Transactional(readOnly = true)
     public List<SearchingCitiesProcess> findByStatus(final Status status, final int pageNumber, final int pageSize) {
-        final Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        final List<SearchingCitiesProcessEntity> foundEntities = this.repository.findByStatus(status, pageable);
-        return super.mapper.mapToDtos(foundEntities);
+        return super.findPage(
+                pageNumber,
+                pageSize,
+                (repository, pageable) -> repository.findByStatus(status, pageable)
+        );
+    }
+
+    @Override
+    protected void configureBeforeSave(final SearchingCitiesProcessEntity entity) {
+
     }
 }
