@@ -7,37 +7,38 @@ import by.bsu.wialontransport.crud.repository.EntityWithPasswordRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public abstract class AbstractCRUDEncryptingPasswordService<
-        IdType,
-        EntityType extends EntityWithPassword<IdType>,
-        DtoType extends Dto<IdType>,
-        MapperType extends Mapper<EntityType, DtoType>,
-        RepositoryType extends EntityWithPasswordRepository<IdType, EntityType>
+        ID,
+        ENTITY extends EntityWithPassword<ID>,
+        DTO extends Dto<ID>,
+        MAPPER extends Mapper<ENTITY, DTO>,
+        REPOSITORY extends EntityWithPasswordRepository<ID, ENTITY>
         >
-        extends AbstractCRUDService<IdType, EntityType, DtoType, MapperType, RepositoryType> {
+        extends AbstractCRUDService<ID, ENTITY, DTO, MAPPER, REPOSITORY> {
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public AbstractCRUDEncryptingPasswordService(final MapperType mapper,
-                                                 final RepositoryType repository,
+    public AbstractCRUDEncryptingPasswordService(final MAPPER mapper,
+                                                 final REPOSITORY repository,
                                                  final BCryptPasswordEncoder passwordEncoder) {
         super(mapper, repository);
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void updatePassword(final DtoType source, final String newPassword) {
+    public void updatePassword(final DTO dto, final String newPassword) {
         final String encryptedPassword = this.passwordEncoder.encode(newPassword);
-        super.repository.updatePassword(source.getId(), encryptedPassword);
+        final ID id = dto.getId();
+        super.repository.updatePassword(id, encryptedPassword);
     }
 
     @Override
-    protected final EntityType configureBeforeSave(final EntityType source) {
-        this.injectEncryptedPassword(source);
-        return source;
+    protected final ENTITY configureBeforeSave(final ENTITY entity) {
+        this.injectEncryptedPassword(entity);
+        return entity;
     }
 
-    private void injectEncryptedPassword(final EntityType source) {
-        final String rawPassword = source.getPassword();
+    private void injectEncryptedPassword(final ENTITY entity) {
+        final String rawPassword = entity.getPassword();
         final String encryptedPassword = this.passwordEncoder.encode(rawPassword);
-        source.setPassword(encryptedPassword);
+        entity.setPassword(encryptedPassword);
     }
 
 }
