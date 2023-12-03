@@ -28,10 +28,11 @@ public final class DataPropertyValidator {
     }
 
     public boolean isValidDateTime(final Data data) {
-        final LocalDateTime research = LocalDateTime.of(data.getDate(), data.getTime());
-        final LocalDateTime minAllowableDateTime = this.validationProperty.getMinValidDateTime();
-        final LocalDateTime maxAllowableDateTime = this.findMaxAllowableDateTime();
-        return research.isAfter(minAllowableDateTime) && research.isBefore(maxAllowableDateTime);
+//        final LocalDateTime research = LocalDateTime.of(data.getDate(), data.getTime());
+//        final LocalDateTime minAllowableDateTime = this.validationProperty.getMinValidDateTime();
+//        final LocalDateTime maxAllowableDateTime = this.findMaxAllowableDateTime();
+//        return research.isAfter(minAllowableDateTime) && research.isBefore(maxAllowableDateTime);
+        return false;
     }
 
     public boolean isValidDOPParameters(final Data data) {

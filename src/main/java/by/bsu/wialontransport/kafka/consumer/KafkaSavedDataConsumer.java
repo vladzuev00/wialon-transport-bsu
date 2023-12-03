@@ -42,25 +42,26 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
-        return new Data(
-                extractId(genericRecord),
-                dateTime.toLocalDate(),
-                dateTime.toLocalTime(),
-                super.extractLatitude(genericRecord),
-                super.extractLongitude(genericRecord),
-                extractSpeed(genericRecord),
-                extractCourse(genericRecord),
-                extractAltitude(genericRecord),
-                extractAmountOfSatellites(genericRecord),
-                extractReductionPrecision(genericRecord),
-                extractInputs(genericRecord),
-                extractOutputs(genericRecord),
-                extractAnalogInputs(genericRecord),
-                extractDriverKeyCode(genericRecord),
-                super.extractParametersByNames(genericRecord),
-                super.extractTracker(genericRecord),
-                this.extractAddress(genericRecord)
-        );
+//        return new Data(
+//                extractId(genericRecord),
+//                dateTime.toLocalDate(),
+//                dateTime.toLocalTime(),
+//                super.extractLatitude(genericRecord),
+//                super.extractLongitude(genericRecord),
+//                extractSpeed(genericRecord),
+//                extractCourse(genericRecord),
+//                extractAltitude(genericRecord),
+//                extractAmountOfSatellites(genericRecord),
+//                extractReductionPrecision(genericRecord),
+//                extractInputs(genericRecord),
+//                extractOutputs(genericRecord),
+//                extractAnalogInputs(genericRecord),
+//                extractDriverKeyCode(genericRecord),
+//                super.extractParametersByNames(genericRecord),
+//                super.extractTracker(genericRecord),
+//                this.extractAddress(genericRecord)
+//        );
+        return null;
     }
 
     @Override

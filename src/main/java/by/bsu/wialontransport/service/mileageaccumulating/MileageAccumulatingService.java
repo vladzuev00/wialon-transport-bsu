@@ -32,8 +32,9 @@ public final class MileageAccumulatingService {
 //    }
 
     private Mileage calculateMileage(final Data previousData, final Data inboundData) {
-        final Coordinate previousCoordinate = previousData.findCoordinate();
-        final Coordinate inboundCoordinate = inboundData.findCoordinate();
-        return this.mileageCalculatingService.calculate(previousCoordinate, inboundCoordinate);
+//        final Coordinate previousCoordinate = previousData.findCoordinate();
+//        final Coordinate inboundCoordinate = inboundData.findCoordinate();
+//        return this.mileageCalculatingService.calculate(previousCoordinate, inboundCoordinate);
+        return null;
     }
 }

@@ -2,8 +2,6 @@ package by.bsu.wialontransport.kafka.consumer;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Data.Latitude;
-import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static by.bsu.wialontransport.crud.dto.Data.createWithAddress;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -58,13 +55,11 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
-        final Latitude latitude = super.extractLatitude(genericRecord);
-        final Longitude longitude = super.extractLongitude(genericRecord);
         return Data.builder()
-                .date(dateTime.toLocalDate())
-                .time(dateTime.toLocalTime())
-                .latitude(latitude)
-                .longitude(longitude)
+//                .date(dateTime.toLocalDate())
+//                .time(dateTime.toLocalTime())
+//                .latitude(latitude)
+//                .longitude(longitude)
                 .speed(extractSpeed(genericRecord))
                 .course(extractCourse(genericRecord))
                 .altitude(extractAltitude(genericRecord))
@@ -76,7 +71,7 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
                 .driverKeyCode(extractDriverKeyCode(genericRecord))
                 .parametersByNames(super.extractParametersByNames(genericRecord))
                 .tracker(super.extractTracker(genericRecord))
-                .address(this.findAddress(latitude, longitude))
+//                .address(this.findAddress(latitude, longitude))
                 .build();
     }
 
@@ -88,18 +83,18 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
         this.sendInSavedDataTopic(savedData);
     }
 
-    private Address findAddress(final Latitude latitude, final Longitude longitude) {
-        final Optional<Address> optionalAddress = this.geocodingService.receive(latitude, longitude);
-        return optionalAddress.orElseThrow(
-                () -> new DataConsumingException(
-                        format(
-                                "Impossible to find address by latitude='%s' and longitude='%s'",
-                                latitude,
-                                longitude
-                        )
-                )
-        );
-    }
+//    private Address findAddress(final Latitude latitude, final Longitude longitude) {
+//        final Optional<Address> optionalAddress = this.geocodingService.receive(latitude, longitude);
+//        return optionalAddress.orElseThrow(
+//                () -> new DataConsumingException(
+//                        format(
+//                                "Impossible to find address by latitude='%s' and longitude='%s'",
+//                                latitude,
+//                                longitude
+//                        )
+//                )
+//        );
+//    }
 
     private void sendInSavedDataTopic(final List<Data> data) {
         data.forEach(this.savedDataProducer::send);
@@ -132,7 +127,7 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
     private List<Data> mapToDataWithSavedAddress(final List<Data> source, final Address newAddress) {
         final Address savedAddress = this.addressService.save(newAddress);
         return source.stream()
-                .map(data -> createWithAddress(data, savedAddress))
+//                .map(data -> createWithAddress(data, savedAddress))
                 .toList();
     }
 

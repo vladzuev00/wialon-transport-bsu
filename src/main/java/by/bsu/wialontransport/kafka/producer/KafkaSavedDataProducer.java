@@ -22,30 +22,31 @@ public final class KafkaSavedDataProducer extends AbstractKafkaDataProducer<Tran
 
     @Override
     protected TransportableSavedData mapToTransportable(final Data data) {
-        return new TransportableSavedData(
-                data.getId(),
-                findEpochSeconds(data),
-                findLatitudeDegrees(data),
-                findLatitudeMinutes(data),
-                findLatitudeMinuteShare(data),
-                findLatitudeTypeValue(data),
-                findLongitudeDegrees(data),
-                findLongitudeMinutes(data),
-                findLongitudeMinuteShare(data),
-                findLongitudeTypeValue(data),
-                data.getSpeed(),
-                data.getCourse(),
-                data.getAltitude(),
-                data.getAmountOfSatellites(),
-                data.getReductionPrecision(),
-                data.getInputs(),
-                data.getOutputs(),
-                super.serializeAnalogInputs(data),
-                data.getDriverKeyCode(),
-                super.serializeParameters(data),
-                findTrackerId(data),
-                findAddressId(data)
-        );
+//        return new TransportableSavedData(
+//                data.getId(),
+//                findEpochSeconds(data),
+//                findLatitudeDegrees(data),
+//                findLatitudeMinutes(data),
+//                findLatitudeMinuteShare(data),
+//                findLatitudeTypeValue(data),
+//                findLongitudeDegrees(data),
+//                findLongitudeMinutes(data),
+//                findLongitudeMinuteShare(data),
+//                findLongitudeTypeValue(data),
+//                data.getSpeed(),
+//                data.getCourse(),
+//                data.getAltitude(),
+//                data.getAmountOfSatellites(),
+//                data.getReductionPrecision(),
+//                data.getInputs(),
+//                data.getOutputs(),
+//                super.serializeAnalogInputs(data),
+//                data.getDriverKeyCode(),
+//                super.serializeParameters(data),
+//                findTrackerId(data),
+//                findAddressId(data)
+//        );
+        return null;
     }
 
     private static Long findAddressId(final Data data) {

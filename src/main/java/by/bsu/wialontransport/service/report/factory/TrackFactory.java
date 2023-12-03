@@ -16,8 +16,9 @@ public final class TrackFactory {
     }
 
     private static List<Coordinate> mapToCoordinates(final List<Data> data) {
-        return data.stream()
-                .map(Data::findCoordinate)
-                .toList();
+//        return data.stream()
+//                .map(Data::findCoordinate)
+//                .toList();
+        return null;
     }
 }

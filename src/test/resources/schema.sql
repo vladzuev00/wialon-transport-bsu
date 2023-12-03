@@ -148,14 +148,6 @@ ALTER TABLE data
         ON DELETE CASCADE;
 
 ALTER TABLE data
-    ADD CONSTRAINT latitude_type_should_be_correct
-        CHECK (data.latitude_type IN ('N', 'S'));
-
-ALTER TABLE data
-    ADD CONSTRAINT longitude_type_should_be_correct
-        CHECK (data.longitude_type IN ('E', 'W'));
-
-ALTER TABLE data
     ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
 
 CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');

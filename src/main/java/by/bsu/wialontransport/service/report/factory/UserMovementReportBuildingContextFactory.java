@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.*;
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingContextFactory {
     private static final String FONT_PATH = "fonts/Roboto-Regular.ttf";
-    private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
+//    private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
     private static final Integer FONT_SIZE = 11;
     private static final Color BORDER_COLOR = WHITE;
 
@@ -91,7 +91,7 @@ public final class UserMovementReportBuildingContextFactory {
     }
 
     private static List<Data> sortByDateTime(final List<Data> data) {
-        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
+//        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
         return data;
     }
 

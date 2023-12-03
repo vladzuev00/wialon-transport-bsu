@@ -1,8 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser;
 
-import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
-import by.bsu.wialontransport.crud.dto.Data.Latitude;
-import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
@@ -108,8 +105,8 @@ public final class DataComponentsParser {
     private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
-    private final GeographicCoordinateParser<Latitude> latitudeParser;
-    private final GeographicCoordinateParser<Longitude> longitudeParser;
+//    private final GeographicCoordinateParser<Latitude> latitudeParser;
+//    private final GeographicCoordinateParser<Longitude> longitudeParser;
     private final ParameterParser parameterParser;
 
     public DataComponentsParser(final String source) {
@@ -117,8 +114,8 @@ public final class DataComponentsParser {
         if (!this.matcher.matches()) {
             throw new NotValidDataException(format(MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION, source));
         }
-        this.latitudeParser = new LatitudeParser();
-        this.longitudeParser = new LongitudeParser();
+//        this.latitudeParser = new LatitudeParser();
+//        this.longitudeParser = new LongitudeParser();
         this.parameterParser = new ParameterParser();
     }
 
@@ -129,13 +126,13 @@ public final class DataComponentsParser {
                 : NOT_DEFINED_DATE_TIME;
     }
 
-    public Latitude parseLatitude() {
-        return this.latitudeParser.parse();
-    }
-
-    public Longitude parseLongitude() {
-        return this.longitudeParser.parse();
-    }
+//    public Latitude parseLatitude() {
+//        return this.latitudeParser.parse();
+//    }
+//
+//    public Longitude parseLongitude() {
+//        return this.longitudeParser.parse();
+//    }
 
     public int parseSpeed() {
         final String speedString = this.matcher.group(GROUP_NUMBER_SPEED);
@@ -202,94 +199,94 @@ public final class DataComponentsParser {
                 : emptyMap();
     }
 
-    private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
-        private static final String NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING = "NA;NA";
-
-        private final int groupNumber;
-        private final int groupNumberDegrees;
-        private final int groupNumberMinutes;
-        private final int groupNumberMinuteShare;
-        private final int groupNumberType;
-
-        public GeographicCoordinateParser(final int groupNumber, final int groupNumberDegrees,
-                                          final int groupNumberMinutes, final int groupNumberMinuteShare,
-                                          final int groupNumberType) {
-            this.groupNumber = groupNumber;
-            this.groupNumberDegrees = groupNumberDegrees;
-            this.groupNumberMinutes = groupNumberMinutes;
-            this.groupNumberMinuteShare = groupNumberMinuteShare;
-            this.groupNumberType = groupNumberType;
-        }
-
-        public final T parse() {
-            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
-            return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
-                    ? this.createDefinedGeographicCoordinate(DataComponentsParser.this.matcher)
-                    : this.createNotDefinedGeographicCoordinate();
-        }
-
-        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
-
-        protected abstract T createNotDefinedGeographicCoordinate();
-
-        private T createDefinedGeographicCoordinate(final Matcher matcher) {
-            final int degrees = parseInt(matcher.group(this.groupNumberDegrees));
-            final int minutes = parseInt(matcher.group(this.groupNumberMinutes));
-            final int minuteShare = parseInt(matcher.group(this.groupNumberMinuteShare));
-            final String typeValue = matcher.group(this.groupNumberType);
-            return this.create(degrees, minutes, minuteShare, typeValue.charAt(0));
-        }
-    }
-
-    private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
-        private static final Latitude NOT_DEFINED_LATITUDE = Latitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
-                .type(DataEntity.Latitude.Type.NOT_DEFINED)
-                .build();
-
-        public LatitudeParser() {
-            super(GROUP_NUMBER_LATITUDE, GROUP_NUMBER_LATITUDE_DEGREES, GROUP_NUMBER_LATITUDE_MINUTES,
-                    GROUP_NUMBER_LATITUDE_MINUTE_SHARE, GROUP_NUMBER_LATITUDE_TYPE_VALUE);
-        }
-
-        @Override
-        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final DataEntity.Latitude.Type type = DataEntity.Latitude.Type.findByValue(typeValue);
-            return new Latitude(degrees, minutes, minuteShare, type);
-        }
-
-        @Override
-        protected Latitude createNotDefinedGeographicCoordinate() {
-            return NOT_DEFINED_LATITUDE;
-        }
-    }
-
-    private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
-        private static final Longitude NOT_DEFINED_LONGITUDE = Longitude.builder()
-                .degrees(MIN_VALUE)
-                .minutes(MIN_VALUE)
-                .minuteShare(MIN_VALUE)
-                .type(DataEntity.Longitude.Type.NOT_DEFINED)
-                .build();
-
-        public LongitudeParser() {
-            super(GROUP_NUMBER_LONGITUDE, GROUP_NUMBER_LONGITUDE_DEGREES, GROUP_NUMBER_LONGITUDE_MINUTES,
-                    GROUP_NUMBER_LONGITUDE_MINUTE_SHARE, GROUP_NUMBER_LONGITUDE_TYPE_VALUE);
-        }
-
-        @Override
-        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
-            return new Longitude(degrees, minutes, minuteShare, type);
-        }
-
-        @Override
-        protected Longitude createNotDefinedGeographicCoordinate() {
-            return NOT_DEFINED_LONGITUDE;
-        }
-    }
+//    private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
+//        private static final String NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING = "NA;NA";
+//
+//        private final int groupNumber;
+//        private final int groupNumberDegrees;
+//        private final int groupNumberMinutes;
+//        private final int groupNumberMinuteShare;
+//        private final int groupNumberType;
+//
+//        public GeographicCoordinateParser(final int groupNumber, final int groupNumberDegrees,
+//                                          final int groupNumberMinutes, final int groupNumberMinuteShare,
+//                                          final int groupNumberType) {
+//            this.groupNumber = groupNumber;
+//            this.groupNumberDegrees = groupNumberDegrees;
+//            this.groupNumberMinutes = groupNumberMinutes;
+//            this.groupNumberMinuteShare = groupNumberMinuteShare;
+//            this.groupNumberType = groupNumberType;
+//        }
+//
+//        public final T parse() {
+//            final String geographicCoordinateString = DataComponentsParser.this.matcher.group(this.groupNumber);
+//            return !geographicCoordinateString.equals(NOT_DEFINED_GEOGRAPHIC_COORDINATE_STRING)
+//                    ? this.createDefinedGeographicCoordinate(DataComponentsParser.this.matcher)
+//                    : this.createNotDefinedGeographicCoordinate();
+//        }
+//
+//        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
+//
+//        protected abstract T createNotDefinedGeographicCoordinate();
+//
+//        private T createDefinedGeographicCoordinate(final Matcher matcher) {
+//            final int degrees = parseInt(matcher.group(this.groupNumberDegrees));
+//            final int minutes = parseInt(matcher.group(this.groupNumberMinutes));
+//            final int minuteShare = parseInt(matcher.group(this.groupNumberMinuteShare));
+//            final String typeValue = matcher.group(this.groupNumberType);
+//            return this.create(degrees, minutes, minuteShare, typeValue.charAt(0));
+//        }
+//    }
+//
+//    private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
+//        private static final Latitude NOT_DEFINED_LATITUDE = Latitude.builder()
+//                .degrees(MIN_VALUE)
+//                .minutes(MIN_VALUE)
+//                .minuteShare(MIN_VALUE)
+//                .type(DataEntity.Latitude.Type.NOT_DEFINED)
+//                .build();
+//
+//        public LatitudeParser() {
+//            super(GROUP_NUMBER_LATITUDE, GROUP_NUMBER_LATITUDE_DEGREES, GROUP_NUMBER_LATITUDE_MINUTES,
+//                    GROUP_NUMBER_LATITUDE_MINUTE_SHARE, GROUP_NUMBER_LATITUDE_TYPE_VALUE);
+//        }
+//
+//        @Override
+//        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
+//            final DataEntity.Latitude.Type type = DataEntity.Latitude.Type.findByValue(typeValue);
+//            return new Latitude(degrees, minutes, minuteShare, type);
+//        }
+//
+//        @Override
+//        protected Latitude createNotDefinedGeographicCoordinate() {
+//            return NOT_DEFINED_LATITUDE;
+//        }
+//    }
+//
+//    private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
+//        private static final Longitude NOT_DEFINED_LONGITUDE = Longitude.builder()
+//                .degrees(MIN_VALUE)
+//                .minutes(MIN_VALUE)
+//                .minuteShare(MIN_VALUE)
+//                .type(DataEntity.Longitude.Type.NOT_DEFINED)
+//                .build();
+//
+//        public LongitudeParser() {
+//            super(GROUP_NUMBER_LONGITUDE, GROUP_NUMBER_LONGITUDE_DEGREES, GROUP_NUMBER_LONGITUDE_MINUTES,
+//                    GROUP_NUMBER_LONGITUDE_MINUTE_SHARE, GROUP_NUMBER_LONGITUDE_TYPE_VALUE);
+//        }
+//
+//        @Override
+//        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
+//            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
+//            return new Longitude(degrees, minutes, minuteShare, type);
+//        }
+//
+//        @Override
+//        protected Longitude createNotDefinedGeographicCoordinate() {
+//            return NOT_DEFINED_LONGITUDE;
+//        }
+//    }
 
     private static final class ParameterParser {
         private static final String DELIMITER_PARAMETER_COMPONENTS = ":";

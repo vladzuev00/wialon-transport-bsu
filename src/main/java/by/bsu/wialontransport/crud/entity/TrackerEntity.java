@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;

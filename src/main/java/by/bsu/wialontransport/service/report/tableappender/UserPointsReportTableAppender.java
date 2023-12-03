@@ -70,7 +70,7 @@ public final class UserPointsReportTableAppender extends AbstractUserMovementRep
         final Tracker tracker = movement.getTracker();
         return movement.getData()
                 .stream()
-                .sorted(comparing(Data::findDateTime))
+//                .sorted(comparing(Data::findDateTime))
                 .map(data -> createContentRow(tracker, data));
     }
 
@@ -88,16 +88,16 @@ public final class UserPointsReportTableAppender extends AbstractUserMovementRep
 
     private static Row createContentRow(final Tracker tracker, final Data data) {
         final String trackerImei = tracker.getImei();
-        final LocalDateTime dateTime = data.findDateTime();
-        final double latitudeAsDouble = data.findLatitudeAsDouble();
-        final double longitudeAsDouble = data.findLongitudeAsDouble();
+//        final LocalDateTime dateTime = data.findDateTime();
+//        final double latitudeAsDouble = data.findLatitudeAsDouble();
+//        final double longitudeAsDouble = data.findLongitudeAsDouble();
         final String cityName = data.findCityName();
         final String countryName = data.findCountryName();
         return Row.builder()
                 .add(createTextCell(trackerImei))
-                .add(createTextCell(dateTime))
-                .add(createTextCell(latitudeAsDouble))
-                .add(createTextCell(longitudeAsDouble))
+//                .add(createTextCell(dateTime))
+//                .add(createTextCell(latitudeAsDouble))
+//                .add(createTextCell(longitudeAsDouble))
                 .add(createTextCell(cityName))
                 .add(createTextCell(countryName))
                 .build();
