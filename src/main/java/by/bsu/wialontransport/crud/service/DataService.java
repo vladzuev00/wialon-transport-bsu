@@ -37,4 +37,9 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
         );
         return super.mapper.mapToDtos(foundEntities);
     }
+
+    @Override
+    protected void configureBeforeSave(final DataEntity entity) {
+
+    }
 }

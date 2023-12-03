@@ -35,11 +35,12 @@ public abstract class AbstractCRUDService<
         return super.mapper.mapToDtos(savedEntities);
     }
 
-    protected abstract ENTITY configureBeforeSave(final ENTITY entity);
+    protected abstract void configureBeforeSave(final ENTITY entity);
 
     private ENTITY mapToConfiguredEntity(final DTO dto) {
         final ENTITY entity = super.mapper.mapToEntity(dto);
-        return this.configureBeforeSave(entity);
+        this.configureBeforeSave(entity);
+        return entity;
     }
 
     private List<ENTITY> mapToConfiguredEntities(final Collection<DTO> dtos) {

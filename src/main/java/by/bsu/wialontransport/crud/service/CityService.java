@@ -21,7 +21,7 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
     }
 
     @Override
-    protected CityEntity configureBeforeSave(final CityEntity entity) {
-        return entity;
+    protected void configureBeforeSave(final CityEntity entity) {
+
     }
 }

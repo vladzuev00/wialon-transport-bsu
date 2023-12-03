@@ -50,8 +50,8 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
     }
 
     @Override
-    protected AddressEntity configureBeforeSave(final AddressEntity source) {
-        return source;
+    protected void configureBeforeSave(final AddressEntity source) {
+
     }
 
     private static PreparedGeometry extractPreparedGeometry(final AddressEntity entity) {
