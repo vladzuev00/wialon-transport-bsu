@@ -49,6 +49,7 @@ public final class CityTest extends AbstractContextTest {
         assertEquals(givenGeometry, actual);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static City createCity(final Long id) {
         return City.builder()
                 .id(id)
@@ -61,6 +62,7 @@ public final class CityTest extends AbstractContextTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Address createAddress(final Long id) {
         return Address.builder()
                 .id(id)
@@ -73,6 +75,7 @@ public final class CityTest extends AbstractContextTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static SearchingCitiesProcess createProcess(final Long id) {
         return SearchingCitiesProcess.builder()
                 .id(id)
