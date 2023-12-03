@@ -8,6 +8,7 @@ import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static by.bsu.wialontransport.util.entity.TrackerEntityUtil.checkEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -56,14 +57,5 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .build();
         assertEquals(expected, actual);
-    }
-
-    private static void checkEquals(final TrackerEntity expected, final TrackerEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getImei(), actual.getImei());
-        assertEquals(expected.getPassword(), actual.getPassword());
-        assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
-        assertEquals(expected.getUser(), actual.getUser());
-        assertEquals(expected.getMileage(), actual.getMileage());
     }
 }
