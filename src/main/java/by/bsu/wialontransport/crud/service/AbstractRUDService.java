@@ -6,48 +6,49 @@ import by.bsu.wialontransport.crud.mapper.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import static java.lang.String.format;
-
 @Transactional
 public abstract class AbstractRUDService<
-        IdType,
-        EntityType extends Entity<IdType>,
-        DtoType extends Dto<IdType>,
-        MapperType extends Mapper<EntityType, DtoType>,
-        RepositoryType extends JpaRepository<EntityType, IdType>>
+        ID,
+        ENTITY extends Entity<ID>,
+        DTO extends Dto<ID>,
+        MAPPER extends Mapper<ENTITY, DTO>,
+        REPOSITORY extends JpaRepository<ENTITY, ID>
+        >
+        extends AbstractReadService<ID, ENTITY, DTO, MAPPER, REPOSITORY> {
 
-        extends AbstractReadService<IdType, EntityType, DtoType, MapperType, RepositoryType> {
-    private static final String TEMPLATE_EXCEPTION_MESSAGE_CHECKING_ID
-            = "Entity should have id: (not null or 0), but was id: %s.";
-
-    public AbstractRUDService(final MapperType mapper, final RepositoryType repository) {
+    public AbstractRUDService(final MAPPER mapper, final REPOSITORY repository) {
         super(mapper, repository);
     }
 
-    public DtoType update(final DtoType updated) {
-        this.checkId(updated.getId());
-        final EntityType entityToBeUpdated = super.mapper.mapToEntity(updated);
-        final EntityType updatedEntity = super.repository.save(entityToBeUpdated);
+    public DTO update(final DTO dto) {
+        this.checkId(dto);
+        final ENTITY initialEntity = super.mapper.mapToEntity(dto);
+        final ENTITY updatedEntity = super.repository.save(initialEntity);
         return this.mapper.mapToDto(updatedEntity);
     }
 
-    public void delete(final IdType id) {
+    public void delete(final ID id) {
         this.checkId(id);
         super.repository.deleteById(id);
     }
 
-    private void checkId(final IdType id) {
+    private void checkId(final DTO dto) {
+        final ID id = dto.getId();
+        this.checkId(id);
+    }
+
+    private void checkId(final ID id) {
         if (this.isIdNotDefined(id)) {
-            throw new IllegalArgumentException(format(TEMPLATE_EXCEPTION_MESSAGE_CHECKING_ID, id));
+            throw new IllegalArgumentException("Entity should have id: (not null or 0), but was id: %s.".formatted(id));
         }
     }
 
-    private boolean isIdNotDefined(final IdType id) {
+    private boolean isIdNotDefined(final ID id) {
         if (id == null) {
             return true;
         }
-        if (id instanceof Number) {
-            return ((Number) id).longValue() == 0;
+        if (id instanceof final Number idNumber) {
+            return idNumber.longValue() == 0;
         }
         return false;
     }
