@@ -13,11 +13,16 @@ public final class TrackerMileageMapper extends Mapper<TrackerMileageEntity, Tra
     }
 
     @Override
-    protected TrackerMileage createDto(final TrackerMileageEntity entity) {
+    protected TrackerMileage createDto(final TrackerMileageEntity source) {
         return new TrackerMileage(
-                entity.getId(),
-                entity.getUrban(),
-                entity.getCountry()
+                source.getId(),
+                source.getUrban(),
+                source.getCountry()
         );
+    }
+
+    @Override
+    protected void mapSpecificFields(final TrackerMileage source, final TrackerMileageEntity destination) {
+
     }
 }
