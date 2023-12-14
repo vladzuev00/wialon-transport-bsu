@@ -8,17 +8,17 @@ import java.util.Optional;
 
 public interface UserRepository extends EntityWithPasswordRepository<Long, UserEntity> {
 
-    @Override
-    @Modifying
-    @Query(value = "UPDATE UserEntity e SET e.password = :newEncryptedPassword WHERE e.id = :userId")
-    int updatePassword(final Long userId, final String newEncryptedPassword);
-
     Optional<UserEntity> findByEmail(final String email);
 
     boolean existsByEmail(final String email);
 
     @Modifying
     @Query(value = "UPDATE UserEntity e SET e.email = :newEmail WHERE e.id = :userId")
-    void updateEmail(final Long userId, final String newEmail);
+    int updateEmail(final Long userId, final String newEmail);
+
+    @Override
+    @Modifying
+    @Query(value = "UPDATE UserEntity e SET e.password = :newEncryptedPassword WHERE e.id = :userId")
+    int updatePassword(final Long userId, final String newEncryptedPassword);
 
 }

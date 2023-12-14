@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
+import static by.bsu.wialontransport.util.entity.UserEntityUtil.checkEquals;
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
 
 public final class UserRepositoryTest extends AbstractContextTest {
@@ -88,10 +90,48 @@ public final class UserRepositoryTest extends AbstractContextTest {
     }
 
     @Test
+    public void userEmailShouldBeUpdated() {
+        final Long givenUserId = 255L;
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        super.startQueryCount();
+        final int actualCountUpdatedRows = this.repository.updateEmail(givenUserId, givenNewEmail);
+        super.checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+
+        final UserEntity actual = this.repository.findById(givenUserId).orElseThrow();
+        final UserEntity expected = UserEntity.builder()
+                .id(givenUserId)
+                .email(givenNewEmail)
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
+                .role(USER)
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void userEmailShouldNotBeUpdatedBecauseOfNotExistingId() {
+        final Long givenUserId = MAX_VALUE;
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        super.startQueryCount();
+        final int actualCountUpdatedRows = this.repository.updateEmail(givenUserId, givenNewEmail);
+        super.checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+    }
+
+    @Test
     public void userPasswordShouldBeUpdated() {
         super.startQueryCount();
-        this.repository.updatePassword(255L, "new-password");
+        final int actualCountUpdatedRows = this.repository.updatePassword(255L, "new-password");
         super.checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
         final UserEntity actual = this.repository.findById(255L).orElseThrow();
         final UserEntity expected = UserEntity.builder()
@@ -104,28 +144,12 @@ public final class UserRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    public void userEmailShouldBeUpdated() {
-        final Long givenUserId = 255L;
-        final String givenNewEmail = "newEmail@mail.ru";
-
+    public void userPasswordShouldBeUpdatedBecauseOfNotExistingId() {
         super.startQueryCount();
-        this.repository.updateEmail(givenUserId, givenNewEmail);
+        final int actualCountUpdatedRows = this.repository.updatePassword(MAX_VALUE, "new-password");
         super.checkQueryCount(1);
 
-        final UserEntity actual = this.repository.findById(givenUserId).orElseThrow();
-        final UserEntity expected = UserEntity.builder()
-                .id(givenUserId)
-                .email(givenNewEmail)
-                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(USER)
-                .build();
-        checkEquals(expected, actual);
-    }
-
-    private static void checkEquals(final UserEntity expected, final UserEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getPassword(), actual.getPassword());
-        assertSame(expected.getRole(), actual.getRole());
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
     }
 }
