@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
+import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
 import static org.junit.Assert.*;
 
 @UtilityClass
@@ -27,6 +28,18 @@ public final class DataEntityUtil {
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
         TrackerEntityUtil.checkEquals(expected.getTracker(), actual.getTracker());
         AddressEntityUtil.checkEquals(expected.getAddress(), actual.getAddress());
+    }
+
+    public static boolean areParametersLoaded(final DataEntity data) {
+        return isPropertyLoaded(data, DataEntity::getParameters);
+    }
+
+    public static boolean isTrackerLoaded(final DataEntity data) {
+        return isPropertyLoaded(data, DataEntity::getTracker);
+    }
+
+    public static boolean isAddressLoaded(final DataEntity data) {
+        return isPropertyLoaded(data, DataEntity::getAddress);
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,

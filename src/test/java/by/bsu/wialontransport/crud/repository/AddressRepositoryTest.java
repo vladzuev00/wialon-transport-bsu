@@ -9,12 +9,13 @@ import org.locationtech.jts.geom.LineString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
 import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
-import static by.bsu.wialontransport.util.entity.EntityUtil.findEntityIds;
+import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static org.junit.Assert.*;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
@@ -142,13 +143,13 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         super.startQueryCount();
-        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
+        final Stream<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
                 givenLineString
         );
         super.checkQueryCount(1);
 
-        final List<Long> actual = findEntityIds(foundAddresses);
-        final List<Long> expected = List.of(257L);
+        final Set<Long> actual = mapToIds(foundAddresses);
+        final Set<Long> expected = Set.of(257L);
         assertEquals(expected, actual);
     }
 
@@ -161,11 +162,12 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         super.startQueryCount();
-        final List<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
+        final Stream<AddressEntity> actual = this.repository.findCityAddressesIntersectedByLineString(
                 givenLineString
         );
         super.checkQueryCount(1);
 
-        assertTrue(foundAddresses.isEmpty());
+        final boolean actualEmpty = actual.findAny().isEmpty();
+        assertTrue(actualEmpty);
     }
 }

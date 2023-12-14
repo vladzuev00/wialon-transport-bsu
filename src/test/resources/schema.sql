@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
+DROP TABLE IF EXISTS tracker_mileages;
 
 --DROPPING TYPES
 DROP TYPE IF EXISTS user_type;

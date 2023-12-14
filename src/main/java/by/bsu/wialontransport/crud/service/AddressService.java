@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service
@@ -43,10 +42,11 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public List<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        final List<AddressEntity> foundEntities = super.repository.findCityAddressesIntersectedByLineString(
-                lineString
-        );
-        return mapToList(foundEntities, AddressService::extractPreparedGeometry);
+//        final List<AddressEntity> foundEntities = super.repository.findCityAddressesIntersectedByLineString(
+//                lineString
+//        );
+//        return mapToList(foundEntities, AddressService::extractPreparedGeometry);
+        return null;
     }
 
     @Override

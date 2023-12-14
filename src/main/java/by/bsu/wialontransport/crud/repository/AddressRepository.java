@@ -6,8 +6,8 @@ import org.locationtech.jts.geom.LineString;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
@@ -31,5 +31,5 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             + "ON cities.address_id = addresses.id "
             + "WHERE ST_Intersects(geometry, :lineString)",
             nativeQuery = true)
-    List<AddressEntity> findCityAddressesIntersectedByLineString(final LineString lineString);
+    Stream<AddressEntity> findCityAddressesIntersectedByLineString(final LineString lineString);
 }

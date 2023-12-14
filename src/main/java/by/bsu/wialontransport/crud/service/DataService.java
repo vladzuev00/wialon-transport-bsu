@@ -34,7 +34,7 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
         final LocalDate startDateTime = dateInterval.getStart();
         final LocalDate endDateTime = dateInterval.getEnd();
         return super.find(
-                repository -> repository.findDataWithTrackerAndAddressOfUser(userId, startDateTime, endDateTime)
+                repository -> repository.findDataWithTrackerAndAddressByUserId(userId, startDateTime, endDateTime)
         );
     }
 
