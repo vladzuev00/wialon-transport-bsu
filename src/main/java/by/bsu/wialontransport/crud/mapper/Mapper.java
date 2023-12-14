@@ -23,7 +23,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.mapAndCollect;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-//TODO: test
+//TODO: refactor and test
 public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
     private final ModelMapper modelMapper;
     private final Class<ENTITY> entityType;
