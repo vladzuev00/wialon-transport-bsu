@@ -4,9 +4,9 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface DataRepository extends JpaRepository<DataEntity, Long> {
 
@@ -22,9 +22,9 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
                     + "JOIN FETCH de.tracker te "
                     + "JOIN FETCH de.address "
                     + "WHERE te.user.id = :userId "
-                    + "AND de.dateTime BETWEEN :startDate AND :endDate"
+                    + "AND de.dateTime BETWEEN :startDateTime AND :endDateTime"
     )
-    List<DataEntity> findDataWithTrackerAndAddressByUserId(final Long userId,
-                                                           final LocalDate startDate,
-                                                           final LocalDate endDate);
+    Stream<DataEntity> findDataWithTrackerAndAddressByUserId(final Long userId,
+                                                             final LocalDateTime startDateTime,
+                                                             final LocalDateTime endDateTime);
 }

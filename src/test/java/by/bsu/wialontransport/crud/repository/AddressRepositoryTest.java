@@ -143,14 +143,13 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         super.startQueryCount();
-        final Stream<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(
-                givenLineString
-        );
-        super.checkQueryCount(1);
+        try (final Stream<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(givenLineString)) {
+            super.checkQueryCount(1);
 
-        final Set<Long> actual = mapToIds(foundAddresses);
-        final Set<Long> expected = Set.of(257L);
-        assertEquals(expected, actual);
+            final Set<Long> actual = mapToIds(foundAddresses);
+            final Set<Long> expected = Set.of(257L);
+            assertEquals(expected, actual);
+        }
     }
 
     @Test

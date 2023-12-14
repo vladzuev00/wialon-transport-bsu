@@ -13,12 +13,15 @@ import org.springframework.test.context.jdbc.Sql;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
+import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static java.util.stream.Collectors.toSet;
+import static org.junit.Assert.*;
 
 public final class DataRepositoryTest extends AbstractContextTest {
 
@@ -128,57 +131,39 @@ public final class DataRepositoryTest extends AbstractContextTest {
         assertTrue(actual.isEmpty());
     }
 
-//    @Test
-//    @Sql("classpath:sql/data/insert-data.sql")
-//    public void dataWithTrackerAndAddressShouldBeFoundByUserId() {
-//        final Long givenUserId = 255L;
-//        final LocalDate givenStartDate = LocalDate.of(2019, 10, 23);
-//        final LocalDate givenEndDate = LocalDate.of(2019, 10, 25);
-//
-//        final List<DataEntity> actual = this.repository.findDataWithTrackerAndAddressByUserId(
-//                givenUserId,
-//                givenStartDate,
-//                givenEndDate
-//        );
-//        final List<Long> actualIds = findEntityIds(actual);
-//        final List<Long> expectedIds = List.of(255L);
-//        assertEquals(expectedIds, actualIds);
-//
-//        final boolean trackersLoaded = areEntityPropertiesLoaded(actual, DataEntity::getTracker);
-//        assertTrue(trackersLoaded);
-//
-//        final boolean addressesLoaded = areEntityPropertiesLoaded(actual, DataEntity::getAddress);
-//        assertTrue(addressesLoaded);
-//    }
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void dataWithTrackerAndAddressShouldBeFoundByUserId() {
+        final Long givenUserId = 255L;
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(2019, 10, 23, 0, 0, 0);
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(2019, 10, 25, 0, 0, 0);
 
-//    @Test
-//    public void dataWithTrackerAndAddressOfUserShouldNotBeFound() {
-//        final Long givenUserId = 255L;
-//        final LocalDate givenStartDate = LocalDate.of(2019, 10, 23);
-//        final LocalDate givenEndDate = LocalDate.of(2019, 10, 25);
-//
-//        final List<DataEntity> actual = this.repository.findDataWithTrackerAndAddressOfUser(
-//                givenUserId, givenStartDate, givenEndDate
-//        );
-//        assertTrue(actual.isEmpty());
-//    }
-//
-//    private static void checkEquals(final DataEntity expected, final DataEntity actual) {
-//        assertEquals(expected.getId(), actual.getId());
-//        assertEquals(expected.getDate(), actual.getDate());
-//        assertEquals(expected.getTime(), actual.getTime());
-//        assertEquals(expected.getLatitude(), actual.getLatitude());
-//        assertEquals(expected.getLongitude(), actual.getLongitude());
-//        assertEquals(expected.getSpeed(), actual.getSpeed());
-//        assertEquals(expected.getCourse(), actual.getCourse());
-//        assertEquals(expected.getAltitude(), actual.getAltitude());
-//        assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
-//        assertEquals(expected.getReductionPrecision(), actual.getReductionPrecision(), 0.);
-//        assertEquals(expected.getInputs(), actual.getInputs());
-//        assertEquals(expected.getOutputs(), actual.getOutputs());
-//        assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-//        assertEquals(expected.getParameters(), actual.getParameters());
-//        assertEquals(expected.getTracker(), actual.getTracker());
-//        assertEquals(expected.getAddress(), actual.getAddress());
-//    }
+        super.startQueryCount();
+        try (final Stream<DataEntity> actual = this.repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            super.checkQueryCount(1);
+
+            final Set<DataEntity> actualAsSet = actual.collect(toSet());
+
+            assertTrue(areParametersNotLoaded(actualAsSet));
+            assertTrue(areTrackersLoaded(actualAsSet));
+            assertTrue(areAddressesLoaded(actualAsSet));
+
+            final Set<Long> actualIds = mapToIds(actualAsSet);
+            final Set<Long> expectedIds = Set.of(254L, 255L, 256L);
+            assertEquals(expectedIds, actualIds);
+        }
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void dataWithTrackerAndAddressOfUserShouldNotBeFound() {
+        final Long givenUserId = 255L;
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(2015, 10, 23, 0, 0, 0);
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(2015, 10, 25, 0, 0, 0);
+
+        try (final Stream<DataEntity> actual = this.repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            final boolean actualEmpty = actual.findAny().isEmpty();
+            assertTrue(actualEmpty);
+        }
+    }
 }

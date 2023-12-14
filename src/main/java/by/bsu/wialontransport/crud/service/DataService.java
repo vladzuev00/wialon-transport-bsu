@@ -10,7 +10,6 @@ import by.bsu.wialontransport.model.DateInterval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,12 +29,13 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
 
     @Transactional(readOnly = true)
     public List<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
-        final Long userId = user.getId();
-        final LocalDate startDateTime = dateInterval.getStart();
-        final LocalDate endDateTime = dateInterval.getEnd();
-        return super.find(
-                repository -> repository.findDataWithTrackerAndAddressByUserId(userId, startDateTime, endDateTime)
-        );
+//        final Long userId = user.getId();
+//        final LocalDate startDateTime = dateInterval.getStart();
+//        final LocalDate endDateTime = dateInterval.getEnd();
+//        return super.find(
+//                repository -> repository.findDataWithTrackerAndAddressByUserId(userId, startDateTime, endDateTime)
+//        );
+        return null;
     }
 
     @Override

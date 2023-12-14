@@ -4,7 +4,9 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import lombok.experimental.UtilityClass;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
 import static org.junit.Assert.*;
@@ -26,8 +28,8 @@ public final class DataEntityUtil {
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
-        TrackerEntityUtil.checkEquals(expected.getTracker(), actual.getTracker());
-        AddressEntityUtil.checkEquals(expected.getAddress(), actual.getAddress());
+        assertEquals(expected.getTracker(), actual.getTracker());
+        assertEquals(expected.getAddress(), actual.getAddress());
     }
 
     public static boolean areParametersLoaded(final DataEntity data) {
@@ -40,6 +42,22 @@ public final class DataEntityUtil {
 
     public static boolean isAddressLoaded(final DataEntity data) {
         return isPropertyLoaded(data, DataEntity::getAddress);
+    }
+
+    public static boolean areParametersNotLoaded(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, entity -> !areParametersLoaded(entity));
+    }
+
+    public static boolean areTrackersLoaded(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, DataEntityUtil::isTrackerLoaded);
+    }
+
+    public static boolean areAddressesLoaded(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, DataEntityUtil::isAddressLoaded);
+    }
+
+    private static boolean areAllMatch(final Collection<DataEntity> entities, final Predicate<DataEntity> predicate) {
+        return entities.stream().allMatch(predicate);
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,
