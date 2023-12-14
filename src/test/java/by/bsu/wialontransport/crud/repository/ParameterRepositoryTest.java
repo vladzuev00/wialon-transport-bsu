@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.checkEquals;
+import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.isDataLoaded;
+import static org.junit.Assert.assertFalse;
 
 public final class ParameterRepositoryTest extends AbstractContextTest {
 
@@ -17,26 +18,13 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
     private ParameterRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
-    @Sql(statements = "INSERT INTO parameters(id, name, type, value, data_id) "
-            + "VALUES(257, 'name', 'INTEGER', '44', 256)")
+    @Sql("classpath:sql/data/insert-data.sql")
     public void parameterShouldBeFoundById() {
         super.startQueryCount();
         final ParameterEntity actual = this.repository.findById(257L).orElseThrow();
         super.checkQueryCount(1);
+
+        assertFalse(isDataLoaded(actual));
 
         final ParameterEntity expected = ParameterEntity.builder()
                 .id(257L)
@@ -49,20 +37,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
+    @Sql("classpath:sql/data/insert-data.sql")
     public void parameterShouldBeInserted() {
         final ParameterEntity givenParameter = ParameterEntity.builder()
                 .name("name")
@@ -74,13 +49,5 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
         super.startQueryCount();
         this.repository.save(givenParameter);
         super.checkQueryCount(2);
-    }
-
-    private static void checkEquals(final ParameterEntity expected, final ParameterEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertSame(expected.getType(), actual.getType());
-        assertEquals(expected.getValue(), actual.getValue());
-        assertEquals(expected.getData(), actual.getData());
     }
 }
