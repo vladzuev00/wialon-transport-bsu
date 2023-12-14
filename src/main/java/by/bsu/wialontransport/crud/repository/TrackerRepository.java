@@ -22,6 +22,6 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
 
     @Override
     @Modifying
-    @Query("UPDATE TrackerEntity e SET e.password = :encryptedPassword WHERE e.id = :id")
-    void updatePassword(final Long id, final String encryptedPassword);
+    @Query("UPDATE TrackerEntity e SET e.password = :newEncryptedPassword WHERE e.id = :id")
+    int updatePassword(final Long id, final String newEncryptedPassword);
 }

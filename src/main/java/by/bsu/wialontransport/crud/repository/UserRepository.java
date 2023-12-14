@@ -10,8 +10,8 @@ public interface UserRepository extends EntityWithPasswordRepository<Long, UserE
 
     @Override
     @Modifying
-    @Query(value = "UPDATE UserEntity e SET e.password = :newPassword WHERE e.id = :userId")
-    void updatePassword(final Long userId, final String newPassword);
+    @Query(value = "UPDATE UserEntity e SET e.password = :newEncryptedPassword WHERE e.id = :userId")
+    int updatePassword(final Long userId, final String newEncryptedPassword);
 
     Optional<UserEntity> findByEmail(final String email);
 
