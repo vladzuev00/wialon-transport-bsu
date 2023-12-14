@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
+import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkEquals;
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 
 public final class TrackerMileageRepositoryTest extends AbstractContextTest {
@@ -14,7 +16,7 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
     private TrackerMileageRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO tracker_mileages(id, urban, country) VALUES(255, 100.1, 200.2)")
+    @Sql("classpath:sql/tracker-mileage/insert-tracker-mileages.sql")
     public void mileageShouldBeFoundById() {
         super.startQueryCount();
         final TrackerMileageEntity actual = this.repository.findById(255L).orElseThrow();
@@ -43,8 +45,11 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
     @Test
     public void mileageShouldBeIncreased() {
         super.startQueryCount();
-        this.repository.increaseMileage(255L, 50.5, 60.6);
+        final int actualCountUpdatedRows = this.repository.increaseMileage(255L, 50.5, 60.6);
         super.checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
         final TrackerMileageEntity actual = this.repository.findById(1L).orElseThrow();
         final TrackerMileageEntity expected = TrackerMileageEntity.builder()
@@ -55,9 +60,13 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
         checkEquals(expected, actual);
     }
 
-    private static void checkEquals(final TrackerMileageEntity expected, final TrackerMileageEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getUrban(), actual.getUrban(), 0.);
-        assertEquals(expected.getCountry(), actual.getCountry(), 0.);
+    @Test
+    public void mileageShouldNotBeIncreasedBecauseOfNotExistingTrackerId() {
+        super.startQueryCount();
+        final int actualCountUpdatedRows = this.repository.increaseMileage(MAX_VALUE, 50.5, 60.6);
+        super.checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
     }
 }

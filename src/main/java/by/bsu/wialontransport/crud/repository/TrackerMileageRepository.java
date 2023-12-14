@@ -10,6 +10,6 @@ public interface TrackerMileageRepository extends JpaRepository<TrackerMileageEn
     @Modifying
     @Query("UPDATE TrackerMileageEntity m SET m.urban = m.urban + :urbanDelta, m.country = m.country + :countryDelta "
             + "WHERE m.id = (SELECT t.mileage.id FROM TrackerEntity t WHERE t.id = :trackerId)")
-    void increaseMileage(final Long trackerId, final double urbanDelta, final double countryDelta);
+    int increaseMileage(final Long trackerId, final double urbanDelta, final double countryDelta);
 
 }
