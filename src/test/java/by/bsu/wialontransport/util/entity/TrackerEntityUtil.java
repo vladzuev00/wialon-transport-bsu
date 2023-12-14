@@ -4,8 +4,8 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collection;
-import java.util.function.Predicate;
 
+import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
 import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
 import static org.junit.Assert.assertEquals;
 
@@ -35,10 +35,5 @@ public final class TrackerEntityUtil {
 
     public static boolean areMileagesNotLoaded(final Collection<TrackerEntity> entities) {
         return areAllMatch(entities, entity -> !isMileageLoaded(entity));
-    }
-
-    private static boolean areAllMatch(final Collection<TrackerEntity> entities,
-                                       final Predicate<TrackerEntity> predicate) {
-        return entities.stream().allMatch(predicate);
     }
 }

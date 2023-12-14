@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -16,6 +17,10 @@ import static java.util.stream.StreamSupport.stream;
 
 @UtilityClass
 public final class CollectionUtil {
+
+    public static <T> boolean areAllMatch(final Collection<T> elements, final Predicate<T> predicate) {
+        return elements.stream().allMatch(predicate);
+    }
 
     public static <S, K, V> Map<K, V> collectToTreeMap(final List<S> sources,
                                                        final Function<S, K> keyExtractor,
