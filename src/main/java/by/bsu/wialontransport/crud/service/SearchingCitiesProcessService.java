@@ -36,11 +36,12 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
 
     @Transactional(readOnly = true)
     public List<SearchingCitiesProcess> findByStatus(final Status status, final int pageNumber, final int pageSize) {
-        return super.findPaged(
-                (repository, pageable) -> repository.findByStatus(status, pageable),
-                pageNumber,
-                pageSize
-        );
+//        return super.findPaged(
+//                (repository, pageable) -> repository.findByStatus(status, pageable),
+//                pageNumber,
+//                pageSize
+//        );
+        return null;
     }
 
     @Override

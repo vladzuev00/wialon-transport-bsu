@@ -6,7 +6,6 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
-import static java.lang.Byte.MIN_VALUE;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -49,7 +48,7 @@ public class ParameterEntity extends Entity<Long> {
 
     @RequiredArgsConstructor
     public enum Type {
-        NOT_DEFINED(MIN_VALUE), INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);
+        INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);
 
         @Getter
         private final byte value;

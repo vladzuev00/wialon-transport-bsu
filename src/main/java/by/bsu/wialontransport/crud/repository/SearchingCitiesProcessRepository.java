@@ -13,13 +13,13 @@ public interface SearchingCitiesProcessRepository extends JpaRepository<Searchin
 
     @Modifying
     @Query("UPDATE SearchingCitiesProcessEntity e SET e.status = :newStatus WHERE e.id = :id")
-    void updateStatus(final Long id, final Status newStatus);
+    int updateStatus(final Long id, final Status newStatus);
 
     @Modifying
     @Query("UPDATE SearchingCitiesProcessEntity e "
             + "SET e.handledPoints = e.handledPoints + :delta "
             + "WHERE e.id = :id")
-    void increaseHandledPoints(final Long id, final long delta);
+    int increaseHandledPoints(final Long id, final long delta);
 
     @Query("SELECT e FROM SearchingCitiesProcessEntity e WHERE e.status = :status")
     List<SearchingCitiesProcessEntity> findByStatus(final Status status, final Pageable pageable);
