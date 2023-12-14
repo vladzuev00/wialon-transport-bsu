@@ -26,12 +26,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     private GeometryFactory geometryFactory;
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundById() {
         super.startQueryCount();
         final AddressEntity actual = this.repository.findById(255L).orElseThrow();
@@ -39,11 +34,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
 
         final AddressEntity expected = AddressEntity.builder()
                 .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
-                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
-                .cityName("city")
-                .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
+                .boundingBox(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
+                .center(createPoint(this.geometryFactory, 1.5, 1.5))
+                .cityName("first-city")
+                .countryName("first-country")
+                .geometry(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
                 .build();
         checkEquals(expected, actual);
     }
