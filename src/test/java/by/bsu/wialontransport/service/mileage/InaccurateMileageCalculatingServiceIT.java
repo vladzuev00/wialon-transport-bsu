@@ -38,7 +38,7 @@ public final class InaccurateMileageCalculatingServiceIT extends AbstractContext
     private InaccurateMileageCalculatingService mileageCalculatingService;
 
     @ParameterizedTest
-    @Sql("classpath:sql/insert-belarus-cities.sql")
+    @Sql("classpath:sql/insert-belarus-insert-cities.sql")
     @MethodSource("provideTrackPointsFilePathAndExpectedMileage")
     public void mileageShouldBeCalculatedForFirstTrackPoints(final String filePath, final Mileage expected)
             throws Exception {

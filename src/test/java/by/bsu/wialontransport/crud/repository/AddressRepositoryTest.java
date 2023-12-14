@@ -12,9 +12,9 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.util.entity.EntityUtil.findEntityIds;
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
 import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
+import static by.bsu.wialontransport.util.entity.EntityUtil.findEntityIds;
 import static org.junit.Assert.*;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
@@ -64,113 +64,46 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundByGpsCoordinates() {
-        final double givenLatitude = 2.5;
-        final double givenLongitude = 2.5;
+        final double givenLatitude = 1;
+        final double givenLongitude = 1;
 
         final Optional<AddressEntity> optionalActual = this.repository.findByGpsCoordinates(
-                givenLatitude, givenLongitude
+                givenLatitude,
+                givenLongitude
         );
-        final long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
-        final long expectedId = 255;
+        final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotBeFoundByGpsCoordinates() {
-        final double givenLatitude = 20.;
-        final double givenLongitude = 20.;
+        final double givenLatitude = 20;
+        final double givenLongitude = 20;
 
         final Optional<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
         assertTrue(actual.isEmpty());
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
                 this.geometryFactory,
-                10, 15, 15, 16, 16, 17
+                1, 1, 1, 2, 2, 2, 2, 1
         );
 
         final Optional<AddressEntity> optionalActual = this.repository.findByGeometry(givenGeometry);
-        final long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
-        final long expectedId = 257;
+        final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10.1 15, 15 16, 16 17, 10.1 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
                 this.geometryFactory,
@@ -182,28 +115,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 10 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
                 this.geometryFactory,
-                10, 15, 15, 16, 16, 17
+                1, 1, 1, 2, 2, 2, 2, 1
         );
 
         final boolean actual = this.repository.isExistByGeometry(givenGeometry);
@@ -211,24 +127,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((0 0, 0 0.5, 0.5 0.5, 0 0))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((10 15, 15 16, 16 17, 17 18, 10 15))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((10.1 15, 15 16, 16 17, 10.1 15))', 4326)"
-            + ")")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
                 this.geometryFactory,
@@ -240,36 +139,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(254, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "1, 36, 36, 'SUCCESS'"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, "
-            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(258, 257, 254)")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(259, "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(260, 259, 254)")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityAddressesIntersectedByLineStringShouldBeFound() {
         final LineString givenLineString = createLineString(
                 this.geometryFactory,
@@ -288,36 +158,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes(id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(254, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "1, 36, 36, 'SUCCESS'"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(255, "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((1 1, 1 2, 2 2, 2 1, 1 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(257, "
-            + "ST_GeomFromText('POLYGON((3 3, 3 4, 4 4, 4 3, 3 3))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 3, 4 3, 4 4, 3 3))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(258, 257, 254)")
-    @Sql(statements = "INSERT INTO addresses(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(259, "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326), "
-            + "ST_SetSRID(ST_POINT(1.5, 1.5), 4326), "
-            + "'first-city', 'first-country', "
-            + "ST_GeomFromText('POLYGON((3 1, 4 1, 4 2, 3 2, 3 1))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) "
-            + "VALUES(260, 259, 254)")
+    @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityAddressesIntersectedByLineStringShouldNotBeFound() {
         final LineString givenLineString = createLineString(
                 this.geometryFactory,
