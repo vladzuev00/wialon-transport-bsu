@@ -27,7 +27,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return new Data(
                 source.getId(),
                 source.getDateTime(),
-                mapCoordinate(source),
+                mapNullableCoordinate(source),
                 source.getCourse(),
                 source.getSpeed(),
                 source.getAltitude(),
@@ -49,13 +49,14 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         this.mapParametersAndSet(source, destination);
     }
 
-    private static Coordinate mapCoordinate(final DataEntity source) {
+    private static Coordinate mapNullableCoordinate(final DataEntity source) {
         final DataEntity.Coordinate sourceCoordinate = source.getCoordinate();
-        if (sourceCoordinate == null) {
-            return null;
-        }
-        final double latitude = sourceCoordinate.getLatitude();
-        final double longitude = sourceCoordinate.getLongitude();
+        return sourceCoordinate != null ? mapCoordinate(sourceCoordinate) : null;
+    }
+
+    private static Coordinate mapCoordinate(final DataEntity.Coordinate source) {
+        final double latitude = source.getLatitude();
+        final double longitude = source.getLongitude();
         return new Coordinate(latitude, longitude);
     }
 
@@ -88,7 +89,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
     private void mapParametersAndSet(final Data source, final DataEntity entity) {
         super.mapPropertyAndSet(
                 source,
-                this::mapParameters,
+                this::mapNullableParameters,
                 entity,
                 DataEntity::setParameters
         );
@@ -105,14 +106,12 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return new DataEntity.Coordinate(latitude, longitude);
     }
 
-    private List<ParameterEntity> mapParameters(final Data source) {
+    private List<ParameterEntity> mapNullableParameters(final Data source) {
         final Map<String, Parameter> parametersByNames = source.getParametersByNames();
-        if (parametersByNames == null) {
-            return null;
-        }
-        return collectValuesToList(
-                parametersByNames,
-                parameter -> super.mapNullable(parameter, ParameterEntity.class)
-        );
+        return parametersByNames != null ? this.mapParameters(parametersByNames) : null;
+    }
+
+    private List<ParameterEntity> mapParameters(final Map<String, Parameter> parametersByNames) {
+        return collectValuesToList(parametersByNames, parameter -> super.map(parameter, ParameterEntity.class));
     }
 }
