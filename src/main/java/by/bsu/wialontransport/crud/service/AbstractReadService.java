@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 
+//TODO: remove and put all logic in CRUD service
 public abstract class AbstractReadService<
         ID,
         ENTITY extends Entity<ID>,
