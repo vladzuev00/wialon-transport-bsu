@@ -9,14 +9,12 @@ import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.modelmapper.ModelMapper;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static by.bsu.wialontransport.util.HibernateUtil.isLoaded;
 import static java.lang.String.join;
-import static java.util.stream.IntStream.range;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.same;
@@ -63,53 +61,6 @@ public final class MapperTest extends AbstractContextTest {
     }
 
     @Test
-    public void entitiesShouldBeMappedToDtos() {
-        final Collection<PersonEntity> givenEntities = List.of(
-                PersonEntity.builder()
-                        .id(255L)
-                        .name("vlad")
-                        .surname("zuev")
-                        .patronymic("sergeevich")
-                        .address(new AddressEntity(256L))
-                        .phones(List.of(new PhoneEntity(257L), new PhoneEntity(258L)))
-                        .build(),
-                PersonEntity.builder()
-                        .id(259L)
-                        .name("pavel")
-                        .surname("provashinskiy")
-                        .patronymic("sergeevich")
-                        .address(new AddressEntity(260L))
-                        .phones(List.of(new PhoneEntity(261L), new PhoneEntity(262L)))
-                        .build()
-        );
-
-        final List<PersonDto> actual = this.personMapper.mapToDtos(givenEntities);
-        final List<PersonDto> expected = List.of(
-                PersonDto.builder()
-                        .id(255L)
-                        .description("vlad;zuev;sergeevich")
-                        .address(new AddressDto(256L))
-                        .phones(List.of(new PhoneDto(257L), new PhoneDto(258L)))
-                        .build(),
-                PersonDto.builder()
-                        .id(259L)
-                        .description("pavel;provashinskiy;sergeevich")
-                        .address(new AddressDto(260L))
-                        .phones(List.of(new PhoneDto(261L), new PhoneDto(262L)))
-                        .build()
-        );
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void nullEntitiesShouldBeMappedToNullDtos() {
-        final Collection<PersonEntity> givenEntities = null;
-
-        final List<PersonDto> actual = this.personMapper.mapToDtos(givenEntities);
-        assertNull(actual);
-    }
-
-    @Test
     public void dtoShouldBeMappedToEntity() {
         final PersonDto givenDto = PersonDto.builder()
                 .id(255L)
@@ -135,53 +86,6 @@ public final class MapperTest extends AbstractContextTest {
         final PersonDto givenDto = null;
 
         final PersonEntity actual = this.personMapper.mapToEntity(givenDto);
-        assertNull(actual);
-    }
-
-    @Test
-    public void dtosShouldBeMappedToEntities() {
-        final Collection<PersonDto> givenDtos = List.of(
-                PersonDto.builder()
-                        .id(255L)
-                        .description("vlad;zuev;sergeevich")
-                        .address(new AddressDto(256L))
-                        .phones(List.of(new PhoneDto(257L), new PhoneDto(258L)))
-                        .build(),
-                PersonDto.builder()
-                        .id(259L)
-                        .description("pavel;provashinskiy;sergeevich")
-                        .address(new AddressDto(260L))
-                        .phones(List.of(new PhoneDto(261L), new PhoneDto(262L)))
-                        .build()
-        );
-
-        final List<PersonEntity> actual = this.personMapper.mapToEntities(givenDtos);
-        final List<PersonEntity> expected = List.of(
-                PersonEntity.builder()
-                        .id(255L)
-                        .name("vlad")
-                        .surname("zuev")
-                        .patronymic("sergeevich")
-                        .address(new AddressEntity(256L))
-                        .phones(List.of(new PhoneEntity(257L), new PhoneEntity(258L)))
-                        .build(),
-                PersonEntity.builder()
-                        .id(259L)
-                        .name("pavel")
-                        .surname("provashinskiy")
-                        .patronymic("sergeevich")
-                        .address(new AddressEntity(260L))
-                        .phones(List.of(new PhoneEntity(261L), new PhoneEntity(262L)))
-                        .build()
-        );
-        checkEquals(expected, actual);
-    }
-
-    @Test
-    public void nullDtosShouldBeMappedToNullEntities() {
-        final Collection<PersonDto> givenDtos = null;
-
-        final List<PersonEntity> actual = this.personMapper.mapToEntities(givenDtos);
         assertNull(actual);
     }
 
@@ -382,11 +286,6 @@ public final class MapperTest extends AbstractContextTest {
         assertEquals(expected.getPatronymic(), actual.getPatronymic());
         assertEquals(expected.getAddress(), actual.getAddress());
         assertEquals(expected.getPhones(), actual.getPhones());
-    }
-
-    private static void checkEquals(final List<PersonEntity> expected, final List<PersonEntity> actual) {
-        assertEquals(expected.size(), actual.size());
-        range(0, expected.size()).forEach(i -> checkEquals(expected.get(i), actual.get(i)));
     }
 
     @NoArgsConstructor

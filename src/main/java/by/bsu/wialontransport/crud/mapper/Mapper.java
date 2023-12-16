@@ -39,16 +39,8 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         return this.mapNullable(source, this.dtoType);
     }
 
-    public final List<DTO> mapToDtos(final Collection<ENTITY> sources) {
-        return this.mapNullableToList(sources, this.dtoType);
-    }
-
     public final ENTITY mapToEntity(final DTO source) {
         return this.mapNullable(source, this.entityType);
-    }
-
-    public final List<ENTITY> mapToEntities(final Collection<DTO> sources) {
-        return this.mapNullableToList(sources, this.entityType);
     }
 
     protected abstract DTO createDto(final ENTITY entity);
@@ -139,15 +131,6 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
 
     private <S, D> D mapIfMatchOrElseNull(final S source, final Predicate<S> matcher, final Class<D> destinationType) {
         return matcher.test(source) ? this.map(source, destinationType) : null;
-    }
-
-    private <E> List<E> mapNullableToList(final Collection<?> sources, final Class<E> destinationElementType) {
-        return this.mapIfMatchOrElseNull(
-                sources,
-                Objects::nonNull,
-                destinationElementType,
-                Collectors::toUnmodifiableList
-        );
     }
 
     private <S extends Entity<?>, E extends Dto<?>, D> D mapLazyCollectionProperty(
