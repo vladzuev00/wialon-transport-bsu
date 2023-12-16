@@ -15,6 +15,7 @@ public class Parameter implements Dto<Long> {
     String name;
     Type type;
     String value;
+    Data data;
 
     public static Parameter createDoubleParameter(final String name, final double value) {
         final String valueAsString = Double.toString(value);
