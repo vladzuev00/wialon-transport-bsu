@@ -17,7 +17,7 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
 
     @Transactional(readOnly = true)
     public boolean isExistByGeometry(final Geometry geometry) {
-        return super.repository.isExistByGeometry(geometry);
+        return super.findBoolean(repository -> repository.isExistByGeometry(geometry));
     }
 
     @Override
