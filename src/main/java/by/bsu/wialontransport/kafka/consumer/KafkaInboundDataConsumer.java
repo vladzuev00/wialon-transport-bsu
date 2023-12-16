@@ -5,7 +5,6 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.apache.avro.generic.GenericRecord;
