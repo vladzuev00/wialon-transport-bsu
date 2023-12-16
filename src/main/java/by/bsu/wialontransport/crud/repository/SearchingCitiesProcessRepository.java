@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface SearchingCitiesProcessRepository extends JpaRepository<SearchingCitiesProcessEntity, Long> {
 
@@ -22,6 +22,6 @@ public interface SearchingCitiesProcessRepository extends JpaRepository<Searchin
     int increaseHandledPoints(final Long id, final long delta);
 
     @Query("SELECT e FROM SearchingCitiesProcessEntity e WHERE e.status = :status")
-    List<SearchingCitiesProcessEntity> findByStatus(final Status status, final Pageable pageable);
+    Stream<SearchingCitiesProcessEntity> findByStatus(final Status status, final Pageable pageable);
 
 }

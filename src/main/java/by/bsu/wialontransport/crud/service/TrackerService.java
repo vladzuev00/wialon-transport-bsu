@@ -36,15 +36,17 @@ public class TrackerService extends AbstractCRUDEncryptingPasswordService<
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user) {
         final Long userId = user.getId();
-        return super.findUnPaged((repository, pageable) -> repository.findByUserId(userId, pageable));
+        return null;
+//        return super.findUnPaged((repository, pageable) -> repository.findByUserId(userId, pageable));
     }
 
     @Transactional(readOnly = true)
     public List<Tracker> findByUser(final User user, final int pageNumber, final int pageSize) {
         final Long userId = user.getId();
-        return super.findPaged(
-                (repository, pageable) -> repository.findByUserId(userId, pageable), pageNumber, pageSize
-        );
+        return null;
+//        return super.findPaged(
+//                (repository, pageable) -> repository.findByUserId(userId, pageable), pageNumber, pageSize
+//        );
     }
 
     @Transactional(readOnly = true)

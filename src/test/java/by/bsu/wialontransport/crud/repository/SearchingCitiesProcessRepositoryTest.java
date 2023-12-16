@@ -7,11 +7,12 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static by.bsu.wialontransport.util.entity.SearchingCitiesProcessEntityUtil.checkEquals;
 import static java.lang.Long.MAX_VALUE;
@@ -130,7 +131,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesShouldBeFoundByStatus() {
         super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(HANDLING, ofSize(4));
+        final Stream<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(HANDLING, ofSize(4));
         super.checkQueryCount(1);
 
         final Set<Long> actualIds = mapToIds(actual);
@@ -142,9 +143,9 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesShouldNotBeFoundByStatus() {
         super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(ERROR, ofSize(4));
+        final Stream<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(ERROR, ofSize(4));
         super.checkQueryCount(1);
 
-        assertTrue(actual.isEmpty());
+        assertTrue(isEmpty(actual));
     }
 }

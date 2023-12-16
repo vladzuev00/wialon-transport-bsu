@@ -7,13 +7,15 @@ import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static by.bsu.wialontransport.util.entity.TrackerEntityUtil.*;
 import static java.lang.Long.MAX_VALUE;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 import static org.springframework.data.domain.Pageable.ofSize;
 
@@ -89,13 +91,15 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     @Test
     public void trackersShouldBeFoundByUserId() {
         super.startQueryCount();
-        final List<TrackerEntity> actual = this.repository.findByUserId(255L, ofSize(5));
+        final Stream<TrackerEntity> actual = this.repository.findByUserId(255L, ofSize(5));
         super.checkQueryCount(1);
 
-        assertTrue(areUsersNotLoaded(actual));
-        assertTrue(areMileagesNotLoaded(actual));
+        final Set<TrackerEntity> actualAsSet = actual.collect(toSet());
 
-        final Set<Long> actualIds = mapToIds(actual);
+        assertTrue(areUsersNotLoaded(actualAsSet));
+        assertTrue(areMileagesNotLoaded(actualAsSet));
+
+        final Set<Long> actualIds = mapToIds(actualAsSet);
         final Set<Long> expectedIds = Set.of(255L, 256L);
         assertEquals(expectedIds, actualIds);
     }
@@ -103,10 +107,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     @Test
     public void trackersShouldNotBeFoundByUserId() {
         super.startQueryCount();
-        final List<TrackerEntity> actual = this.repository.findByUserId(256L, ofSize(5));
+        final Stream<TrackerEntity> actual = this.repository.findByUserId(256L, ofSize(5));
         super.checkQueryCount(1);
 
-        assertTrue(actual.isEmpty());
+        assertTrue(isEmpty(actual));
     }
 
     @Test

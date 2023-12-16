@@ -16,4 +16,8 @@ public final class StreamUtil {
                 : empty();
     }
 
+    public static boolean isEmpty(final Stream<?> stream) {
+        return stream.findAny().isEmpty();
+    }
+
 }
