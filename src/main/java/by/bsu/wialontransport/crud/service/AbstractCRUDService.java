@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.service;
 import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.mapper.Mapper;
+import by.bsu.wialontransport.util.CollectionUtil;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
@@ -32,7 +33,7 @@ public abstract class AbstractCRUDService<
     public List<DTO> saveAll(final Collection<DTO> dtos) {
         final List<ENTITY> entitiesToBeSaved = this.mapToConfiguredEntities(dtos);
         final List<ENTITY> savedEntities = super.repository.saveAll(entitiesToBeSaved);
-        return super.mapper.mapToDtos(savedEntities);
+        return CollectionUtil.mapToList(savedEntities, this.mapper::);
     }
 
     protected abstract void configureBeforeSave(final ENTITY entity);

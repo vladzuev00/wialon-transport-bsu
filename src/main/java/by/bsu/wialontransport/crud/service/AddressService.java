@@ -11,9 +11,10 @@ import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service
@@ -25,9 +26,12 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public Optional<Address> findByGpsCoordinates(final Coordinate coordinate) {
-        final double latitude = coordinate.getLatitude();
-        final double longitude = coordinate.getLongitude();
-        return super.findUnique(repository -> repository.findByGpsCoordinates(latitude, longitude));
+        return super.findUnique(
+                repository -> repository.findByGpsCoordinates(
+                        coordinate.getLatitude(),
+                        coordinate.getLongitude()
+                )
+        );
     }
 
     @Transactional(readOnly = true)
@@ -37,16 +41,14 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public boolean isExistByGeometry(final Geometry geometry) {
-        return super.repository.isExistByGeometry(geometry);
+        return super.findBoolean(repository -> repository.isExistByGeometry(geometry));
     }
 
     @Transactional(readOnly = true)
-    public List<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-//        final List<AddressEntity> foundEntities = super.repository.findCityAddressesIntersectedByLineString(
-//                lineString
-//        );
-//        return mapToList(foundEntities, AddressService::extractPreparedGeometry);
-        return null;
+    public Set<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
+        return super.find(repository -> repository.findCityAddressesIntersectedByLineString(lineString))
+                .map(AddressService::extractPreparedGeometry)
+                .collect(toUnmodifiableSet());
     }
 
     @Override
@@ -55,7 +57,6 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
     }
 
     private static PreparedGeometry extractPreparedGeometry(final AddressEntity entity) {
-        final Geometry geometry = entity.getGeometry();
-        return prepare(geometry);
+        return prepare(entity.getGeometry());
     }
 }

@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 import static org.springframework.data.domain.Pageable.unpaged;
@@ -24,8 +29,8 @@ public abstract class AbstractReadService<
         MAPPER extends Mapper<ENTITY, DTO>,
         REPOSITORY extends JpaRepository<ENTITY, ID>
         > {
-    protected final MAPPER mapper;
-    protected final REPOSITORY repository;
+    private final MAPPER mapper;
+    private final REPOSITORY repository;
 
     public AbstractReadService(final MAPPER mapper, final REPOSITORY repository) {
         this.mapper = mapper;
@@ -34,14 +39,13 @@ public abstract class AbstractReadService<
 
     @Transactional(readOnly = true)
     public Optional<DTO> findById(final ID id) {
-        final Optional<ENTITY> optionalEntity = this.repository.findById(id);
-        return optionalEntity.map(this.mapper::mapToDto);
+        return this.findUnique(repository -> repository.findById(id));
     }
 
     @Transactional(readOnly = true)
     public List<DTO> findById(final Collection<ID> ids) {
         final List<ENTITY> foundEntities = this.repository.findAllById(ids);
-        return this.mapper.mapToDtos(foundEntities);
+        return mapToList(foundEntities, this.mapper::mapToDto);
     }
 
     @Transactional(readOnly = true)
@@ -50,13 +54,23 @@ public abstract class AbstractReadService<
     }
 
     protected final Optional<DTO> findUnique(final Function<REPOSITORY, Optional<ENTITY>> operation) {
-        final Optional<ENTITY> optionalEntity = operation.apply(this.repository);
-        return optionalEntity.map(this.mapper::mapToDto);
+        return operation.apply(this.repository).map(this.mapper::mapToDto);
     }
 
-    protected final List<DTO> find(final Function<REPOSITORY, Collection<ENTITY>> operation) {
-        final Collection<ENTITY> entities = operation.apply(this.repository);
-        return mapToList(entities, this.mapper::mapToDto);
+    protected final List<DTO> findList(final Function<REPOSITORY, Stream<ENTITY>> operation) {
+        return this.findStreamAndCollect(operation, Collectors::toUnmodifiableList);
+    }
+
+    protected final List<DTO> findSet(final Function<REPOSITORY, Stream<ENTITY>> operation) {
+        return this.findStreamAndCollect(operation, Collectors::toList);
+    }
+
+    protected final <R> R find(final Function<REPOSITORY, R> operation) {
+        return operation.apply(this.repository);
+    }
+
+    protected final boolean findBoolean(final Predicate<REPOSITORY> operation) {
+        return operation.test(this.repository);
     }
 
     protected final List<DTO> findPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
@@ -75,5 +89,14 @@ public abstract class AbstractReadService<
                            final Pageable pageable) {
         final Collection<ENTITY> entities = operation.apply(this.repository, pageable);
         return mapToList(entities, this.mapper::mapToDto);
+    }
+
+    private <D> D findStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
+                                       final Supplier<Collector<DTO, ?, D>> collectorSupplier) {
+        return this.findStream(operation).collect(collectorSupplier.get());
+    }
+
+    private Stream<DTO> findStream(final Function<REPOSITORY, Stream<ENTITY>> operation) {
+        return operation.apply(this.repository).map(this.mapper::mapToDto);
     }
 }
