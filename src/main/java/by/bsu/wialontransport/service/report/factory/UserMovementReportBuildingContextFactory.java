@@ -73,8 +73,9 @@ public final class UserMovementReportBuildingContextFactory {
 
     private Map<Tracker, List<Data>> findSortedByDateTimeDataGroupedByTrackers(final User user,
                                                                                final DateInterval dateInterval) {
-        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-        return groupSortedByDateTimeDataByTrackers(data);
+//        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
+//        return groupSortedByDateTimeDataByTrackers(data);
+        return null;
     }
 
     private static Map<Tracker, List<Data>> groupSortedByDateTimeDataByTrackers(final List<Data> data) {

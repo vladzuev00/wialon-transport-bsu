@@ -3,25 +3,18 @@ package by.bsu.wialontransport.crud.service;
 import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.mapper.Mapper;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
-import static org.springframework.data.domain.Pageable.unpaged;
 
 public abstract class AbstractReadService<
         ID,
@@ -67,6 +60,10 @@ public abstract class AbstractReadService<
         try (final Stream<ENTITY> stream = operation.apply(this.repository)) {
             return stream.collect(collector);
         }
+    }
+
+    protected Stream<DTO> findDtoStream(final Function<REPOSITORY, Stream<ENTITY>> operation){
+        return operation.apply(this.repository).map(this.mapper::mapToDto);
     }
 
 //    protected final List<DTO> findPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,

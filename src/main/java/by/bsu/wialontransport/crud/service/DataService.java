@@ -10,8 +10,8 @@ import by.bsu.wialontransport.model.DateInterval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class DataService extends AbstractCRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
@@ -20,22 +20,24 @@ public class DataService extends AbstractCRUDService<Long, DataEntity, Data, Dat
         super(mapper, repository);
     }
 
-    //TODO: refactor tests
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
-        final Long trackerId = tracker.getId();
-        return super.findUnique(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
+        return super.findUnique(
+                repository -> repository.findTrackerLastDataByTrackerId(
+                        tracker.getId()
+                )
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
-//        final Long userId = user.getId();
-//        final LocalDate startDateTime = dateInterval.getStart();
-//        final LocalDate endDateTime = dateInterval.getEnd();
-//        return super.find(
-//                repository -> repository.findDataWithTrackerAndAddressByUserId(userId, startDateTime, endDateTime)
-//        );
-        return null;
+    public Stream<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
+        return super.findDtoStream(
+                repository -> repository.findDataWithTrackerAndAddressByUserId(
+                        user.getId(),
+                        dateInterval.getStart(),
+                        dateInterval.getEnd()
+                )
+        );
     }
 
     @Override
