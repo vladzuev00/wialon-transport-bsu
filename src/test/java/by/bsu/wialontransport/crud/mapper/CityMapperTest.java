@@ -9,7 +9,6 @@ import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.hibernate.Hibernate;
 import org.junit.Test;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,9 +23,6 @@ public final class CityMapperTest extends AbstractContextTest {
 
     @Autowired
     private CityMapper mapper;
-
-    @Autowired
-    private GeometryFactory geometryFactory;
 
     @Test
     public void entityWithLoadedPropertiesShouldBeMappedToDto() {
