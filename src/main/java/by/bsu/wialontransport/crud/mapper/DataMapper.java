@@ -51,6 +51,9 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
 
     private static Coordinate mapCoordinate(final DataEntity source) {
         final DataEntity.Coordinate sourceCoordinate = source.getCoordinate();
+        if (sourceCoordinate == null) {
+            return null;
+        }
         final double latitude = sourceCoordinate.getLatitude();
         final double longitude = sourceCoordinate.getLongitude();
         return new Coordinate(latitude, longitude);
@@ -76,7 +79,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
     private void mapCoordinateAndSet(final Data source, final DataEntity entity) {
         super.mapPropertyAndSet(
                 source,
-                DataMapper::mapCoordinate,
+                DataMapper::mapNullableCoordinate,
                 entity,
                 DataEntity::setCoordinate
         );
@@ -91,15 +94,22 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         );
     }
 
-    private static DataEntity.Coordinate mapCoordinate(final Data source) {
+    private static DataEntity.Coordinate mapNullableCoordinate(final Data source) {
         final Coordinate sourceCoordinate = source.getCoordinate();
-        final double latitude = sourceCoordinate.getLatitude();
-        final double longitude = sourceCoordinate.getLongitude();
+        return sourceCoordinate != null ? mapCoordinate(sourceCoordinate) : null;
+    }
+
+    private static DataEntity.Coordinate mapCoordinate(final Coordinate source) {
+        final double latitude = source.getLatitude();
+        final double longitude = source.getLongitude();
         return new DataEntity.Coordinate(latitude, longitude);
     }
 
     private List<ParameterEntity> mapParameters(final Data source) {
         final Map<String, Parameter> parametersByNames = source.getParametersByNames();
+        if (parametersByNames == null) {
+            return null;
+        }
         return collectValuesToList(
                 parametersByNames,
                 parameter -> super.mapNullable(parameter, ParameterEntity.class)
