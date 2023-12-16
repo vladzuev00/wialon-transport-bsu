@@ -100,8 +100,6 @@ public final class CityMapperTest extends AbstractContextTest {
             final City actual = this.mapper.mapToDto(givenEntity);
             final City expected = City.builder()
                     .id(255L)
-                    .address(null)
-                    .searchingCitiesProcess(null)
                     .build();
             assertEquals(expected, actual);
         }
