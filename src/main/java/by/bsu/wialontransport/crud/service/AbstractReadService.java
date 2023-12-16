@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -57,46 +58,32 @@ public abstract class AbstractReadService<
         return operation.apply(this.repository).map(this.mapper::mapToDto);
     }
 
-    protected final List<DTO> findList(final Function<REPOSITORY, Stream<ENTITY>> operation) {
-        return this.findStreamAndCollect(operation, Collectors::toUnmodifiableList);
-    }
-
-    protected final List<DTO> findSet(final Function<REPOSITORY, Stream<ENTITY>> operation) {
-        return this.findStreamAndCollect(operation, Collectors::toList);
-    }
-
-    protected final <R> R find(final Function<REPOSITORY, R> operation) {
-        return operation.apply(this.repository);
-    }
-
     protected final boolean findBoolean(final Predicate<REPOSITORY> operation) {
         return operation.test(this.repository);
     }
 
-    protected final List<DTO> findPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
-                                        final int pageNumber,
-                                        final int pageSize) {
-        final Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return this.find(operation, pageable);
+    protected <D> D findStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
+                                         final Collector<ENTITY, ?, D> collector) {
+        try (final Stream<ENTITY> stream = operation.apply(this.repository)) {
+            return stream.collect(collector);
+        }
     }
 
-    protected final List<DTO> findUnPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation) {
-        final Pageable pageable = unpaged();
-        return this.find(operation, pageable);
-    }
-
-    private List<DTO> find(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
-                           final Pageable pageable) {
-        final Collection<ENTITY> entities = operation.apply(this.repository, pageable);
-        return mapToList(entities, this.mapper::mapToDto);
-    }
-
-    private <D> D findStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
-                                       final Supplier<Collector<DTO, ?, D>> collectorSupplier) {
-        return this.findStream(operation).collect(collectorSupplier.get());
-    }
-
-    private Stream<DTO> findStream(final Function<REPOSITORY, Stream<ENTITY>> operation) {
-        return operation.apply(this.repository).map(this.mapper::mapToDto);
-    }
+//    protected final List<DTO> findPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
+//                                        final int pageNumber,
+//                                        final int pageSize) {
+//        final Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//        return this.find(operation, pageable);
+//    }
+//
+//    protected final List<DTO> findUnPaged(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation) {
+//        final Pageable pageable = unpaged();
+//        return this.find(operation, pageable);
+//    }
+//
+//    private List<DTO> find(final BiFunction<REPOSITORY, Pageable, Collection<ENTITY>> operation,
+//                           final Pageable pageable) {
+//        final Collection<ENTITY> entities = operation.apply(this.repository, pageable);
+//        return mapToList(entities, this.mapper::mapToDto);
+//    }
 }

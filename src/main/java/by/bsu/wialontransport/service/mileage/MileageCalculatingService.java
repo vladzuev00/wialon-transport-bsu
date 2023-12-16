@@ -59,7 +59,8 @@ public abstract class MileageCalculatingService {
 
     private List<PreparedGeometry> findCityGeometriesIntersectedBySimplifiedTrack(final Track track) {
         final LineString lineString = this.createLineStringBySimplifiedTrack(track);
-        return this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
+//        return this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
+        return null;
     }
 
     private LineString createLineStringBySimplifiedTrack(final Track track) {

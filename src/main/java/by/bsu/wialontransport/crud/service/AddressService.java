@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
@@ -46,9 +47,10 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public Set<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        return super.find(repository -> repository.findCityAddressesIntersectedByLineString(lineString))
-                .map(AddressService::extractPreparedGeometry)
-                .collect(toUnmodifiableSet());
+        return super.findStreamAndCollect(
+                repository -> repository.findCityAddressesIntersectedByLineString(lineString),
+                mapping(AddressService::extractPreparedGeometry, toUnmodifiableSet())
+        );
     }
 
     @Override
