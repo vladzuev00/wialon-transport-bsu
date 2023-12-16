@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -55,6 +56,10 @@ public abstract class AbstractReadService<
         return operation.test(this.repository);
     }
 
+    protected final int findInt(final ToIntFunction<REPOSITORY> operation) {
+        return operation.applyAsInt(this.repository);
+    }
+
     protected <D> D findStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
                                          final Collector<ENTITY, ?, D> collector) {
         try (final Stream<ENTITY> stream = operation.apply(this.repository)) {
@@ -62,7 +67,7 @@ public abstract class AbstractReadService<
         }
     }
 
-    protected Stream<DTO> findDtoStream(final Function<REPOSITORY, Stream<ENTITY>> operation){
+    protected Stream<DTO> findDtoStream(final Function<REPOSITORY, Stream<ENTITY>> operation) {
         return operation.apply(this.repository).map(this.mapper::mapToDto);
     }
 

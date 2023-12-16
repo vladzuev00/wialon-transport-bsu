@@ -5,10 +5,11 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.mapper.SearchingCitiesProcessMapper;
 import by.bsu.wialontransport.crud.repository.SearchingCitiesProcessRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class SearchingCitiesProcessService extends AbstractCRUDService<
@@ -24,24 +25,27 @@ public class SearchingCitiesProcessService extends AbstractCRUDService<
         super(mapper, repository);
     }
 
-    public void updateStatus(final SearchingCitiesProcess process, final Status newStatus) {
-        final Long processId = process.getId();
-        super.repository.updateStatus(processId, newStatus);
+    public int updateStatus(final SearchingCitiesProcess process, final Status newStatus) {
+        return this.findInt(
+                repository -> repository.updateStatus(
+                        process.getId(),
+                        newStatus
+                )
+        );
     }
 
-    public void increaseHandledPoints(final SearchingCitiesProcess process, final long delta) {
-        final Long processId = process.getId();
-        super.repository.increaseHandledPoints(processId, delta);
+    public int increaseHandledPoints(final SearchingCitiesProcess process, final long delta) {
+        return this.findInt(
+                repository -> repository.increaseHandledPoints(
+                        process.getId(),
+                        delta
+                )
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<SearchingCitiesProcess> findByStatus(final Status status, final int pageNumber, final int pageSize) {
-//        return super.findPaged(
-//                (repository, pageable) -> repository.findByStatus(status, pageable),
-//                pageNumber,
-//                pageSize
-//        );
-        return null;
+    public Stream<SearchingCitiesProcess> findByStatus(final Status status, final PageRequest pageRequest) {
+        return super.findDtoStream(repository -> repository.findByStatus(status, pageRequest));
     }
 
     @Override
