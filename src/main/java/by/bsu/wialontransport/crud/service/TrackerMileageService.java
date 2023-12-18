@@ -21,11 +21,14 @@ public class TrackerMileageService extends AbstractCRUDService<
         super(mapper, repository);
     }
 
-    public void increaseMileage(final Tracker tracker, final Mileage mileageDelta) {
-        final Long trackerId = tracker.getId();
-        final double urbanDelta = mileageDelta.getUrban();
-        final double countryDelta = mileageDelta.getCountry();
-        this.repository.increaseMileage(trackerId, urbanDelta, countryDelta);
+    public int increaseMileage(final Tracker tracker, final Mileage mileageDelta) {
+        return super.findInt(
+                repository -> repository.increaseMileage(
+                        tracker.getId(),
+                        mileageDelta.getUrban(),
+                        mileageDelta.getCountry()
+                )
+        );
     }
 
     @Override
