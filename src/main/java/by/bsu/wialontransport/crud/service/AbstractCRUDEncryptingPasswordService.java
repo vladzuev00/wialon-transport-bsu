@@ -23,10 +23,13 @@ public abstract class AbstractCRUDEncryptingPasswordService<
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void updatePassword(final DTO dto, final String newPassword) {
-        final String encryptedPassword = this.passwordEncoder.encode(newPassword);
-        final ID id = dto.getId();
-        super.repository.updatePassword(id, encryptedPassword);
+    public int updatePassword(final DTO dto, final String newPassword) {
+        return super.findInt(
+                repository -> repository.updatePassword(
+                        dto.getId(),
+                        this.passwordEncoder.encode(newPassword)
+                )
+        );
     }
 
     @Override
