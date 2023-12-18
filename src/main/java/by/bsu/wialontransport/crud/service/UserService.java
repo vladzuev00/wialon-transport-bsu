@@ -27,11 +27,10 @@ public class UserService
 
     @Transactional(readOnly = true)
     public boolean isExistByEmail(final String email) {
-        return super.repository.existsByEmail(email);
+        return super.findBoolean(repository -> repository.existsByEmail(email));
     }
 
-    public void updateEmail(final User user, final String newEmail) {
-        final Long userId = user.getId();
-        super.repository.updateEmail(userId, newEmail);
+    public int updateEmail(final User user, final String newEmail) {
+        return super.findInt(repository -> repository.updateEmail(user.getId(), newEmail));
     }
 }
