@@ -48,12 +48,13 @@ public class SearchingCitiesProcessController {
             @RequestParam(name = "status") final Status status,
             @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
             @RequestParam(name = "pageSize") @Min(1) final Integer pageSize) {
-        final List<SearchingCitiesProcess> foundProcesses = this.processService.findByStatus(
-                status,
-                pageNumber,
-                pageSize
-        );
-        return ok(this.mapper.mapToResponse(pageNumber, pageSize, foundProcesses));
+//        final List<SearchingCitiesProcess> foundProcesses = this.processService.findByStatus(
+//                status,
+//                pageNumber,
+//                pageSize
+//        );
+//        return ok(this.mapper.mapToResponse(pageNumber, pageSize, foundProcesses));
+        return null;
     }
 
     @PostMapping

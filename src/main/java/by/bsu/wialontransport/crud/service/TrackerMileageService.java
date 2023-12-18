@@ -9,7 +9,7 @@ import by.bsu.wialontransport.model.Mileage;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrackerMileageService extends AbstractCRUDService<
+public class TrackerMileageService extends CRUDService<
         Long,
         TrackerMileageEntity,
         TrackerMileage,

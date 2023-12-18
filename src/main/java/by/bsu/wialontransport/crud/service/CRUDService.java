@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 
-public abstract class AbstractCRUDService<
+public abstract class CRUDService<
         ID,
         ENTITY extends Entity<ID>,
         DTO extends Dto<ID>,
@@ -27,7 +27,7 @@ public abstract class AbstractCRUDService<
     private final MAPPER mapper;
     private final REPOSITORY repository;
 
-    public AbstractCRUDService(final MAPPER mapper, final REPOSITORY repository) {
+    public CRUDService(final MAPPER mapper, final REPOSITORY repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
@@ -38,9 +38,8 @@ public abstract class AbstractCRUDService<
     }
 
     @Transactional(readOnly = true)
-    public List<DTO> findByIds(final Collection<ID> ids) {
-        final List<ENTITY> foundEntities = this.repository.findAllById(ids);
-        return mapToList(foundEntities, this.mapper::mapToDto);
+    public List<DTO> findByIds(final Iterable<ID> ids) {
+        return mapToList(this.repository.findAllById(ids), this.mapper::mapToDto);
     }
 
     @Transactional(readOnly = true)
@@ -86,8 +85,8 @@ public abstract class AbstractCRUDService<
         return operation.applyAsInt(this.repository);
     }
 
-    protected <D> D findStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
-                                         final Collector<ENTITY, ?, D> collector) {
+    protected <D> D findEntityStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
+                                               final Collector<ENTITY, ?, D> collector) {
         try (final Stream<ENTITY> stream = operation.apply(this.repository)) {
             return stream.collect(collector);
         }

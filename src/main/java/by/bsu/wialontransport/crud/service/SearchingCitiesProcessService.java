@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.stream.Stream;
 
 @Service
-public class SearchingCitiesProcessService extends AbstractCRUDService<
+public class SearchingCitiesProcessService extends CRUDService<
         Long,
         SearchingCitiesProcessEntity,
         SearchingCitiesProcess,

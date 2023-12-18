@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class UserService
-        extends AbstractCRUDEncryptingPasswordService<Long, UserEntity, User, UserMapper, UserRepository> {
+        extends CRUDEncryptingPasswordService<Long, UserEntity, User, UserMapper, UserRepository> {
 
     public UserService(final UserMapper mapper,
                        final UserRepository repository,

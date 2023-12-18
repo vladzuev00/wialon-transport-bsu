@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class DataService extends AbstractCRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
+public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
 
     public DataService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);

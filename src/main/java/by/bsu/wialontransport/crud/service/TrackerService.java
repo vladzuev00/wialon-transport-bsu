@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static org.springframework.data.domain.Pageable.unpaged;
 
 @Service
-public class TrackerService extends AbstractCRUDEncryptingPasswordService<
+public class TrackerService extends CRUDEncryptingPasswordService<
         Long,
         TrackerEntity,
         Tracker,

@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @Service
-public class AddressService extends AbstractCRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
+public class AddressService extends CRUDService<Long, AddressEntity, Address, AddressMapper, AddressRepository> {
 
     public AddressService(final AddressMapper mapper, final AddressRepository repository) {
         super(mapper, repository);
@@ -47,7 +47,7 @@ public class AddressService extends AbstractCRUDService<Long, AddressEntity, Add
 
     @Transactional(readOnly = true)
     public Set<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        return super.findStreamAndCollect(
+        return super.findEntityStreamAndCollect(
                 repository -> repository.findCityAddressesIntersectedByLineString(lineString),
                 mapping(AddressService::extractPreparedGeometry, toUnmodifiableSet())
         );
