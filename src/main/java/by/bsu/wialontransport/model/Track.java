@@ -9,14 +9,14 @@ import static java.util.Arrays.asList;
 
 @Value
 public class Track {
-    List<Coordinate> coordinates;
+    List<RequestCoordinate> coordinates;
 
     //TODO: test
-    public Stream<Coordinate> findCoordinateStream() {
+    public Stream<RequestCoordinate> findCoordinateStream() {
         return this.coordinates.stream();
     }
 
-    public static Track create(final Coordinate... coordinates) {
+    public static Track create(final RequestCoordinate... coordinates) {
         return new Track(asList(coordinates));
     }
 }

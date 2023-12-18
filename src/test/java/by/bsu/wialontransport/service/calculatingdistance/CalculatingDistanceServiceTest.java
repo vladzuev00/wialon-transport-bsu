@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import org.junit.Test;
 
@@ -17,8 +17,8 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void distanceBetweenTwoCoordinatesShouldBeCalculated() {
-        final Coordinate firstGivenCoordinate = new Coordinate(55.534343, 23.54545);
-        final Coordinate secondGivenCoordinate = new Coordinate(55.554344, 23.57544);
+        final RequestCoordinate firstGivenCoordinate = new RequestCoordinate(55.534343, 23.54545);
+        final RequestCoordinate secondGivenCoordinate = new RequestCoordinate(55.554344, 23.57544);
 
         final double actual = this.service.calculate(firstGivenCoordinate, secondGivenCoordinate);
         final double expected = 2.919738716964184;
@@ -37,7 +37,7 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void distanceCalculatedByZeroCoordinatesShouldBeEqualZero() {
-        final List<Coordinate> givenCoordinates = emptyList();
+        final List<RequestCoordinate> givenCoordinates = emptyList();
         final Track givenTrack = new Track(givenCoordinates);
 
         final double actual = this.service.calculate(givenTrack);
@@ -47,7 +47,7 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void distanceCalculatedByOneCoordinatesShouldBeEqualZero() {
-        final List<Coordinate> givenCoordinates = List.of(new Coordinate(55.534343, 23.54545));
+        final List<RequestCoordinate> givenCoordinates = List.of(new RequestCoordinate(55.534343, 23.54545));
         final Track givenTrack = new Track(givenCoordinates);
 
         final double actual = this.service.calculate(givenTrack);

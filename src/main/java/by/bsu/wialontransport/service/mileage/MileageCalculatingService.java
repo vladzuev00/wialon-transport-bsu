@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
@@ -29,7 +29,7 @@ public abstract class MileageCalculatingService {
     private final AddressService addressService;
 
     //TODO: test
-    public final Mileage calculate(final Coordinate firstCoordinate, final Coordinate secondCoordinate) {
+    public final Mileage calculate(final RequestCoordinate firstCoordinate, final RequestCoordinate secondCoordinate) {
         final Track track = create(firstCoordinate, secondCoordinate);
         return this.calculate(track);
     }
@@ -68,7 +68,7 @@ public abstract class MileageCalculatingService {
         return this.geometryCreatingService.createLineString(simplifiedTrack);
     }
 
-    private static boolean isAnyGeometryContainCoordinate(final Coordinate coordinate,
+    private static boolean isAnyGeometryContainCoordinate(final RequestCoordinate coordinate,
                                                           final List<PreparedGeometry> cityGeometries,
                                                           final GeometryCreatingService geometryCreatingService) {
         final Point point = geometryCreatingService.createPoint(coordinate);
@@ -77,8 +77,8 @@ public abstract class MileageCalculatingService {
     }
 
     private double calculateDistance(final TrackSlice trackSlice) {
-        final Coordinate first = trackSlice.getFirst();
-        final Coordinate second = trackSlice.getSecond();
+        final RequestCoordinate first = trackSlice.getFirst();
+        final RequestCoordinate second = trackSlice.getSecond();
         return this.calculatingDistanceService.calculate(first, second);
     }
 }

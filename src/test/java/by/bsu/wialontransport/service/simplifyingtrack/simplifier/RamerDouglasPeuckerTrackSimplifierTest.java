@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +29,25 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
     @Test
     public void trackShouldBeSimplified() {
         final Track givenTrack = create(
-                new Coordinate(1., 5.),
-                new Coordinate(2., 3.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(11., 4.),
-                new Coordinate(13., 3.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(2., 3.),
+                new RequestCoordinate(5., 1.),
+                new RequestCoordinate(6., 4.),
+                new RequestCoordinate(9., 6.),
+                new RequestCoordinate(11., 4.),
+                new RequestCoordinate(13., 3.),
+                new RequestCoordinate(14., 2.),
+                new RequestCoordinate(18., 5.)
         );
 
         final Track actual = this.trackSimplifier.simplify(givenTrack);
         final Track expected = create(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(5., 1.),
+                new RequestCoordinate(6., 4.),
+                new RequestCoordinate(9., 6.),
+                new RequestCoordinate(14., 2.),
+                new RequestCoordinate(18., 5.)
         );
         assertEquals(expected, actual);
     }
@@ -55,28 +55,28 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
     @Test
     public void trackWithSamePointsShouldBeSimplified() {
         final Track givenTrack = create(
-                new Coordinate(1., 5.),
-                new Coordinate(1., 5.),
-                new Coordinate(2., 3.),
-                new Coordinate(2., 3.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(11., 4.),
-                new Coordinate(13., 3.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.),
-                new Coordinate(18., 5.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(2., 3.),
+                new RequestCoordinate(2., 3.),
+                new RequestCoordinate(5., 1.),
+                new RequestCoordinate(6., 4.),
+                new RequestCoordinate(9., 6.),
+                new RequestCoordinate(11., 4.),
+                new RequestCoordinate(13., 3.),
+                new RequestCoordinate(14., 2.),
+                new RequestCoordinate(18., 5.),
+                new RequestCoordinate(18., 5.)
         );
 
         final Track actual = this.trackSimplifier.simplify(givenTrack);
         final Track expected = create(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(5., 1.),
+                new RequestCoordinate(6., 4.),
+                new RequestCoordinate(9., 6.),
+                new RequestCoordinate(14., 2.),
+                new RequestCoordinate(18., 5.)
         );
         assertEquals(expected, actual);
     }
@@ -92,8 +92,8 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
     @Test
     public void trackWithTwoPointsShouldNotBeSimplified() {
         final Track givenTrack = create(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(5., 1.)
         );
 
         final Track actual = this.trackSimplifier.simplify(givenTrack);
@@ -104,18 +104,18 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
     public void trackShouldNotBeSimplifiedBecauseOfEpsilonIsNotPositive() {
         final TrackSimplifier givenTrackSimplifier = new RamerDouglasPeuckerTrackSimplifier(0.);
         final Track givenTrack = create(
-                new Coordinate(1., 5.),
-                new Coordinate(1., 5.),
-                new Coordinate(2., 3.),
-                new Coordinate(2., 3.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(11., 4.),
-                new Coordinate(13., 3.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.),
-                new Coordinate(18., 5.)
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(1., 5.),
+                new RequestCoordinate(2., 3.),
+                new RequestCoordinate(2., 3.),
+                new RequestCoordinate(5., 1.),
+                new RequestCoordinate(6., 4.),
+                new RequestCoordinate(9., 6.),
+                new RequestCoordinate(11., 4.),
+                new RequestCoordinate(13., 3.),
+                new RequestCoordinate(14., 2.),
+                new RequestCoordinate(18., 5.),
+                new RequestCoordinate(18., 5.)
         );
 
         final Track actual = givenTrackSimplifier.simplify(givenTrack);

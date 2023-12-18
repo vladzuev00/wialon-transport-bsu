@@ -10,7 +10,7 @@ import java.util.Map;
 @Value
 public class ReceivedData {
     LocalDateTime dateTime;
-    Coordinate coordinate;
+    RequestCoordinate coordinate;
     int course;
     double speed;
     int altitude;

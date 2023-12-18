@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.util.CoordinateUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public final class GeometryCreatingService {
         );
     }
 
-    public LineString createLineString(final Coordinate first, final Coordinate second) {
+    public LineString createLineString(final RequestCoordinate first, final RequestCoordinate second) {
         return this.createLineString(
                 () -> mapToCoordinateSequence(first, second)
         );
     }
 
-    public Point createPoint(final Coordinate coordinate) {
+    public Point createPoint(final RequestCoordinate coordinate) {
         final org.locationtech.jts.geom.Coordinate jtsCoordinate = mapToJtsCoordinate(coordinate);
         return this.geometryFactory.createPoint(jtsCoordinate);
     }
@@ -50,8 +50,8 @@ public final class GeometryCreatingService {
         );
     }
 
-    private static CoordinateSequence mapToCoordinateSequence(final Coordinate firstCoordinate,
-                                                              final Coordinate secondCoordinate) {
+    private static CoordinateSequence mapToCoordinateSequence(final RequestCoordinate firstCoordinate,
+                                                              final RequestCoordinate secondCoordinate) {
         return createCoordinateSequence(
                 () -> mapToJtsCoordinates(firstCoordinate, secondCoordinate)
         );
@@ -68,19 +68,19 @@ public final class GeometryCreatingService {
         );
     }
 
-    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Coordinate firstCoordinate,
-                                                                              final Coordinate secondCoordinate) {
+    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final RequestCoordinate firstCoordinate,
+                                                                              final RequestCoordinate secondCoordinate) {
         return mapToJtsCoordinates(
                 () -> Stream.of(firstCoordinate, secondCoordinate)
         );
     }
 
-    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Supplier<Stream<Coordinate>> coordinateStreamSupplier) {
-        final Stream<Coordinate> coordinateStream = coordinateStreamSupplier.get();
+    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Supplier<Stream<RequestCoordinate>> coordinateStreamSupplier) {
+        final Stream<RequestCoordinate> coordinateStream = coordinateStreamSupplier.get();
         return mapToJtsCoordinates(coordinateStream);
     }
 
-    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Stream<Coordinate> coordinateStream) {
+    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Stream<RequestCoordinate> coordinateStream) {
         return coordinateStream
                 .map(CoordinateUtil::mapToJtsCoordinate)
                 .toArray(org.locationtech.jts.geom.Coordinate[]::new);

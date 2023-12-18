@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
@@ -30,7 +30,7 @@ public final class InaccurateMileageCalculatingService extends MileageCalculatin
     protected Stream<TrackSlice> createTrackSliceStream(final Track track,
                                                         final List<PreparedGeometry> cityGeometries,
                                                         final GeometryCreatingService geometryCreatingService) {
-        final List<Coordinate> trackCoordinates = track.getCoordinates();
+        final List<RequestCoordinate> trackCoordinates = track.getCoordinates();
         final int indexPenultimateCoordinate = trackCoordinates.size() - 2;
         return rangeClosed(0, indexPenultimateCoordinate)
                 .mapToObj(i -> new TrackSlice(
@@ -45,7 +45,7 @@ public final class InaccurateMileageCalculatingService extends MileageCalculatin
                 ));
     }
 
-    private static boolean isAnyGeometryContainCoordinate(final Coordinate coordinate,
+    private static boolean isAnyGeometryContainCoordinate(final RequestCoordinate coordinate,
                                                           final List<PreparedGeometry> cityGeometries,
                                                           final GeometryCreatingService geometryCreatingService) {
         final Point point = geometryCreatingService.createPoint(coordinate);

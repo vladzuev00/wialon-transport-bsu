@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class Line {
-    Coordinate firstCoordinate;
-    Coordinate secondCoordinate;
+    RequestCoordinate firstCoordinate;
+    RequestCoordinate secondCoordinate;
 }

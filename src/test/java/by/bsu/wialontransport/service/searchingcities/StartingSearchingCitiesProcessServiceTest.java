@@ -4,7 +4,7 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -42,8 +42,8 @@ public final class StartingSearchingCitiesProcessServiceTest extends AbstractCon
     @Test
     public void processShouldBeStartedAndFinishedSuccessfully() {
         final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                new Coordinate(0., 0.),
-                new Coordinate(2., 2.)
+                new RequestCoordinate(0., 0.),
+                new RequestCoordinate(2., 2.)
         );
         final double givenSearchStep = 1.;
 
@@ -67,20 +67,20 @@ public final class StartingSearchingCitiesProcessServiceTest extends AbstractCon
                 .build();
         when(this.mockedSearchingCitiesProcessService.save(eq(givenSavedProcess))).thenReturn(givenSavedProcess);
 
-        final List<Coordinate> expectedFirstSubtaskCoordinates = List.of(
-                new Coordinate(0., 0.),
-                new Coordinate(1., 0.),
-                new Coordinate(2., 0.),
-                new Coordinate(0., 1.)
+        final List<RequestCoordinate> expectedFirstSubtaskCoordinates = List.of(
+                new RequestCoordinate(0., 0.),
+                new RequestCoordinate(1., 0.),
+                new RequestCoordinate(2., 0.),
+                new RequestCoordinate(0., 1.)
         );
-        final List<Coordinate> expectedSecondSubtaskCoordinates = List.of(
-                new Coordinate(1., 1.),
-                new Coordinate(2., 1.),
-                new Coordinate(0., 2.),
-                new Coordinate(1., 2.)
+        final List<RequestCoordinate> expectedSecondSubtaskCoordinates = List.of(
+                new RequestCoordinate(1., 1.),
+                new RequestCoordinate(2., 1.),
+                new RequestCoordinate(0., 2.),
+                new RequestCoordinate(1., 2.)
         );
-        final List<Coordinate> expectedThirdSubtaskCoordinates = List.of(
-                new Coordinate(2., 2.)
+        final List<RequestCoordinate> expectedThirdSubtaskCoordinates = List.of(
+                new RequestCoordinate(2., 2.)
         );
 
         throw new RuntimeException();

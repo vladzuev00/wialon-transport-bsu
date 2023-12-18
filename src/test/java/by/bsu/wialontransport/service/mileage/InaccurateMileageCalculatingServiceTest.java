@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
 import org.junit.Test;
@@ -29,8 +29,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case1() {
         final Track givenTrack = create(
-                new Coordinate(1.015, 2.025),
-                new Coordinate(1.025, 2.025)
+                new RequestCoordinate(1.015, 2.025),
+                new RequestCoordinate(1.025, 2.025)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -51,8 +51,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case2() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.015, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.015, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -73,8 +73,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case3() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -95,8 +95,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case4() {
         final Track givenTrack = create(
-                new Coordinate(1.015, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.015, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -117,8 +117,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case5() {
         final Track givenTrack = create(
-                new Coordinate(1.013, 2.015),
-                new Coordinate(1.016, 2.015)
+                new RequestCoordinate(1.013, 2.015),
+                new RequestCoordinate(1.016, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -139,8 +139,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case6() {
         final Track givenTrack = create(
-                new Coordinate(1.02, 2.015),
-                new Coordinate(1.03, 2.015)
+                new RequestCoordinate(1.02, 2.015),
+                new RequestCoordinate(1.03, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -161,8 +161,8 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case7() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.01, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.01, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -183,9 +183,9 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case8() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.015, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.015, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -206,9 +206,9 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case9() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.015, 2.018),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.015, 2.018),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -229,10 +229,10 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case10() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.013, 2.015),
-                new Coordinate(1.017, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.013, 2.015),
+                new RequestCoordinate(1.017, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -253,10 +253,10 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case11() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.013, 2.013),
-                new Coordinate(1.017, 2.017),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.013, 2.013),
+                new RequestCoordinate(1.017, 2.017),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -284,9 +284,9 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(259, 258, 256)")
     public void case12() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.015, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.015, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -314,10 +314,10 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(259, 258, 256)")
     public void case13() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.012, 2.018),
-                new Coordinate(1.015, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.012, 2.018),
+                new RequestCoordinate(1.015, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
@@ -338,9 +338,9 @@ public final class InaccurateMileageCalculatingServiceTest extends AbstractConte
     @Sql(statements = "INSERT INTO cities(id, address_id, searching_cities_process_id) VALUES(257, 255, 256)")
     public void case14() {
         final Track givenTrack = create(
-                new Coordinate(1.005, 2.015),
-                new Coordinate(1.015, 2.015),
-                new Coordinate(1.025, 2.015)
+                new RequestCoordinate(1.005, 2.015),
+                new RequestCoordinate(1.015, 2.015),
+                new RequestCoordinate(1.025, 2.015)
         );
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);

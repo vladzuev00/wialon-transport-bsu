@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesException;
@@ -70,7 +70,7 @@ public final class StartingSearchingCitiesProcessService {
         public void run() {
             try {
                 final Set<Geometry> geometriesAlreadyFoundCities = newKeySet();
-                final List<Coordinate> coordinates = this.findCoordinates();
+                final List<RequestCoordinate> coordinates = this.findCoordinates();
                 final int amountOfSubAreas = this.findAmountOfSubAreas();
                 final CompletableFuture<List<City>> foundUniqueCitiesFuture = range(0, amountOfSubAreas)
                         .mapToObj(i -> this.extractSubAreaCoordinatesByItsIndex(coordinates, i))
@@ -89,15 +89,15 @@ public final class StartingSearchingCitiesProcessService {
             return (int) ceil(((double) this.process.getTotalPoints()) / amountHandledPointsToSaveState);
         }
 
-        private List<Coordinate> findCoordinates() {
-            final List<Coordinate> coordinates = new ArrayList<>();
+        private List<RequestCoordinate> findCoordinates() {
+            final List<RequestCoordinate> coordinates = new ArrayList<>();
             final AreaIterator areaIterator = new AreaIterator(this.areaCoordinate, this.searchStep);
             areaIterator.forEachRemaining(coordinates::add);
             return coordinates;
         }
 
-        private List<Coordinate> extractSubAreaCoordinatesByItsIndex(final List<Coordinate> coordinates,
-                                                                     int subAreaIndex) {
+        private List<RequestCoordinate> extractSubAreaCoordinatesByItsIndex(final List<RequestCoordinate> coordinates,
+                                                                            int subAreaIndex) {
             return coordinates.subList(
                     subAreaIndex * amountHandledPointsToSaveState,
                     min(amountHandledPointsToSaveState * (subAreaIndex + 1), coordinates.size())
@@ -149,7 +149,7 @@ public final class StartingSearchingCitiesProcessService {
 
     @RequiredArgsConstructor
     private final class SubtaskSearchingCities {
-        private final List<Coordinate> coordinates;
+        private final List<RequestCoordinate> coordinates;
         private final SearchingCitiesProcess process;
 
         public List<City> search() {

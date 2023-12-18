@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -24,8 +24,8 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
         if (!this.isEpsilonPositive() || !isTrackAbleToBeSimplified(track)) {
             return track;
         }
-        final List<Coordinate> source = track.getCoordinates();
-        final List<Coordinate> simplifiedAccumulator = createSimplifiedAccumulatorBySource(source);
+        final List<RequestCoordinate> source = track.getCoordinates();
+        final List<RequestCoordinate> simplifiedAccumulator = createSimplifiedAccumulatorBySource(source);
         this.simplifyPart(source, simplifiedAccumulator, 0, source.size() - 1);
         simplifiedAccumulator.add(source.get(source.size() - 1));
         return new Track(simplifiedAccumulator);
@@ -36,18 +36,18 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
     }
 
     private static boolean isTrackAbleToBeSimplified(final Track track) {
-        final List<Coordinate> coordinates = track.getCoordinates();
+        final List<RequestCoordinate> coordinates = track.getCoordinates();
         return coordinates != null && coordinates.size() >= MINIMAL_AMOUNT_OF_POINTS_OF_TRACK_ABLE_TO_BE_SIMPLIFIED;
     }
 
-    private static List<Coordinate> createSimplifiedAccumulatorBySource(final List<Coordinate> source) {
-        final List<Coordinate> simplifiedAccumulator = new ArrayList<>();
+    private static List<RequestCoordinate> createSimplifiedAccumulatorBySource(final List<RequestCoordinate> source) {
+        final List<RequestCoordinate> simplifiedAccumulator = new ArrayList<>();
         simplifiedAccumulator.add(source.get(0));
         return simplifiedAccumulator;
     }
 
-    private void simplifyPart(final List<Coordinate> source,
-                              final List<Coordinate> simplifiedAccumulator,
+    private void simplifyPart(final List<RequestCoordinate> source,
+                              final List<RequestCoordinate> simplifiedAccumulator,
                               final int startPartIndex,
                               final int endPartIndex) {
         if (startPartIndex + 1 == endPartIndex) {
@@ -64,28 +64,28 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
         }
     }
 
-    private IntAndDoublePair findFurthestPartPointIndexAndDistanceFromLineOfPartBorders(final List<Coordinate> source,
+    private IntAndDoublePair findFurthestPartPointIndexAndDistanceFromLineOfPartBorders(final List<RequestCoordinate> source,
                                                                                         final int startPartIndex,
                                                                                         final int endPartIndex) {
-        final Coordinate startPartPoint = source.get(startPartIndex);
-        final Coordinate endPartPoint = source.get(endPartIndex);
+        final RequestCoordinate startPartPoint = source.get(startPartIndex);
+        final RequestCoordinate endPartPoint = source.get(endPartIndex);
         return rangeClosed(startPartIndex, endPartIndex)
                 .mapToObj(i -> new IntAndDoublePair(i, findDistanceBetweenLineAndPoint(startPartPoint, endPartPoint, source.get(i))))
                 .max(comparingDouble(IntAndDoublePair::getSecond))
                 .orElseThrow(() -> new IllegalArgumentException("Given track part doesn't have points"));
     }
 
-    private static double findDistanceBetweenLineAndPoint(final Coordinate firstLinePoint,
-                                                          final Coordinate secondLinePoint,
-                                                          final Coordinate point) {
+    private static double findDistanceBetweenLineAndPoint(final RequestCoordinate firstLinePoint,
+                                                          final RequestCoordinate secondLinePoint,
+                                                          final RequestCoordinate point) {
         final double doubleAreaOfTriangleOfPoints = findDoubleAreaOfTriangle(firstLinePoint, secondLinePoint, point);
         final double lineLength = findDistanceBetweenPoints(firstLinePoint, secondLinePoint);
         return doubleAreaOfTriangleOfPoints / lineLength;
     }
 
-    private static double findDoubleAreaOfTriangle(final Coordinate firstPoint,
-                                                   final Coordinate secondPoint,
-                                                   final Coordinate thirdPoint) {
+    private static double findDoubleAreaOfTriangle(final RequestCoordinate firstPoint,
+                                                   final RequestCoordinate secondPoint,
+                                                   final RequestCoordinate thirdPoint) {
         return abs(
                 (secondPoint.getLongitude() - firstPoint.getLongitude()) * thirdPoint.getLatitude()
                         - (secondPoint.getLatitude() - firstPoint.getLatitude()) * thirdPoint.getLongitude()
@@ -94,7 +94,7 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
         );
     }
 
-    private static double findDistanceBetweenPoints(final Coordinate first, final Coordinate second) {
+    private static double findDistanceBetweenPoints(final RequestCoordinate first, final RequestCoordinate second) {
         return sqrt(
                 square(second.getLatitude() - first.getLatitude())
                         + square(second.getLongitude() - first.getLongitude())

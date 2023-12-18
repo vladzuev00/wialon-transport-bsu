@@ -1,11 +1,11 @@
 package by.bsu.wialontransport.service.mileage.model;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import lombok.Value;
 
 @Value
 public class TrackSlice {
-    Coordinate first;
-    Coordinate second;
+    RequestCoordinate first;
+    RequestCoordinate second;
     boolean locatedInCity;
 }
