@@ -5,6 +5,7 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.mapper.TrackerMapper;
 import by.bsu.wialontransport.crud.repository.TrackerRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.springframework.data.domain.Pageable.unpaged;
 
 @Service
 public class TrackerService extends AbstractCRUDEncryptingPasswordService<
@@ -34,29 +38,20 @@ public class TrackerService extends AbstractCRUDEncryptingPasswordService<
     }
 
     @Transactional(readOnly = true)
-    public List<Tracker> findByUser(final User user) {
-        final Long userId = user.getId();
-        return null;
-//        return super.findUnPaged((repository, pageable) -> repository.findByUserId(userId, pageable));
+    public Stream<Tracker> findByUser(final User user) {
+        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), unpaged()));
     }
 
     @Transactional(readOnly = true)
-    public List<Tracker> findByUser(final User user, final int pageNumber, final int pageSize) {
-        final Long userId = user.getId();
-        return null;
-//        return super.findPaged(
-//                (repository, pageable) -> repository.findByUserId(userId, pageable), pageNumber, pageSize
-//        );
+    public Stream<Tracker> findByUser(final User user, final Pageable pageable) {
+        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), pageable));
     }
 
     @Transactional(readOnly = true)
-    public List<Tracker> findByUser(final User user,
-                                    final int pageNumber,
-                                    final int pageSize,
-                                    final Comparator<Tracker> comparator) {
-        final List<Tracker> foundTrackers = this.findByUser(user, pageNumber, pageSize);
-        foundTrackers.sort(comparator);
-        return foundTrackers;
+    public List<Tracker> findByUser(final User user, final Pageable pageable, final Comparator<Tracker> comparator) {
+        return this.findByUser(user, pageable)
+                .sorted(comparator)
+                .toList();
     }
 
     @Transactional(readOnly = true)

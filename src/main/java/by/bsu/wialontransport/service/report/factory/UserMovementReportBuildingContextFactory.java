@@ -97,8 +97,8 @@ public final class UserMovementReportBuildingContextFactory {
     }
 
     private void insertLackedTrackers(final Map<Tracker, List<Data>> dataByTrackers, final User user) {
-        final List<Tracker> userAllTrackers = this.trackerService.findByUser(user);
-        userAllTrackers.forEach(userTracker -> dataByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
+//        final List<Tracker> userAllTrackers = this.trackerService.findByUser(user);
+//        userAllTrackers.forEach(userTracker -> dataByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
     }
 
     private TrackerMovement createTrackerMovement(final Entry<Tracker, List<Data>> dataByTracker) {
