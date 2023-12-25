@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public final class CRUDServiceTest {
 
     @Before
     public void initializeService() {
-        this.service = new TestPersonService(this.mockedMapper, this.mockedRepository);
+        service = new TestPersonService(mockedMapper, mockedRepository);
     }
 
     @Test
@@ -50,12 +52,12 @@ public final class CRUDServiceTest {
         final Long givenId = 255L;
 
         final TestPersonEntity givenEntity = new TestPersonEntity(givenId);
-        when(this.mockedRepository.findById(same(givenId))).thenReturn(Optional.of(givenEntity));
+        when(mockedRepository.findById(same(givenId))).thenReturn(Optional.of(givenEntity));
 
         final TestPersonDto givenDto = new TestPersonDto(givenId);
-        when(this.mockedMapper.mapToDto(same(givenEntity))).thenReturn(givenDto);
+        when(mockedMapper.mapToDto(same(givenEntity))).thenReturn(givenDto);
 
-        final Optional<TestPersonDto> optionalActual = this.service.findById(givenId);
+        final Optional<TestPersonDto> optionalActual = service.findById(givenId);
         assertTrue(optionalActual.isPresent());
         final TestPersonDto actual = optionalActual.get();
         assertSame(givenDto, actual);
@@ -65,12 +67,12 @@ public final class CRUDServiceTest {
     public void personShouldNotBeFoundById() {
         final Long givenId = 255L;
 
-        when(this.mockedRepository.findById(same(givenId))).thenReturn(empty());
+        when(mockedRepository.findById(same(givenId))).thenReturn(empty());
 
-        final Optional<TestPersonDto> optionalActual = this.service.findById(givenId);
+        final Optional<TestPersonDto> optionalActual = service.findById(givenId);
         assertTrue(optionalActual.isEmpty());
 
-        verifyNoInteractions(this.mockedMapper);
+        verifyNoInteractions(mockedMapper);
     }
 
     @Test
@@ -80,15 +82,15 @@ public final class CRUDServiceTest {
         final TestPersonEntity firstGivenEntity = new TestPersonEntity(255L);
         final TestPersonEntity secondGivenEntity = new TestPersonEntity(256L);
         final List<TestPersonEntity> givenEntities = List.of(firstGivenEntity, secondGivenEntity);
-        when(this.mockedRepository.findAllById(same(givenIds))).thenReturn(givenEntities);
+        when(mockedRepository.findAllById(same(givenIds))).thenReturn(givenEntities);
 
         final TestPersonDto firstGivenDto = new TestPersonDto(255L);
-        when(this.mockedMapper.mapToDto(same(firstGivenEntity))).thenReturn(firstGivenDto);
+        when(mockedMapper.mapToDto(same(firstGivenEntity))).thenReturn(firstGivenDto);
 
         final TestPersonDto secondGivenDto = new TestPersonDto(256L);
-        when(this.mockedMapper.mapToDto(same(secondGivenEntity))).thenReturn(secondGivenDto);
+        when(mockedMapper.mapToDto(same(secondGivenEntity))).thenReturn(secondGivenDto);
 
-        final List<TestPersonDto> actual = this.service.findByIds(givenIds);
+        final List<TestPersonDto> actual = service.findByIds(givenIds);
         final List<TestPersonDto> expected = List.of(firstGivenDto, secondGivenDto);
         assertEquals(expected, actual);
     }
@@ -97,21 +99,21 @@ public final class CRUDServiceTest {
     public void personsShouldNotBeFoundByIds() {
         final Iterable<Long> givenIds = List.of(255L, 256L);
 
-        when(this.mockedRepository.findAllById(same(givenIds))).thenReturn(emptyList());
+        when(mockedRepository.findAllById(same(givenIds))).thenReturn(emptyList());
 
-        final List<TestPersonDto> actual = this.service.findByIds(givenIds);
+        final List<TestPersonDto> actual = service.findByIds(givenIds);
         assertTrue(actual.isEmpty());
 
-        verifyNoInteractions(this.mockedMapper);
+        verifyNoInteractions(mockedMapper);
     }
 
     @Test
     public void personShouldExistById() {
         final Long givenId = 255L;
 
-        when(this.mockedRepository.existsById(same(givenId))).thenReturn(true);
+        when(mockedRepository.existsById(same(givenId))).thenReturn(true);
 
-        final boolean exists = this.service.isExist(givenId);
+        final boolean exists = service.isExist(givenId);
         assertTrue(exists);
     }
 
@@ -119,9 +121,9 @@ public final class CRUDServiceTest {
     public void personShouldNotExistById() {
         final Long givenId = 255L;
 
-        when(this.mockedRepository.existsById(same(givenId))).thenReturn(false);
+        when(mockedRepository.existsById(same(givenId))).thenReturn(false);
 
-        final boolean exists = this.service.isExist(givenId);
+        final boolean exists = service.isExist(givenId);
         assertFalse(exists);
     }
 
@@ -130,15 +132,15 @@ public final class CRUDServiceTest {
         final TestPersonDto givenInitialDto = new TestPersonDto(255L);
 
         final TestPersonEntity givenInitialEntity = new TestPersonEntity(255L);
-        when(this.mockedMapper.mapToEntity(same(givenInitialDto))).thenReturn(givenInitialEntity);
+        when(mockedMapper.mapToEntity(same(givenInitialDto))).thenReturn(givenInitialEntity);
 
         final TestPersonEntity givenUpdatedEntity = new TestPersonEntity(256L);
-        when(this.mockedRepository.save(same(givenInitialEntity))).thenReturn(givenUpdatedEntity);
+        when(mockedRepository.save(same(givenInitialEntity))).thenReturn(givenUpdatedEntity);
 
         final TestPersonDto givenUpdatedDto = new TestPersonDto(256L);
-        when(this.mockedMapper.mapToDto(same(givenUpdatedEntity))).thenReturn(givenUpdatedDto);
+        when(mockedMapper.mapToDto(same(givenUpdatedEntity))).thenReturn(givenUpdatedDto);
 
-        final TestPersonDto actual = this.service.update(givenInitialDto);
+        final TestPersonDto actual = service.update(givenInitialDto);
         assertSame(givenUpdatedDto, actual);
     }
 
@@ -146,37 +148,37 @@ public final class CRUDServiceTest {
     public void personWithNullIdShouldNotBeUpdated() {
         final TestPersonDto givenInitialDto = new TestPersonDto(null);
 
-        this.service.update(givenInitialDto);
+        service.update(givenInitialDto);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void personWithZeroIdShouldNotBeUpdated() {
         final TestPersonDto givenInitialDto = new TestPersonDto(0L);
 
-        this.service.update(givenInitialDto);
+        service.update(givenInitialDto);
     }
 
     @Test
     public void personShouldBeDeletedById() {
         final Long givenId = 255L;
 
-        this.service.delete(givenId);
+        service.delete(givenId);
 
-        verify(this.mockedRepository, times(1)).deleteById(same(givenId));
+        verify(mockedRepository, times(1)).deleteById(same(givenId));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void personShouldNotBeDeletedByNullId() {
         final Long givenId = null;
 
-        this.service.delete(givenId);
+        service.delete(givenId);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void personShouldNotBeDeletedByZeroId() {
         final Long givenId = 0L;
 
-        this.service.delete(givenId);
+        service.delete(givenId);
     }
 
     @Test
@@ -184,19 +186,19 @@ public final class CRUDServiceTest {
         final TestPersonDto givenDto = new TestPersonDto(0L);
 
         final TestPersonEntity givenEntity = new TestPersonEntity(0L);
-        when(this.mockedMapper.mapToEntity(same(givenDto))).thenReturn(givenEntity);
+        when(mockedMapper.mapToEntity(same(givenDto))).thenReturn(givenEntity);
 
         final TestPersonEntity givenSavedEntity = new TestPersonEntity(256L);
-        when(this.mockedRepository.save(same(givenEntity))).thenReturn(givenSavedEntity);
+        when(mockedRepository.save(same(givenEntity))).thenReturn(givenSavedEntity);
 
         final TestPersonDto givenSavedDto = new TestPersonDto(256L);
-        when(this.mockedMapper.mapToDto(same(givenSavedEntity))).thenReturn(givenSavedDto);
+        when(mockedMapper.mapToDto(same(givenSavedEntity))).thenReturn(givenSavedDto);
 
-        final TestPersonDto actual = this.service.save(givenDto);
+        final TestPersonDto actual = service.save(givenDto);
         assertSame(givenSavedDto, actual);
 
         final List<TestPersonEntity> expectedConfiguredEntities = List.of(givenEntity);
-        assertEquals(expectedConfiguredEntities, this.service.configuredBeforeSavingEntities);
+        assertEquals(expectedConfiguredEntities, service.configuredBeforeSavingEntities);
     }
 
     @Test
@@ -206,29 +208,29 @@ public final class CRUDServiceTest {
         final List<TestPersonDto> givenDtos = List.of(firstGivenDto, secondGivenDto);
 
         final TestPersonEntity firstGivenEntity = new TestPersonEntity(0L);
-        when(this.mockedMapper.mapToEntity(same(firstGivenDto))).thenReturn(firstGivenEntity);
+        when(mockedMapper.mapToEntity(same(firstGivenDto))).thenReturn(firstGivenEntity);
 
         final TestPersonEntity secondGivenEntity = new TestPersonEntity(1L);
-        when(this.mockedMapper.mapToEntity(same(secondGivenDto))).thenReturn(secondGivenEntity);
+        when(mockedMapper.mapToEntity(same(secondGivenDto))).thenReturn(secondGivenEntity);
 
         final List<TestPersonEntity> givenEntities = List.of(firstGivenEntity, secondGivenEntity);
 
         final TestPersonEntity firstGivenSavedEntity = new TestPersonEntity(256L);
         final TestPersonEntity secondGivenSavedEntity = new TestPersonEntity(257L);
         final List<TestPersonEntity> givenSavedEntities = List.of(firstGivenSavedEntity, secondGivenSavedEntity);
-        when(this.mockedRepository.saveAll(eq(givenEntities))).thenReturn(givenSavedEntities);
+        when(mockedRepository.saveAll(eq(givenEntities))).thenReturn(givenSavedEntities);
 
         final TestPersonDto firstGivenSavedDto = new TestPersonDto(256L);
-        when(this.mockedMapper.mapToDto(same(firstGivenSavedEntity))).thenReturn(firstGivenSavedDto);
+        when(mockedMapper.mapToDto(same(firstGivenSavedEntity))).thenReturn(firstGivenSavedDto);
 
         final TestPersonDto secondGivenSavedDto = new TestPersonDto(257L);
-        when(this.mockedMapper.mapToDto(same(secondGivenSavedEntity))).thenReturn(secondGivenSavedDto);
+        when(mockedMapper.mapToDto(same(secondGivenSavedEntity))).thenReturn(secondGivenSavedDto);
 
-        final List<TestPersonDto> actual = this.service.saveAll(givenDtos);
+        final List<TestPersonDto> actual = service.saveAll(givenDtos);
         final List<TestPersonDto> expected = List.of(firstGivenSavedDto, secondGivenSavedDto);
         assertEquals(expected, actual);
 
-        assertEquals(givenEntities, this.service.configuredBeforeSavingEntities);
+        assertEquals(givenEntities, service.configuredBeforeSavingEntities);
     }
 
     @Test
@@ -239,12 +241,12 @@ public final class CRUDServiceTest {
         );
 
         final TestPersonEntity givenEntity = new TestPersonEntity(givenId);
-        when(this.mockedRepository.findById(same(givenId))).thenReturn(Optional.of(givenEntity));
+        when(mockedRepository.findById(same(givenId))).thenReturn(Optional.of(givenEntity));
 
         final TestPersonDto givenDto = new TestPersonDto(givenId);
-        when(this.mockedMapper.mapToDto(same(givenEntity))).thenReturn(givenDto);
+        when(mockedMapper.mapToDto(same(givenEntity))).thenReturn(givenDto);
 
-        final Optional<TestPersonDto> optionalActual = this.service.findUnique(givenOperation);
+        final Optional<TestPersonDto> optionalActual = service.findUnique(givenOperation);
         assertTrue(optionalActual.isPresent());
         final TestPersonDto actual = optionalActual.get();
         assertSame(givenDto, actual);
@@ -257,12 +259,12 @@ public final class CRUDServiceTest {
                 givenId
         );
 
-        when(this.mockedRepository.findById(same(givenId))).thenReturn(empty());
+        when(mockedRepository.findById(same(givenId))).thenReturn(empty());
 
-        final Optional<TestPersonDto> optionalActual = this.service.findUnique(givenOperation);
+        final Optional<TestPersonDto> optionalActual = service.findUnique(givenOperation);
         assertTrue(optionalActual.isEmpty());
 
-        verifyNoInteractions(this.mockedMapper);
+        verifyNoInteractions(mockedMapper);
     }
 
     @Test
@@ -271,9 +273,9 @@ public final class CRUDServiceTest {
         final Predicate<PersonRepository> givenOperation = repository -> repository.existsById(givenId);
 
         final boolean givenValue = true;
-        when(this.mockedRepository.existsById(same(givenId))).thenReturn(givenValue);
+        when(mockedRepository.existsById(same(givenId))).thenReturn(givenValue);
 
-        final boolean actual = this.service.findBoolean(givenOperation);
+        final boolean actual = service.findBoolean(givenOperation);
         assertEquals(givenValue, actual);
     }
 
@@ -283,9 +285,9 @@ public final class CRUDServiceTest {
         final ToIntFunction<PersonRepository> givenOperation = repository -> repository.updateName(givenNewName);
 
         final int givenInt = 5;
-        when(this.mockedRepository.updateName(same(givenNewName))).thenReturn(givenInt);
+        when(mockedRepository.updateName(same(givenNewName))).thenReturn(givenInt);
 
-        final int actual = this.service.findInt(givenOperation);
+        final int actual = service.findInt(givenOperation);
         assertEquals(givenInt, actual);
     }
 
@@ -299,14 +301,14 @@ public final class CRUDServiceTest {
         final Collector<TestPersonEntity, ?, List<TestPersonEntity>> givenCollector = toList();
 
         final Stream<TestPersonEntity> givenStream = mock(Stream.class);
-        when(this.mockedRepository.findByName(same(givenName))).thenReturn(givenStream);
+        when(mockedRepository.findByName(same(givenName))).thenReturn(givenStream);
 
         final TestPersonEntity firstGivenEntity = new TestPersonEntity(255L);
         final TestPersonEntity secondGivenEntity = new TestPersonEntity(256L);
         final List<TestPersonEntity> givenEntities = List.of(firstGivenEntity, secondGivenEntity);
         when(givenStream.collect(same(givenCollector))).thenReturn(givenEntities);
 
-        final List<TestPersonEntity> actual = this.service.findEntityStreamAndCollect(givenOperation, givenCollector);
+        final List<TestPersonEntity> actual = service.findEntityStreamAndCollect(givenOperation, givenCollector);
         assertSame(givenEntities, actual);
 
         verify(givenStream, times(1)).close();
@@ -322,18 +324,43 @@ public final class CRUDServiceTest {
         final TestPersonEntity firstGivenEntity = new TestPersonEntity(255L);
         final TestPersonEntity secondGivenEntity = new TestPersonEntity(256L);
         final Stream<TestPersonEntity> givenEntities = Stream.of(firstGivenEntity, secondGivenEntity);
-        when(this.mockedRepository.findByName(same(givenName))).thenReturn(givenEntities);
+        when(mockedRepository.findByName(same(givenName))).thenReturn(givenEntities);
 
         final TestPersonDto firstGivenDto = new TestPersonDto(255L);
-        when(this.mockedMapper.mapToDto(same(firstGivenEntity))).thenReturn(firstGivenDto);
+        when(mockedMapper.mapToDto(same(firstGivenEntity))).thenReturn(firstGivenDto);
 
         final TestPersonDto secondGivenDto = new TestPersonDto(256L);
-        when(this.mockedMapper.mapToDto(same(secondGivenEntity))).thenReturn(secondGivenDto);
+        when(mockedMapper.mapToDto(same(secondGivenEntity))).thenReturn(secondGivenDto);
 
-        final Stream<TestPersonDto> actual = this.service.findDtoStream(givenOperation);
+        final Stream<TestPersonDto> actual = service.findDtoStream(givenOperation);
         final Set<TestPersonDto> actualAsSet = actual.collect(toUnmodifiableSet());
         final Set<TestPersonDto> expectedAsSet = Set.of(firstGivenDto, secondGivenDto);
         assertEquals(expectedAsSet, actualAsSet);
+    }
+
+    @Test
+    public void dtoPageShouldBeFound() {
+        final String givenSurnameName = "surname";
+        final Function<PersonRepository, Page<TestPersonEntity>> givenOperation = repository -> repository.findBySurname(
+                givenSurnameName
+        );
+
+        final TestPersonEntity firstGivenEntity = new TestPersonEntity(255L);
+        final TestPersonEntity secondGivenEntity = new TestPersonEntity(256L);
+        final List<TestPersonEntity> givenEntities = List.of(firstGivenEntity, secondGivenEntity);
+        final Page<TestPersonEntity> givenPage = new PageImpl<>(givenEntities);
+        when(mockedRepository.findBySurname(same(givenSurnameName))).thenReturn(givenPage);
+
+        final TestPersonDto firstGivenDto = new TestPersonDto(255L);
+        when(mockedMapper.mapToDto(same(firstGivenEntity))).thenReturn(firstGivenDto);
+
+        final TestPersonDto secondGivenDto = new TestPersonDto(256L);
+        when(mockedMapper.mapToDto(same(secondGivenEntity))).thenReturn(secondGivenDto);
+
+        final Page<TestPersonDto> actual = service.findDtoPage(givenOperation);
+        final List<TestPersonDto> actualAsList = actual.toList();
+        final List<TestPersonDto> expectedAsList = List.of(firstGivenDto, secondGivenDto);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     private static final class TestPersonService extends CRUDService<
@@ -347,12 +374,12 @@ public final class CRUDServiceTest {
 
         public TestPersonService(final Mapper<TestPersonEntity, TestPersonDto> mapper, final PersonRepository repository) {
             super(mapper, repository);
-            this.configuredBeforeSavingEntities = new ArrayList<>();
+            configuredBeforeSavingEntities = new ArrayList<>();
         }
 
         @Override
         protected void configureBeforeSave(final TestPersonEntity entity) {
-            this.configuredBeforeSavingEntities.add(entity);
+            configuredBeforeSavingEntities.add(entity);
         }
     }
 
@@ -374,5 +401,7 @@ public final class CRUDServiceTest {
         int updateName(final String newName);
 
         Stream<TestPersonEntity> findByName(final String name);
+
+        Page<TestPersonEntity> findBySurname(final String surname);
     }
 }
