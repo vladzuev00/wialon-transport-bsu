@@ -25,17 +25,17 @@ public final class SearchingCitiesProcessMapperTest extends AbstractContextTest 
     public void entityShouldBeMappedToDto() {
         final SearchingCitiesProcessEntity givenEntity = SearchingCitiesProcessEntity.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
                 .status(HANDLING)
                 .build();
 
-        final SearchingCitiesProcess actual = this.mapper.mapToDto(givenEntity);
+        final SearchingCitiesProcess actual = mapper.mapToDto(givenEntity);
         final SearchingCitiesProcess expected = SearchingCitiesProcess.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
@@ -48,17 +48,17 @@ public final class SearchingCitiesProcessMapperTest extends AbstractContextTest 
     public void dtoShouldBeMappedToEntity() {
         final SearchingCitiesProcess givenDto = SearchingCitiesProcess.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
                 .status(HANDLING)
                 .build();
 
-        final SearchingCitiesProcessEntity actual = this.mapper.mapToEntity(givenDto);
+        final SearchingCitiesProcessEntity actual = mapper.mapToEntity(givenDto);
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
