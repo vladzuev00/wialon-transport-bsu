@@ -24,29 +24,30 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
 
     @Override
     protected Data createDto(final DataEntity source) {
-        return new Data(
-                source.getId(),
-                source.getDateTime(),
-                mapNullableCoordinate(source),
-                source.getCourse(),
-                source.getSpeed(),
-                source.getAltitude(),
-                source.getAmountOfSatellites(),
-                source.getReductionPrecision(),
-                source.getInputs(),
-                source.getOutputs(),
-                source.getAnalogInputs(),
-                source.getDriverKeyCode(),
-                this.mapParameters(source),
-                this.mapTracker(source),
-                this.mapAddress(source)
-        );
+//        return new Data(
+//                source.getId(),
+//                source.getDateTime(),
+//                mapNullableCoordinate(source),
+//                source.getCourse(),
+//                source.getSpeed(),
+//                source.getAltitude(),
+//                source.getAmountOfSatellites(),
+//                source.getReductionPrecision(),
+//                source.getInputs(),
+//                source.getOutputs(),
+//                source.getAnalogInputs(),
+//                source.getDriverKeyCode(),
+//                this.mapParameters(source),
+//                this.mapTracker(source),
+//                this.mapAddress(source)
+//        );
+        return null;
     }
 
     @Override
     protected void mapSpecificFields(final Data source, final DataEntity destination) {
-        this.mapCoordinateAndSet(source, destination);
-        this.mapParametersAndSet(source, destination);
+//        this.mapCoordinateAndSet(source, destination);
+//        this.mapParametersAndSet(source, destination);
     }
 
     private static Coordinate mapNullableCoordinate(final DataEntity source) {
@@ -60,40 +61,40 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return new Coordinate(latitude, longitude);
     }
 
-    private Map<String, Parameter> mapParameters(final DataEntity source) {
-        return super.mapLazyCollectionPropertyToMap(
-                source,
-                DataEntity::getParameters,
-                Parameter.class,
-                Parameter::getName
-        );
-    }
-
-    private Tracker mapTracker(final DataEntity source) {
-        return super.mapLazyProperty(source, DataEntity::getTracker, Tracker.class);
-    }
-
-    private Address mapAddress(final DataEntity source) {
-        return super.mapLazyProperty(source, DataEntity::getAddress, Address.class);
-    }
-
-    private void mapCoordinateAndSet(final Data source, final DataEntity entity) {
-        super.mapPropertyAndSet(
-                source,
-                DataMapper::mapNullableCoordinate,
-                entity,
-                DataEntity::setCoordinate
-        );
-    }
-
-    private void mapParametersAndSet(final Data source, final DataEntity entity) {
-        super.mapPropertyAndSet(
-                source,
-                this::mapNullableParameters,
-                entity,
-                DataEntity::setParameters
-        );
-    }
+//    private Map<String, Parameter> mapParameters(final DataEntity source) {
+//        return super.mapLazyToMap(
+//                source,
+//                DataEntity::getParameters,
+//                Parameter.class,
+//                Parameter::getName
+//        );
+//    }
+//
+//    private Tracker mapTracker(final DataEntity source) {
+//        return super.mapLazy(source, DataEntity::getTracker, Tracker.class);
+//    }
+//
+//    private Address mapAddress(final DataEntity source) {
+//        return super.mapLazy(source, DataEntity::getAddress, Address.class);
+//    }
+//
+//    private void mapCoordinateAndSet(final Data source, final DataEntity entity) {
+//        super.mapPropertyAndSet(
+//                source,
+//                DataMapper::mapNullableCoordinate,
+//                entity,
+//                DataEntity::setCoordinate
+//        );
+//    }
+//
+//    private void mapParametersAndSet(final Data source, final DataEntity entity) {
+//        super.mapPropertyAndSet(
+//                source,
+//                this::mapNullableParameters,
+//                entity,
+//                DataEntity::setParameters
+//        );
+//    }
 
     private static DataEntity.Coordinate mapNullableCoordinate(final Data source) {
         final Coordinate sourceCoordinate = source.getCoordinate();

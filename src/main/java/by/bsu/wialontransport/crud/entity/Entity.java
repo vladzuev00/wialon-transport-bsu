@@ -25,11 +25,11 @@ public abstract class Entity<IdType> {
             return false;
         }
         final Entity<IdType> other = (Entity<IdType>) otherObject;
-        return Objects.equals(this.getId(), other.getId());
+        return Objects.equals(getId(), other.getId());
     }
 
     @Override
     public final int hashCode() {
-        return hash(this.getId());
+        return hash(getId());
     }
 }

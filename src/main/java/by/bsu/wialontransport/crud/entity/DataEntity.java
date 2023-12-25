@@ -88,7 +88,7 @@ public class DataEntity extends Entity<Long> {
 
     public void addParameter(final ParameterEntity parameter) {
         parameter.setData(this);
-        this.parameters.add(parameter);
+        parameters.add(parameter);
     }
 
     @NoArgsConstructor

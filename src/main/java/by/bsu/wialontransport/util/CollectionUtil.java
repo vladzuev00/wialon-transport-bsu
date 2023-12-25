@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Optional.empty;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.StreamSupport.stream;
 
 @UtilityClass
@@ -38,11 +37,11 @@ public final class CollectionUtil {
     }
 
     public static <S, P> List<P> mapToList(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapAndCollect(sources, elementMapper, Collectors::toUnmodifiableList);
+        return mapAndCollect(sources, elementMapper, toList());
     }
 
     public static <S, P> Set<P> mapToSet(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapAndCollect(sources, elementMapper, Collectors::toUnmodifiableSet);
+        return mapAndCollect(sources, elementMapper, toUnmodifiableSet());
     }
 
     public static <T> Optional<T> findLast(final List<T> elements) {
@@ -83,8 +82,7 @@ public final class CollectionUtil {
 
     public static <S, P, D> D mapAndCollect(final Collection<S> sources,
                                             final Function<S, P> elementMapper,
-                                            final Supplier<Collector<P, ?, D>> collectorSupplier) {
-        final Collector<P, ?, D> collector = collectorSupplier.get();
+                                            final Collector<P, ?, D> collector) {
         return sources.stream()
                 .map(elementMapper)
                 .collect(collector);

@@ -16,11 +16,12 @@ public final class CityMapper extends Mapper<CityEntity, City> {
 
     @Override
     protected City createDto(final CityEntity entity) {
-        return new City(
-                entity.getId(),
-                this.mapAddress(entity),
-                this.mapSearchingCitiesProcess(entity)
-        );
+//        return new City(
+//                entity.getId(),
+//                this.mapAddress(entity),
+//                this.mapSearchingCitiesProcess(entity)
+//        );
+        return null;
     }
 
     @Override
@@ -28,11 +29,11 @@ public final class CityMapper extends Mapper<CityEntity, City> {
 
     }
 
-    private Address mapAddress(final CityEntity source) {
-        return super.mapLazyProperty(source, CityEntity::getAddress, Address.class);
-    }
-
-    private SearchingCitiesProcess mapSearchingCitiesProcess(final CityEntity source) {
-        return super.mapLazyProperty(source, CityEntity::getSearchingCitiesProcess, SearchingCitiesProcess.class);
-    }
+//    private Address mapAddress(final CityEntity source) {
+//        return super.mapLazy(source, CityEntity::getAddress, Address.class);
+//    }
+//
+//    private SearchingCitiesProcess mapSearchingCitiesProcess(final CityEntity source) {
+//        return super.mapLazy(source, CityEntity::getSearchingCitiesProcess, SearchingCitiesProcess.class);
+//    }
 }

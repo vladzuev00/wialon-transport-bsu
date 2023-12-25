@@ -14,7 +14,7 @@ public class City implements Dto<Long> {
     SearchingCitiesProcess searchingCitiesProcess;
 
     public Geometry findGeometry() {
-        return this.address.getGeometry();
+        return address.getGeometry();
     }
 
     public static City copyWithAddressAndProcess(final City source,

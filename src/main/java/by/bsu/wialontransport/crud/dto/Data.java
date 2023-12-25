@@ -33,10 +33,10 @@ public class Data implements Dto<Long> {
     Address address;
 
     public String findCityName() {
-        return this.address.getCityName();
+        return address.getCityName();
     }
 
     public String findCountryName() {
-        return this.address.getCountryName();
+        return address.getCountryName();
     }
 }

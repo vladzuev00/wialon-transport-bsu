@@ -28,7 +28,7 @@ public final class EntityTest extends AbstractContextTest {
     @Test
     public void notProxyEntityShouldBeEqualProxyEntity() {
         final Entity<Long> firstGivenEntity = createTracker(255L);
-        final Entity<Long> secondGivenEntity = super.entityManager.find(TrackerEntity.class, 255L);
+        final Entity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertTrue(actual);
@@ -46,7 +46,7 @@ public final class EntityTest extends AbstractContextTest {
     @Test
     public void entitiesShouldNotBeEqualBecauseOfDifferentNotProxyTypes() {
         final Entity<Long> firstGivenEntity = createEntity(255L);
-        final Entity<Long> secondGivenEntity = super.entityManager.find(TrackerEntity.class, 255L);
+        final Entity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertFalse(actual);
@@ -93,7 +93,7 @@ public final class EntityTest extends AbstractContextTest {
 
         @Override
         public Long getId() {
-            return this.id;
+            return id;
         }
     }
 

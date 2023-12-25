@@ -7,8 +7,10 @@ import by.bsu.wialontransport.util.HibernateUtil;
 import lombok.*;
 import org.junit.Test;
 import org.mockito.MockedStatic;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -24,12 +26,12 @@ public final class MapperTest extends AbstractContextTest {
     private final ModelMapper modelMapper = new ModelMapper();
 
     @SuppressWarnings("unused")
-    private final AddressMapper addressMapper = new AddressMapper(this.modelMapper);
+    private final AddressMapper addressMapper = new AddressMapper(modelMapper);
 
     @SuppressWarnings("unused")
-    private final PhoneMapper phoneMapper = new PhoneMapper(this.modelMapper);
+    private final PhoneMapper phoneMapper = new PhoneMapper(modelMapper);
 
-    private final PersonMapper personMapper = new PersonMapper(this.modelMapper);
+    private final PersonMapper personMapper = new PersonMapper(modelMapper);
 
     @Test
     public void entityShouldBeMappedToDto() {
@@ -42,7 +44,7 @@ public final class MapperTest extends AbstractContextTest {
                 .phones(List.of(new PhoneEntity(257L), new PhoneEntity(258L)))
                 .build();
 
-        final PersonDto actual = this.personMapper.mapToDto(givenEntity);
+        final PersonDto actual = personMapper.mapToDto(givenEntity);
         final PersonDto expected = PersonDto.builder()
                 .id(255L)
                 .description("vlad;zuev;sergeevich")
@@ -56,7 +58,7 @@ public final class MapperTest extends AbstractContextTest {
     public void nullEntityShouldBeMappedToNullDto() {
         final PersonEntity givenEntity = null;
 
-        final PersonDto actual = this.personMapper.mapToDto(givenEntity);
+        final PersonDto actual = personMapper.mapToDto(givenEntity);
         assertNull(actual);
     }
 
@@ -69,7 +71,7 @@ public final class MapperTest extends AbstractContextTest {
                 .phones(List.of(new PhoneDto(257L), new PhoneDto(258L)))
                 .build();
 
-        final PersonEntity actual = this.personMapper.mapToEntity(givenDto);
+        final PersonEntity actual = personMapper.mapToEntity(givenDto);
         final PersonEntity expected = PersonEntity.builder()
                 .id(255L)
                 .name("vlad")
@@ -85,7 +87,7 @@ public final class MapperTest extends AbstractContextTest {
     public void nullDtoShouldBeMappedToNullEntity() {
         final PersonDto givenDto = null;
 
-        final PersonEntity actual = this.personMapper.mapToEntity(givenDto);
+        final PersonEntity actual = personMapper.mapToEntity(givenDto);
         assertNull(actual);
     }
 
@@ -94,7 +96,7 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = new AddressEntity(255L);
         final Class<AddressDto> givenDestinationType = AddressDto.class;
 
-        final AddressDto actual = this.personMapper.map(givenSource, givenDestinationType);
+        final AddressDto actual = personMapper.map(givenSource, givenDestinationType);
         final AddressDto expected = new AddressDto(255L);
         assertEquals(expected, actual);
     }
@@ -104,7 +106,7 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = null;
         final Class<AddressDto> givenDestinationType = AddressDto.class;
 
-        this.personMapper.map(givenSource, givenDestinationType);
+        personMapper.map(givenSource, givenDestinationType);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -112,7 +114,15 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = new AddressEntity(255L);
         final Class<PersonDto> givenDestinationType = null;
 
-        this.personMapper.map(givenSource, givenDestinationType);
+        personMapper.map(givenSource, givenDestinationType);
+    }
+
+    @Test(expected = MappingException.class)
+    public void sourceShouldNotBeMappedToDestinationBecauseOfNotSuitableDestinationType() {
+        final AddressEntity givenSource = new AddressEntity(255L);
+        final Class<PersonDto> givenDestinationType = PersonDto.class;
+
+        personMapper.map(givenSource, givenDestinationType);
     }
 
     @Test
@@ -120,7 +130,7 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = new AddressEntity(255L);
         final Class<AddressDto> givenDestinationType = AddressDto.class;
 
-        final AddressDto actual = this.personMapper.mapNullable(givenSource, givenDestinationType);
+        final AddressDto actual = personMapper.mapNullable(givenSource, givenDestinationType);
         final AddressDto expected = new AddressDto(255L);
         assertEquals(expected, actual);
     }
@@ -130,7 +140,7 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = null;
         final Class<AddressDto> givenDestinationType = AddressDto.class;
 
-        final AddressDto actual = this.personMapper.mapNullable(givenSource, givenDestinationType);
+        final AddressDto actual = personMapper.mapNullable(givenSource, givenDestinationType);
         assertNull(actual);
     }
 
@@ -139,103 +149,70 @@ public final class MapperTest extends AbstractContextTest {
         final AddressEntity givenSource = new AddressEntity(255L);
         final Class<AddressDto> givenDestinationType = null;
 
-        this.personMapper.mapNullable(givenSource, givenDestinationType);
+        personMapper.mapNullable(givenSource, givenDestinationType);
+    }
+
+    @Test(expected = MappingException.class)
+    public void nullableSourceShouldNotBeMappedToDestinationBecauseOfNotSuitableDestinationType() {
+        final AddressEntity givenSource = new AddressEntity(255L);
+        final Class<PersonDto> givenDestinationType = PersonDto.class;
+
+        personMapper.mapNullable(givenSource, givenDestinationType);
     }
 
     @Test
-    public void lazyPropertyShouldBeMapped() {
-        final AddressEntity givenProperty = new AddressEntity(255L);
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .address(givenProperty)
-                .build();
-
+    public void lazySourceShouldBeMapped() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(true);
+            final AddressEntity givenSource = new AddressEntity(255L);
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
 
-            final AddressDto actual = this.personMapper.mapLazyProperty(
-                    givenEntity,
-                    PersonEntity::getAddress,
-                    AddressDto.class
-            );
+            final AddressDto actual = personMapper.mapLazy(givenSource, AddressDto.class);
             final AddressDto expected = new AddressDto(255L);
             assertEquals(expected, actual);
         }
     }
 
     @Test
-    public void lazyPropertyShouldBeMappedToNull() {
-        final AddressEntity givenProperty = new AddressEntity(255L);
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .address(givenProperty)
-                .build();
-
+    public void lazySourceShouldBeMappedToNull() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(false);
+            final AddressEntity givenSource = new AddressEntity(255L);
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
 
-            final AddressDto actual = this.personMapper.mapLazyProperty(
-                    givenEntity,
-                    PersonEntity::getAddress,
-                    AddressDto.class
-            );
+            final AddressDto actual = personMapper.mapLazy(givenSource, AddressDto.class);
             assertNull(actual);
         }
     }
 
     @Test
-    public void lazyCollectionPropertyShouldBeMappedToList() {
-        final List<PhoneEntity> givenProperty = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .phones(givenProperty)
-                .build();
-
+    public void lazyCollectionShouldBeMappedToList() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(true);
+            final Collection<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
 
-            final List<PhoneDto> actual = this.personMapper.mapLazyCollectionPropertyToList(
-                    givenEntity,
-                    PersonEntity::getPhones,
-                    PhoneDto.class
-            );
+            final List<PhoneDto> actual = personMapper.mapLazyToList(givenSource, PhoneDto.class);
             final List<PhoneDto> expected = List.of(new PhoneDto(257L), new PhoneDto(258L));
             assertEquals(expected, actual);
         }
     }
 
     @Test
-    public void lazyCollectionPropertyShouldBeMappedToNullList() {
-        final List<PhoneEntity> givenProperty = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .phones(givenProperty)
-                .build();
-
+    public void lazyCollectionShouldBeMappedToNullList() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(false);
+            final List<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
 
-            final List<PhoneDto> actual = this.personMapper.mapLazyCollectionPropertyToList(
-                    givenEntity,
-                    PersonEntity::getPhones,
-                    PhoneDto.class
-            );
+            final List<PhoneDto> actual = personMapper.mapLazyToList(givenSource, PhoneDto.class);
             assertNull(actual);
         }
     }
 
     @Test
-    public void lazyCollectionPropertyShouldBeMappedToMap() {
-        final List<PhoneEntity> givenProperty = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .phones(givenProperty)
-                .build();
-
+    public void lazyCollectionShouldBeMappedToMap() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(true);
+            final Collection<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
 
-            final Map<Long, PhoneDto> actual = this.personMapper.mapLazyCollectionPropertyToMap(
-                    givenEntity,
-                    PersonEntity::getPhones,
-                    PhoneDto.class,
-                    PhoneDto::getId
-            );
+            final Map<Long, PhoneDto> actual = personMapper.mapLazyToMap(givenSource, PhoneDto.class, PhoneDto::getId);
             final Map<Long, PhoneDto> expected = Map.of(
                     257L, new PhoneDto(257L),
                     258L, new PhoneDto(258L)
@@ -245,38 +222,14 @@ public final class MapperTest extends AbstractContextTest {
     }
 
     @Test
-    public void lazyCollectionPropertyShouldBeMappedToNullMap() {
-        final List<PhoneEntity> givenProperty = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-        final PersonEntity givenEntity = PersonEntity.builder()
-                .phones(givenProperty)
-                .build();
-
+    public void lazyCollectionShouldBeMappedToNullMap() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
-            mockedHibernateUtil.when(() -> isLoaded(same(givenProperty))).thenReturn(false);
+            final List<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
+            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
 
-            final Map<Long, PhoneDto> actual = this.personMapper.mapLazyCollectionPropertyToMap(
-                    givenEntity,
-                    PersonEntity::getPhones,
-                    PhoneDto.class,
-                    PhoneDto::getId
-            );
+            final Map<Long, PhoneDto> actual = personMapper.mapLazyToMap(givenSource, PhoneDto.class, PhoneDto::getId);
             assertNull(actual);
         }
-    }
-
-    @Test
-    public void propertyShouldBeMappedAndSet() {
-        final PersonDto givenSource = PersonDto.builder()
-                .id(255L)
-                .build();
-        final PersonEntity givenEntity = new PersonEntity();
-
-        this.personMapper.mapPropertyAndSet(givenSource, PersonDto::getId, givenEntity, PersonEntity::setId);
-
-        final PersonEntity expected = PersonEntity.builder()
-                .id(255L)
-                .build();
-        checkEquals(expected, givenEntity);
     }
 
     private static void checkEquals(final PersonEntity expected, final PersonEntity actual) {
@@ -356,8 +309,8 @@ public final class MapperTest extends AbstractContextTest {
             return new PersonDto(
                     entity.id,
                     createDtoDescription(entity),
-                    super.mapLazyProperty(entity, PersonEntity::getAddress, AddressDto.class),
-                    super.mapLazyCollectionPropertyToList(entity, PersonEntity::getPhones, PhoneDto.class)
+                    mapLazy(entity.getAddress(), AddressDto.class),
+                    mapLazyToList(entity.getPhones(), PhoneDto.class)
             );
         }
 

@@ -39,7 +39,7 @@ public final class CityTest extends AbstractContextTest {
     @Test
     public void geometryOfCityShouldBeFound() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1.1, 2.2, 3.3, 4.4, 5.5, 6.6
         );
         final Address givenAddress = createAddress(givenGeometry);
