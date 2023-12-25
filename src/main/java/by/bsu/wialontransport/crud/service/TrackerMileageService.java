@@ -22,7 +22,7 @@ public class TrackerMileageService extends CRUDService<
     }
 
     public int increaseMileage(final Tracker tracker, final Mileage mileageDelta) {
-        return super.findInt(
+        return findInt(
                 repository -> repository.increaseMileage(
                         tracker.getId(),
                         mileageDelta.getUrban(),
