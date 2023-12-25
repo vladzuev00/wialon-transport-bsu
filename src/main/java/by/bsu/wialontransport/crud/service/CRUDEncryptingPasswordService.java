@@ -24,22 +24,21 @@ public abstract class CRUDEncryptingPasswordService<
     }
 
     public int updatePassword(final DTO dto, final String newPassword) {
-        return super.findInt(
+        return findInt(
                 repository -> repository.updatePassword(
                         dto.getId(),
-                        this.passwordEncoder.encode(newPassword)
+                        passwordEncoder.encode(newPassword)
                 )
         );
     }
 
     @Override
     protected final void configureBeforeSave(final ENTITY entity) {
-        this.injectEncryptedPassword(entity);
+        injectEncryptedPassword(entity);
     }
 
     private void injectEncryptedPassword(final ENTITY entity) {
-        final String rawPassword = entity.getPassword();
-        final String encryptedPassword = this.passwordEncoder.encode(rawPassword);
+        final String encryptedPassword = passwordEncoder.encode(entity.getPassword());
         entity.setPassword(encryptedPassword);
     }
 
