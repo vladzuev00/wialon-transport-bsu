@@ -30,7 +30,7 @@ public final class CRUDEncryptingPasswordServiceTest {
 
     @Before
     public void initializeService() {
-        this.service = new TestPersonService(null, this.mockedRepository, this.mockedPasswordEncoder);
+        service = new TestPersonService(null, mockedRepository, mockedPasswordEncoder);
     }
 
     @Test
@@ -40,13 +40,13 @@ public final class CRUDEncryptingPasswordServiceTest {
         final String givenNewPassword = "new-password";
 
         final String givenEncryptedNewPassword = "a1gsa$dd3";
-        when(this.mockedPasswordEncoder.encode(same(givenNewPassword))).thenReturn(givenEncryptedNewPassword);
+        when(mockedPasswordEncoder.encode(same(givenNewPassword))).thenReturn(givenEncryptedNewPassword);
 
         final int givenCountUpdatedRows = 1;
-        when(this.mockedRepository.updatePassword(same(givenId), same(givenEncryptedNewPassword)))
+        when(mockedRepository.updatePassword(same(givenId), same(givenEncryptedNewPassword)))
                 .thenReturn(givenCountUpdatedRows);
 
-        final int actualCountUpdatedRows = this.service.updatePassword(givenDto, givenNewPassword);
+        final int actualCountUpdatedRows = service.updatePassword(givenDto, givenNewPassword);
         assertEquals(givenCountUpdatedRows, actualCountUpdatedRows);
     }
 
@@ -57,9 +57,9 @@ public final class CRUDEncryptingPasswordServiceTest {
         final TestPersonEntity givenEntity = new TestPersonEntity(givenId, givenPassword);
 
         final String givenEncryptedPassword = "fs$fd$sf$1";
-        when(this.mockedPasswordEncoder.encode(same(givenPassword))).thenReturn(givenEncryptedPassword);
+        when(mockedPasswordEncoder.encode(same(givenPassword))).thenReturn(givenEncryptedPassword);
 
-        this.service.configureBeforeSave(givenEntity);
+        service.configureBeforeSave(givenEntity);
 
         final String actualNewPassword = givenEntity.getPassword();
         assertSame(givenEncryptedPassword, actualNewPassword);
