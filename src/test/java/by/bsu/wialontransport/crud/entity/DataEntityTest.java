@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.IntStream.range;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class DataEntityTest {
     @Test
@@ -23,6 +22,15 @@ public final class DataEntityTest {
 
         assertSame(givenParameters, givenData.getParameters());
         range(0, givenParameters.size()).forEach(i -> assertSame(givenParameters.get(i).getData(), givenData));
+    }
+
+    @Test
+    public void nullParametersShouldBeSet() {
+        final DataEntity givenData = createData(255L);
+
+        givenData.setParameters(null);
+
+        assertNull(givenData.getParameters());
     }
 
     @Test

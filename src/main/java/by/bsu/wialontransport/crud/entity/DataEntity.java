@@ -82,7 +82,9 @@ public class DataEntity extends Entity<Long> {
     private AddressEntity address;
 
     public void setParameters(final List<ParameterEntity> parameters) {
-        parameters.forEach(parameter -> parameter.setData(this));
+        if (parameters != null) {
+            parameters.forEach(parameter -> parameter.setData(this));
+        }
         this.parameters = parameters;
     }
 
