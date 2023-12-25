@@ -5,11 +5,10 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.mapper.SearchingCitiesProcessMapper;
 import by.bsu.wialontransport.crud.repository.SearchingCitiesProcessRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Stream;
 
 @Service
 public class SearchingCitiesProcessService extends CRUDService<
@@ -26,7 +25,7 @@ public class SearchingCitiesProcessService extends CRUDService<
     }
 
     public int updateStatus(final SearchingCitiesProcess process, final Status newStatus) {
-        return this.findInt(
+        return findInt(
                 repository -> repository.updateStatus(
                         process.getId(),
                         newStatus
@@ -35,7 +34,7 @@ public class SearchingCitiesProcessService extends CRUDService<
     }
 
     public int increaseHandledPoints(final SearchingCitiesProcess process, final long delta) {
-        return this.findInt(
+        return findInt(
                 repository -> repository.increaseHandledPoints(
                         process.getId(),
                         delta
@@ -44,9 +43,8 @@ public class SearchingCitiesProcessService extends CRUDService<
     }
 
     @Transactional(readOnly = true)
-    public Stream<SearchingCitiesProcess> findByStatus(final Status status, final PageRequest pageRequest) {
-//        return super.findDtoStream(repository -> repository.findByStatus(status, pageRequest));
-        return null;
+    public Page<SearchingCitiesProcess> findByStatus(final Status status, final PageRequest pageRequest) {
+        return findDtoPage(repository -> repository.findByStatus(status, pageRequest));
     }
 
     @Override
