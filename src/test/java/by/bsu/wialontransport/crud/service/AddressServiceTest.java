@@ -32,7 +32,7 @@ public final class AddressServiceTest extends AbstractContextTest {
     public void addressShouldBeFoundByGpsCoordinates() {
         final Coordinate givenCoordinate = new Coordinate(1, 1);
 
-        final Optional<Address> optionalActual = this.addressService.findByGpsCoordinates(givenCoordinate);
+        final Optional<Address> optionalActual = addressService.findByGpsCoordinates(givenCoordinate);
         final Long actualId = optionalActual.map(Address::getId).orElseThrow();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
@@ -43,7 +43,7 @@ public final class AddressServiceTest extends AbstractContextTest {
     public void addressShouldNotBeFoundByGpsCoordinates() {
         final Coordinate givenCoordinate = new Coordinate(20, 20);
 
-        final Optional<Address> optionalActual = this.addressService.findByGpsCoordinates(givenCoordinate);
+        final Optional<Address> optionalActual = addressService.findByGpsCoordinates(givenCoordinate);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -51,11 +51,11 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 1, 1, 2, 2, 2, 2, 1
         );
 
-        final Optional<Address> optionalActual = this.addressService.findByGeometry(givenGeometry);
+        final Optional<Address> optionalActual = addressService.findByGeometry(givenGeometry);
         final Long actualId = optionalActual.map(Address::getId).orElseThrow();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
@@ -65,11 +65,11 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 10, 15, 15, 16, 16, 18
         );
 
-        final Optional<Address> optionalActual = this.addressService.findByGeometry(givenGeometry);
+        final Optional<Address> optionalActual = addressService.findByGeometry(givenGeometry);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -77,11 +77,11 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 1, 1, 2, 2, 2, 2, 1
         );
 
-        final boolean actual = this.addressService.isExistByGeometry(givenGeometry);
+        final boolean actual = addressService.isExistByGeometry(givenGeometry);
         assertTrue(actual);
     }
 
@@ -89,11 +89,11 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 10, 15, 15, 16, 16, 17
         );
 
-        final boolean actual = this.addressService.isExistByGeometry(givenGeometry);
+        final boolean actual = addressService.isExistByGeometry(givenGeometry);
         assertFalse(actual);
     }
 
@@ -101,17 +101,17 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void citiesPreparedGeometriesIntersectedByLineStringShouldBeFound() {
         final LineString givenLineString = createLineString(
-                this.geometryFactory,
+                geometryFactory,
                 1.5, 1.5, 3.5, 3.5, 4.5, 4.5
         );
 
-        final Set<PreparedGeometry> actual = this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(
+        final Set<PreparedGeometry> actual = addressService.findCitiesPreparedGeometriesIntersectedByLineString(
                 givenLineString
         );
         final Set<Geometry> actualGeometries = mapToSet(actual, PreparedGeometry::getGeometry);
         final Set<Geometry> expectedGeometries = Set.of(
                 createPolygon(
-                        this.geometryFactory,
+                        geometryFactory,
                         3, 3, 4, 3, 4, 4
                 )
         );
@@ -122,11 +122,11 @@ public final class AddressServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void citiesPreparedGeometriesIntersectedByLineStringShouldNotBeFound() {
         final LineString givenLineString = createLineString(
-                this.geometryFactory,
+                geometryFactory,
                 1.5, 1.5, 2, 4, 3, 5
         );
 
-        final Set<PreparedGeometry> actual = this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(
+        final Set<PreparedGeometry> actual = addressService.findCitiesPreparedGeometriesIntersectedByLineString(
                 givenLineString
         );
         assertTrue(actual.isEmpty());
