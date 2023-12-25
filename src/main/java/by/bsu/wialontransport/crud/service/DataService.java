@@ -22,7 +22,7 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
 
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
-        return super.findUnique(
+        return findUnique(
                 repository -> repository.findTrackerLastDataByTrackerId(
                         tracker.getId()
                 )
@@ -31,7 +31,7 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
 
     @Transactional(readOnly = true)
     public Stream<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
-        return super.findDtoStream(
+        return findDtoStream(
                 repository -> repository.findDataWithTrackerAndAddressByUserId(
                         user.getId(),
                         dateInterval.getStart(),
