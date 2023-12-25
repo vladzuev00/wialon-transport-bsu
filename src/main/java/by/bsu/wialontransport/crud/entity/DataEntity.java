@@ -20,9 +20,11 @@ import static javax.persistence.GenerationType.SEQUENCE;
         typeClass = DoubleArrayType.class
 )
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @ToString
+@Builder
 public class DataEntity extends Entity<Long> {
 
     @Id
@@ -78,39 +80,6 @@ public class DataEntity extends Entity<Long> {
     @JoinColumn(name = "address_id")
     @ToString.Exclude
     private AddressEntity address;
-
-    @Builder
-    public DataEntity(final Long id,
-                      final LocalDateTime dateTime,
-                      final Coordinate coordinate,
-                      final int speed,
-                      final int course,
-                      final int altitude,
-                      final int amountOfSatellites,
-                      final double reductionPrecision,
-                      final int inputs,
-                      final int outputs,
-                      final double[] analogInputs,
-                      final String driverKeyCode,
-                      final List<ParameterEntity> parameters,
-                      final TrackerEntity tracker,
-                      final AddressEntity address) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.coordinate = coordinate;
-        this.speed = speed;
-        this.course = course;
-        this.altitude = altitude;
-        this.amountOfSatellites = amountOfSatellites;
-        this.reductionPrecision = reductionPrecision;
-        this.inputs = inputs;
-        this.outputs = outputs;
-        this.analogInputs = analogInputs;
-        this.driverKeyCode = driverKeyCode;
-        setParameters(parameters);
-        this.tracker = tracker;
-        this.address = address;
-    }
 
     public void setParameters(final List<ParameterEntity> parameters) {
         if (parameters != null) {

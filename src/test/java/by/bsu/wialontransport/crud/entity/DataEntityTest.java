@@ -2,7 +2,6 @@ package by.bsu.wialontransport.crud.entity;
 
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,17 +9,6 @@ import static java.util.stream.IntStream.range;
 import static org.junit.Assert.*;
 
 public final class DataEntityTest {
-
-    @Test
-    public void dataShouldBeAssignedToParametersWhenCreatingData() {
-        final List<ParameterEntity> givenParameters = List.of(createParameter(256L), createParameter(257L));
-
-        final DataEntity createdData = DataEntity.builder()
-                .parameters(givenParameters)
-                .build();
-
-        range(0, givenParameters.size()).forEach(i -> assertSame(givenParameters.get(i).getData(), createdData));
-    }
 
     @Test
     public void parametersShouldBeSet() {
@@ -66,21 +54,6 @@ public final class DataEntityTest {
 
     private static ParameterEntity createParameter(final Long id) {
         return ParameterEntity.builder()
-                .id(id)
-                .build();
-    }
-
-
-    @SuppressWarnings("SameParameterValue")
-    private static TrackerEntity createTracker(final Long id) {
-        return TrackerEntity.builder()
-                .id(id)
-                .build();
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static AddressEntity createAddress(final Long id) {
-        return AddressEntity.builder()
                 .id(id)
                 .build();
     }

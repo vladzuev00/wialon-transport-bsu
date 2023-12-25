@@ -57,7 +57,7 @@ public final class DataMapperTest extends AbstractContextTest {
                 .address(createAddressDto(259L))
                 .build();
 
-        final DataEntity actual = this.mapper.mapToEntity(givenDto);
+        final DataEntity actual = mapper.mapToEntity(givenDto);
         final DataEntity expected = DataEntity.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
@@ -110,7 +110,7 @@ public final class DataMapperTest extends AbstractContextTest {
                 .address(createAddressEntity(259L))
                 .build();
 
-        final Data actual = this.mapper.mapToDto(givenEntity);
+        final Data actual = mapper.mapToDto(givenEntity);
         final Data expected = Data.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
@@ -168,7 +168,7 @@ public final class DataMapperTest extends AbstractContextTest {
                     .address(givenAddress)
                     .build();
 
-            final Data actual = this.mapper.mapToDto(givenEntity);
+            final Data actual = mapper.mapToDto(givenEntity);
             final Data expected = Data.builder()
                     .id(255L)
                     .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))

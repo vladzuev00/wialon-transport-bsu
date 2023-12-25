@@ -15,14 +15,13 @@ public final class ParameterMapper extends Mapper<ParameterEntity, Parameter> {
 
     @Override
     protected Parameter createDto(final ParameterEntity source) {
-//        return new Parameter(
-//                source.getId(),
-//                source.getName(),
-//                source.getType(),
-//                source.getValue(),
-//                this.mapData(source)
-//        );
-        return null;
+        return new Parameter(
+                source.getId(),
+                source.getName(),
+                source.getType(),
+                source.getValue(),
+                mapData(source)
+        );
     }
 
     @Override
@@ -30,7 +29,7 @@ public final class ParameterMapper extends Mapper<ParameterEntity, Parameter> {
 
     }
 
-//    private Data mapData(final ParameterEntity source) {
-//        return super.mapLazy(source, ParameterEntity::getData, Data.class);
-//    }
+    private Data mapData(final ParameterEntity source) {
+        return mapLazy(source.getData(), Data.class);
+    }
 }
