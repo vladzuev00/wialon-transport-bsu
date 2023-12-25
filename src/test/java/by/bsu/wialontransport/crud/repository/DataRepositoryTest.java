@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
+import by.bsu.wialontransport.util.entity.EntityUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,7 +20,6 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
-import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
@@ -149,7 +149,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
             assertTrue(areTrackersLoaded(actualAsSet));
             assertTrue(areAddressesLoaded(actualAsSet));
 
-            final Set<Long> actualIds = mapToIds(actualAsSet);
+            final Set<Long> actualIds = EntityUtil.mapToIdsSet(actualAsSet);
             final Set<Long> expectedIds = Set.of(254L, 255L, 256L);
             assertEquals(expectedIds, actualIds);
         }

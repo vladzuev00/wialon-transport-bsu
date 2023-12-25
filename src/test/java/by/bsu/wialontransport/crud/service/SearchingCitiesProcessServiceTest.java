@@ -99,8 +99,8 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
         final PageRequest givenPageRequest = PageRequest.of(0, 4);
 
         final Page<SearchingCitiesProcess> actual = service.findByStatusOrderedById(givenStatus, givenPageRequest);
-        final List<SearchingCitiesProcess> actualAsSet = actual.toList();
-        final List<SearchingCitiesProcess> expectedAsSet = List.of(
+        final List<SearchingCitiesProcess> actualAsList = actual.toList();
+        final List<SearchingCitiesProcess> expectedAsList = List.of(
                 SearchingCitiesProcess.builder()
                         .id(255L)
                         .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
@@ -118,12 +118,12 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
                         .status(givenStatus)
                         .build()
         );
-        assertEquals(expectedAsSet, actualAsSet);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
-    public void processesShouldNotBeFoundByStatus() {
+    public void processesOrderedByIdShouldNotBeFoundByStatus() {
         final PageRequest givenPageRequest = PageRequest.of(0, 4);
 
         final Page<SearchingCitiesProcess> actual = service.findByStatusOrderedById(ERROR, givenPageRequest);

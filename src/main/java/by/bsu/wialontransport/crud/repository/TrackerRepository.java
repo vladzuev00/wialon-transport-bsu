@@ -12,8 +12,8 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
 
     Optional<TrackerEntity> findByImei(final String imei);
 
-    @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId")
-    Page<TrackerEntity> findByUserId(final Long userId, final Pageable pageable);
+    @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId ORDER BY e.imei")
+    Page<TrackerEntity> findByUserIdOrderedByImei(final Long userId, final Pageable pageable);
 
     @Query("SELECT te FROM TrackerEntity te JOIN FETCH te.user WHERE te.id = :id")
     Optional<TrackerEntity> findByIdWithUser(final Long id);

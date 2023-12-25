@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
-import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
+import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIdsSet;
 import static org.junit.Assert.*;
 
 public final class AddressRepositoryTest extends AbstractContextTest {
@@ -144,7 +144,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         try (final Stream<AddressEntity> foundAddresses = repository.findCityAddressesIntersectedByLineString(givenLineString)) {
             checkQueryCount(1);
 
-            final Set<Long> actual = mapToIds(foundAddresses);
+            final Set<Long> actual = mapToIdsSet(foundAddresses);
             final Set<Long> expected = Set.of(257L);
             assertEquals(expected, actual);
         }

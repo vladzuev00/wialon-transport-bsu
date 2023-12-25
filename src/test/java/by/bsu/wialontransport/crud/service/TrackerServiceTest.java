@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static java.lang.Long.MAX_VALUE;
@@ -40,12 +40,12 @@ public final class TrackerServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void allTrackersShouldBeFoundByUser() {
+    public void allTrackersOrderedByImeiShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
 
-        final Page<Tracker> actual = service.findByUser(givenUser);
-        final Set<Tracker> actualAsSet = actual.toSet();
-        final Set<Tracker> expectedAsSet = Set.of(
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser);
+        final List<Tracker> actualAsList = actual.toList();
+        final List<Tracker> expectedAsList = List.of(
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
@@ -59,25 +59,25 @@ public final class TrackerServiceTest extends AbstractContextTest {
                         .phoneNumber("447336935")
                         .build()
         );
-        assertEquals(expectedAsSet, actualAsSet);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     @Test
-    public void allTrackersShouldNotBeFoundByUser() {
+    public void allTrackersOrderedByImeiShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
 
-        final Page<Tracker> actual = service.findByUser(givenUser);
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser);
         assertTrue(actual.isEmpty());
     }
 
     @Test
-    public void trackersShouldBeFoundByUser() {
+    public void trackersOrderedByImeiShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
         final PageRequest givenPageRequest = PageRequest.of(0, 5);
 
-        final Page<Tracker> actual = service.findByUser(givenUser, givenPageRequest);
-        final Set<Tracker> actualAsSet = actual.toSet();
-        final Set<Tracker> expectedAsSet = Set.of(
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser, givenPageRequest);
+        final List<Tracker> actualAsList = actual.toList();
+        final List<Tracker> expectedAsList = List.of(
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
@@ -91,15 +91,15 @@ public final class TrackerServiceTest extends AbstractContextTest {
                         .phoneNumber("447336935")
                         .build()
         );
-        assertEquals(expectedAsSet, actualAsSet);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     @Test
-    public void trackersShouldNotBeFoundByUser() {
+    public void trackersOrderedByImeiShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
         final PageRequest givenPageRequest = PageRequest.of(0, 5);
 
-        final Page<Tracker> actual = service.findByUser(givenUser, givenPageRequest);
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser, givenPageRequest);
         assertTrue(actual.isEmpty());
     }
 

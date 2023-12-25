@@ -128,7 +128,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
 
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
-    public void processesShouldBeFoundByStatus() {
+    public void processesOrderedByIdShouldBeFoundByStatus() {
         startQueryCount();
         final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(HANDLING, ofSize(4));
         checkQueryCount(1);
@@ -140,7 +140,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
 
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
-    public void processesShouldNotBeFoundByStatus() {
+    public void processesOrderedByIdShouldNotBeFoundByStatus() {
         startQueryCount();
         final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(ERROR, ofSize(4));
         checkQueryCount(1);

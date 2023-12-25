@@ -8,10 +8,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
+import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIdsList;
 import static by.bsu.wialontransport.util.entity.TrackerEntityUtil.*;
 import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
@@ -87,25 +87,25 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    public void trackersShouldBeFoundByUserId() {
+    public void trackersOrderedByImeiShouldBeFoundByUserId() {
         startQueryCount();
-        final Page<TrackerEntity> actual = repository.findByUserId(255L, ofSize(5));
+        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(255L, ofSize(5));
         checkQueryCount(1);
 
-        final Set<TrackerEntity> actualAsSet = actual.toSet();
+        final List<TrackerEntity> actualAsSet = actual.toList();
 
         assertTrue(areUsersNotLoaded(actualAsSet));
         assertTrue(areMileagesNotLoaded(actualAsSet));
 
-        final Set<Long> actualIds = mapToIds(actualAsSet);
-        final Set<Long> expectedIds = Set.of(255L, 256L);
+        final List<Long> actualIds = mapToIdsList(actualAsSet);
+        final List<Long> expectedIds = List.of(255L, 256L);
         assertEquals(expectedIds, actualIds);
     }
 
     @Test
-    public void trackersShouldNotBeFoundByUserId() {
+    public void trackersOrderedByImeiShouldNotBeFoundByUserId() {
         startQueryCount();
-        final Page<TrackerEntity> actual = repository.findByUserId(256L, ofSize(5));
+        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(256L, ofSize(5));
         checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
