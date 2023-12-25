@@ -7,8 +7,13 @@ import by.bsu.wialontransport.crud.repository.ParameterRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ParameterService
-        extends CRUDService<Long, ParameterEntity, Parameter, ParameterMapper, ParameterRepository> {
+public class ParameterService extends CRUDService<
+        Long,
+        ParameterEntity,
+        Parameter,
+        ParameterMapper,
+        ParameterRepository
+        > {
 
     public ParameterService(final ParameterMapper mapper, final ParameterRepository repository) {
         super(mapper, repository);
