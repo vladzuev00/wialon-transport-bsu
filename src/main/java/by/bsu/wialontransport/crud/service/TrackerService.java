@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.springframework.data.domain.Pageable.unpaged;
-
 @Service
 public class TrackerService extends CRUDEncryptingPasswordService<
         Long,
@@ -39,12 +37,14 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Stream<Tracker> findByUser(final User user) {
-        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), unpaged()));
+//        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), unpaged()));
+        return null;
     }
 
     @Transactional(readOnly = true)
     public Stream<Tracker> findByUser(final User user, final Pageable pageable) {
-        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), pageable));
+//        return super.findDtoStream(repository -> repository.findByUserId(user.getId(), pageable));
+        return null;
     }
 
     @Transactional(readOnly = true)

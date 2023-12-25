@@ -6,16 +6,14 @@ import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static by.bsu.wialontransport.util.entity.TrackerEntityUtil.*;
 import static java.lang.Long.MAX_VALUE;
-import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 import static org.springframework.data.domain.Pageable.ofSize;
 
@@ -26,9 +24,9 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundById() {
-        super.startQueryCount();
-        final TrackerEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final TrackerEntity actual = repository.findById(255L).orElseThrow();
+        checkQueryCount(1);
 
         assertFalse(isUserLoaded(actual));
         assertFalse(isMileageLoaded(actual));
@@ -38,8 +36,8 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -50,20 +48,20 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .imei("11112222333344445557")
                 .password("password")
                 .phoneNumber("447336936")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenTracker);
-        super.checkQueryCount(1);
+        startQueryCount();
+        repository.save(givenTracker);
+        checkQueryCount(1);
     }
 
     @Test
     public void trackerShouldBeFoundByImei() {
-        super.startQueryCount();
-        final TrackerEntity actual = this.repository.findByImei("11112222333344445555").orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final TrackerEntity actual = repository.findByImei("11112222333344445555").orElseThrow();
+        checkQueryCount(1);
 
         assertFalse(isUserLoaded(actual));
         assertFalse(isMileageLoaded(actual));
@@ -73,28 +71,28 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
     public void trackerShouldNotBeFoundByImei() {
-        super.startQueryCount();
-        final Optional<TrackerEntity> optionalFoundTracker = this.repository.findByImei("00000000000000000000");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<TrackerEntity> optionalFoundTracker = repository.findByImei("00000000000000000000");
+        checkQueryCount(1);
 
         assertTrue(optionalFoundTracker.isEmpty());
     }
 
     @Test
     public void trackersShouldBeFoundByUserId() {
-        super.startQueryCount();
-        final Stream<TrackerEntity> actual = this.repository.findByUserId(255L, ofSize(5));
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Page<TrackerEntity> actual = repository.findByUserId(255L, ofSize(5));
+        checkQueryCount(1);
 
-        final Set<TrackerEntity> actualAsSet = actual.collect(toSet());
+        final Set<TrackerEntity> actualAsSet = actual.toSet();
 
         assertTrue(areUsersNotLoaded(actualAsSet));
         assertTrue(areMileagesNotLoaded(actualAsSet));
@@ -106,18 +104,18 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackersShouldNotBeFoundByUserId() {
-        super.startQueryCount();
-        final Stream<TrackerEntity> actual = this.repository.findByUserId(256L, ofSize(5));
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Page<TrackerEntity> actual = repository.findByUserId(256L, ofSize(5));
+        checkQueryCount(1);
 
-        assertTrue(isEmpty(actual));
+        assertTrue(actual.isEmpty());
     }
 
     @Test
     public void trackerShouldBeFoundByIdWithLoadedUser() {
-        super.startQueryCount();
-        final Optional<TrackerEntity> optionalActual = this.repository.findByIdWithUser(255L);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByIdWithUser(255L);
+        checkQueryCount(1);
 
         assertTrue(optionalActual.isPresent());
         final TrackerEntity actual = optionalActual.get();
@@ -130,26 +128,26 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
     public void trackerShouldNotBeFoundByIdWithLoadedUser() {
-        super.startQueryCount();
-        final Optional<TrackerEntity> optionalActual = this.repository.findByIdWithUser(257L);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByIdWithUser(257L);
+        checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
     }
 
     @Test
     public void trackerShouldBeFoundByPhoneNumber() {
-        super.startQueryCount();
-        final Optional<TrackerEntity> optionalActual = this.repository.findByPhoneNumber("447336934");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber("447336934");
+        checkQueryCount(1);
 
         assertTrue(optionalActual.isPresent());
         final TrackerEntity actual = optionalActual.get();
@@ -162,17 +160,17 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
     public void trackerShouldNotBeFoundByPhoneNumber() {
-        super.startQueryCount();
-        final Optional<TrackerEntity> optionalActual = this.repository.findByPhoneNumber("447336936");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber("447336936");
+        checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
     }
@@ -182,21 +180,21 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final Long givenId = 255L;
         final String givenNewPassword = "new-password";
 
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updatePassword(givenId, givenNewPassword);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewPassword);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final TrackerEntity actual = this.repository.findById(givenId).orElseThrow();
+        final TrackerEntity actual = repository.findById(givenId).orElseThrow();
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(givenId)
                 .imei("11112222333344445555")
                 .password(givenNewPassword)
                 .phoneNumber("447336934")
-                .user(super.entityManager.getReference(UserEntity.class, 255L))
-                .mileage(super.entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -206,9 +204,9 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         final Long givenId = MAX_VALUE;
         final String givenNewPassword = "new-password";
 
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updatePassword(givenId, givenNewPassword);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewPassword);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
