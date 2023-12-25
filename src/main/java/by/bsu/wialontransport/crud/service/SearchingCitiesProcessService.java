@@ -45,7 +45,8 @@ public class SearchingCitiesProcessService extends CRUDService<
 
     @Transactional(readOnly = true)
     public Stream<SearchingCitiesProcess> findByStatus(final Status status, final PageRequest pageRequest) {
-        return super.findDtoStream(repository -> repository.findByStatus(status, pageRequest));
+//        return super.findDtoStream(repository -> repository.findByStatus(status, pageRequest));
+        return null;
     }
 
     @Override
