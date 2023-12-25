@@ -21,8 +21,8 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
                 source.getImei(),
                 source.getPassword(),
                 source.getPhoneNumber(),
-                this.mapUser(source),
-                this.mapMileage(source)
+                mapUser(source),
+                mapMileage(source)
         );
     }
 
@@ -32,10 +32,10 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
     }
 
     private User mapUser(final TrackerEntity source) {
-        return super.mapLazy(source.getUser(), User.class);
+        return mapLazy(source.getUser(), User.class);
     }
 
     private TrackerMileage mapMileage(final TrackerEntity source) {
-        return super.mapLazy(source.getMileage(), TrackerMileage.class);
+        return mapLazy(source.getMileage(), TrackerMileage.class);
     }
 }

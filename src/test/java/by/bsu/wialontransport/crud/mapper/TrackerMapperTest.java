@@ -35,7 +35,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .mileage(createTrackerMileageDto(257L))
                 .build();
 
-        final TrackerEntity actual = this.mapper.mapToEntity(givenDto);
+        final TrackerEntity actual = mapper.mapToEntity(givenDto);
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
                 .imei("11112222333344445555")
@@ -60,7 +60,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .mileage(createTrackerMileageEntity(257L))
                 .build();
 
-        final Tracker actual = this.mapper.mapToDto(givenEntity);
+        final Tracker actual = mapper.mapToDto(givenEntity);
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
@@ -74,18 +74,18 @@ public final class TrackerMapperTest extends AbstractContextTest {
 
     @Test
     public void entityWithNotLoadedPropertiesShouldBeMappedToDto() {
-        final UserEntity givenUser = createUserEntity(256L);
-        final TrackerMileageEntity givenMileage = createTrackerMileageEntity(257L);
-        final TrackerEntity givenEntity = TrackerEntity.builder()
-                .id(255L)
-                .imei("11112222333344445555")
-                .password("password")
-                .phoneNumber("447336934")
-                .user(givenUser)
-                .mileage(givenMileage)
-                .build();
-
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
+            final UserEntity givenUser = createUserEntity(256L);
+            final TrackerMileageEntity givenMileage = createTrackerMileageEntity(257L);
+            final TrackerEntity givenEntity = TrackerEntity.builder()
+                    .id(255L)
+                    .imei("11112222333344445555")
+                    .password("password")
+                    .phoneNumber("447336934")
+                    .user(givenUser)
+                    .mileage(givenMileage)
+                    .build();
+
             mockedStatic
                     .when(() -> isInitialized(same(givenUser)))
                     .thenReturn(false);
@@ -93,7 +93,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                     .when(() -> isInitialized(same(givenMileage)))
                     .thenReturn(false);
 
-            final Tracker actual = this.mapper.mapToDto(givenEntity);
+            final Tracker actual = mapper.mapToDto(givenEntity);
             final Tracker expected = Tracker.builder()
                     .id(255L)
                     .imei("11112222333344445555")
