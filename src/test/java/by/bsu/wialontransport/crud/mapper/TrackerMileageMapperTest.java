@@ -23,7 +23,7 @@ public final class TrackerMileageMapperTest extends AbstractContextTest {
                 .country(15)
                 .build();
 
-        final TrackerMileageEntity actual = this.mapper.mapToEntity(givenDto);
+        final TrackerMileageEntity actual = mapper.mapToEntity(givenDto);
         final TrackerMileageEntity expected = TrackerMileageEntity.builder()
                 .id(255L)
                 .urban(10)
@@ -41,7 +41,7 @@ public final class TrackerMileageMapperTest extends AbstractContextTest {
                 .country(15)
                 .build();
 
-        final TrackerMileage actual = this.mapper.mapToDto(givenEntity);
+        final TrackerMileage actual = mapper.mapToDto(givenEntity);
         final TrackerMileage expected = TrackerMileage.builder()
                 .id(255L)
                 .urban(10)
