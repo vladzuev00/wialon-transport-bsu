@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.GeometryTestUtil.*;
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static org.junit.Assert.*;
@@ -29,17 +30,17 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundById() {
-        super.startQueryCount();
-        final AddressEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final AddressEntity actual = repository.findById(255L).orElseThrow();
+        checkQueryCount(1);
 
         final AddressEntity expected = AddressEntity.builder()
                 .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
-                .center(createPoint(this.geometryFactory, 1.5, 1.5))
+                .boundingBox(createPolygon(geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
+                .center(createPoint(geometryFactory, 1.5, 1.5))
                 .cityName("first-city")
                 .countryName("first-country")
-                .geometry(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
+                .geometry(createPolygon(geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
                 .build();
         checkEquals(expected, actual);
     }
@@ -47,16 +48,16 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Test
     public void addressShouldBeSaved() {
         final AddressEntity givenAddress = AddressEntity.builder()
-                .boundingBox(createPolygon(this.geometryFactory, 2, 3, 4, 5, 6, 7, 8, 9))
-                .center(createPoint(this.geometryFactory, 53.050287, 24.873636))
+                .boundingBox(createPolygon(geometryFactory, 2, 3, 4, 5, 6, 7, 8, 9))
+                .center(createPoint(geometryFactory, 53.050287, 24.873636))
                 .cityName("city")
                 .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
+                .geometry(createPolygon(geometryFactory, 1, 2, 3, 4, 5, 6))
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenAddress);
-        super.checkQueryCount(2);
+        startQueryCount();
+        repository.save(givenAddress);
+        checkQueryCount(2);
     }
 
     @Test
@@ -65,10 +66,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         final double givenLatitude = 1;
         final double givenLongitude = 1;
 
-        final Optional<AddressEntity> optionalActual = this.repository.findByGpsCoordinates(
-                givenLatitude,
-                givenLongitude
-        );
+        final Optional<AddressEntity> optionalActual = repository.findByGpsCoordinates(givenLatitude, givenLongitude);
         final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
@@ -80,7 +78,7 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         final double givenLatitude = 20;
         final double givenLongitude = 20;
 
-        final Optional<AddressEntity> actual = this.repository.findByGpsCoordinates(givenLatitude, givenLongitude);
+        final Optional<AddressEntity> actual = repository.findByGpsCoordinates(givenLatitude, givenLongitude);
         assertTrue(actual.isEmpty());
     }
 
@@ -88,11 +86,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 1, 1, 2, 2, 2, 2, 1
         );
 
-        final Optional<AddressEntity> optionalActual = this.repository.findByGeometry(givenGeometry);
+        final Optional<AddressEntity> optionalActual = repository.findByGeometry(givenGeometry);
         final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
@@ -102,11 +100,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotBeFoundByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 10, 15, 15, 16, 16, 17
         );
 
-        final Optional<AddressEntity> optionalActual = this.repository.findByGeometry(givenGeometry);
+        final Optional<AddressEntity> optionalActual = repository.findByGeometry(givenGeometry);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -114,11 +112,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 1, 1, 2, 2, 2, 2, 1
         );
 
-        final boolean actual = this.repository.isExistByGeometry(givenGeometry);
+        final boolean actual = repository.isExistByGeometry(givenGeometry);
         assertTrue(actual);
     }
 
@@ -126,11 +124,11 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 10, 15, 15, 16, 16, 17
         );
 
-        final boolean actual = this.repository.isExistByGeometry(givenGeometry);
+        final boolean actual = repository.isExistByGeometry(givenGeometry);
         assertFalse(actual);
     }
 
@@ -138,13 +136,13 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityAddressesIntersectedByLineStringShouldBeFound() {
         final LineString givenLineString = createLineString(
-                this.geometryFactory,
+                geometryFactory,
                 1.5, 1.5, 3.5, 3.5, 4.5, 4.5
         );
 
-        super.startQueryCount();
-        try (final Stream<AddressEntity> foundAddresses = this.repository.findCityAddressesIntersectedByLineString(givenLineString)) {
-            super.checkQueryCount(1);
+        startQueryCount();
+        try (final Stream<AddressEntity> foundAddresses = repository.findCityAddressesIntersectedByLineString(givenLineString)) {
+            checkQueryCount(1);
 
             final Set<Long> actual = mapToIds(foundAddresses);
             final Set<Long> expected = Set.of(257L);
@@ -156,17 +154,14 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityAddressesIntersectedByLineStringShouldNotBeFound() {
         final LineString givenLineString = createLineString(
-                this.geometryFactory,
+                geometryFactory,
                 1.5, 1.5, 2, 4, 3, 5
         );
 
-        super.startQueryCount();
-        final Stream<AddressEntity> actual = this.repository.findCityAddressesIntersectedByLineString(
-                givenLineString
-        );
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Stream<AddressEntity> actual = repository.findCityAddressesIntersectedByLineString(givenLineString);
+        checkQueryCount(1);
 
-        final boolean actualEmpty = actual.findAny().isEmpty();
-        assertTrue(actualEmpty);
+        assertTrue(isEmpty(actual));
     }
 }
