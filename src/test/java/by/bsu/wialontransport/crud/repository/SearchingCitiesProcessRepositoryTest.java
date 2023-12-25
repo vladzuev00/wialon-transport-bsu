@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Set;
+import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
@@ -130,11 +130,11 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesShouldBeFoundByStatus() {
         startQueryCount();
-        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatus(HANDLING, ofSize(4));
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(HANDLING, ofSize(4));
         checkQueryCount(1);
 
-        final Set<Long> actualIds = mapToIds(actual);
-        final Set<Long> expectedIds = Set.of(255L, 256L);
+        final List<Long> actualIds = mapToIds(actual);
+        final List<Long> expectedIds = List.of(255L, 256L);
         assertEquals(expectedIds, actualIds);
     }
 
@@ -142,7 +142,7 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesShouldNotBeFoundByStatus() {
         startQueryCount();
-        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatus(ERROR, ofSize(4));
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(ERROR, ofSize(4));
         checkQueryCount(1);
 
         assertTrue(actual.isEmpty());

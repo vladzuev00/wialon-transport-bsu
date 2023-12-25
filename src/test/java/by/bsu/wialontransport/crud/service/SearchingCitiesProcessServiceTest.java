@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Set;
+import java.util.List;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
@@ -94,13 +94,13 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
 
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
-    public void processesShouldBeFoundByStatus() {
+    public void processesOrderedByIdShouldBeFoundByStatus() {
         final Status givenStatus = HANDLING;
         final PageRequest givenPageRequest = PageRequest.of(0, 4);
 
-        final Page<SearchingCitiesProcess> actual = service.findByStatus(givenStatus, givenPageRequest);
-        final Set<SearchingCitiesProcess> actualAsSet = actual.toSet();
-        final Set<SearchingCitiesProcess> expectedAsSet = Set.of(
+        final Page<SearchingCitiesProcess> actual = service.findByStatusOrderedById(givenStatus, givenPageRequest);
+        final List<SearchingCitiesProcess> actualAsSet = actual.toList();
+        final List<SearchingCitiesProcess> expectedAsSet = List.of(
                 SearchingCitiesProcess.builder()
                         .id(255L)
                         .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
@@ -126,7 +126,7 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
     public void processesShouldNotBeFoundByStatus() {
         final PageRequest givenPageRequest = PageRequest.of(0, 4);
 
-        final Page<SearchingCitiesProcess> actual = service.findByStatus(ERROR, givenPageRequest);
+        final Page<SearchingCitiesProcess> actual = service.findByStatusOrderedById(ERROR, givenPageRequest);
         assertTrue(actual.isEmpty());
     }
 

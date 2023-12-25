@@ -43,8 +43,8 @@ public class SearchingCitiesProcessService extends CRUDService<
     }
 
     @Transactional(readOnly = true)
-    public Page<SearchingCitiesProcess> findByStatus(final Status status, final PageRequest pageRequest) {
-        return findDtoPage(repository -> repository.findByStatus(status, pageRequest));
+    public Page<SearchingCitiesProcess> findByStatusOrderedById(final Status status, final PageRequest pageRequest) {
+        return findDtoPage(repository -> repository.findByStatusOrderedById(status, pageRequest));
     }
 
     @Override

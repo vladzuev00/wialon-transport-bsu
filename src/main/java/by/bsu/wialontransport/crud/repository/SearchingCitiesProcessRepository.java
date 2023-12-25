@@ -20,7 +20,7 @@ public interface SearchingCitiesProcessRepository extends JpaRepository<Searchin
             + "WHERE e.id = :id")
     int increaseHandledPoints(final Long id, final long delta);
 
-    @Query("SELECT e FROM SearchingCitiesProcessEntity e WHERE e.status = :status")
-    Page<SearchingCitiesProcessEntity> findByStatus(final Status status, final Pageable pageable);
+    @Query("SELECT e FROM SearchingCitiesProcessEntity e WHERE e.status = :status ORDER BY e.id")
+    Page<SearchingCitiesProcessEntity> findByStatusOrderedById(final Status status, final Pageable pageable);
 
 }
