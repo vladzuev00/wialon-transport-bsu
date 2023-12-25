@@ -25,7 +25,7 @@ public final class UserMapperTest extends AbstractContextTest {
                 .role(USER)
                 .build();
 
-        final UserEntity actual = this.mapper.mapToEntity(givenDto);
+        final UserEntity actual = mapper.mapToEntity(givenDto);
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
@@ -45,7 +45,7 @@ public final class UserMapperTest extends AbstractContextTest {
                 .role(USER)
                 .build();
 
-        final User actual = this.mapper.createDto(givenEntity);
+        final User actual = mapper.createDto(givenEntity);
         final User expected = User.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
