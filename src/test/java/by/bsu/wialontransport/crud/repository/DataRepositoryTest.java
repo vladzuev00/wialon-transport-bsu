@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIds;
 import static java.util.Collections.emptyList;
@@ -31,9 +32,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeFoundById() {
-        super.startQueryCount();
-        final DataEntity actual = this.repository.findById(256L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final DataEntity actual = repository.findById(256L).orElseThrow();
+        checkQueryCount(1);
 
         assertFalse(areParametersLoaded(actual));
         assertFalse(isTrackerLoaded(actual));
@@ -52,9 +53,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(List.of(super.entityManager.getReference(ParameterEntity.class, 257L)))
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .parameters(List.of(entityManager.getReference(ParameterEntity.class, 257L)))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -74,8 +75,8 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         final List<ParameterEntity> givenParameters = List.of(ParameterEntity.builder()
                 .name("name")
@@ -86,17 +87,17 @@ public final class DataRepositoryTest extends AbstractContextTest {
         );
         givenData.setParameters(givenParameters);
 
-        super.startQueryCount();
-        this.repository.save(givenData);
-        super.checkQueryCount(4);
+        startQueryCount();
+        repository.save(givenData);
+        checkQueryCount(4);
     }
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void trackerLastDataShouldBeFoundByTrackerId() {
-        super.startQueryCount();
-        final DataEntity actual = this.repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final DataEntity actual = repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
+        checkQueryCount(1);
 
         assertTrue(areParametersLoaded(actual));
         assertFalse(isTrackerLoaded(actual));
@@ -116,17 +117,17 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
     public void trackerLastDataShouldNotBeFoundByTrackerId() {
-        super.startQueryCount();
-        final Optional<DataEntity> actual = this.repository.findTrackerLastDataByTrackerId(256L);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<DataEntity> actual = repository.findTrackerLastDataByTrackerId(256L);
+        checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
     }
@@ -138,9 +139,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
         final LocalDateTime givenStartDateTime = LocalDateTime.of(2019, 10, 23, 0, 0, 0);
         final LocalDateTime givenEndDateTime = LocalDateTime.of(2019, 10, 25, 0, 0, 0);
 
-        super.startQueryCount();
-        try (final Stream<DataEntity> actual = this.repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
-            super.checkQueryCount(1);
+        startQueryCount();
+        try (final Stream<DataEntity> actual = repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            checkQueryCount(1);
 
             final Set<DataEntity> actualAsSet = actual.collect(toSet());
 
@@ -161,9 +162,8 @@ public final class DataRepositoryTest extends AbstractContextTest {
         final LocalDateTime givenStartDateTime = LocalDateTime.of(2015, 10, 23, 0, 0, 0);
         final LocalDateTime givenEndDateTime = LocalDateTime.of(2015, 10, 25, 0, 0, 0);
 
-        try (final Stream<DataEntity> actual = this.repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
-            final boolean actualEmpty = actual.findAny().isEmpty();
-            assertTrue(actualEmpty);
+        try (final Stream<DataEntity> actual = repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            assertTrue(isEmpty(actual));
         }
     }
 }
