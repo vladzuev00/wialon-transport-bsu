@@ -33,7 +33,7 @@ public final class ParameterMapperTest extends AbstractContextTest {
                 .data(createDataEntity(256L))
                 .build();
 
-        final Parameter actual = this.mapper.mapToDto(givenEntity);
+        final Parameter actual = mapper.mapToDto(givenEntity);
         final Parameter expected = Parameter.builder()
                 .id(255L)
                 .name("name")
@@ -46,21 +46,20 @@ public final class ParameterMapperTest extends AbstractContextTest {
 
     @Test
     public void entityWithNotLoadedPropertiesShouldBeMappedToDto() {
-        final DataEntity givenData = createDataEntity(256L);
-        final ParameterEntity givenEntity = ParameterEntity.builder()
-                .id(255L)
-                .name("name")
-                .type(INTEGER)
-                .value("44")
-                .data(givenData)
-                .build();
-
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
+            final DataEntity givenData = createDataEntity(256L);
+            final ParameterEntity givenEntity = ParameterEntity.builder()
+                    .id(255L)
+                    .name("name")
+                    .type(INTEGER)
+                    .value("44")
+                    .data(givenData)
+                    .build();
             mockedStatic
                     .when(() -> isInitialized(same(givenData)))
                     .thenReturn(false);
 
-            final Parameter actual = this.mapper.mapToDto(givenEntity);
+            final Parameter actual = mapper.mapToDto(givenEntity);
             final Parameter expected = Parameter.builder()
                     .id(255L)
                     .name("name")
@@ -80,7 +79,7 @@ public final class ParameterMapperTest extends AbstractContextTest {
                 .value("44")
                 .build();
 
-        final ParameterEntity actual = this.mapper.mapToEntity(givenDto);
+        final ParameterEntity actual = mapper.mapToEntity(givenDto);
         final ParameterEntity expected = ParameterEntity.builder()
                 .id(255L)
                 .name("name")
