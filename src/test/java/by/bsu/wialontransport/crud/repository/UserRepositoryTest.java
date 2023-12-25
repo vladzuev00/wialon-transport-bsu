@@ -19,9 +19,9 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldBeFoundById() {
-        super.startQueryCount();
-        final UserEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final UserEntity actual = repository.findById(255L).orElseThrow();
+        checkQueryCount(1);
 
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
@@ -40,18 +40,18 @@ public final class UserRepositoryTest extends AbstractContextTest {
                 .role(USER)
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenUser);
-        super.checkQueryCount(1);
+        startQueryCount();
+        repository.save(givenUser);
+        checkQueryCount(1);
     }
 
     @Test
     public void userShouldBeFoundByEmail() {
         final String givenEmail = "vladzuev.00@mail.ru";
 
-        super.startQueryCount();
-        final UserEntity actual = this.repository.findByEmail(givenEmail).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final UserEntity actual = repository.findByEmail(givenEmail).orElseThrow();
+        checkQueryCount(1);
 
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
@@ -64,27 +64,27 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldNotBeFoundByEmail() {
-        super.startQueryCount();
-        final Optional<UserEntity> optionalEntity = this.repository.findByEmail("email@mail.ru");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<UserEntity> optionalEntity = repository.findByEmail("email@mail.ru");
+        checkQueryCount(1);
 
         assertTrue(optionalEntity.isEmpty());
     }
 
     @Test
     public void userShouldExistsByEmail() {
-        super.startQueryCount();
-        final boolean exists = this.repository.existsByEmail("vladzuev.00@mail.ru");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final boolean exists = repository.existsByEmail("vladzuev.00@mail.ru");
+        checkQueryCount(1);
 
         assertTrue(exists);
     }
 
     @Test
     public void userShouldNotExistsByEmail() {
-        super.startQueryCount();
-        final boolean exists = this.repository.existsByEmail("notexist@mail.ru");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final boolean exists = repository.existsByEmail("notexist@mail.ru");
+        checkQueryCount(1);
 
         assertFalse(exists);
     }
@@ -94,14 +94,14 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final Long givenUserId = 255L;
         final String givenNewEmail = "newEmail@mail.ru";
 
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updateEmail(givenUserId, givenNewEmail);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updateEmail(givenUserId, givenNewEmail);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final UserEntity actual = this.repository.findById(givenUserId).orElseThrow();
+        final UserEntity actual = repository.findById(givenUserId).orElseThrow();
         final UserEntity expected = UserEntity.builder()
                 .id(givenUserId)
                 .email(givenNewEmail)
@@ -116,9 +116,9 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final Long givenUserId = MAX_VALUE;
         final String givenNewEmail = "newEmail@mail.ru";
 
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updateEmail(givenUserId, givenNewEmail);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updateEmail(givenUserId, givenNewEmail);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
@@ -126,14 +126,14 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userPasswordShouldBeUpdated() {
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updatePassword(255L, "new-password");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updatePassword(255L, "new-password");
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final UserEntity actual = this.repository.findById(255L).orElseThrow();
+        final UserEntity actual = repository.findById(255L).orElseThrow();
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
@@ -145,9 +145,9 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userPasswordShouldBeUpdatedBecauseOfNotExistingId() {
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.updatePassword(MAX_VALUE, "new-password");
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updatePassword(MAX_VALUE, "new-password");
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
