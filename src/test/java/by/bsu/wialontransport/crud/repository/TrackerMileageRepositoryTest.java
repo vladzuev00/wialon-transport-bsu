@@ -18,9 +18,9 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/tracker-mileage/insert-tracker-mileages.sql")
     public void mileageShouldBeFoundById() {
-        super.startQueryCount();
-        final TrackerMileageEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final TrackerMileageEntity actual = repository.findById(255L).orElseThrow();
+        checkQueryCount(1);
 
         final TrackerMileageEntity expected = TrackerMileageEntity.builder()
                 .id(255L)
@@ -37,21 +37,21 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
                 .country(200.2)
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenMileage);
-        super.checkQueryCount(1);
+        startQueryCount();
+        repository.save(givenMileage);
+        checkQueryCount(1);
     }
 
     @Test
     public void mileageShouldBeIncreased() {
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.increaseMileage(255L, 50.5, 60.6);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.increaseMileage(255L, 50.5, 60.6);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final TrackerMileageEntity actual = this.repository.findById(1L).orElseThrow();
+        final TrackerMileageEntity actual = repository.findById(1L).orElseThrow();
         final TrackerMileageEntity expected = TrackerMileageEntity.builder()
                 .id(1L)
                 .urban(50.5)
@@ -62,9 +62,9 @@ public final class TrackerMileageRepositoryTest extends AbstractContextTest {
 
     @Test
     public void mileageShouldNotBeIncreasedBecauseOfNotExistingTrackerId() {
-        super.startQueryCount();
-        final int actualCountUpdatedRows = this.repository.increaseMileage(MAX_VALUE, 50.5, 60.6);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.increaseMileage(MAX_VALUE, 50.5, 60.6);
+        checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
