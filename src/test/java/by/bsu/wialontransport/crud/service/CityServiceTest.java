@@ -23,11 +23,11 @@ public final class CityServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityShouldExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 3, 1, 4, 1, 4, 2, 3, 2
         );
 
-        final boolean exists = this.cityService.isExistByGeometry(givenGeometry);
+        final boolean exists = cityService.isExistByGeometry(givenGeometry);
         assertTrue(exists);
     }
 
@@ -35,11 +35,11 @@ public final class CityServiceTest extends AbstractContextTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityShouldNotExistByGeometry() {
         final Geometry givenGeometry = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 2, 3, 4, 5, 6
         );
 
-        final boolean exists = this.cityService.isExistByGeometry(givenGeometry);
+        final boolean exists = cityService.isExistByGeometry(givenGeometry);
         assertFalse(exists);
     }
 }
