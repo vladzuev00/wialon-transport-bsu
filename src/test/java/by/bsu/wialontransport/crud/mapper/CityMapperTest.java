@@ -32,7 +32,7 @@ public final class CityMapperTest extends AbstractContextTest {
                 .searchingCitiesProcess(createSearchingCitiesProcessEntity(257L))
                 .build();
 
-        final City actual = this.mapper.mapToDto(givenEntity);
+        final City actual = mapper.mapToDto(givenEntity);
         final City expected = City.builder()
                 .id(255L)
                 .address(createAddressDto(256L))
@@ -58,7 +58,7 @@ public final class CityMapperTest extends AbstractContextTest {
                     .searchingCitiesProcess(givenProcess)
                     .build();
 
-            final City actual = this.mapper.mapToDto(givenEntity);
+            final City actual = mapper.mapToDto(givenEntity);
             final City expected = City.builder()
                     .id(255L)
                     .build();
@@ -74,7 +74,7 @@ public final class CityMapperTest extends AbstractContextTest {
                 .searchingCitiesProcess(createSearchingCitiesProcessDto(257L))
                 .build();
 
-        final CityEntity actual = this.mapper.mapToEntity(givenDto);
+        final CityEntity actual = mapper.mapToEntity(givenDto);
         final CityEntity expected = CityEntity.builder()
                 .id(255L)
                 .address(createAddressEntity(256L))
