@@ -20,9 +20,9 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void parameterShouldBeFoundById() {
-        super.startQueryCount();
-        final ParameterEntity actual = this.repository.findById(257L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final ParameterEntity actual = repository.findById(257L).orElseThrow();
+        checkQueryCount(1);
 
         assertFalse(isDataLoaded(actual));
 
@@ -31,7 +31,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
                 .name("name")
                 .type(INTEGER)
                 .value("44")
-                .data(super.entityManager.getReference(DataEntity.class, 256L))
+                .data(entityManager.getReference(DataEntity.class, 256L))
                 .build();
         checkEquals(expected, actual);
     }
@@ -43,11 +43,11 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
                 .name("name")
                 .type(INTEGER)
                 .value("44")
-                .data(super.entityManager.getReference(DataEntity.class, 256L))
+                .data(entityManager.getReference(DataEntity.class, 256L))
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenParameter);
-        super.checkQueryCount(2);
+        startQueryCount();
+        repository.save(givenParameter);
+        checkQueryCount(2);
     }
 }
