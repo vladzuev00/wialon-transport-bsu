@@ -11,16 +11,10 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 public class TransportableData implements Transportable<Long> {
     private final long epochSeconds;
-    private final int latitudeDegrees;
-    private final int latitudeMinutes;
-    private final int latitudeMinuteShare;
-    private final char latitudeTypeValue;
-    private final int longitudeDegrees;
-    private final int longitudeMinutes;
-    private final int longitudeMinuteShare;
-    private final char longitudeTypeValue;
-    private final int speed;
+    private final double latitude;
+    private final double longitude;
     private final int course;
+    private final int speed;
     private final int altitude;
     private final int amountOfSatellites;
     private final double reductionPrecision;
@@ -33,6 +27,6 @@ public class TransportableData implements Transportable<Long> {
 
     @Override
     public final Long findTopicKey() {
-        return this.trackerId;
+        return trackerId;
     }
 }

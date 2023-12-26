@@ -14,16 +14,10 @@ public final class TransportableSavedData extends TransportableData {
     @Builder(builderMethodName = "savedDataBuilder")
     public TransportableSavedData(final Long id,
                                   final long epochSeconds,
-                                  final int latitudeDegrees,
-                                  final int latitudeMinutes,
-                                  final int latitudeMinuteShare,
-                                  final char latitudeTypeValue,
-                                  final int longitudeDegrees,
-                                  final int longitudeMinutes,
-                                  final int longitudeMinuteShare,
-                                  final char longitudeTypeValue,
-                                  final int speed,
+                                  final double latitude,
+                                  final double longitude,
                                   final int course,
+                                  final int speed,
                                   final int altitude,
                                   final int amountOfSatellites,
                                   final double reductionPrecision,
@@ -36,10 +30,19 @@ public final class TransportableSavedData extends TransportableData {
                                   final Long addressId) {
         super(
                 epochSeconds,
-                latitudeDegrees, latitudeMinutes, latitudeMinuteShare, latitudeTypeValue,
-                longitudeDegrees, longitudeMinutes, longitudeMinuteShare, longitudeTypeValue,
-                speed, course, altitude, amountOfSatellites, reductionPrecision, inputs, outputs,
-                serializedAnalogInputs, driverKeyCode, serializedParameters, trackerId
+                latitude,
+                longitude,
+                course,
+                speed,
+                altitude,
+                amountOfSatellites,
+                reductionPrecision,
+                inputs,
+                outputs,
+                serializedAnalogInputs,
+                driverKeyCode,
+                serializedParameters,
+                trackerId
         );
         this.id = id;
         this.addressId = addressId;
