@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.kafka.producer.view;
+package by.bsu.wialontransport.kafka.producer.data.view;
 
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import lombok.Getter;

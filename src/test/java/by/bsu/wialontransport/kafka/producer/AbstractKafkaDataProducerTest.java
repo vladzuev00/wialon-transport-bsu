@@ -18,7 +18,7 @@
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-//import static by.bsu.wialontransport.kafka.producer.AbstractKafkaDataProducer.*;
+//import static by.bsu.wialontransport.kafka.producer.data.AbstractKafkaDataProducer.*;
 //import static org.junit.Assert.assertEquals;
 //
 //public final class AbstractKafkaDataProducerTest {

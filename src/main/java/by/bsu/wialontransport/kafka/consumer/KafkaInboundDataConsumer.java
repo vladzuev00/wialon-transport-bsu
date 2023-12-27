@@ -5,7 +5,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
+import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -15,9 +15,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import static java.lang.String.format;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;

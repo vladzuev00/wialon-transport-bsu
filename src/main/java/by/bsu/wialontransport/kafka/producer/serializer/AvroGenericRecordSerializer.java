@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.kafka.producer.serializer;
 
-import by.bsu.wialontransport.kafka.producer.serializer.exception.AvroGenericRecordSerializationException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
@@ -36,6 +35,28 @@ public final class AvroGenericRecordSerializer implements Serializer<GenericReco
             return byteArrayOutputStream.toByteArray();
         } catch (final IOException cause) {
             throw new AvroGenericRecordSerializationException(cause);
+        }
+    }
+
+    static final class AvroGenericRecordSerializationException extends RuntimeException {
+
+        @SuppressWarnings("unused")
+        public AvroGenericRecordSerializationException() {
+
+        }
+
+        @SuppressWarnings("unused")
+        public AvroGenericRecordSerializationException(final String description) {
+            super(description);
+        }
+
+        public AvroGenericRecordSerializationException(final Exception cause) {
+            super(cause);
+        }
+
+        @SuppressWarnings("unused")
+        public AvroGenericRecordSerializationException(final String description, final Exception cause) {
+            super(description, cause);
         }
     }
 }

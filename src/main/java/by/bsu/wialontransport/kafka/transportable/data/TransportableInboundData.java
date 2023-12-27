@@ -9,7 +9,7 @@ public final class TransportableInboundData extends TransportableData {
                                     final double latitude,
                                     final double longitude,
                                     final int course,
-                                    final int speed,
+                                    final double speed,
                                     final int altitude,
                                     final int amountOfSatellites,
                                     final double reductionPrecision,

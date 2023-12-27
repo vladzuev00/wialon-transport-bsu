@@ -14,7 +14,7 @@ public abstract class TransportableData implements Transportable<Long> {
     private final double latitude;
     private final double longitude;
     private final int course;
-    private final int speed;
+    private final double speed;
     private final int altitude;
     private final int amountOfSatellites;
     private final double reductionPrecision;

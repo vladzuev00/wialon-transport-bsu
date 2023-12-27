@@ -4,7 +4,7 @@ import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultProperty
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.BiIntToDoubleFunction;
 import by.bsu.wialontransport.function.ToShortFunction;
-import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
+import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivingDataPackageHandler;

@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.service.receivingdata;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.kafka.producer.KafkaInboundDataProducer;
+import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;

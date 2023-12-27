@@ -1,8 +1,9 @@
-package by.bsu.wialontransport.kafka.producer;
+package by.bsu.wialontransport.kafka.producer.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.kafka.producer.view.ParameterView;
+import by.bsu.wialontransport.kafka.producer.AbstractGenericRecordKafkaProducer;
+import by.bsu.wialontransport.kafka.producer.data.view.ParameterView;
 import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,13 +78,70 @@ public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKaf
     }
 
     @RequiredArgsConstructor
-    @Getter
     @Builder
     protected static final class CreatingTransportableContext {
         private final Data data;
+
+        @Getter
         private final long epochSeconds;
+
+        @Getter
         private final String serializedAnalogInputs;
+
+        @Getter
         private final String serializedParameters;
+
+        public double getLatitude() {
+            return data.getCoordinate().getLatitude();
+        }
+
+        public double getLongitude() {
+            return data.getCoordinate().getLongitude();
+        }
+
+        public int getCourse() {
+            return data.getCourse();
+        }
+
+        public double getSpeed() {
+            return data.getSpeed();
+        }
+
+        public int getAltitude() {
+            return data.getAltitude();
+        }
+
+        public int getAmountOfSatellites() {
+            return data.getAmountOfSatellites();
+        }
+
+        public double getReductionPrecision() {
+            return data.getReductionPrecision();
+        }
+
+        public int getInputs() {
+            return data.getInputs();
+        }
+
+        public int getOutputs() {
+            return data.getOutputs();
+        }
+
+        public String getDriverKeyCode() {
+            return data.getDriverKeyCode();
+        }
+
+        public Long getTrackerId() {
+            return data.getTracker().getId();
+        }
+
+        public Long getDataId() {
+            return data.getId();
+        }
+
+        public Long getAddressId() {
+            return data.getAddress().getId();
+        }
     }
 
     static final class SerializationException extends RuntimeException {
