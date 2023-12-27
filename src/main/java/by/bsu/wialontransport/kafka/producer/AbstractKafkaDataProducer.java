@@ -2,9 +2,9 @@ package by.bsu.wialontransport.kafka.producer;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import by.bsu.wialontransport.kafka.producer.view.ParameterView;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,14 +14,12 @@ import org.apache.avro.generic.GenericRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.ZoneOffset;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
+import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static java.time.ZoneOffset.UTC;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
 
-public abstract class AbstractKafkaDataProducer<T extends TransportableData>
+public abstract class AbstractKafkaDataProducer<T extends TransportableData, P extends ParameterView>
         extends AbstractGenericRecordKafkaProducer<Long, T, Data> {
     private static final ZoneOffset ZONE_OFFSET = UTC;
 
@@ -37,81 +35,46 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
 
     @Override
     protected final T mapToTransportable(final Data data) {
-
+        final CreatingTransportableContext context = createCreatingContext(data);
+        return createTransportable(context);
     }
 
     protected abstract T createTransportable(final CreatingTransportableContext context);
 
-    //TODO: do hierarhy for views: one super class, one class without id + one class with id
-    protected abstract Object createParameterView(final Parameter parameter);
+    protected abstract P createParameterView(final Parameter parameter);
 
     private CreatingTransportableContext createCreatingContext(final Data data) {
-
+        return CreatingTransportableContext.builder()
+                .data(data)
+                .epochSeconds(findEpochSeconds(data))
+                .serializedAnalogInputs(serializeAnalogInputs(data))
+                .serializedParameters(serializeParameters(data))
+                .build();
     }
 
     private static long findEpochSeconds(final Data data) {
         return data.getDateTime().toEpochSecond(ZONE_OFFSET);
     }
 
+    private String serializeAnalogInputs(final Data data) {
+        return serializeToJson(data.getAnalogInputs());
+    }
+
     private String serializeParameters(final Data data) {
-
+        final List<P> parameterViews = createParameterViews(data);
+        return serializeToJson(parameterViews);
     }
 
-    protected static int findLatitudeDegrees(final Data data) {
-//        return findLatitudeIntFieldValue(data, Latitude::getDegrees);
-        return 0;
+    private List<P> createParameterViews(final Data data) {
+        return collectValuesToList(data.getParametersByNames(), this::createParameterView);
     }
 
-    protected static int findLatitudeMinutes(final Data data) {
-//        return findLatitudeIntFieldValue(data, Latitude::getMinutes);
-        return 0;
-    }
-
-    protected static int findLatitudeMinuteShare(final Data data) {
-//        return findLatitudeIntFieldValue(data, Latitude::getMinuteShare);
-        return 0;
-    }
-
-    protected static char findLatitudeTypeValue(final Data data) {
-//        final Latitude latitude = data.getLatitude();
-//        final DataEntity.Latitude.Type latitudeType = latitude.getType();
-//        return latitudeType.getValue();
-        return 'a';
-    }
-
-    protected static int findLongitudeDegrees(final Data data) {
-//        return findLongitudeIntFieldValue(data, Longitude::getDegrees);
-        return 0;
-    }
-
-    protected static int findLongitudeMinutes(final Data data) {
-//        return findLongitudeIntFieldValue(data, Longitude::getMinutes);
-        return 0;
-    }
-
-    protected static int findLongitudeMinuteShare(final Data data) {
-//        return findLongitudeIntFieldValue(data, Longitude::getMinuteShare);
-        return 0;
-    }
-
-    protected static char findLongitudeTypeValue(final Data data) {
-//        final Longitude longitude = data.getLongitude();
-//        final DataEntity.Longitude.Type longitudeType = longitude.getType();
-//        return longitudeType.getValue();
-        return 'a';
-    }
-
-    protected final String serializeAnalogInputs(final Data data) {
-        return this.analogInputsSerializer.serialize(data);
-    }
-
-    protected final String serializeParameters(final Data data) {
-        return this.parametersSerializer.serialize(data);
-    }
-
-    protected static Long findTrackerId(final Data data) {
-        final Tracker tracker = data.getTracker();
-        return tracker.getId();
+    private String serializeToJson(final Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (final JsonProcessingException cause) {
+            throw new SerializationException(cause);
+        }
     }
 
     @RequiredArgsConstructor
@@ -124,58 +87,25 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
         private final String serializedParameters;
     }
 
-    private static final class AnalogInputsSerializer {
-        private static final String DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
+    static final class SerializationException extends RuntimeException {
 
-        public String serialize(final Data data) {
-            return stream(data.getAnalogInputs())
-                    .mapToObj(Double::toString)
-                    .collect(joining(DELIMITER_SERIALIZED_ANALOG_INPUTS));
-        }
-    }
+        @SuppressWarnings("unused")
+        public SerializationException() {
 
-    private static final class ParametersSerializer {
-        private static final String DELIMITER_SERIALIZED_PARAMETER_PROPERTIES = ":";
-        private static final String DELIMITER_SERIALIZED_PARAMETERS = ",";
-
-        public String serialize(final Data data) {
-            final Collection<Parameter> parameters = findParameters(data);
-            return serializeParameters(parameters);
         }
 
-        private static Collection<Parameter> findParameters(final Data data) {
-            final Map<String, Parameter> parametersByNames = data.getParametersByNames();
-            return parametersByNames.values();
+        @SuppressWarnings("unused")
+        public SerializationException(final String description) {
+            super(description);
         }
 
-        private static String serializeParameters(final Collection<Parameter> parameters) {
-            return parameters.stream()
-                    .map(ParametersSerializer::serializeParameter)
-                    .collect(joining(DELIMITER_SERIALIZED_PARAMETERS));
+        public SerializationException(final Exception cause) {
+            super(cause);
         }
 
-        private static String serializeParameter(final Parameter parameter) {
-            final StringBuilder builderSerializedParameter = new StringBuilder();
-            appendParameterIdWithPropertyDelimiterIfIdExists(builderSerializedParameter, parameter);
-            builderSerializedParameter.append(parameter.getName());
-            builderSerializedParameter.append(DELIMITER_SERIALIZED_PARAMETER_PROPERTIES);
-            appendValueOfParameterType(builderSerializedParameter, parameter);
-            builderSerializedParameter.append(DELIMITER_SERIALIZED_PARAMETER_PROPERTIES);
-            builderSerializedParameter.append(parameter.getValue());
-            return builderSerializedParameter.toString();
-        }
-
-        private static void appendParameterIdWithPropertyDelimiterIfIdExists(final StringBuilder stringBuilder,
-                                                                             final Parameter parameter) {
-            if (parameter.getId() != null) {
-                stringBuilder.append(parameter.getId());
-                stringBuilder.append(DELIMITER_SERIALIZED_PARAMETER_PROPERTIES);
-            }
-        }
-
-        private static void appendValueOfParameterType(final StringBuilder stringBuilder, final Parameter parameter) {
-            final ParameterEntity.Type type = parameter.getType();
-            stringBuilder.append(type.getValue());
+        @SuppressWarnings("unused")
+        public SerializationException(final String description, final Exception cause) {
+            super(description, cause);
         }
     }
 }
