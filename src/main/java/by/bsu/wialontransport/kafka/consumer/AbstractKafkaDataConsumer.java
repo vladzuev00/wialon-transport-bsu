@@ -3,7 +3,6 @@ package by.bsu.wialontransport.kafka.consumer;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
@@ -15,7 +14,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableData.Fields.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;

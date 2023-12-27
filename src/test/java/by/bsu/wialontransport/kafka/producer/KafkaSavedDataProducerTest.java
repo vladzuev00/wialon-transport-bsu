@@ -7,7 +7,7 @@
 //import by.bsu.wialontransport.crud.dto.Tracker;
 //import by.bsu.wialontransport.crud.entity.DataEntity;
 //import by.bsu.wialontransport.crud.entity.ParameterEntity;
-//import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
+//import by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData;
 //import org.junit.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //

@@ -10,8 +10,8 @@
 //import by.bsu.wialontransport.crud.service.AddressService;
 //import by.bsu.wialontransport.crud.service.TrackerService;
 //import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
-//import by.bsu.wialontransport.kafka.transportable.TransportableData;
-//import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
+//import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
+//import by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData;
 //import org.apache.avro.generic.GenericRecord;
 //import org.junit.Before;
 //import org.junit.Test;
@@ -35,8 +35,8 @@
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-//import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
-//import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.addressId;
+//import static by.bsu.wialontransport.kafka.transportable.data.TransportableData.Fields.*;
+//import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.addressId;
 //import static java.time.ZoneOffset.UTC;
 //import static java.util.Optional.empty;
 //import static org.junit.Assert.assertEquals;

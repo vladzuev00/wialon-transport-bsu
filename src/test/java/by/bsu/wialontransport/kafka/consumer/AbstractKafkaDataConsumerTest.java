@@ -25,7 +25,7 @@
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 //import static by.bsu.wialontransport.kafka.consumer.AbstractKafkaDataConsumer.*;
-//import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
+//import static by.bsu.wialontransport.kafka.transportable.data.TransportableData.Fields.*;
 //import static java.time.LocalDateTime.ofEpochSecond;
 //import static java.time.ZoneOffset.UTC;
 //import static java.util.Collections.emptyMap;

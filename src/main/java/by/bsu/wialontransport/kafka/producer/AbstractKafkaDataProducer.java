@@ -3,7 +3,7 @@ package by.bsu.wialontransport.kafka.producer;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.kafka.producer.view.ParameterView;
-import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
@@ -19,8 +19,7 @@ import java.util.List;
 import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static java.time.ZoneOffset.UTC;
 
-public abstract class AbstractKafkaDataProducer<T extends TransportableData, P extends ParameterView>
-        extends AbstractGenericRecordKafkaProducer<Long, T, Data> {
+public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKafkaProducer<Long, TransportableData, Data> {
     private static final ZoneOffset ZONE_OFFSET = UTC;
 
     private final ObjectMapper objectMapper;
@@ -34,14 +33,14 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData, P e
     }
 
     @Override
-    protected final T mapToTransportable(final Data data) {
+    protected final TransportableData mapToTransportable(final Data data) {
         final CreatingTransportableContext context = createCreatingContext(data);
         return createTransportable(context);
     }
 
-    protected abstract T createTransportable(final CreatingTransportableContext context);
+    protected abstract TransportableData createTransportable(final CreatingTransportableContext context);
 
-    protected abstract P createParameterView(final Parameter parameter);
+    protected abstract ParameterView createParameterView(final Parameter parameter);
 
     private CreatingTransportableContext createCreatingContext(final Data data) {
         return CreatingTransportableContext.builder()
@@ -61,11 +60,11 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData, P e
     }
 
     private String serializeParameters(final Data data) {
-        final List<P> parameterViews = createParameterViews(data);
+        final List<ParameterView> parameterViews = createParameterViews(data);
         return serializeToJson(parameterViews);
     }
 
-    private List<P> createParameterViews(final Data data) {
+    private List<ParameterView> createParameterViews(final Data data) {
         return collectValuesToList(data.getParametersByNames(), this::createParameterView);
     }
 

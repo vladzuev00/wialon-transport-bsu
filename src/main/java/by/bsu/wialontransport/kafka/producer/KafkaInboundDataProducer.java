@@ -1,7 +1,10 @@
 package by.bsu.wialontransport.kafka.producer;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.kafka.producer.view.InboundParameterView;
+import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,13 +13,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer<TransportableData> {
+public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer {
 
     public KafkaInboundDataProducer(@Qualifier("kafkaTemplateInboundData")
                                     final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                     @Value("${kafka.topic.inbound-data.name}") final String topicName,
-                                    @Qualifier("transportableDataSchema") final Schema schema) {
-        super(kafkaTemplate, topicName, schema);
+                                    @Qualifier("transportableDataSchema") final Schema schema,
+                                    final ObjectMapper objectMapper) {
+        super(kafkaTemplate, topicName, schema, objectMapper);
     }
 
     @Override
@@ -43,6 +47,16 @@ public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer<Tr
 //                .serializedParameters(super.serializeParameters(data))
 //                .trackerId(findTrackerId(data))
 //                .build();
+        return null;
+    }
+
+    @Override
+    protected TransportableData createTransportable(final CreatingTransportableContext context) {
+        return null;
+    }
+
+    @Override
+    protected InboundParameterView createParameterView(final Parameter parameter) {
         return null;
     }
 }

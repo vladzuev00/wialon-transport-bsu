@@ -2,7 +2,7 @@ package by.bsu.wialontransport.kafka.producer;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.kafka.transportable.TransportableSavedData;
+import by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.beans.factory.annotation.Qualifier;

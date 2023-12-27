@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.addressId;
-import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.id;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.addressId;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.id;
 import static java.lang.String.format;
 
 @Slf4j

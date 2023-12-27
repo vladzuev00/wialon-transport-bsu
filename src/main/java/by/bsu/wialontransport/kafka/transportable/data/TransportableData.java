@@ -1,5 +1,6 @@
-package by.bsu.wialontransport.kafka.transportable;
+package by.bsu.wialontransport.kafka.transportable.data;
 
+import by.bsu.wialontransport.kafka.transportable.Transportable;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
@@ -7,9 +8,8 @@ import lombok.experimental.FieldNameConstants;
 @Getter
 @EqualsAndHashCode
 @ToString
-@Builder
 @FieldNameConstants
-public class TransportableData implements Transportable<Long> {
+public abstract class TransportableData implements Transportable<Long> {
     private final long epochSeconds;
     private final double latitude;
     private final double longitude;

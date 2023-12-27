@@ -1,6 +1,9 @@
-package by.bsu.wialontransport.kafka.transportable;
+package by.bsu.wialontransport.kafka.transportable.data;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.FieldNameConstants;
 
 @Getter
@@ -11,7 +14,7 @@ public final class TransportableSavedData extends TransportableData {
     private final Long id;
     private final Long addressId;
 
-    @Builder(builderMethodName = "savedDataBuilder")
+    @Builder
     public TransportableSavedData(final Long id,
                                   final long epochSeconds,
                                   final double latitude,

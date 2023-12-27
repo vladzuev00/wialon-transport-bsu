@@ -13,7 +13,7 @@
 //import by.bsu.wialontransport.crud.service.TrackerService;
 //import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 //import by.bsu.wialontransport.kafka.producer.KafkaSavedDataProducer;
-//import by.bsu.wialontransport.kafka.transportable.TransportableData;
+//import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 //import by.bsu.wialontransport.service.geocoding.GeocodingService;
 //import org.apache.avro.generic.GenericRecord;
 //import org.junit.Before;
@@ -35,7 +35,7 @@
 //import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.DOUBLE;
 //import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-//import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
+//import static by.bsu.wialontransport.kafka.transportable.data.TransportableData.Fields.*;
 //import static java.time.ZoneOffset.UTC;
 //import static java.util.Optional.empty;
 //import static org.junit.Assert.assertEquals;

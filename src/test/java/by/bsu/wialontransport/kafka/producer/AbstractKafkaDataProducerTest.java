@@ -7,7 +7,7 @@
 //import by.bsu.wialontransport.crud.dto.Tracker;
 //import by.bsu.wialontransport.crud.entity.DataEntity;
 //import by.bsu.wialontransport.crud.entity.ParameterEntity;
-//import by.bsu.wialontransport.kafka.transportable.TransportableData;
+//import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 //import org.junit.Test;
 //
 //import java.time.LocalDate;

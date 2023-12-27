@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.kafka.transportable;
 
+import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
