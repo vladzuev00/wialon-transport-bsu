@@ -3,18 +3,19 @@ package by.bsu.wialontransport.kafka.producer;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.kafka.transportable.TransportableData;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 import static java.time.ZoneOffset.UTC;
 import static java.util.Arrays.stream;
@@ -22,21 +23,38 @@ import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractKafkaDataProducer<T extends TransportableData>
         extends AbstractGenericRecordKafkaProducer<Long, T, Data> {
-    private final AnalogInputsSerializer analogInputsSerializer;
-    private final ParametersSerializer parametersSerializer;
+    private static final ZoneOffset ZONE_OFFSET = UTC;
+
+    private final ObjectMapper objectMapper;
 
     public AbstractKafkaDataProducer(final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                      final String topicName,
-                                     final Schema schema) {
+                                     final Schema schema,
+                                     final ObjectMapper objectMapper) {
         super(kafkaTemplate, topicName, schema);
-        this.analogInputsSerializer = new AnalogInputsSerializer();
-        this.parametersSerializer = new ParametersSerializer();
+        this.objectMapper = objectMapper;
     }
 
-    protected static long findEpochSeconds(final Data data) {
-//        final LocalDateTime dateTime = LocalDateTime.of(data.getDate(), data.getTime());
-//        return dateTime.toEpochSecond(UTC);
-        return 0;
+    @Override
+    protected final T mapToTransportable(final Data data) {
+
+    }
+
+    protected abstract T createTransportable(final CreatingTransportableContext context);
+
+    //TODO: do hierarhy for views: one super class, one class without id + one class with id
+    protected abstract Object createParameterView(final Parameter parameter);
+
+    private CreatingTransportableContext createCreatingContext(final Data data) {
+
+    }
+
+    private static long findEpochSeconds(final Data data) {
+        return data.getDateTime().toEpochSecond(ZONE_OFFSET);
+    }
+
+    private String serializeParameters(final Data data) {
+
     }
 
     protected static int findLatitudeDegrees(final Data data) {
@@ -94,6 +112,16 @@ public abstract class AbstractKafkaDataProducer<T extends TransportableData>
     protected static Long findTrackerId(final Data data) {
         final Tracker tracker = data.getTracker();
         return tracker.getId();
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    @Builder
+    protected static final class CreatingTransportableContext {
+        private final Data data;
+        private final long epochSeconds;
+        private final String serializedAnalogInputs;
+        private final String serializedParameters;
     }
 
     private static final class AnalogInputsSerializer {
