@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public abstract class AbstractGenericRecordKafkaProducer<K, T extends Transportable<K>, S>
-        extends AbstractKafkaProducer<K, GenericRecord, T, S> {
+        extends KafkaProducer<K, GenericRecord, T, S> {
     private final Schema schema;
 
     public AbstractGenericRecordKafkaProducer(final KafkaTemplate<K, GenericRecord> kafkaTemplate,
@@ -24,11 +24,11 @@ public abstract class AbstractGenericRecordKafkaProducer<K, T extends Transporta
     }
 
     @Override
-    protected final GenericRecord mapToValue(final T mapped) {
+    protected final GenericRecord mapToValue(final T source) {
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             final ReflectDatumWriter<T> datumWriter = new ReflectDatumWriter<>(schema);
             final BinaryEncoder encoder = createEncoder(outputStream);
-            datumWriter.write(mapped, encoder);
+            datumWriter.write(source, encoder);
             encoder.flush();
             final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>(schema);
             final BinaryDecoder decoder = createDecoder(outputStream);

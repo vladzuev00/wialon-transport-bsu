@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 
 @RequiredArgsConstructor
-public abstract class AbstractKafkaProducer<K, V, T extends Transportable<K>, S> {
+public abstract class KafkaProducer<K, V, T extends Transportable<K>, S> {
     private final KafkaTemplate<K, V> kafkaTemplate;
     private final String topicName;
 
@@ -19,7 +19,7 @@ public abstract class AbstractKafkaProducer<K, V, T extends Transportable<K>, S>
 
     protected abstract T mapToTransportable(final S source);
 
-    protected abstract V mapToValue(final T mapped);
+    protected abstract V mapToValue(final T source);
 
     private void sendValue(final K key, final V value) {
         final ProducerRecord<K, V> producerRecord = new ProducerRecord<>(topicName, key, value);
