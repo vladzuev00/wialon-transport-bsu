@@ -4,12 +4,17 @@ import by.bsu.wialontransport.kafka.transportable.Transportable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.kafka.core.KafkaTemplate;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class KafkaProducerTest {
@@ -29,8 +34,18 @@ public final class KafkaProducerTest {
     public void recordShouldBeSent() {
         final Long givenId = 255L;
         final String givenPhoneNumber = "447336934";
+        final String givenText = "text";
+        final TestSource givenSource = new TestSource(givenId, givenPhoneNumber, givenText);
 
-        throw new RuntimeException();
+        producer.send(givenSource);
+
+        final TestValue expectedValue = new TestValue(givenId, givenPhoneNumber, givenText);
+        final ProducerRecord<String, TestValue> expectedProducerRecord = new ProducerRecord<>(
+                GIVEN_TOPIC_NAME,
+                givenPhoneNumber,
+                expectedValue
+        );
+        verify(mockedKafkaTemplate, times(1)).send(eq(expectedProducerRecord));
     }
 
     @Value
