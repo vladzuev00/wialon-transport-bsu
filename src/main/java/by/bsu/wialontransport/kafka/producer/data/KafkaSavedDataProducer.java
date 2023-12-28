@@ -38,6 +38,7 @@ public final class KafkaSavedDataProducer extends KafkaDataProducer {
                 .serializedAnalogInputs(context.getSerializedAnalogInputs())
                 .driverKeyCode(context.getDriverKeyCode())
                 .serializedParameters(context.getSerializedParameters())
+                .trackerId(context.getTrackerId())
                 .addressId(context.getAddressId())
                 .build();
     }
