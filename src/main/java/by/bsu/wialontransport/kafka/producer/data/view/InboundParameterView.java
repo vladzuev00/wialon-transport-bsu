@@ -1,12 +1,17 @@
 package by.bsu.wialontransport.kafka.producer.data.view;
 
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 public final class InboundParameterView extends ParameterView {
 
     @Builder
-    public InboundParameterView(final String name, final Type type, final String value) {
+    @JsonCreator
+    public InboundParameterView(@JsonProperty("name") final String name,
+                                @JsonProperty("type") final Type type,
+                                @JsonProperty("value") final String value) {
         super(name, type, value);
     }
 }

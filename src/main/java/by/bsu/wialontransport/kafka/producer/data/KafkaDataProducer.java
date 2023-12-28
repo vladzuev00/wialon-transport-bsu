@@ -19,16 +19,17 @@ import java.util.List;
 
 import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static java.time.ZoneOffset.UTC;
+import static lombok.AccessLevel.NONE;
 
-public abstract class AbstractKafkaDataProducer extends GenericRecordKafkaProducer<Long, TransportableData, Data> {
+public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long, TransportableData, Data> {
     private static final ZoneOffset ZONE_OFFSET = UTC;
 
     private final ObjectMapper objectMapper;
 
-    public AbstractKafkaDataProducer(final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
-                                     final String topicName,
-                                     final Schema schema,
-                                     final ObjectMapper objectMapper) {
+    public KafkaDataProducer(final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
+                             final String topicName,
+                             final Schema schema,
+                             final ObjectMapper objectMapper) {
         super(kafkaTemplate, topicName, schema);
         this.objectMapper = objectMapper;
     }
@@ -80,6 +81,8 @@ public abstract class AbstractKafkaDataProducer extends GenericRecordKafkaProduc
     @RequiredArgsConstructor
     @Builder
     protected static final class CreatingTransportableContext {
+
+        @Getter(NONE)
         private final Data data;
 
         @Getter

@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class KafkaSavedDataProducer extends AbstractKafkaDataProducer {
+public final class KafkaSavedDataProducer extends KafkaDataProducer {
 
     public KafkaSavedDataProducer(@Qualifier("kafkaTemplateSavedData") final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                   @Value("${kafka.topic.saved-data.name}") final String topicName,

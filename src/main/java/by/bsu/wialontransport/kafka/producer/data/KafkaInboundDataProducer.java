@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class KafkaInboundDataProducer extends AbstractKafkaDataProducer {
+public final class KafkaInboundDataProducer extends KafkaDataProducer {
 
     public KafkaInboundDataProducer(@Qualifier("kafkaTemplateInboundData") final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
                                     @Value("${kafka.topic.inbound-data.name}") final String topicName,
