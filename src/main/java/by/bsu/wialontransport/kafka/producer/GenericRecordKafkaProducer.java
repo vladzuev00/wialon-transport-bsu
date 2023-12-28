@@ -12,13 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public abstract class AbstractGenericRecordKafkaProducer<K, T extends Transportable<K>, S>
+public abstract class GenericRecordKafkaProducer<K, T extends Transportable<K>, S>
         extends KafkaProducer<K, GenericRecord, T, S> {
     private final Schema schema;
 
-    public AbstractGenericRecordKafkaProducer(final KafkaTemplate<K, GenericRecord> kafkaTemplate,
-                                              final String topicName,
-                                              final Schema schema) {
+    public GenericRecordKafkaProducer(final KafkaTemplate<K, GenericRecord> kafkaTemplate,
+                                      final String topicName,
+                                      final Schema schema) {
         super(kafkaTemplate, topicName);
         this.schema = schema;
     }
@@ -34,7 +34,7 @@ public abstract class AbstractGenericRecordKafkaProducer<K, T extends Transporta
             final BinaryDecoder decoder = createDecoder(outputStream);
             return datumReader.read(null, decoder);
         } catch (final IOException cause) {
-            throw new KafkaProducerMappingToGenericRecordException(cause);
+            throw new MappingTransportableToGenericRecordException(cause);
         }
     }
 
@@ -46,24 +46,24 @@ public abstract class AbstractGenericRecordKafkaProducer<K, T extends Transporta
         return DecoderFactory.get().binaryDecoder(outputStream.toByteArray(), null);
     }
 
-    static final class KafkaProducerMappingToGenericRecordException extends RuntimeException {
+    static final class MappingTransportableToGenericRecordException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public KafkaProducerMappingToGenericRecordException() {
+        public MappingTransportableToGenericRecordException() {
 
         }
 
         @SuppressWarnings("unused")
-        public KafkaProducerMappingToGenericRecordException(final String description) {
+        public MappingTransportableToGenericRecordException(final String description) {
             super(description);
         }
 
-        public KafkaProducerMappingToGenericRecordException(final Exception cause) {
+        public MappingTransportableToGenericRecordException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public KafkaProducerMappingToGenericRecordException(final String description, final Exception cause) {
+        public MappingTransportableToGenericRecordException(final String description, final Exception cause) {
             super(description, cause);
         }
     }

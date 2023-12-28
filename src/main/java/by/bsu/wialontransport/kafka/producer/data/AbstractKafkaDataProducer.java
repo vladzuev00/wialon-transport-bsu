@@ -2,7 +2,7 @@ package by.bsu.wialontransport.kafka.producer.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.kafka.producer.AbstractGenericRecordKafkaProducer;
+import by.bsu.wialontransport.kafka.producer.GenericRecordKafkaProducer;
 import by.bsu.wialontransport.kafka.producer.data.view.ParameterView;
 import by.bsu.wialontransport.kafka.transportable.data.TransportableData;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,7 +20,7 @@ import java.util.List;
 import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static java.time.ZoneOffset.UTC;
 
-public abstract class AbstractKafkaDataProducer extends AbstractGenericRecordKafkaProducer<Long, TransportableData, Data> {
+public abstract class AbstractKafkaDataProducer extends GenericRecordKafkaProducer<Long, TransportableData, Data> {
     private static final ZoneOffset ZONE_OFFSET = UTC;
 
     private final ObjectMapper objectMapper;
