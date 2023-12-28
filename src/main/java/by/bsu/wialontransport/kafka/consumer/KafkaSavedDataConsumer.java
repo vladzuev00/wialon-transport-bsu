@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.addressId;
-import static by.bsu.wialontransport.kafka.transportable.TransportableSavedData.Fields.id;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.addressId;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.id;
 import static java.lang.String.format;
 
 @Slf4j
@@ -42,25 +42,26 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     @Override
     protected Data mapToData(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
-        return new Data(
-                extractId(genericRecord),
-                dateTime.toLocalDate(),
-                dateTime.toLocalTime(),
-                super.extractLatitude(genericRecord),
-                super.extractLongitude(genericRecord),
-                extractSpeed(genericRecord),
-                extractCourse(genericRecord),
-                extractAltitude(genericRecord),
-                extractAmountOfSatellites(genericRecord),
-                extractReductionPrecision(genericRecord),
-                extractInputs(genericRecord),
-                extractOutputs(genericRecord),
-                extractAnalogInputs(genericRecord),
-                extractDriverKeyCode(genericRecord),
-                super.extractParametersByNames(genericRecord),
-                super.extractTracker(genericRecord),
-                this.extractAddress(genericRecord)
-        );
+//        return new Data(
+//                extractId(genericRecord),
+//                dateTime.toLocalDate(),
+//                dateTime.toLocalTime(),
+//                super.extractLatitude(genericRecord),
+//                super.extractLongitude(genericRecord),
+//                extractSpeed(genericRecord),
+//                extractCourse(genericRecord),
+//                extractAltitude(genericRecord),
+//                extractAmountOfSatellites(genericRecord),
+//                extractReductionPrecision(genericRecord),
+//                extractInputs(genericRecord),
+//                extractOutputs(genericRecord),
+//                extractAnalogInputs(genericRecord),
+//                extractDriverKeyCode(genericRecord),
+//                super.extractParametersByNames(genericRecord),
+//                super.extractTracker(genericRecord),
+//                this.extractAddress(genericRecord)
+//        );
+        return null;
     }
 
     @Override

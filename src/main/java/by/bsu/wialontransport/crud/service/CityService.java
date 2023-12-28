@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CityService extends AbstractCRUDService<Long, CityEntity, City, CityMapper, CityRepository> {
+public class CityService extends CRUDService<Long, CityEntity, City, CityMapper, CityRepository> {
 
     public CityService(final CityMapper mapper, final CityRepository repository) {
         super(mapper, repository);
@@ -17,6 +17,11 @@ public class CityService extends AbstractCRUDService<Long, CityEntity, City, Cit
 
     @Transactional(readOnly = true)
     public boolean isExistByGeometry(final Geometry geometry) {
-        return super.repository.isExistByGeometry(geometry);
+        return findBoolean(repository -> repository.isExistByGeometry(geometry));
+    }
+
+    @Override
+    protected void configureBeforeSave(final CityEntity entity) {
+
     }
 }

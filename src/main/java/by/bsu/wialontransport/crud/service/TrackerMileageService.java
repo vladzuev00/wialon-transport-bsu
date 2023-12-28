@@ -9,17 +9,30 @@ import by.bsu.wialontransport.model.Mileage;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrackerMileageService
-        extends AbstractCRUDService<Long, TrackerMileageEntity, TrackerMileage, TrackerMileageMapper, TrackerMileageRepository> {
+public class TrackerMileageService extends CRUDService<
+        Long,
+        TrackerMileageEntity,
+        TrackerMileage,
+        TrackerMileageMapper,
+        TrackerMileageRepository
+        > {
 
     public TrackerMileageService(final TrackerMileageMapper mapper, final TrackerMileageRepository repository) {
         super(mapper, repository);
     }
 
-    public void increaseMileage(final Tracker tracker, final Mileage mileageDelta) {
-        final Long trackerId = tracker.getId();
-        final double urbanDelta = mileageDelta.getUrban();
-        final double countryDelta = mileageDelta.getCountry();
-        this.repository.increaseMileage(trackerId, urbanDelta, countryDelta);
+    public int increaseMileage(final Tracker tracker, final Mileage mileageDelta) {
+        return findInt(
+                repository -> repository.increaseMileage(
+                        tracker.getId(),
+                        mileageDelta.getUrban(),
+                        mileageDelta.getCountry()
+                )
+        );
+    }
+
+    @Override
+    protected void configureBeforeSave(final TrackerMileageEntity entity) {
+
     }
 }

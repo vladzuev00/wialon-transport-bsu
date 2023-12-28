@@ -9,14 +9,10 @@ import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.hibernate.Hibernate;
 import org.junit.Test;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.EntityTestUtil.checkDeepEquals;
-import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
-import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+import static by.bsu.wialontransport.util.entity.CityEntityUtil.checkDeepEquals;
 import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,54 +24,19 @@ public final class CityMapperTest extends AbstractContextTest {
     @Autowired
     private CityMapper mapper;
 
-    @Autowired
-    private GeometryFactory geometryFactory;
-
     @Test
     public void entityWithLoadedPropertiesShouldBeMappedToDto() {
-        final AddressEntity givenAddress = AddressEntity.builder()
-                .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
-                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
-                .cityName("city")
-                .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
-                .build();
-        final SearchingCitiesProcessEntity givenProcess = SearchingCitiesProcessEntity.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
         final CityEntity givenEntity = CityEntity.builder()
                 .id(255L)
-                .address(givenAddress)
-                .searchingCitiesProcess(givenProcess)
+                .address(createAddressEntity(256L))
+                .searchingCitiesProcess(createSearchingCitiesProcessEntity(257L))
                 .build();
 
-        final City actual = this.mapper.mapToDto(givenEntity);
-        final Address expectedAddress = Address.builder()
-                .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
-                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
-                .cityName("city")
-                .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
-                .build();
-        final SearchingCitiesProcess expectedProcess = SearchingCitiesProcess.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
+        final City actual = mapper.mapToDto(givenEntity);
         final City expected = City.builder()
                 .id(255L)
-                .address(expectedAddress)
-                .searchingCitiesProcess(expectedProcess)
+                .address(createAddressDto(256L))
+                .searchingCitiesProcess(createSearchingCitiesProcessDto(257L))
                 .build();
         assertEquals(expected, actual);
     }
@@ -97,11 +58,9 @@ public final class CityMapperTest extends AbstractContextTest {
                     .searchingCitiesProcess(givenProcess)
                     .build();
 
-            final City actual = this.mapper.mapToDto(givenEntity);
+            final City actual = mapper.mapToDto(givenEntity);
             final City expected = City.builder()
                     .id(255L)
-                    .address(null)
-                    .searchingCitiesProcess(null)
                     .build();
             assertEquals(expected, actual);
         }
@@ -109,51 +68,47 @@ public final class CityMapperTest extends AbstractContextTest {
 
     @Test
     public void dtoShouldBeMappedToEntity() {
-        final Address givenAddress = Address.builder()
-                .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
-                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
-                .cityName("city")
-                .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
-                .build();
-        final SearchingCitiesProcess givenProcess = SearchingCitiesProcess.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
         final City givenDto = City.builder()
                 .id(255L)
-                .address(givenAddress)
-                .searchingCitiesProcess(givenProcess)
+                .address(createAddressDto(256L))
+                .searchingCitiesProcess(createSearchingCitiesProcessDto(257L))
                 .build();
 
-        final CityEntity actual = this.mapper.mapToEntity(givenDto);
-        final AddressEntity expectedAddress = AddressEntity.builder()
-                .id(255L)
-                .boundingBox(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6, 6, 7))
-                .center(createPoint(this.geometryFactory, 53.050286, 24.873635))
-                .cityName("city")
-                .countryName("country")
-                .geometry(createPolygon(this.geometryFactory, 1, 2, 3, 4, 5, 6))
-                .build();
-        final SearchingCitiesProcessEntity expectedProcess = SearchingCitiesProcessEntity.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
-                .searchStep(0.5)
-                .totalPoints(1000)
-                .handledPoints(100)
-                .status(HANDLING)
-                .build();
+        final CityEntity actual = mapper.mapToEntity(givenDto);
         final CityEntity expected = CityEntity.builder()
                 .id(255L)
-                .address(expectedAddress)
-                .searchingCitiesProcess(expectedProcess)
+                .address(createAddressEntity(256L))
+                .searchingCitiesProcess(createSearchingCitiesProcessEntity(257L))
                 .build();
         assertNotNull(actual);
         checkDeepEquals(expected, actual);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Address createAddressDto(final Long id) {
+        return Address.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static AddressEntity createAddressEntity(final Long id) {
+        return AddressEntity.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static SearchingCitiesProcess createSearchingCitiesProcessDto(final Long id) {
+        return SearchingCitiesProcess.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static SearchingCitiesProcessEntity createSearchingCitiesProcessEntity(final Long id) {
+        return SearchingCitiesProcessEntity.builder()
+                .id(id)
+                .build();
     }
 }

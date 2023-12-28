@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.*;
 @RequiredArgsConstructor
 public final class UserMovementReportBuildingContextFactory {
     private static final String FONT_PATH = "fonts/Roboto-Regular.ttf";
-    private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
+//    private static final Comparator<Data> DATA_COMPARATOR_BY_DATE_TIME = comparing(Data::findDateTime);
     private static final Integer FONT_SIZE = 11;
     private static final Color BORDER_COLOR = WHITE;
 
@@ -73,8 +73,9 @@ public final class UserMovementReportBuildingContextFactory {
 
     private Map<Tracker, List<Data>> findSortedByDateTimeDataGroupedByTrackers(final User user,
                                                                                final DateInterval dateInterval) {
-        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
-        return groupSortedByDateTimeDataByTrackers(data);
+//        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
+//        return groupSortedByDateTimeDataByTrackers(data);
+        return null;
     }
 
     private static Map<Tracker, List<Data>> groupSortedByDateTimeDataByTrackers(final List<Data> data) {
@@ -91,13 +92,13 @@ public final class UserMovementReportBuildingContextFactory {
     }
 
     private static List<Data> sortByDateTime(final List<Data> data) {
-        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
+//        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
         return data;
     }
 
     private void insertLackedTrackers(final Map<Tracker, List<Data>> dataByTrackers, final User user) {
-        final List<Tracker> userAllTrackers = this.trackerService.findByUser(user);
-        userAllTrackers.forEach(userTracker -> dataByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
+//        final List<Tracker> userAllTrackers = this.trackerService.findByUser(user);
+//        userAllTrackers.forEach(userTracker -> dataByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
     }
 
     private TrackerMovement createTrackerMovement(final Entry<Tracker, List<Data>> dataByTracker) {

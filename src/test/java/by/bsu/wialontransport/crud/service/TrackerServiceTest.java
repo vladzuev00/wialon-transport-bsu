@@ -5,15 +5,16 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
-import static java.util.Comparator.comparing;
-import static org.junit.Assert.*;
+import static java.lang.Long.MAX_VALUE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public final class TrackerServiceTest extends AbstractContextTest {
 
@@ -22,7 +23,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByImei() {
-        final Tracker actual = this.service.findByImei("11112222333344445555").orElseThrow();
+        final Tracker actual = service.findByImei("11112222333344445555").orElseThrow();
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
@@ -34,20 +35,17 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByImei() {
-        final Optional<Tracker> optionalFoundTracker = this.service.findByImei("00000000000000000000");
-        assertTrue(optionalFoundTracker.isEmpty());
+        final Optional<Tracker> optionalActual = service.findByImei("00000000000000000000");
+        assertTrue(optionalActual.isEmpty());
     }
 
     @Test
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
-    public void allTrackersShouldBeFoundByUser() {
+    public void allTrackersOrderedByImeiShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
 
-        final List<Tracker> actual = this.service.findByUser(givenUser);
-        final List<Tracker> expected = List.of(
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser);
+        final List<Tracker> actualAsList = actual.toList();
+        final List<Tracker> expectedAsList = List.of(
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
@@ -55,39 +53,31 @@ public final class TrackerServiceTest extends AbstractContextTest {
                         .phoneNumber("447336934")
                         .build(),
                 Tracker.builder()
-                        .id(355L)
-                        .imei("11111222223333344444")
-                        .password("password")
+                        .id(256L)
+                        .imei("11112222333344445556")
+                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                         .phoneNumber("447336935")
-                        .build(),
-                Tracker.builder()
-                        .id(356L)
-                        .imei("11111222223333344445")
-                        .password("password")
-                        .phoneNumber("447336936")
                         .build()
         );
-        assertEquals(expected, actual);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     @Test
-    public void allTrackersShouldNotBeFoundByUser() {
+    public void allTrackersOrderedByImeiShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
 
-        final List<Tracker> actual = this.service.findByUser(givenUser);
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser);
         assertTrue(actual.isEmpty());
     }
 
     @Test
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
-    public void trackersShouldBeFoundByUser() {
+    public void trackersOrderedByImeiShouldBeFoundByUser() {
         final User givenUser = createUser(255L);
+        final PageRequest givenPageRequest = PageRequest.of(0, 5);
 
-        final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5);
-        final List<Tracker> expected = List.of(
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser, givenPageRequest);
+        final List<Tracker> actualAsList = actual.toList();
+        final List<Tracker> expectedAsList = List.of(
                 Tracker.builder()
                         .id(255L)
                         .imei("11112222333344445555")
@@ -95,74 +85,27 @@ public final class TrackerServiceTest extends AbstractContextTest {
                         .phoneNumber("447336934")
                         .build(),
                 Tracker.builder()
-                        .id(355L)
-                        .imei("11111222223333344444")
-                        .password("password")
-                        .phoneNumber("447336935")
-                        .build(),
-                Tracker.builder()
-                        .id(356L)
-                        .imei("11111222223333344445")
-                        .password("password")
-                        .phoneNumber("447336936")
-                        .build()
-        );
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void trackersShouldNotBeFoundByUser() {
-        final User givenUser = createUser(256L);
-
-        final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5);
-        assertTrue(actual.isEmpty());
-    }
-
-    @Test
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(355, '11111222223333344444', 'password', '447336935', 255)")
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(356, '11111222223333344445', 'password', '447336936', 255)")
-    public void sortedTrackersShouldBeFoundByUser() {
-        final User givenUser = createUser(255L);
-        final Comparator<Tracker> givenComparator = comparing(Tracker::getImei).reversed();
-
-        final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5, givenComparator);
-        final List<Tracker> expected = List.of(
-                Tracker.builder()
-                        .id(255L)
-                        .imei("11112222333344445555")
+                        .id(256L)
+                        .imei("11112222333344445556")
                         .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                        .phoneNumber("447336934")
-                        .build(),
-                Tracker.builder()
-                        .id(356L)
-                        .imei("11111222223333344445")
-                        .password("password")
-                        .phoneNumber("447336936")
-                        .build(),
-                Tracker.builder()
-                        .id(355L)
-                        .imei("11111222223333344444")
-                        .password("password")
                         .phoneNumber("447336935")
                         .build()
         );
-        assertEquals(expected, actual);
+        assertEquals(expectedAsList, actualAsList);
     }
 
     @Test
-    public void sortedTrackersShouldNotBeFoundByUser() {
+    public void trackersOrderedByImeiShouldNotBeFoundByUser() {
         final User givenUser = createUser(256L);
-        final Comparator<Tracker> givenComparator = comparing(Tracker::getImei).reversed();
+        final PageRequest givenPageRequest = PageRequest.of(0, 5);
 
-        final List<Tracker> actual = this.service.findByUser(givenUser, 0, 5, givenComparator);
+        final Page<Tracker> actual = service.findByUserOrderedByImei(givenUser, givenPageRequest);
         assertTrue(actual.isEmpty());
     }
 
     @Test
     public void trackerShouldBeFoundByIdWithUser() {
-        final Optional<Tracker> optionalActual = this.service.findByIdWithUser(255L);
+        final Optional<Tracker> optionalActual = service.findByIdWithUser(255L);
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
@@ -171,25 +114,27 @@ public final class TrackerServiceTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .user(User.builder()
-                        .id(255L)
-                        .email("vladzuev.00@mail.ru")
-                        .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                        .role(USER)
-                        .build())
+                .user(
+                        User.builder()
+                                .id(255L)
+                                .email("vladzuev.00@mail.ru")
+                                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
+                                .role(USER)
+                                .build()
+                )
                 .build();
         assertEquals(expected, actual);
     }
 
     @Test
     public void trackerShouldNotBeFoundByIdWithUser() {
-        final Optional<Tracker> optionalActual = this.service.findByIdWithUser(256L);
+        final Optional<Tracker> optionalActual = service.findByIdWithUser(MAX_VALUE);
         assertTrue(optionalActual.isEmpty());
     }
 
     @Test
     public void trackerShouldBeFoundByPhoneNumber() {
-        final Optional<Tracker> optionalActual = this.service.findByPhoneNumber("447336934");
+        final Optional<Tracker> optionalActual = service.findByPhoneNumber("447336934");
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
@@ -204,7 +149,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByPhoneNumber() {
-        final Optional<Tracker> optionalActual = this.service.findByPhoneNumber("447336935");
+        final Optional<Tracker> optionalActual = service.findByPhoneNumber("997336935");
         assertTrue(optionalActual.isEmpty());
     }
 

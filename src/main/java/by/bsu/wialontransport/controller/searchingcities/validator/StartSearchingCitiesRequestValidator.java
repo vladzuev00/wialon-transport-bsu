@@ -3,7 +3,7 @@ package by.bsu.wialontransport.controller.searchingcities.validator;
 import by.bsu.wialontransport.controller.exception.CustomValidationException;
 import by.bsu.wialontransport.controller.searchingcities.model.StartSearchingCitiesRequest;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import org.springframework.stereotype.Component;
 
 import static java.lang.Double.compare;
@@ -20,8 +20,8 @@ public final class StartSearchingCitiesRequestValidator {
     }
 
     private static boolean isValidAreaCoordinate(final AreaCoordinate research) {
-        final Coordinate leftBottom = research.getLeftBottom();
-        final Coordinate rightUpper = research.getRightUpper();
+        final RequestCoordinate leftBottom = research.getLeftBottom();
+        final RequestCoordinate rightUpper = research.getRightUpper();
         return compare(leftBottom.getLatitude(), rightUpper.getLatitude()) <= 0
                 && compare(leftBottom.getLongitude(), rightUpper.getLongitude()) <= 0;
     }

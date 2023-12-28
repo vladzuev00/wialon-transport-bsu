@@ -4,17 +4,22 @@ import lombok.experimental.UtilityClass;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.empty;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.StreamSupport.stream;
 
 @UtilityClass
 public final class CollectionUtil {
+
+    public static <T> boolean areAllMatch(final Collection<T> elements, final Predicate<T> predicate) {
+        return elements.stream().allMatch(predicate);
+    }
 
     public static <S, K, V> Map<K, V> collectToTreeMap(final List<S> sources,
                                                        final Function<S, K> keyExtractor,
@@ -32,11 +37,11 @@ public final class CollectionUtil {
     }
 
     public static <S, P> List<P> mapToList(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableList);
+        return mapAndCollect(sources, elementMapper, toList());
     }
 
     public static <S, P> Set<P> mapToSet(final Collection<S> sources, final Function<S, P> elementMapper) {
-        return mapToCollection(sources, elementMapper, Collectors::toUnmodifiableSet);
+        return mapAndCollect(sources, elementMapper, toUnmodifiableSet());
     }
 
     public static <T> Optional<T> findLast(final List<T> elements) {
@@ -51,6 +56,21 @@ public final class CollectionUtil {
         return stream(spliterator, false).collect(toList());
     }
 
+    public static <K, V> Map<K, V> convertToMap(final Collection<V> sources, final Function<V, K> keyExtractor) {
+        return sources.stream()
+                .collect(
+                        toMap(
+                                keyExtractor,
+                                identity()
+                        )
+                );
+    }
+
+    public static <S, R> List<R> collectValuesToList(final Map<?, S> sourceMap, final Function<S, R> valueMapper) {
+        final Collection<S> source = sourceMap.values();
+        return mapToList(source, valueMapper);
+    }
+
 //    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {
 //        final Set<P> properties = mapToSet(sources, propertyExtractor);
 //        if(properties.size() != 1)
@@ -60,10 +80,9 @@ public final class CollectionUtil {
         throw new IllegalArgumentException("Key duplication was found when collection to map");
     }
 
-    private static <S, P, C extends Collection<P>> C mapToCollection(final Collection<S> sources,
-                                                                     final Function<S, P> elementMapper,
-                                                                     final Supplier<Collector<P, ?, C>> collectorSupplier) {
-        final Collector<P, ?, C> collector = collectorSupplier.get();
+    public static <S, P, D> D mapAndCollect(final Collection<S> sources,
+                                            final Function<S, P> elementMapper,
+                                            final Collector<P, ?, D> collector) {
         return sources.stream()
                 .map(elementMapper)
                 .collect(collector);

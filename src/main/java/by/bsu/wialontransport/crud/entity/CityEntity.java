@@ -7,7 +7,7 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "cities")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +15,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class CityEntity extends AbstractEntity<Long> {
+public class CityEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")

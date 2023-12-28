@@ -1,12 +1,8 @@
 package by.bsu.wialontransport.kafka.consumer;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.crud.dto.Data.GeographicCoordinate;
-import by.bsu.wialontransport.crud.dto.Data.Latitude;
-import by.bsu.wialontransport.crud.dto.Data.Longitude;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
@@ -18,7 +14,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.wialontransport.kafka.transportable.TransportableData.Fields.*;
+import static by.bsu.wialontransport.kafka.transportable.data.TransportableData.Fields.*;
 import static java.lang.Byte.parseByte;
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;
@@ -28,15 +24,15 @@ import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
-    private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
-    private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
+//    private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
+//    private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
     private final AnalogInputsExtractor analogInputsExtractor;
     private final TrackerService trackerService;
 
     public AbstractKafkaDataConsumer(final TrackerService trackerService) {
-        this.latitudeExtractor = new LatitudeExtractor();
-        this.longitudeExtractor = new LongitudeExtractor();
+//        this.latitudeExtractor = new LatitudeExtractor();
+//        this.longitudeExtractor = new LongitudeExtractor();
         this.parametersByNamesExtractor = new ParametersByNamesExtractor();
         this.analogInputsExtractor = new AnalogInputsExtractor();
         this.trackerService = trackerService;
@@ -46,12 +42,13 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         return extractDateTime(genericRecord, epochSeconds);
     }
 
-    protected final Latitude extractLatitude(final GenericRecord genericRecord) {
-        return this.latitudeExtractor.extract(genericRecord);
+    protected final double extractLatitude(final GenericRecord genericRecord) {
+//        return this.latitudeExtractor.extract(genericRecord);
+        return 0;
     }
 
-    protected final Longitude extractLongitude(final GenericRecord genericRecord) {
-        return this.longitudeExtractor.extract(genericRecord);
+    protected final double extractLongitude(final GenericRecord genericRecord) {
+        return 0;
     }
 
     protected static int extractSpeed(final GenericRecord genericRecord) {
@@ -108,74 +105,74 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         return extractValue(genericRecord, trackerId);
     }
 
-    private static abstract class GeographicCoordinateExtractor<T extends GeographicCoordinate> {
-        private final String degreesGenericRecordKey;
-        private final String minutesGenericRecordKey;
-        private final String minuteShareGenericRecordKey;
-        private final String typeValueGenericRecordKey;
-
-        public GeographicCoordinateExtractor(final String degreesGenericRecordKey,
-                                             final String minutesGenericRecordKey,
-                                             final String minuteShareGenericRecordKey,
-                                             final String typeValueGenericRecordKey) {
-            this.degreesGenericRecordKey = degreesGenericRecordKey;
-            this.minutesGenericRecordKey = minutesGenericRecordKey;
-            this.minuteShareGenericRecordKey = minuteShareGenericRecordKey;
-            this.typeValueGenericRecordKey = typeValueGenericRecordKey;
-        }
-
-        public final T extract(final GenericRecord genericRecord) {
-            final int degrees = this.extractDegrees(genericRecord);
-            final int minutes = this.extractMinutes(genericRecord);
-            final int minuteShare = this.extractMinuteShare(genericRecord);
-            final char typeValue = this.extractTypeValue(genericRecord);
-            return this.create(degrees, minutes, minuteShare, typeValue);
-        }
-
-        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
-
-        private int extractDegrees(final GenericRecord genericRecord) {
-            return extractValue(genericRecord, this.degreesGenericRecordKey);
-        }
-
-        private int extractMinutes(final GenericRecord genericRecord) {
-            return extractValue(genericRecord, this.minutesGenericRecordKey);
-        }
-
-        private int extractMinuteShare(final GenericRecord genericRecord) {
-            return extractValue(genericRecord, this.minuteShareGenericRecordKey);
-        }
-
-        private char extractTypeValue(final GenericRecord genericRecord) {
-            return extractChar(genericRecord, this.typeValueGenericRecordKey);
-        }
-    }
-
-    private static final class LatitudeExtractor extends GeographicCoordinateExtractor<Latitude> {
-
-        public LatitudeExtractor() {
-            super(latitudeDegrees, latitudeMinutes, latitudeMinuteShare, latitudeTypeValue);
-        }
-
-        @Override
-        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final DataEntity.Latitude.Type type = DataEntity.Latitude.Type.findByValue(typeValue);
-            return new Latitude(degrees, minutes, minuteShare, type);
-        }
-    }
-
-    private static final class LongitudeExtractor extends GeographicCoordinateExtractor<Longitude> {
-
-        public LongitudeExtractor() {
-            super(longitudeDegrees, longitudeMinutes, longitudeMinuteShare, longitudeTypeValue);
-        }
-
-        @Override
-        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
-            return new Longitude(degrees, minutes, minuteShare, type);
-        }
-    }
+//    private static abstract class GeographicCoordinateExtractor<T extends GeographicCoordinate> {
+//        private final String degreesGenericRecordKey;
+//        private final String minutesGenericRecordKey;
+//        private final String minuteShareGenericRecordKey;
+//        private final String typeValueGenericRecordKey;
+//
+//        public GeographicCoordinateExtractor(final String degreesGenericRecordKey,
+//                                             final String minutesGenericRecordKey,
+//                                             final String minuteShareGenericRecordKey,
+//                                             final String typeValueGenericRecordKey) {
+//            this.degreesGenericRecordKey = degreesGenericRecordKey;
+//            this.minutesGenericRecordKey = minutesGenericRecordKey;
+//            this.minuteShareGenericRecordKey = minuteShareGenericRecordKey;
+//            this.typeValueGenericRecordKey = typeValueGenericRecordKey;
+//        }
+//
+//        public final T extract(final GenericRecord genericRecord) {
+//            final int degrees = this.extractDegrees(genericRecord);
+//            final int minutes = this.extractMinutes(genericRecord);
+//            final int minuteShare = this.extractMinuteShare(genericRecord);
+//            final char typeValue = this.extractTypeValue(genericRecord);
+//            return this.create(degrees, minutes, minuteShare, typeValue);
+//        }
+//
+//        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
+//
+//        private int extractDegrees(final GenericRecord genericRecord) {
+//            return extractValue(genericRecord, this.degreesGenericRecordKey);
+//        }
+//
+//        private int extractMinutes(final GenericRecord genericRecord) {
+//            return extractValue(genericRecord, this.minutesGenericRecordKey);
+//        }
+//
+//        private int extractMinuteShare(final GenericRecord genericRecord) {
+//            return extractValue(genericRecord, this.minuteShareGenericRecordKey);
+//        }
+//
+//        private char extractTypeValue(final GenericRecord genericRecord) {
+//            return extractChar(genericRecord, this.typeValueGenericRecordKey);
+//        }
+//    }
+//
+//    private static final class LatitudeExtractor extends GeographicCoordinateExtractor<Latitude> {
+//
+//        public LatitudeExtractor() {
+//            super(latitudeDegrees, latitudeMinutes, latitudeMinuteShare, latitudeTypeValue);
+//        }
+//
+//        @Override
+//        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
+//            final DataEntity.Latitude.Type type = DataEntity.Latitude.Type.findByValue(typeValue);
+//            return new Latitude(degrees, minutes, minuteShare, type);
+//        }
+//    }
+//
+//    private static final class LongitudeExtractor extends GeographicCoordinateExtractor<Longitude> {
+//
+//        public LongitudeExtractor() {
+//            super(longitudeDegrees, longitudeMinutes, longitudeMinuteShare, longitudeTypeValue);
+//        }
+//
+//        @Override
+//        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
+//            final DataEntity.Longitude.Type type = DataEntity.Longitude.Type.findByValue(typeValue);
+//            return new Longitude(degrees, minutes, minuteShare, type);
+//        }
+//    }
 
     private static final class AnalogInputsExtractor {
         private static final String REGEX_DELIMITER_SERIALIZED_ANALOG_INPUTS = ",";
@@ -266,9 +263,12 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         }
 
         private static ParameterEntity.Type extractType(final Matcher matcher) {
-            final String typeValueString = matcher.group(GROUP_NUMBER_TYPE_VALUE);
-            final byte typeValue = parseByte(typeValueString);
-            return ParameterEntity.Type.findByValue(typeValue);
+//TODO: use EnumUtil
+
+            //            final String typeValueString = matcher.group(GROUP_NUMBER_TYPE_VALUE);
+//            final byte typeValue = parseByte(typeValueString);
+//            return ParameterEntity.Type.findByValue(typeValue);
+            return null;
         }
 
         private static String extractValue(final Matcher matcher) {

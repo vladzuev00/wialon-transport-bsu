@@ -11,7 +11,7 @@ import javax.persistence.*;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "searching_cities_processes")
 @TypeDef(
         name = "pgsql_enum",
@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class SearchingCitiesProcessEntity extends AbstractEntity<Long> {
+public class SearchingCitiesProcessEntity extends Entity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

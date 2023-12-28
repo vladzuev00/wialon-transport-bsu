@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import org.junit.Test;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -27,10 +27,10 @@ public final class GeometryCreatingServiceTest extends AbstractContextTest {
     public void lineStringShouldBeCreatedByTrack() {
         final Track givenTrack = new Track(
                 List.of(
-                        new Coordinate(1., 2.),
-                        new Coordinate(3., 4.),
-                        new Coordinate(5., 6.),
-                        new Coordinate(7., 8.)
+                        new RequestCoordinate(1., 2.),
+                        new RequestCoordinate(3., 4.),
+                        new RequestCoordinate(5., 6.),
+                        new RequestCoordinate(7., 8.)
                 )
         );
 
@@ -51,7 +51,7 @@ public final class GeometryCreatingServiceTest extends AbstractContextTest {
 
     @Test
     public void pointShouldBeCreatedByCoordinate() {
-        final Coordinate givenCoordinate = new Coordinate(1., 2.);
+        final RequestCoordinate givenCoordinate = new RequestCoordinate(1., 2.);
 
         final Point actual = this.geometryCreatingService.createPoint(givenCoordinate);
         final Point expected = this.geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(2., 1.));

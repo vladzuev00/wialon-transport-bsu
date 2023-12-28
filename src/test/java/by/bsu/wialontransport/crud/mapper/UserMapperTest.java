@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
-import static org.junit.Assert.*;
+import static by.bsu.wialontransport.util.entity.UserEntityUtil.checkEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public final class UserMapperTest extends AbstractContextTest {
 
@@ -23,7 +25,7 @@ public final class UserMapperTest extends AbstractContextTest {
                 .role(USER)
                 .build();
 
-        final UserEntity actual = this.mapper.mapToEntity(givenDto);
+        final UserEntity actual = mapper.mapToEntity(givenDto);
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
@@ -43,7 +45,7 @@ public final class UserMapperTest extends AbstractContextTest {
                 .role(USER)
                 .build();
 
-        final User actual = this.mapper.createDto(givenEntity);
+        final User actual = mapper.createDto(givenEntity);
         final User expected = User.builder()
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
@@ -51,12 +53,5 @@ public final class UserMapperTest extends AbstractContextTest {
                 .role(USER)
                 .build();
         assertEquals(expected, actual);
-    }
-
-    private static void checkEquals(final UserEntity expected, final UserEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getPassword(), actual.getPassword());
-        assertSame(expected.getRole(), actual.getRole());
     }
 }

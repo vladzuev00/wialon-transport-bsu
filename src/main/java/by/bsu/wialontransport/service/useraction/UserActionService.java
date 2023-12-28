@@ -110,7 +110,8 @@ public final class UserActionService {
                                              final TrackerSortingKey sortingKey) {
         final User loggedOnUser = this.securityService.findLoggedOnUser();
         final Comparator<Tracker> trackerComparator = sortingKey.getComparator();
-        return this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, trackerComparator);
+//        return this.trackerService.findByUser(loggedOnUser, pageNumber, pageSize, trackerComparator);
+        return null;
     }
 
     private TrackerForm findTrackerForm(final Long trackerId) {

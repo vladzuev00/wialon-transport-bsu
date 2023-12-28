@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
 
 public final class UserServiceTest extends AbstractContextTest {
@@ -19,7 +20,7 @@ public final class UserServiceTest extends AbstractContextTest {
     public void userShouldBeFoundByEmail() {
         final String givenEmail = "vladzuev.00@mail.ru";
 
-        final User actual = this.service.findByEmail(givenEmail).orElseThrow();
+        final User actual = service.findByEmail(givenEmail).orElseThrow();
         final User expected = User.builder()
                 .id(255L)
                 .email(givenEmail)
@@ -31,19 +32,19 @@ public final class UserServiceTest extends AbstractContextTest {
 
     @Test
     public void userShouldNotBeFoundByEmail() {
-        final Optional<User> optionalUser = this.service.findByEmail("email@mail.ru");
+        final Optional<User> optionalUser = service.findByEmail("email@mail.ru");
         assertTrue(optionalUser.isEmpty());
     }
 
     @Test
     public void userShouldExistsByEmail() {
-        final boolean exists = this.service.isExistByEmail("vladzuev.00@mail.ru");
+        final boolean exists = service.isExistByEmail("vladzuev.00@mail.ru");
         assertTrue(exists);
     }
 
     @Test
     public void userShouldNotExistByEmail() {
-        final boolean exists = this.service.isExistByEmail("notexist@mail.ru");
+        final boolean exists = service.isExistByEmail("notexist@mail.ru");
         assertFalse(exists);
     }
 
@@ -53,9 +54,11 @@ public final class UserServiceTest extends AbstractContextTest {
         final User givenUser = createUser(givenUserId);
         final String givenNewEmail = "newEmail@mail.ru";
 
-        this.service.updateEmail(givenUser, givenNewEmail);
+        final int actualCountUpdatedRows = service.updateEmail(givenUser, givenNewEmail);
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final User actual = this.service.findById(givenUserId).orElseThrow();
+        final User actual = service.findById(givenUserId).orElseThrow();
         final User expected = User.builder()
                 .id(givenUserId)
                 .email(givenNewEmail)
@@ -63,6 +66,17 @@ public final class UserServiceTest extends AbstractContextTest {
                 .role(USER)
                 .build();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void emailShouldNotBeUpdatedBecauseOfNotExistingUserId() {
+        final Long givenUserId = MAX_VALUE;
+        final User givenUser = createUser(givenUserId);
+        final String givenNewEmail = "newEmail@mail.ru";
+
+        final int actualCountUpdatedRows = service.updateEmail(givenUser, givenNewEmail);
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
     }
 
     private static User createUser(final Long id) {

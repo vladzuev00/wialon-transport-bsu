@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.Track;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +14,13 @@ public final class CalculatingDistanceService {
     private static final double EARTH_RADIUS_IN_KILOMETERS = 6378.136;
 
     public double calculate(final Track track) {
-        final List<Coordinate> coordinates = track.getCoordinates();
+        final List<RequestCoordinate> coordinates = track.getCoordinates();
         return range(0, coordinates.size() - 1)
                 .mapToDouble(i -> calculate(coordinates.get(i), coordinates.get(i + 1)))
                 .sum();
     }
 
-    public double calculate(final Coordinate first, final Coordinate second) {
+    public double calculate(final RequestCoordinate first, final RequestCoordinate second) {
         final double latitudeDistance = toRadians(second.getLatitude() - first.getLatitude());
         final double longitudeDistance = toRadians(second.getLongitude() - first.getLongitude());
         final double a = square(sin(latitudeDistance / 2))

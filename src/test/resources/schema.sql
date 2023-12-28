@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
+DROP TABLE IF EXISTS tracker_mileages;
 
 --DROPPING TYPES
 DROP TYPE IF EXISTS user_type;
@@ -125,30 +126,18 @@ CREATE INDEX ON addresses using GIST(geometry);
 CREATE TABLE data
 (
     id                     BIGSERIAL    NOT NULL PRIMARY KEY,
-    date                   DATE         NOT NULL,
-    time                   TIME         NOT NULL,
-
-    latitude_degrees       INTEGER      NOT NULL,
-    latitude_minutes       INTEGER      NOT NULL,
-    latitude_minute_share  INTEGER      NOT NULL,
-    latitude_type          CHAR(1)      NOT NULL,
-
-    longitude_degrees      INTEGER      NOT NULL,
-    longitude_minutes      INTEGER      NOT NULL,
-    longitude_minute_share INTEGER      NOT NULL,
-    longitude_type         CHAR(1)      NOT NULL,
-
-    speed                  INTEGER      NOT NULL,
+    date_time              TIMESTAMP(0) NOT NULL,
+    latitude               DECIMAL      NOT NULL,
+    longitude              DECIMAL      NOT NULL,
+    speed                  DECIMAL      NOT NULL,
     course                 INTEGER      NOT NULL,
     altitude               INTEGER      NOT NULL,
     amount_of_satellites   INTEGER      NOT NULL,
-
     reduction_precision    DECIMAL      NOT NULL,
     inputs                 INTEGER      NOT NULL,
     outputs                INTEGER      NOT NULL,
     analog_inputs          DOUBLE PRECISION[] NOT NULL,
     driver_key_code        VARCHAR(256) NOT NULL,
-
     tracker_id             INTEGER      NOT NULL,
     address_id             BIGINT       NOT NULL
 );
@@ -158,14 +147,6 @@ ALTER SEQUENCE data_id_seq INCREMENT 50;
 ALTER TABLE data
     ADD CONSTRAINT fk_data_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
         ON DELETE CASCADE;
-
-ALTER TABLE data
-    ADD CONSTRAINT latitude_type_should_be_correct
-        CHECK (data.latitude_type IN ('N', 'S'));
-
-ALTER TABLE data
-    ADD CONSTRAINT longitude_type_should_be_correct
-        CHECK (data.longitude_type IN ('E', 'W'));
 
 ALTER TABLE data
     ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);

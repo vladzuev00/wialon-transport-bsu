@@ -2,11 +2,14 @@ package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "tracker_mileages")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class TrackerMileageEntity extends AbstractEntity<Long> {
+public class TrackerMileageEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")

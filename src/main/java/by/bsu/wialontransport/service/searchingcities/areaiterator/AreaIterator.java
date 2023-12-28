@@ -1,22 +1,22 @@
 package by.bsu.wialontransport.service.searchingcities.areaiterator;
 
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static java.lang.Double.compare;
 
-public final class AreaIterator implements Iterator<Coordinate> {
+public final class AreaIterator implements Iterator<RequestCoordinate> {
     private final AreaCoordinate areaCoordinate;
     private final double searchStep;
-    private Coordinate current;
+    private RequestCoordinate current;
 
     public AreaIterator(final AreaCoordinate areaCoordinate, final double searchStep) {
         this.areaCoordinate = areaCoordinate;
         this.searchStep = searchStep;
-        this.current = new Coordinate(
+        this.current = new RequestCoordinate(
                 areaCoordinate.getLeftBottom().getLatitude() - searchStep,
                 areaCoordinate.getLeftBottom().getLongitude()
         );
@@ -28,7 +28,7 @@ public final class AreaIterator implements Iterator<Coordinate> {
     }
 
     @Override
-    public Coordinate next() {
+    public RequestCoordinate next() {
         if (this.hasNextLatitude()) {
             return this.nextLatitude();
         } else if (this.hasNextLongitude()) {
@@ -51,16 +51,16 @@ public final class AreaIterator implements Iterator<Coordinate> {
         ) <= 0;
     }
 
-    private Coordinate nextLatitude() {
-        this.current = new Coordinate(
+    private RequestCoordinate nextLatitude() {
+        this.current = new RequestCoordinate(
                 this.current.getLatitude() + this.searchStep,
                 this.current.getLongitude()
         );
         return this.current;
     }
 
-    private Coordinate nextLongitude() {
-        this.current = new Coordinate(
+    private RequestCoordinate nextLongitude() {
+        this.current = new RequestCoordinate(
                 this.areaCoordinate.getLeftBottom().getLatitude(),
                 this.current.getLongitude() + this.searchStep
         );

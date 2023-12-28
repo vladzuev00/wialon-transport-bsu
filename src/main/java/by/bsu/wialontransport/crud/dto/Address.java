@@ -7,7 +7,7 @@ import org.locationtech.jts.geom.Point;
 @Value
 @AllArgsConstructor
 @Builder
-public class Address implements AbstractDto<Long> {
+public class Address implements Dto<Long> {
     Long id;
     Geometry boundingBox;
     Point center;

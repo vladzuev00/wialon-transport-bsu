@@ -41,9 +41,10 @@ public final class DataFilter {
     }
 
     private static boolean isCorrectOrder(final Data current, final Data previous) {
-        final LocalDateTime dateTimeOfCurrentData = LocalDateTime.of(current.getDate(), current.getTime());
-        final LocalDateTime dateTimeOfPreviousData = LocalDateTime.of(previous.getDate(), previous.getTime());
-        return isNotEarlier(dateTimeOfCurrentData, dateTimeOfPreviousData);
+//        final LocalDateTime dateTimeOfCurrentData = LocalDateTime.of(current.getDate(), current.getTime());
+//        final LocalDateTime dateTimeOfPreviousData = LocalDateTime.of(previous.getDate(), previous.getTime());
+//        return isNotEarlier(dateTimeOfCurrentData, dateTimeOfPreviousData);
+        return false;
     }
 
     private static boolean isNotEarlier(final LocalDateTime research, final LocalDateTime relativeDateTime) {

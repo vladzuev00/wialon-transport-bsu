@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class NominatimService {
         this.restTemplate = restTemplate;
     }
 
-    public NominatimReverseResponse reverse(final Coordinate coordinate) {
+    public NominatimReverseResponse reverse(final RequestCoordinate coordinate) {
         return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }
 

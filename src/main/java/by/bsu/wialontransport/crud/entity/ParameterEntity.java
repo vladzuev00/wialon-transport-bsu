@@ -6,13 +6,11 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
-import static java.lang.Byte.MIN_VALUE;
-import static java.util.Arrays.stream;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity
+@javax.persistence.Entity
 @Table(name = "parameters")
 @TypeDef(
         name = "pgsql_enum",
@@ -24,7 +22,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class ParameterEntity extends AbstractEntity<Long> {
+public class ParameterEntity extends Entity<Long> {
 
     @Id
     @Column(name = "id")
@@ -50,17 +48,9 @@ public class ParameterEntity extends AbstractEntity<Long> {
 
     @RequiredArgsConstructor
     public enum Type {
-        NOT_DEFINED(MIN_VALUE), INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);
+        INTEGER((byte) 1), DOUBLE((byte) 2), STRING((byte) 3);
 
         @Getter
         private final byte value;
-
-        //TODO: remove
-        public static Type findByValue(byte value) {
-            return stream(values())
-                    .filter(type -> type.value == value)
-                    .findAny()
-                    .orElse(NOT_DEFINED);
-        }
     }
 }

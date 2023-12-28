@@ -6,19 +6,24 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class UserMapper extends AbstractMapper<UserEntity, User> {
+public final class UserMapper extends Mapper<UserEntity, User> {
 
     public UserMapper(final ModelMapper modelMapper) {
         super(modelMapper, UserEntity.class, User.class);
     }
 
     @Override
-    protected User createDto(final UserEntity entity) {
+    protected User createDto(final UserEntity source) {
         return new User(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getPassword(),
-                entity.getRole()
+                source.getId(),
+                source.getEmail(),
+                source.getPassword(),
+                source.getRole()
         );
+    }
+
+    @Override
+    protected void mapSpecificFields(final User source, final UserEntity destination) {
+
     }
 }

@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @Builder
-public class User implements AbstractDto<Long> {
+public class User implements Dto<Long> {
     Long id;
     String email;
     String password;

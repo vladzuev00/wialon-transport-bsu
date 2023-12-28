@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -13,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class TrackerEntity extends AbstractEntityWithPassword<Long> {
+public class TrackerEntity extends EntityWithPassword<Long> {
 
     @Id
     @Column(name = "id")

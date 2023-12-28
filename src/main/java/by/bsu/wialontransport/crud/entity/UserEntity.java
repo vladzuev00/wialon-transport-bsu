@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -20,7 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class UserEntity extends AbstractEntityWithPassword<Long> {
+public class UserEntity extends EntityWithPassword<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

@@ -6,18 +6,23 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TrackerMileageMapper extends AbstractMapper<TrackerMileageEntity, TrackerMileage> {
+public final class TrackerMileageMapper extends Mapper<TrackerMileageEntity, TrackerMileage> {
 
     public TrackerMileageMapper(final ModelMapper modelMapper) {
         super(modelMapper, TrackerMileageEntity.class, TrackerMileage.class);
     }
 
     @Override
-    protected TrackerMileage createDto(final TrackerMileageEntity entity) {
+    protected TrackerMileage createDto(final TrackerMileageEntity source) {
         return new TrackerMileage(
-                entity.getId(),
-                entity.getUrban(),
-                entity.getCountry()
+                source.getId(),
+                source.getUrban(),
+                source.getCountry()
         );
+    }
+
+    @Override
+    protected void mapSpecificFields(final TrackerMileage source, final TrackerMileageEntity destination) {
+
     }
 }

@@ -3,9 +3,10 @@ package by.bsu.wialontransport.model;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Value
 public class DateInterval {
-    LocalDate start;
-    LocalDate end;
+    LocalDateTime start;
+    LocalDateTime end;
 }

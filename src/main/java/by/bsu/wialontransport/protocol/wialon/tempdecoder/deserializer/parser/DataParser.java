@@ -12,10 +12,10 @@ public final class DataParser {
         final DataComponentsParser componentsParser = new DataComponentsParser(source);
         final LocalDateTime dateTime = componentsParser.parseDateTime();
         return Data.builder()
-                .date(dateTime.toLocalDate())
-                .time(dateTime.toLocalTime())
-                .latitude(componentsParser.parseLatitude())
-                .longitude(componentsParser.parseLongitude())
+//                .date(dateTime.toLocalDate())
+//                .time(dateTime.toLocalTime())
+//                .latitude(componentsParser.parseLatitude())
+//                .longitude(componentsParser.parseLongitude())
                 .speed(componentsParser.parseSpeed())
                 .course(componentsParser.parseCourse())
                 .altitude(componentsParser.parseAltitude())

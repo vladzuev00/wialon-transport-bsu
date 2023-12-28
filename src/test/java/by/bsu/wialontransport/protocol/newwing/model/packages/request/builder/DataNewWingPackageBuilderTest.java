@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.DataNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import org.junit.Test;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public final class DataNewWingPackageBuilderTest {
 
         final int givenChecksum = 12345;
 
-        final DataNewWingPackage actual = givenBuilder.build(givenChecksum);
-        final DataNewWingPackage expected = new DataNewWingPackage(givenChecksum, givenData);
+        final NewWingDataPackage actual = givenBuilder.build(givenChecksum);
+        final NewWingDataPackage expected = new NewWingDataPackage(givenChecksum, givenData);
         assertEquals(expected, actual);
     }
 

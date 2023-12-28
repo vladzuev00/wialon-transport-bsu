@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-public class UserService
-        extends AbstractCRUDEncryptingPasswordService<Long, UserEntity, User, UserMapper, UserRepository> {
+public class UserService extends CRUDEncryptingPasswordService<Long, UserEntity, User, UserMapper, UserRepository> {
 
     public UserService(final UserMapper mapper,
                        final UserRepository repository,
@@ -22,17 +21,15 @@ public class UserService
 
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(final String email) {
-        final Optional<UserEntity> optionalEntity = super.repository.findByEmail(email);
-        return optionalEntity.map(super.mapper::mapToDto);
+        return findUnique(repository -> repository.findByEmail(email));
     }
 
     @Transactional(readOnly = true)
     public boolean isExistByEmail(final String email) {
-        return super.repository.existsByEmail(email);
+        return findBoolean(repository -> repository.existsByEmail(email));
     }
 
-    public void updateEmail(final User user, final String newEmail) {
-        final Long userId = user.getId();
-        super.repository.updateEmail(userId, newEmail);
+    public int updateEmail(final User user, final String newEmail) {
+        return findInt(repository -> repository.updateEmail(user.getId(), newEmail));
     }
 }

@@ -1,51 +1,14 @@
 package by.bsu.wialontransport.crud.entity;
 
-import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
-import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static java.util.stream.IntStream.range;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class DataEntityTest {
-
-    @Test
-    public void latitudeTypeShouldBeFoundByValue() {
-        final char givenValue = 'N';
-
-        final Latitude.Type actual = Latitude.Type.findByValue(givenValue);
-        assertSame(NORTH, actual);
-    }
-
-    @Test
-    public void latitudeTypeShouldNotBeFoundByValue() {
-        final char givenValue = 'n';
-
-        final Latitude.Type actual = Latitude.Type.findByValue(givenValue);
-        assertSame(Latitude.Type.NOT_DEFINED, actual);
-    }
-
-    @Test
-    public void longitudeTypeShouldBeFoundByValue() {
-        final char givenValue = 'E';
-
-        final Longitude.Type actual = Longitude.Type.findByValue(givenValue);
-        assertSame(EAST, actual);
-    }
-
-    @Test
-    public void longitudeTypeShouldNotBeFoundByValue() {
-        final char givenValue = 'e';
-
-        final Longitude.Type actual = Longitude.Type.findByValue(givenValue);
-        assertSame(Longitude.Type.NOT_DEFINED, actual);
-    }
 
     @Test
     public void parametersShouldBeSet() {
@@ -60,6 +23,15 @@ public final class DataEntityTest {
 
         assertSame(givenParameters, givenData.getParameters());
         range(0, givenParameters.size()).forEach(i -> assertSame(givenParameters.get(i).getData(), givenData));
+    }
+
+    @Test
+    public void nullParametersShouldBeSet() {
+        final DataEntity givenData = createData(255L);
+
+        givenData.setParameters(null);
+
+        assertNull(givenData.getParameters());
     }
 
     @Test

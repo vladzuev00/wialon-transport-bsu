@@ -16,6 +16,7 @@ public class PoolGeocodingService implements GeocodingChainComponent {
 
     @Override
     public Optional<Address> receive(final double latitude, final double longitude) {
-        return this.addressService.findByGpsCoordinates(latitude, longitude);
+//        return this.addressService.findByGpsCoordinates(latitude, longitude);
+        return null;
     }
 }

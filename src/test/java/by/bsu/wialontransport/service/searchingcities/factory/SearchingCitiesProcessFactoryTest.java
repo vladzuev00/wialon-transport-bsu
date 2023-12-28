@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.searchingcities.factory;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,8 @@ public final class SearchingCitiesProcessFactoryTest extends AbstractContextTest
     @Test
     public void processShouldBeCreated() {
         final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                new Coordinate(5., 5.),
-                new Coordinate(10.2, 10.2)
+                new RequestCoordinate(5., 5.),
+                new RequestCoordinate(10.2, 10.2)
         );
         final double searchStep = 1;
 

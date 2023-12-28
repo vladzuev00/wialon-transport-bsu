@@ -1,0 +1,1 @@
+INSERT INTO tracker_mileages(id, urban, country) VALUES(255, 100.1, 200.2)

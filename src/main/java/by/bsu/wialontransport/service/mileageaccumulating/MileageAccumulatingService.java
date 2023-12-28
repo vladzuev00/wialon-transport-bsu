@@ -4,13 +4,10 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
-import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +29,9 @@ public final class MileageAccumulatingService {
 //    }
 
     private Mileage calculateMileage(final Data previousData, final Data inboundData) {
-        final Coordinate previousCoordinate = previousData.findCoordinate();
-        final Coordinate inboundCoordinate = inboundData.findCoordinate();
-        return this.mileageCalculatingService.calculate(previousCoordinate, inboundCoordinate);
+//        final Coordinate previousCoordinate = previousData.findCoordinate();
+//        final Coordinate inboundCoordinate = inboundData.findCoordinate();
+//        return this.mileageCalculatingService.calculate(previousCoordinate, inboundCoordinate);
+        return null;
     }
 }

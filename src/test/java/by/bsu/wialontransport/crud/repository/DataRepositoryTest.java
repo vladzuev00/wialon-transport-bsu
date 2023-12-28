@@ -3,25 +3,25 @@ package by.bsu.wialontransport.crud.repository;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
-import by.bsu.wialontransport.crud.entity.DataEntity.Latitude;
-import by.bsu.wialontransport.crud.entity.DataEntity.Longitude;
+import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
+import by.bsu.wialontransport.util.entity.EntityUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.crud.entity.DataEntity.Latitude.Type.NORTH;
-import static by.bsu.wialontransport.crud.entity.DataEntity.Longitude.Type.EAST;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-import static by.bsu.wialontransport.util.EntityTestUtil.findEntityIds;
-import static by.bsu.wialontransport.util.HibernateTestUtil.areEntityPropertiesLoaded;
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
+import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 
 public final class DataRepositoryTest extends AbstractContextTest {
@@ -30,43 +30,20 @@ public final class DataRepositoryTest extends AbstractContextTest {
     private DataRepository repository;
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_Point(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
-    @Sql(statements = "INSERT INTO parameters(id, name, type, value, data_id) "
-            + "VALUES(257, 'name', 'INTEGER', '44', 256)")
+    @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeFoundById() {
-        super.startQueryCount();
-        final DataEntity actual = this.repository.findById(256L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final DataEntity actual = repository.findById(256L).orElseThrow();
+        checkQueryCount(1);
+
+        assertFalse(areParametersLoaded(actual));
+        assertFalse(isTrackerLoaded(actual));
+        assertFalse(isAddressLoaded(actual));
 
         final DataEntity expected = DataEntity.builder()
                 .id(256L)
-                .date(LocalDate.of(2019, 10, 24))
-                .time(LocalTime.of(14, 39, 53))
-                .latitude(Latitude.builder()
-                        .degrees(1)
-                        .minutes(2)
-                        .minuteShare(3)
-                        .type(NORTH)
-                        .build())
-                .longitude(Longitude.builder()
-                        .degrees(5)
-                        .minutes(6)
-                        .minuteShare(7)
-                        .type(EAST)
-                        .build())
+                .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 52))
+                .coordinate(new Coordinate(53.233, 27.3434))
                 .speed(8)
                 .course(9)
                 .altitude(10)
@@ -76,36 +53,19 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .parameters(List.of(super.entityManager.getReference(ParameterEntity.class, 257L)))
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .parameters(List.of(entityManager.getReference(ParameterEntity.class, 257L)))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
+    @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeInserted() {
         final DataEntity givenData = DataEntity.builder()
-                .date(LocalDate.of(2019, 10, 24))
-                .time(LocalTime.of(14, 39, 53))
-                .latitude(Latitude.builder()
-                        .degrees(1)
-                        .minutes(2)
-                        .minuteShare(3)
-                        .type(NORTH)
-                        .build())
-                .longitude(Longitude.builder()
-                        .degrees(5)
-                        .minutes(6)
-                        .minuteShare(7)
-                        .type(EAST)
-                        .build())
+                .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 53))
+                .coordinate(new Coordinate(53.233, 27.3434))
                 .speed(8)
                 .course(9)
                 .altitude(10)
@@ -115,8 +75,8 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         final List<ParameterEntity> givenParameters = List.of(ParameterEntity.builder()
                 .name("name")
@@ -127,55 +87,26 @@ public final class DataRepositoryTest extends AbstractContextTest {
         );
         givenData.setParameters(givenParameters);
 
-        super.startQueryCount();
-        this.repository.save(givenData);
-        super.checkQueryCount(4);
+        startQueryCount();
+        repository.save(givenData);
+        checkQueryCount(4);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(255, '2019-10-24', '14:39:52', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(256, '2019-10-24', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
+    @Sql("classpath:sql/data/insert-data.sql")
     public void trackerLastDataShouldBeFoundByTrackerId() {
-        super.startQueryCount();
-        final DataEntity actual = this.repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final DataEntity actual = repository.findTrackerLastDataByTrackerId(255L).orElseThrow();
+        checkQueryCount(1);
+
+        assertTrue(areParametersLoaded(actual));
+        assertFalse(isTrackerLoaded(actual));
+        assertFalse(isAddressLoaded(actual));
 
         final DataEntity expected = DataEntity.builder()
-                .id(256L)
-                .date(LocalDate.of(2019, 10, 24))
-                .time(LocalTime.of(14, 39, 53))
-                .latitude(Latitude.builder()
-                        .degrees(1)
-                        .minutes(2)
-                        .minuteShare(3)
-                        .type(NORTH)
-                        .build())
-                .longitude(Longitude.builder()
-                        .degrees(5)
-                        .minutes(6)
-                        .minuteShare(7)
-                        .type(EAST)
-                        .build())
+                .id(257L)
+                .dateTime(LocalDateTime.of(2019, 10, 26, 14, 39, 53))
+                .coordinate(new Coordinate(53.233, 27.3434))
                 .speed(8)
                 .course(9)
                 .altitude(10)
@@ -186,103 +117,53 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
-                .tracker(super.entityManager.getReference(TrackerEntity.class, 255L))
-                .address(super.entityManager.getReference(AddressEntity.class, 258L))
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
     public void trackerLastDataShouldNotBeFoundByTrackerId() {
-        super.startQueryCount();
-        final Optional<DataEntity> actual = this.repository.findTrackerLastDataByTrackerId(255L);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final Optional<DataEntity> actual = repository.findTrackerLastDataByTrackerId(256L);
+        checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
     }
 
     @Test
-    @Sql(statements = "INSERT INTO addresses"
-            + "(id, bounding_box, center, city_name, country_name, geometry) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 6 7, 1 2))', 4326), "
-            + "ST_SetSRID(ST_POINT(53.050286, 24.873635), 4326), 'city', 'country', "
-            + "ST_GeomFromText('POLYGON((1 2, 3 4, 5 6, 1 2))', 4326)"
-            + ")")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(255, '2019-10-24', '14:39:52', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(256, '2019-10-25', '14:39:53', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 258)")
-    @Sql(statements = "INSERT INTO users(id, email, encrypted_password, role) "
-            + "VALUES(256, 'vladzuev.01@mail.ru', '$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG', 'USER')")
-    @Sql(statements = "INSERT INTO trackers(id, imei, encrypted_password, phone_number, user_id) "
-            + "VALUES(257, '11112222333344445556', '$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG', '447336936', 256)")
-    @Sql(statements = "INSERT INTO data"
-            + "(id, date, time, "
-            + "latitude_degrees, latitude_minutes, latitude_minute_share, latitude_type, "
-            + "longitude_degrees, longitude_minutes, longitude_minute_share, longitude_type, "
-            + "speed, course, altitude, amount_of_satellites, reduction_precision, inputs, outputs, analog_inputs, "
-            + "driver_key_code, tracker_id, address_id) "
-            + "VALUES(257, '2019-10-24', '14:39:52', 1, 2, 3, 'N', 5, 6, 7, 'E', 8, 9, 10, 11, 12.4, 13, 14, "
-            + "ARRAY[0.2, 0.3, 0.4], 'driver key code', 257, 258)")
-    public void dataWithTrackerAndAddressOfUserShouldBeFound() {
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void dataWithTrackerAndAddressShouldBeFoundByUserId() {
         final Long givenUserId = 255L;
-        final LocalDate givenStartDate = LocalDate.of(2019, 10, 23);
-        final LocalDate givenEndDate = LocalDate.of(2019, 10, 25);
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(2019, 10, 23, 0, 0, 0);
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(2019, 10, 25, 0, 0, 0);
 
-        final List<DataEntity> actual = this.repository.findDataWithTrackerAndAddressOfUser(
-                givenUserId, givenStartDate, givenEndDate
-        );
-        final List<Long> actualIds = findEntityIds(actual);
-        final List<Long> expectedIds = List.of(255L);
-        assertEquals(expectedIds, actualIds);
+        startQueryCount();
+        try (final Stream<DataEntity> actual = repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            checkQueryCount(1);
 
-        final boolean trackersLoaded = areEntityPropertiesLoaded(actual, DataEntity::getTracker);
-        assertTrue(trackersLoaded);
+            final Set<DataEntity> actualAsSet = actual.collect(toSet());
 
-        final boolean addressesLoaded = areEntityPropertiesLoaded(actual, DataEntity::getAddress);
-        assertTrue(addressesLoaded);
+            assertTrue(areParametersNotLoaded(actualAsSet));
+            assertTrue(areTrackersLoaded(actualAsSet));
+            assertTrue(areAddressesLoaded(actualAsSet));
+
+            final Set<Long> actualIds = EntityUtil.mapToIdsSet(actualAsSet);
+            final Set<Long> expectedIds = Set.of(254L, 255L, 256L);
+            assertEquals(expectedIds, actualIds);
+        }
     }
 
     @Test
+    @Sql("classpath:sql/data/insert-data.sql")
     public void dataWithTrackerAndAddressOfUserShouldNotBeFound() {
         final Long givenUserId = 255L;
-        final LocalDate givenStartDate = LocalDate.of(2019, 10, 23);
-        final LocalDate givenEndDate = LocalDate.of(2019, 10, 25);
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(2015, 10, 23, 0, 0, 0);
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(2015, 10, 25, 0, 0, 0);
 
-        final List<DataEntity> actual = this.repository.findDataWithTrackerAndAddressOfUser(
-                givenUserId, givenStartDate, givenEndDate
-        );
-        assertTrue(actual.isEmpty());
-    }
-
-    private static void checkEquals(final DataEntity expected, final DataEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getDate(), actual.getDate());
-        assertEquals(expected.getTime(), actual.getTime());
-        assertEquals(expected.getLatitude(), actual.getLatitude());
-        assertEquals(expected.getLongitude(), actual.getLongitude());
-        assertEquals(expected.getSpeed(), actual.getSpeed());
-        assertEquals(expected.getCourse(), actual.getCourse());
-        assertEquals(expected.getAltitude(), actual.getAltitude());
-        assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
-        assertEquals(expected.getReductionPrecision(), actual.getReductionPrecision(), 0.);
-        assertEquals(expected.getInputs(), actual.getInputs());
-        assertEquals(expected.getOutputs(), actual.getOutputs());
-        assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-        assertEquals(expected.getParameters(), actual.getParameters());
-        assertEquals(expected.getTracker(), actual.getTracker());
-        assertEquals(expected.getAddress(), actual.getAddress());
+        try (final Stream<DataEntity> actual = repository.findDataWithTrackerAndAddressByUserId(givenUserId, givenStartDateTime, givenEndDateTime)) {
+            assertTrue(isEmpty(actual));
+        }
     }
 }

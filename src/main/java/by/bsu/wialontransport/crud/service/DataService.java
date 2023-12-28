@@ -10,31 +10,38 @@ import by.bsu.wialontransport.model.DateInterval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
-public class DataService extends AbstractCRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
+public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
 
     public DataService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);
     }
 
-    //TODO: refactor tests
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
-        final Long trackerId = tracker.getId();
-        final Optional<DataEntity> optionalEntity = super.repository.findTrackerLastDataByTrackerId(trackerId);
-        return optionalEntity.map(super.mapper::mapToDto);
+        return findUnique(
+                repository -> repository.findTrackerLastDataByTrackerId(
+                        tracker.getId()
+                )
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
-        final List<DataEntity> foundEntities = super.repository.findDataWithTrackerAndAddressOfUser(
-                user.getId(),
-                dateInterval.getStart(),
-                dateInterval.getEnd()
+    public Stream<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
+        return findDtoStream(
+                repository -> repository.findDataWithTrackerAndAddressByUserId(
+                        user.getId(),
+                        dateInterval.getStart(),
+                        dateInterval.getEnd()
+                )
         );
-        return super.mapper.mapToDto(foundEntities);
+    }
+
+    @Override
+    protected void configureBeforeSave(final DataEntity entity) {
+
     }
 }

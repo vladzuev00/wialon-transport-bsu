@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.nominatim;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public final class NominatimServiceTest extends AbstractContextTest {
     public void coordinateShouldBeReversed() {
         final double givenLatitude = 5.5;
         final double givenLongitude = 4.5;
-        final Coordinate givenCoordinate = new Coordinate(givenLatitude, givenLongitude);
+        final RequestCoordinate givenCoordinate = new RequestCoordinate(givenLatitude, givenLongitude);
 
         final String givenUrl = this.createUrl(givenLatitude, givenLongitude);
         final NominatimReverseResponse givenResponse = createReverseResponse();

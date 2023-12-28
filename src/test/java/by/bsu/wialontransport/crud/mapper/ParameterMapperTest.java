@@ -1,14 +1,22 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
+import org.hibernate.Hibernate;
 import org.junit.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
-import static org.junit.Assert.*;
+import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.checkEquals;
+import static org.hibernate.Hibernate.isInitialized;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.mockStatic;
 
 public final class ParameterMapperTest extends AbstractContextTest {
 
@@ -22,16 +30,44 @@ public final class ParameterMapperTest extends AbstractContextTest {
                 .name("name")
                 .type(INTEGER)
                 .value("44")
+                .data(createDataEntity(256L))
                 .build();
 
-        final Parameter actual = this.mapper.mapToDto(givenEntity);
+        final Parameter actual = mapper.mapToDto(givenEntity);
         final Parameter expected = Parameter.builder()
                 .id(255L)
                 .name("name")
                 .type(INTEGER)
                 .value("44")
+                .data(createDataDto(256L))
                 .build();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void entityWithNotLoadedPropertiesShouldBeMappedToDto() {
+        try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
+            final DataEntity givenData = createDataEntity(256L);
+            final ParameterEntity givenEntity = ParameterEntity.builder()
+                    .id(255L)
+                    .name("name")
+                    .type(INTEGER)
+                    .value("44")
+                    .data(givenData)
+                    .build();
+            mockedStatic
+                    .when(() -> isInitialized(same(givenData)))
+                    .thenReturn(false);
+
+            final Parameter actual = mapper.mapToDto(givenEntity);
+            final Parameter expected = Parameter.builder()
+                    .id(255L)
+                    .name("name")
+                    .type(INTEGER)
+                    .value("44")
+                    .build();
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
@@ -43,7 +79,7 @@ public final class ParameterMapperTest extends AbstractContextTest {
                 .value("44")
                 .build();
 
-        final ParameterEntity actual = this.mapper.mapToEntity(givenDto);
+        final ParameterEntity actual = mapper.mapToEntity(givenDto);
         final ParameterEntity expected = ParameterEntity.builder()
                 .id(255L)
                 .name("name")
@@ -55,10 +91,17 @@ public final class ParameterMapperTest extends AbstractContextTest {
         checkEquals(expected, actual);
     }
 
-    private static void checkEquals(final ParameterEntity expected, final ParameterEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertSame(expected.getType(), actual.getType());
-        assertEquals(expected.getValue(), actual.getValue());
+    @SuppressWarnings("SameParameterValue")
+    private static DataEntity createDataEntity(final Long id) {
+        return DataEntity.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Data createDataDto(final Long id) {
+        return Data.builder()
+                .id(id)
+                .build();
     }
 }

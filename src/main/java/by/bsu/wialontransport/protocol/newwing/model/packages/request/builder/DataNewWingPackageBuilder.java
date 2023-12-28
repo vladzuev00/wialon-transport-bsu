@@ -1,17 +1,17 @@
 package by.bsu.wialontransport.protocol.newwing.model.packages.request.builder;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.DataNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import lombok.Setter;
 
 import java.util.List;
 
 @Setter
-public final class DataNewWingPackageBuilder extends NewWingRequestPackageBuilder<DataNewWingPackage> {
+public final class DataNewWingPackageBuilder extends NewWingRequestPackageBuilder<NewWingDataPackage> {
     private List<NewWingData> data;
 
     @Override
-    protected DataNewWingPackage build(final int checksum) {
-        return new DataNewWingPackage(checksum, this.data);
+    protected NewWingDataPackage build(final int checksum) {
+        return new NewWingDataPackage(checksum, this.data);
     }
 }

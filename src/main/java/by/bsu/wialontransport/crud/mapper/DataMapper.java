@@ -4,123 +4,95 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.crud.entity.TrackerEntity;
+import by.bsu.wialontransport.model.Coordinate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 
 @Component
-public final class DataMapper extends AbstractMapper<DataEntity, Data> {
+public final class DataMapper extends Mapper<DataEntity, Data> {
 
     public DataMapper(final ModelMapper modelMapper) {
         super(modelMapper, DataEntity.class, Data.class);
     }
 
     @Override
-    protected Data createDto(final DataEntity entity) {
+    protected Data createDto(final DataEntity source) {
         return new Data(
-                entity.getId(),
-                entity.getDate(),
-                entity.getTime(),
-                mapLatitude(entity),
-                mapLongitude(entity),
-                entity.getSpeed(),
-                entity.getCourse(),
-                entity.getAltitude(),
-                entity.getAmountOfSatellites(),
-                entity.getReductionPrecision(),
-                entity.getInputs(),
-                entity.getOutputs(),
-                entity.getAnalogInputs(),
-                entity.getDriverKeyCode(),
-                this.mapParameters(entity),
-                this.mapTracker(entity),
-                this.mapAddress(entity)
+                source.getId(),
+                source.getDateTime(),
+                mapNullableCoordinate(source),
+                source.getCourse(),
+                source.getSpeed(),
+                source.getAltitude(),
+                source.getAmountOfSatellites(),
+                source.getReductionPrecision(),
+                source.getInputs(),
+                source.getOutputs(),
+                source.getAnalogInputs(),
+                source.getDriverKeyCode(),
+                mapParameters(source),
+                mapTracker(source),
+                mapAddress(source)
         );
     }
 
     @Override
     protected void mapSpecificFields(final Data source, final DataEntity destination) {
-        destination.setLatitude(mapLatitude(source));
-        destination.setLongitude(mapLongitude(source));
-        destination.setParameters(this.mapParameters(source));
+        mapCoordinate(source, destination);
+        mapParameters(source, destination);
     }
 
-    private static Data.Latitude mapLatitude(final DataEntity source) {
-        final DataEntity.Latitude mappedLatitude = source.getLatitude();
-        return new Data.Latitude(
-                mappedLatitude.getDegrees(),
-                mappedLatitude.getMinutes(),
-                mappedLatitude.getMinuteShare(),
-                mappedLatitude.getType()
-        );
+    private static Coordinate mapNullableCoordinate(final DataEntity source) {
+        final DataEntity.Coordinate sourceCoordinate = source.getCoordinate();
+        return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static Data.Longitude mapLongitude(final DataEntity source) {
-        final DataEntity.Longitude mappedLongitude = source.getLongitude();
-        return new Data.Longitude(
-                mappedLongitude.getDegrees(),
-                mappedLongitude.getMinutes(),
-                mappedLongitude.getMinuteShare(),
-                mappedLongitude.getType()
-        );
+    private static Coordinate map(final DataEntity.Coordinate source) {
+        return new Coordinate(source.getLatitude(), source.getLongitude());
     }
 
     private Map<String, Parameter> mapParameters(final DataEntity source) {
-        final List<ParameterEntity> mappedEntities = source.getParameters();
-        final List<Parameter> mappedDtos = super.mapCollectionPropertyIfLoadedOrElseNull(
-                mappedEntities, Parameter.class, ArrayList::new
-        );
-        return mappedDtos != null
-                ? mappedDtos.stream().collect(toMap(Parameter::getName, identity()))
-                : null;
-    }
-
-    private static DataEntity.Latitude mapLatitude(final Data source) {
-        final Data.Latitude mappedLatitude = source.getLatitude();
-        return new DataEntity.Latitude(
-                mappedLatitude.getDegrees(),
-                mappedLatitude.getMinutes(),
-                mappedLatitude.getMinuteShare(),
-                mappedLatitude.getType()
-        );
-    }
-
-    private static DataEntity.Longitude mapLongitude(final Data source) {
-        final Data.Longitude mappedLongitude = source.getLongitude();
-        return new DataEntity.Longitude(
-                mappedLongitude.getDegrees(),
-                mappedLongitude.getMinutes(),
-                mappedLongitude.getMinuteShare(),
-                mappedLongitude.getType()
-        );
-    }
-
-    private List<ParameterEntity> mapParameters(final Data source) {
-        return source.getParametersByNames()
-                .values()
-                .stream()
-                .map(parameter -> super.mapProperty(parameter, ParameterEntity.class))
-                .collect(toList());
+        return mapLazyToMap(source.getParameters(), Parameter.class, Parameter::getName);
     }
 
     private Tracker mapTracker(final DataEntity source) {
-        final TrackerEntity tracker = source.getTracker();
-        return super.mapPropertyIfLoadedOrElseNull(tracker, Tracker.class);
+        return mapLazy(source.getTracker(), Tracker.class);
     }
 
     private Address mapAddress(final DataEntity source) {
-        final AddressEntity address = source.getAddress();
-        return super.mapPropertyIfLoadedOrElseNull(address, Address.class);
+        return mapLazy(source.getAddress(), Address.class);
+    }
+
+    private void mapCoordinate(final Data source, final DataEntity destination) {
+        destination.setCoordinate(mapNullableCoordinate(source));
+    }
+
+    private void mapParameters(final Data source, final DataEntity destination) {
+        destination.setParameters(mapNullableParameters(source));
+    }
+
+    private static DataEntity.Coordinate mapNullableCoordinate(final Data source) {
+        final Coordinate sourceCoordinate = source.getCoordinate();
+        return sourceCoordinate != null ? map(sourceCoordinate) : null;
+    }
+
+    private static DataEntity.Coordinate map(final Coordinate source) {
+        return new DataEntity.Coordinate(source.getLatitude(), source.getLongitude());
+    }
+
+    private List<ParameterEntity> mapNullableParameters(final Data source) {
+        final Map<String, Parameter> parametersByNames = source.getParametersByNames();
+        return parametersByNames != null ? map(parametersByNames) : null;
+    }
+
+    private List<ParameterEntity> map(final Map<String, Parameter> parametersByNames) {
+        return collectValuesToList(parametersByNames, parameter -> map(parameter, ParameterEntity.class));
     }
 }

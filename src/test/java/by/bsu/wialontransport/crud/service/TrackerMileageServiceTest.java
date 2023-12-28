@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,9 +23,11 @@ public final class TrackerMileageServiceTest extends AbstractContextTest {
         final Tracker givenTracker = createTracker(255L);
         final Mileage givenMileageDelta = new Mileage(5.5, 6.6);
 
-        this.service.increaseMileage(givenTracker, givenMileageDelta);
+        final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final Optional<TrackerMileage> optionalActual = this.service.findById(1L);
+        final Optional<TrackerMileage> optionalActual = service.findById(1L);
         assertTrue(optionalActual.isPresent());
         final TrackerMileage actual = optionalActual.get();
         final TrackerMileage expected = TrackerMileage.builder()
@@ -33,6 +36,16 @@ public final class TrackerMileageServiceTest extends AbstractContextTest {
                 .country(6.6)
                 .build();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void mileageShouldBeIncreasedBecauseOfNotExistingTrackerId() {
+        final Tracker givenTracker = createTracker(MAX_VALUE);
+        final Mileage givenMileageDelta = new Mileage(5.5, 6.6);
+
+        final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
     }
 
     @SuppressWarnings("SameParameterValue")

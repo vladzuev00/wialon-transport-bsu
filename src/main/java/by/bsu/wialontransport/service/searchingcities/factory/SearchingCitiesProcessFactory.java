@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.searchingcities.factory;
 
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.RequestCoordinate;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
@@ -69,24 +69,24 @@ public final class SearchingCitiesProcessFactory {
     }
 
     private static CoordinateXY findLeftBottom(final AreaCoordinate areaCoordinate) {
-        final Coordinate leftBottom = areaCoordinate.getLeftBottom();
+        final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
         return new CoordinateXY(leftBottom.getLatitude(), leftBottom.getLongitude());
     }
 
     private static CoordinateXY findLeftUpper(AreaCoordinate areaCoordinate) {
-        final Coordinate leftBottom = areaCoordinate.getLeftBottom();
-        final Coordinate rightUpper = areaCoordinate.getRightUpper();
+        final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
+        final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(leftBottom.getLatitude(), rightUpper.getLongitude());
     }
 
     private static CoordinateXY findRightUpper(AreaCoordinate areaCoordinate) {
-        final Coordinate rightUpper = areaCoordinate.getRightUpper();
+        final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(rightUpper.getLatitude(), rightUpper.getLongitude());
     }
 
     private static CoordinateXY findRightBottom(AreaCoordinate areaCoordinate) {
-        final Coordinate leftBottom = areaCoordinate.getLeftBottom();
-        final Coordinate rightUpper = areaCoordinate.getRightUpper();
+        final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
+        final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(rightUpper.getLatitude(), leftBottom.getLongitude());
     }
 }

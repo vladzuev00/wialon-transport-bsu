@@ -5,15 +5,16 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
-import java.util.Set;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
-import static by.bsu.wialontransport.util.EntityTestUtil.checkEquals;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
-import static java.util.stream.Collectors.toSet;
+import static by.bsu.wialontransport.util.PageUtil.mapToIds;
+import static by.bsu.wialontransport.util.entity.SearchingCitiesProcessEntityUtil.checkEquals;
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.data.domain.Pageable.ofSize;
@@ -27,17 +28,15 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     private GeometryFactory geometryFactory;
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processShouldBeFoundById() {
-        super.startQueryCount();
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
-        super.checkQueryCount(1);
+        startQueryCount();
+        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
+        checkQueryCount(1);
 
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
@@ -49,31 +48,32 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     public void processShouldBeSaved() {
         final SearchingCitiesProcessEntity givenProcess = SearchingCitiesProcessEntity.builder()
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
                 .status(HANDLING)
                 .build();
 
-        super.startQueryCount();
-        this.repository.save(givenProcess);
-        super.checkQueryCount(1);
+        startQueryCount();
+        repository.save(givenProcess);
+        checkQueryCount(1);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void statusOfProcessShouldBeUpdated() {
-        super.startQueryCount();
-        this.repository.updateStatus(255L, SUCCESS);
-        super.checkQueryCount(1);
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updateStatus(255L, SUCCESS);
+        checkQueryCount(1);
 
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+
+        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
@@ -83,18 +83,30 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    public void handledPointsShouldBeIncreased() {
-        super.startQueryCount();
-        this.repository.increaseHandledPoints(255L, 100);
-        super.checkQueryCount(1);
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
+    public void statusOfProcessShouldBeUpdatedBecauseOfNotExistingProcessId() {
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.updateStatus(MAX_VALUE, SUCCESS);
+        checkQueryCount(1);
 
-        final SearchingCitiesProcessEntity actual = this.repository.findById(255L).orElseThrow();
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+    }
+
+    @Test
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
+    public void handledPointsShouldBeIncreased() {
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.increaseHandledPoints(255L, 100);
+        checkQueryCount(1);
+
+        final int expectedCountUpdatedRows = 1;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+
+        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
                 .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
+                .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(200)
@@ -104,44 +116,34 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'SUCCESS')")
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(258, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'ERROR')")
-    public void processesShouldBeFoundByStatus() {
-        super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(HANDLING, ofSize(4));
-        super.checkQueryCount(1);
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
+    public void handledPointsShouldBeIncreasedBecauseOfNotExistingProcessId() {
+        startQueryCount();
+        final int actualCountUpdatedRows = repository.increaseHandledPoints(MAX_VALUE, 100);
+        checkQueryCount(1);
 
-        final Set<Long> actualIds = actual.stream()
-                .map(SearchingCitiesProcessEntity::getId)
-                .collect(toSet());
-        final Set<Long> expectedIds = Set.of(255L, 256L);
+        final int expectedCountUpdatedRows = 0;
+        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+    }
+
+    @Test
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
+    public void processesOrderedByIdShouldBeFoundByStatus() {
+        startQueryCount();
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(HANDLING, ofSize(4));
+        checkQueryCount(1);
+
+        final List<Long> actualIds = mapToIds(actual);
+        final List<Long> expectedIds = List.of(255L, 256L);
         assertEquals(expectedIds, actualIds);
     }
 
     @Test
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(255, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(256, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'HANDLING')")
-    @Sql(statements = "INSERT INTO searching_cities_processes("
-            + "id, bounds, search_step, total_points, handled_points, status) "
-            + "VALUES(257, ST_GeomFromText('POLYGON((1 1, 1 4, 4 4, 4 1, 1 1))', 4326), 0.5, 1000, 100, 'SUCCESS')")
-    public void processesShouldNotBeFoundByStatus() {
-        super.startQueryCount();
-        final List<SearchingCitiesProcessEntity> actual = this.repository.findByStatus(ERROR, ofSize(4));
-        super.checkQueryCount(1);
+    @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
+    public void processesOrderedByIdShouldNotBeFoundByStatus() {
+        startQueryCount();
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(ERROR, ofSize(4));
+        checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
     }
