@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.geocoding.component;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -29,11 +30,12 @@ public class NominatimGeocodingService implements GeocodingChainComponent {
     }
 
     @Override
-    public Optional<Address> receive(final double latitude, final double longitude) {
-        final NominatimReverseResponse response = this.nominatimService.reverse(latitude, longitude);
-        return response != null
-                ? Optional.of(this.mapToPossiblySavedAddress(response))
-                : empty();
+    public Optional<Address> receive(final Coordinate coordinate) {
+//        final NominatimReverseResponse response = this.nominatimService.reverse(latitude, longitude);
+//        return response != null
+//                ? Optional.of(this.mapToPossiblySavedAddress(response))
+//                : empty();
+        return null;
     }
 
     private Address mapToPossiblySavedAddress(final NominatimReverseResponse response) {
