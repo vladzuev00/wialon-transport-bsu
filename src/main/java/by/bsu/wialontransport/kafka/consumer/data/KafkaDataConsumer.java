@@ -42,7 +42,8 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Parameter createParameter(final P view);
 
-    protected abstract Optional<Address> findAddress(final Coordinate coordinate, final AddressService addressService);
+    protected abstract Optional<Address> findAddress(final DataCreatingContext context,
+                                                     final AddressService addressService);
 
     @RequiredArgsConstructor
     @Getter
@@ -123,7 +124,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
         public Address getAddress() {
             final Coordinate coordinate = getCoordinate();
-            return findAddress(coordinate, addressService)
+            return findAddress(this, addressService)
                     .orElseThrow(
                             () -> new DataConsumingException(
                                     "Impossible to find address by '%s'".formatted(coordinate)

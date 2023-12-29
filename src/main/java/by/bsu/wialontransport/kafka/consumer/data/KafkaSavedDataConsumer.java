@@ -2,28 +2,31 @@ package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.kafka.model.view.SavedParameterView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.format;
+import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.addressId;
+import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.id;
 
 @Slf4j
 @Component
-public final class KafkaSavedDataConsumer extends KafkaDataConsumer {
-    private final AddressService addressService;
+public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParameterView> {
 
-    public KafkaSavedDataConsumer(final TrackerService trackerService, final AddressService addressService) {
-        super(trackerService);
-        this.addressService = addressService;
+    public KafkaSavedDataConsumer(final ObjectMapper objectMapper,
+                                  final TrackerService trackerService,
+                                  final AddressService addressService) {
+        super(objectMapper, trackerService, addressService, SavedParameterView.class);
     }
 
     @Override
@@ -37,28 +40,39 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer {
     }
 
     @Override
-    protected Data mapToSource(final GenericRecord genericRecord) {
-        final LocalDateTime dateTime = extractDateTime(genericRecord);
-//        return new Data(
-//                extractId(genericRecord),
-//                dateTime.toLocalDate(),
-//                dateTime.toLocalTime(),
-//                super.extractLatitude(genericRecord),
-//                super.extractLongitude(genericRecord),
-//                extractSpeed(genericRecord),
-//                extractCourse(genericRecord),
-//                extractAltitude(genericRecord),
-//                extractAmountOfSatellites(genericRecord),
-//                extractReductionPrecision(genericRecord),
-//                extractInputs(genericRecord),
-//                extractOutputs(genericRecord),
-//                extractAnalogInputs(genericRecord),
-//                extractDriverKeyCode(genericRecord),
-//                super.extractParametersByNames(genericRecord),
-//                super.extractTracker(genericRecord),
-//                this.extractAddress(genericRecord)
-//        );
-        return null;
+    protected Data createData(final DataCreatingContext context) {
+        return Data.builder()
+                .id(extractDataId(context))
+                .dateTime(context.getDateTime())
+                .coordinate(context.getCoordinate())
+                .course(context.getCourse())
+                .speed(context.getSpeed())
+                .altitude(context.getAltitude())
+                .amountOfSatellites(context.getAmountOfSatellites())
+                .reductionPrecision(context.getReductionPrecision())
+                .inputs(context.getInputs())
+                .outputs(context.getOutputs())
+                .analogInputs(context.getAnalogInputs())
+                .driverKeyCode(context.getDriverKeyCode())
+                .parametersByNames(context.getParametersByNames())
+                .tracker(context.getTracker())
+                .address(context.getAddress())
+                .build();
+    }
+
+    @Override
+    protected Parameter createParameter(final SavedParameterView view) {
+        return Parameter.builder()
+                .name(view.getName())
+                .type(view.getType())
+                .value(view.getValue())
+                .id(view.getId())
+                .build();
+    }
+
+    @Override
+    protected Optional<Address> findAddress(final DataCreatingContext context, final AddressService addressService) {
+        return addressService.findById(extractAddressId(context));
     }
 
     @Override
@@ -66,24 +80,11 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer {
         log.info("Consuming saved data: {}", data);
     }
 
-    private static Long extractId(final GenericRecord genericRecord) {
-//        return extractValue(genericRecord, id);
-        return null;
+    private static Long extractDataId(final DataCreatingContext context) {
+        return extractValue(context.getRecord(), id, Long.class);
     }
 
-    private Address extractAddress(final GenericRecord genericRecord) {
-        final Long addressId = extractAddressId(genericRecord);
-        final Optional<Address> optionalAddress = this.addressService.findById(addressId);
-//        return optionalAddress.orElseThrow(
-//                () -> new DataConsumingException(
-//                        format("Impossible to find address with id '%d'.", addressId)
-//                )
-//        );
-        return null;
-    }
-
-    private static Long extractAddressId(final GenericRecord genericRecord) {
-//        return extractValue(genericRecord, addressId);
-        return null;
+    private static Long extractAddressId(final DataCreatingContext context) {
+        return extractValue(context.getRecord(), addressId, Long.class);
     }
 }

@@ -8,7 +8,6 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
-import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
@@ -78,8 +77,9 @@ public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundPar
     }
 
     @Override
-    protected Optional<Address> findAddress(final Coordinate coordinate, final AddressService addressService) {
-        return geocodingService.receive(coordinate).map(address -> mapToSavedAddress(address, addressService));
+    protected Optional<Address> findAddress(final DataCreatingContext context, final AddressService addressService) {
+        return geocodingService.receive(context.getCoordinate())
+                .map(address -> mapToSavedAddress(address, addressService));
     }
 
     @Override
