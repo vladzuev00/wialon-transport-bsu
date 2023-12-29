@@ -10,7 +10,6 @@ import by.bsu.wialontransport.kafka.consumer.KafkaGenericRecordConsumer;
 import by.bsu.wialontransport.kafka.model.view.ParameterView;
 import by.bsu.wialontransport.model.Coordinate;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.generic.GenericRecord;
 
@@ -18,10 +17,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableData.Fields.*;
+import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.addressId;
+import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.id;
 import static by.bsu.wialontransport.util.StreamUtil.toStream;
+import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -46,9 +49,12 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
                                                      final AddressService addressService);
 
     @RequiredArgsConstructor
-    @Getter
     protected final class DataCreatingContext {
         private final GenericRecord record;
+
+        public Optional<Long> getDataId() {
+            return getNullable(() -> extractValue(record, id, Long.class));
+        }
 
         public LocalDateTime getDateTime() {
             return extractDateTime(record, epochSeconds);
@@ -122,12 +128,15 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
                     );
         }
 
+        public Optional<Long> getAddressId() {
+            return getNullable(() -> extractValue(record, addressId, Long.class));
+        }
+
         public Address getAddress() {
-            final Coordinate coordinate = getCoordinate();
             return findAddress(this, addressService)
                     .orElseThrow(
                             () -> new DataConsumingException(
-                                    "Impossible to find address by '%s'".formatted(coordinate)
+                                    "Impossible to find address"
                             )
                     );
         }
@@ -163,6 +172,10 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
         private Long extractTrackerId() {
             return extractValue(record, trackerId, Long.class);
+        }
+
+        private <T> Optional<T> getNullable(final Supplier<T> supplier) {
+            return ofNullable(supplier.get());
         }
 
         @FunctionalInterface

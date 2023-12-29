@@ -15,9 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-
-import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.addressId;
-import static by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData.Fields.id;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -81,10 +79,24 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     private static Long extractDataId(final DataCreatingContext context) {
-        return extractValue(context.getRecord(), id, Long.class);
+        return extractProperty(
+                context,
+                DataCreatingContext::getDataId,
+                "Consumer should consume only already saved data"
+        );
     }
 
     private static Long extractAddressId(final DataCreatingContext context) {
-        return extractValue(context.getRecord(), addressId, Long.class);
+        return extractProperty(
+                context,
+                DataCreatingContext::getAddressId,
+                "Consumer should consume data only with already saved address"
+        );
+    }
+
+    private static <T> T extractProperty(final DataCreatingContext context,
+                                         final Function<DataCreatingContext, Optional<T>> getter,
+                                         final String noSuchPropertyExceptionMessage) {
+        return getter.apply(context).orElseThrow(() -> new IllegalStateException(noSuchPropertyExceptionMessage));
     }
 }
