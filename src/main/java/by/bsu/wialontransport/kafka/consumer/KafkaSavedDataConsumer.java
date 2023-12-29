@@ -70,7 +70,8 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     private static Long extractId(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, id);
+//        return extractValue(genericRecord, id);
+        return null;
     }
 
     private Address extractAddress(final GenericRecord genericRecord) {
@@ -84,6 +85,7 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     private static Long extractAddressId(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, addressId);
+//        return extractValue(genericRecord, addressId);
+        return null;
     }
 }

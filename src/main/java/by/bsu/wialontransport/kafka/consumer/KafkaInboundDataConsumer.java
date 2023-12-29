@@ -56,24 +56,25 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
     @Override
     protected Data mapToSource(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
-        return Data.builder()
-//                .date(dateTime.toLocalDate())
-//                .time(dateTime.toLocalTime())
-//                .latitude(latitude)
-//                .longitude(longitude)
-                .speed(extractSpeed(genericRecord))
-                .course(extractCourse(genericRecord))
-                .altitude(extractAltitude(genericRecord))
-                .amountOfSatellites(extractAmountOfSatellites(genericRecord))
-                .reductionPrecision(extractReductionPrecision(genericRecord))
-                .inputs(extractInputs(genericRecord))
-                .outputs(extractOutputs(genericRecord))
-                .analogInputs(super.extractAnalogInputs(genericRecord))
-                .driverKeyCode(extractDriverKeyCode(genericRecord))
-                .parametersByNames(super.extractParametersByNames(genericRecord))
-                .tracker(super.extractTracker(genericRecord))
-//                .address(this.findAddress(latitude, longitude))
-                .build();
+//        return Data.builder()
+////                .date(dateTime.toLocalDate())
+////                .time(dateTime.toLocalTime())
+////                .latitude(latitude)
+////                .longitude(longitude)
+//                .speed(extractSpeed(genericRecord))
+//                .course(extractCourse(genericRecord))
+//                .altitude(extractAltitude(genericRecord))
+//                .amountOfSatellites(extractAmountOfSatellites(genericRecord))
+//                .reductionPrecision(extractReductionPrecision(genericRecord))
+//                .inputs(extractInputs(genericRecord))
+//                .outputs(extractOutputs(genericRecord))
+//                .analogInputs(super.extractAnalogInputs(genericRecord))
+//                .driverKeyCode(extractDriverKeyCode(genericRecord))
+//                .parametersByNames(super.extractParametersByNames(genericRecord))
+//                .tracker(super.extractTracker(genericRecord))
+////                .address(this.findAddress(latitude, longitude))
+//                .build();
+        return null;
     }
 
     @Override

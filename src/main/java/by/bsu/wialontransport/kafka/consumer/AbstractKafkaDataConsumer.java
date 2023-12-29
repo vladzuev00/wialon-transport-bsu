@@ -23,7 +23,7 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
 
-public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericRecordConsumer<Long, Data> {
+public abstract class AbstractKafkaDataConsumer extends KafkaGenericRecordConsumer<Long, Data> {
 //    private final GeographicCoordinateExtractor<Latitude> latitudeExtractor;
 //    private final GeographicCoordinateExtractor<Longitude> longitudeExtractor;
     private final ParametersByNamesExtractor parametersByNamesExtractor;
@@ -42,68 +42,68 @@ public abstract class AbstractKafkaDataConsumer extends AbstractKafkaGenericReco
         return extractDateTime(genericRecord, epochSeconds);
     }
 
-    protected final double extractLatitude(final GenericRecord genericRecord) {
-//        return this.latitudeExtractor.extract(genericRecord);
-        return 0;
-    }
-
-    protected final double extractLongitude(final GenericRecord genericRecord) {
-        return 0;
-    }
-
-    protected static int extractSpeed(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, speed);
-    }
-
-    protected static int extractCourse(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, course);
-    }
-
-    protected static int extractAltitude(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, altitude);
-    }
-
-    protected static int extractAmountOfSatellites(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, amountOfSatellites);
-    }
-
-    protected static double extractReductionPrecision(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, reductionPrecision);
-    }
-
-    protected static int extractInputs(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, inputs);
-    }
-
-    protected static int extractOutputs(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, outputs);
-    }
-
-    protected final double[] extractAnalogInputs(final GenericRecord genericRecord) {
-        return this.analogInputsExtractor.extract(genericRecord);
-    }
-
-    protected static String extractDriverKeyCode(final GenericRecord genericRecord) {
-        return extractString(genericRecord, driverKeyCode);
-    }
-
-    protected final Map<String, Parameter> extractParametersByNames(final GenericRecord genericRecord) {
-        return this.parametersByNamesExtractor.extract(genericRecord);
-    }
-
-    protected final Tracker extractTracker(final GenericRecord genericRecord) {
-        final Long extractedTrackerId = extractTrackerId(genericRecord);
-        final Optional<Tracker> optionalTracker = this.trackerService.findById(extractedTrackerId);
-        return optionalTracker.orElseThrow(
-                () -> new DataConsumingException(
-                        format("Tracker with id '%d' doesn't exist.", extractedTrackerId)
-                )
-        );
-    }
-
-    private static Long extractTrackerId(final GenericRecord genericRecord) {
-        return extractValue(genericRecord, trackerId);
-    }
+//    protected final double extractLatitude(final GenericRecord genericRecord) {
+////        return this.latitudeExtractor.extract(genericRecord);
+//        return 0;
+//    }
+//
+//    protected final double extractLongitude(final GenericRecord genericRecord) {
+//        return 0;
+//    }
+//
+//    protected static int extractSpeed(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, speed);
+//    }
+//
+//    protected static int extractCourse(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, course);
+//    }
+//
+//    protected static int extractAltitude(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, altitude);
+//    }
+//
+//    protected static int extractAmountOfSatellites(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, amountOfSatellites);
+//    }
+//
+//    protected static double extractReductionPrecision(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, reductionPrecision);
+//    }
+//
+//    protected static int extractInputs(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, inputs);
+//    }
+//
+//    protected static int extractOutputs(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, outputs);
+//    }
+//
+//    protected final double[] extractAnalogInputs(final GenericRecord genericRecord) {
+//        return this.analogInputsExtractor.extract(genericRecord);
+//    }
+//
+//    protected static String extractDriverKeyCode(final GenericRecord genericRecord) {
+//        return extractString(genericRecord, driverKeyCode);
+//    }
+//
+//    protected final Map<String, Parameter> extractParametersByNames(final GenericRecord genericRecord) {
+//        return this.parametersByNamesExtractor.extract(genericRecord);
+//    }
+//
+//    protected final Tracker extractTracker(final GenericRecord genericRecord) {
+//        final Long extractedTrackerId = extractTrackerId(genericRecord);
+//        final Optional<Tracker> optionalTracker = this.trackerService.findById(extractedTrackerId);
+//        return optionalTracker.orElseThrow(
+//                () -> new DataConsumingException(
+//                        format("Tracker with id '%d' doesn't exist.", extractedTrackerId)
+//                )
+//        );
+//    }
+//
+//    private static Long extractTrackerId(final GenericRecord genericRecord) {
+//        return extractValue(genericRecord, trackerId);
+//    }
 
 //    private static abstract class GeographicCoordinateExtractor<T extends GeographicCoordinate> {
 //        private final String degreesGenericRecordKey;
