@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.kafka.consumer.deserializer;
 
-import by.bsu.wialontransport.kafka.consumer.deserializer.exception.AvroGenericRecordDeserializationException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
@@ -19,7 +18,7 @@ public final class AvroGenericRecordDeserializer implements Deserializer<Generic
 
     @Override
     public void configure(final Map<String, ?> configurationProperties, final boolean isKey) {
-        this.schema = (Schema) configurationProperties.get(SCHEMA.getName());
+        schema = (Schema) configurationProperties.get(SCHEMA.getName());
     }
 
     @Override
@@ -28,12 +27,37 @@ public final class AvroGenericRecordDeserializer implements Deserializer<Generic
             if (bytes == null) {
                 return null;
             }
-            final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>(this.schema);
-            final Decoder decoder = DecoderFactory.get()
-                    .binaryDecoder(bytes, null);
+            final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>(schema);
+            final Decoder decoder = createDecoder(bytes);
             return datumReader.read(null, decoder);
         } catch (final IOException cause) {
-            throw new AvroGenericRecordDeserializationException(cause);
+            throw new RecordDeserializationException(cause);
+        }
+    }
+
+    private static Decoder createDecoder(final byte[] bytes) {
+        return DecoderFactory.get().binaryDecoder(bytes, null);
+    }
+
+    static final class RecordDeserializationException extends RuntimeException {
+
+        @SuppressWarnings("unused")
+        public RecordDeserializationException() {
+
+        }
+
+        @SuppressWarnings("unused")
+        public RecordDeserializationException(final String description) {
+            super(description);
+        }
+
+        public RecordDeserializationException(final Exception cause) {
+            super(cause);
+        }
+
+        @SuppressWarnings("unused")
+        public RecordDeserializationException(final String description, final Exception cause) {
+            super(description, cause);
         }
     }
 }

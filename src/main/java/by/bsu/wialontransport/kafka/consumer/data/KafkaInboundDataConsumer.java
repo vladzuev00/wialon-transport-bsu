@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.kafka.consumer;
+package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;

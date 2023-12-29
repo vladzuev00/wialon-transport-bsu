@@ -1,11 +1,11 @@
-package by.bsu.wialontransport.kafka.consumer;
+package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
+import by.bsu.wialontransport.kafka.consumer.KafkaGenericRecordConsumer;
 import org.apache.avro.generic.GenericRecord;
 
 import java.time.LocalDateTime;
@@ -246,9 +246,9 @@ public abstract class AbstractKafkaDataConsumer extends KafkaGenericRecordConsum
         private static Matcher findMatcherOrThrowExceptionIfNotMatch(final String serializedParameter) {
             final Matcher matcher = PATTERN_SERIALIZED_PARAMETER.matcher(serializedParameter);
             if (!matcher.matches()) {
-                throw new DataConsumingException(
-                        format(MESSAGE_EXCEPTION_NOT_VALID_SERIALIZED_PARAMETER, serializedParameter)
-                );
+//                throw new DataConsumingException(
+//                        format(MESSAGE_EXCEPTION_NOT_VALID_SERIALIZED_PARAMETER, serializedParameter)
+//                );
             }
             return matcher;
         }

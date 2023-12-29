@@ -1,10 +1,9 @@
-package by.bsu.wialontransport.kafka.consumer;
+package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.kafka.consumer.exception.DataConsumingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -15,8 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.addressId;
-import static by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData.Fields.id;
 import static java.lang.String.format;
 
 @Slf4j
@@ -77,11 +74,12 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     private Address extractAddress(final GenericRecord genericRecord) {
         final Long addressId = extractAddressId(genericRecord);
         final Optional<Address> optionalAddress = this.addressService.findById(addressId);
-        return optionalAddress.orElseThrow(
-                () -> new DataConsumingException(
-                        format("Impossible to find address with id '%d'.", addressId)
-                )
-        );
+//        return optionalAddress.orElseThrow(
+//                () -> new DataConsumingException(
+//                        format("Impossible to find address with id '%d'.", addressId)
+//                )
+//        );
+        return null;
     }
 
     private static Long extractAddressId(final GenericRecord genericRecord) {
