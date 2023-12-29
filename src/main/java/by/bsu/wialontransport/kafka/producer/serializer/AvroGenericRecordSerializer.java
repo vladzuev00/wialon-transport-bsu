@@ -18,8 +18,8 @@ public final class AvroGenericRecordSerializer implements Serializer<GenericReco
     private Schema schema;
 
     @Override
-    public void configure(final Map<String, ?> configurationProperties, final boolean isKey) {
-        this.schema = (Schema) configurationProperties.get(SCHEMA.getName());
+    public void configure(final Map<String, ?> configurationProperties, final boolean key) {
+        schema = (Schema) configurationProperties.get(SCHEMA.getName());
     }
 
     @Override
@@ -29,33 +29,33 @@ public final class AvroGenericRecordSerializer implements Serializer<GenericReco
         }
         try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             final BinaryEncoder binaryEncoder = EncoderFactory.get().binaryEncoder(byteArrayOutputStream, null);
-            final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(this.schema);
+            final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
             datumWriter.write(record, binaryEncoder);
             binaryEncoder.flush();
             return byteArrayOutputStream.toByteArray();
         } catch (final IOException cause) {
-            throw new AvroGenericRecordSerializationException(cause);
+            throw new RecordSerializationException(cause);
         }
     }
 
-    static final class AvroGenericRecordSerializationException extends RuntimeException {
+    static final class RecordSerializationException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public AvroGenericRecordSerializationException() {
+        public RecordSerializationException() {
 
         }
 
         @SuppressWarnings("unused")
-        public AvroGenericRecordSerializationException(final String description) {
+        public RecordSerializationException(final String description) {
             super(description);
         }
 
-        public AvroGenericRecordSerializationException(final Exception cause) {
+        public RecordSerializationException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public AvroGenericRecordSerializationException(final String description, final Exception cause) {
+        public RecordSerializationException(final String description, final Exception cause) {
             super(description, cause);
         }
     }
