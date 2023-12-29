@@ -8,7 +8,7 @@ import static java.time.LocalDateTime.ofEpochSecond;
 import static java.time.ZoneOffset.UTC;
 
 public abstract class AbstractKafkaGenericRecordConsumer<K, DATA>
-        extends AbstractKafkaConsumer<K, GenericRecord, DATA> {
+        extends KafkaConsumer<K, GenericRecord, DATA> {
 
     @SuppressWarnings("unchecked")
     protected static <T> T extractValue(final GenericRecord genericRecord, final String genericRecordKey) {

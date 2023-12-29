@@ -49,12 +49,12 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactoryInboundData"
     )
-    public void consume(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
-        super.consume(consumerRecords);
+    public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
+        super.consume(records);
     }
 
     @Override
-    protected Data mapToData(final GenericRecord genericRecord) {
+    protected Data mapToSource(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
         return Data.builder()
 //                .date(dateTime.toLocalDate())
@@ -78,7 +78,7 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
 
     @Override
     @Transactional(isolation = READ_COMMITTED)
-    protected void processData(final List<Data> data) {
+    protected void process(final List<Data> data) {
         final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
         final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
         this.sendInSavedDataTopic(savedData);

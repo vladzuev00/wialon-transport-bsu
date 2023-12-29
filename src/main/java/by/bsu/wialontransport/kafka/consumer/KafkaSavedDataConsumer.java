@@ -35,12 +35,12 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
             groupId = "${kafka.topic.saved-data.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactorySavedData"
     )
-    public void consume(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
-        super.consume(consumerRecords);
+    public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
+        super.consume(records);
     }
 
     @Override
-    protected Data mapToData(final GenericRecord genericRecord) {
+    protected Data mapToSource(final GenericRecord genericRecord) {
         final LocalDateTime dateTime = extractDateTime(genericRecord);
 //        return new Data(
 //                extractId(genericRecord),
@@ -65,7 +65,7 @@ public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     @Override
-    protected void processData(final List<Data> data) {
+    protected void process(final List<Data> data) {
         log.info("Consuming saved data: {}", data);
     }
 
