@@ -1,9 +1,13 @@
 package by.bsu.wialontransport.kafka.producer.data;
 
+import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import by.bsu.wialontransport.kafka.producer.data.KafkaDataProducer.CreatingTransportableContext;
+import by.bsu.wialontransport.kafka.producer.data.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.transportable.data.TransportableInboundData;
 import org.junit.Test;
 
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -85,7 +89,14 @@ public final class KafkaInboundDataProducerTest {
 
     @Test
     public void parameterViewShouldBeCreated() {
-        throw new RuntimeException();
+        final String givenName = "parameter-name";
+        final Type givenType = INTEGER;
+        final String givenValue = "1";
+        final Parameter givenParameter = createParameter(givenName, givenType, givenValue);
+
+        final InboundParameterView actual = producer.createParameterView(givenParameter);
+        final InboundParameterView expected = new InboundParameterView(givenName, givenType, givenValue);
+        assertEquals(expected, actual);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -119,5 +130,14 @@ public final class KafkaInboundDataProducerTest {
         when(context.getSerializedParameters()).thenReturn(serializedParameters);
         when(context.getTrackerId()).thenReturn(trackerId);
         return context;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Parameter createParameter(final String name, final Type type, final String value) {
+        return Parameter.builder()
+                .name(name)
+                .type(type)
+                .value(value)
+                .build();
     }
 }

@@ -37,6 +37,7 @@ public final class KafkaInboundDataProducer extends KafkaDataProducer {
                 .serializedAnalogInputs(context.getSerializedAnalogInputs())
                 .driverKeyCode(context.getDriverKeyCode())
                 .serializedParameters(context.getSerializedParameters())
+                .trackerId(context.getTrackerId())
                 .build();
     }
 
