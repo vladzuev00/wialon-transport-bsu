@@ -2,10 +2,13 @@ package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.Iterator;
+import java.util.Spliterator;
 import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Stream.empty;
+import static java.util.stream.StreamSupport.stream;
 
 @UtilityClass
 public final class StreamUtil {
@@ -20,4 +23,9 @@ public final class StreamUtil {
         return stream.findAny().isEmpty();
     }
 
+    public static <T> Stream<T> toStream(final Iterator<T> iterator) {
+        final Iterable<T> iterable = () -> iterator;
+        final Spliterator<T> spliterator = iterable.spliterator();
+        return stream(spliterator, false);
+    }
 }

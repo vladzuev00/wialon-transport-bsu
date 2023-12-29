@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.kafka.producer.data;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.kafka.producer.data.view.InboundParameterView;
-import by.bsu.wialontransport.kafka.transportable.data.TransportableInboundData;
+import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
+import by.bsu.wialontransport.kafka.model.transportable.data.TransportableInboundData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;

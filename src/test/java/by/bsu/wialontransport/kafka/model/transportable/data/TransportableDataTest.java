@@ -1,5 +1,6 @@
-package by.bsu.wialontransport.kafka.transportable.data;
+package by.bsu.wialontransport.kafka.model.transportable.data;
 
+import by.bsu.wialontransport.kafka.model.transportable.data.TransportableData;
 import lombok.Builder;
 import org.junit.Test;
 

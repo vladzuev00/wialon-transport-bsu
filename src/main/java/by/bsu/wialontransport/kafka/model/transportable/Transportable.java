@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.kafka.transportable;
+package by.bsu.wialontransport.kafka.model.transportable;
 
 @FunctionalInterface
 public interface Transportable<K> {

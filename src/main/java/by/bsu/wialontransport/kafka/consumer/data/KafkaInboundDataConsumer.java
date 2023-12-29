@@ -2,43 +2,38 @@ package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import java.util.Optional;
 
 @Component
-public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
+public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
     private final DataService dataService;
-    private final AddressService addressService;
     private final GeocodingService geocodingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
-    public KafkaInboundDataConsumer(final TrackerService trackerService,
-                                    final DataService dataService,
+    public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
+                                    final TrackerService trackerService,
                                     final AddressService addressService,
+                                    final DataService dataService,
                                     @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
-        super(trackerService);
+        super(objectMapper, trackerService, addressService, InboundParameterView.class);
         this.dataService = dataService;
-        this.addressService = addressService;
         this.geocodingService = geocodingService;
         this.savedDataProducer = savedDataProducer;
     }
@@ -54,86 +49,50 @@ public class KafkaInboundDataConsumer extends AbstractKafkaDataConsumer {
     }
 
     @Override
-    protected Data mapToSource(final GenericRecord genericRecord) {
-        final LocalDateTime dateTime = extractDateTime(genericRecord);
-//        return Data.builder()
-////                .date(dateTime.toLocalDate())
-////                .time(dateTime.toLocalTime())
-////                .latitude(latitude)
-////                .longitude(longitude)
-//                .speed(extractSpeed(genericRecord))
-//                .course(extractCourse(genericRecord))
-//                .altitude(extractAltitude(genericRecord))
-//                .amountOfSatellites(extractAmountOfSatellites(genericRecord))
-//                .reductionPrecision(extractReductionPrecision(genericRecord))
-//                .inputs(extractInputs(genericRecord))
-//                .outputs(extractOutputs(genericRecord))
-//                .analogInputs(super.extractAnalogInputs(genericRecord))
-//                .driverKeyCode(extractDriverKeyCode(genericRecord))
-//                .parametersByNames(super.extractParametersByNames(genericRecord))
-//                .tracker(super.extractTracker(genericRecord))
-////                .address(this.findAddress(latitude, longitude))
-//                .build();
-        return null;
+    protected Data createData(final DataCreatingContext context) {
+        return Data.builder()
+                .dateTime(context.getDateTime())
+                .coordinate(context.getCoordinate())
+                .speed(context.getSpeed())
+                .course(context.getCourse())
+                .altitude(context.getAltitude())
+                .amountOfSatellites(context.getAmountOfSatellites())
+                .reductionPrecision(context.getReductionPrecision())
+                .inputs(context.getInputs())
+                .outputs(context.getOutputs())
+                .analogInputs(context.getAnalogInputs())
+                .driverKeyCode(context.getDriverKeyCode())
+                .parametersByNames(context.getParametersByNames())
+                .tracker(context.getTracker())
+                .address(context.getAddress())
+                .build();
     }
 
     @Override
-    @Transactional(isolation = READ_COMMITTED)
+    protected Parameter createParameter(final InboundParameterView view) {
+        return Parameter.builder()
+                .name(view.getName())
+                .type(view.getType())
+                .value(view.getValue())
+                .build();
+    }
+
+    @Override
+    protected Optional<Address> findAddress(final Coordinate coordinate, final AddressService addressService) {
+        return geocodingService.receive(coordinate).map(address -> mapToSavedAddress(address, addressService));
+    }
+
+    @Override
     protected void process(final List<Data> data) {
-        final List<Data> findDataWithSavedAddresses = this.findDataWithSavedAddresses(data);
-        final List<Data> savedData = this.dataService.saveAll(findDataWithSavedAddresses);
-        this.sendInSavedDataTopic(savedData);
+        final List<Data> savedData = dataService.saveAll(data);
+        sendToSavedDataTopic(savedData);
     }
 
-//    private Address findAddress(final Latitude latitude, final Longitude longitude) {
-//        final Optional<Address> optionalAddress = this.geocodingService.receive(latitude, longitude);
-//        return optionalAddress.orElseThrow(
-//                () -> new DataConsumingException(
-//                        format(
-//                                "Impossible to find address by latitude='%s' and longitude='%s'",
-//                                latitude,
-//                                longitude
-//                        )
-//                )
-//        );
-//    }
-
-    private void sendInSavedDataTopic(final List<Data> data) {
-        data.forEach(this.savedDataProducer::send);
+    private static Address mapToSavedAddress(final Address address, final AddressService addressService) {
+        return address.isNew() ? addressService.save(address) : address;
     }
 
-    private List<Data> findDataWithSavedAddresses(final List<Data> source) {
-        final Map<Address, List<Data>> dataGroupedByAddresses = source.stream()
-                .collect(groupingBy(Data::getAddress, LinkedHashMap::new, toList()));
-        dataGroupedByAddresses.replaceAll(this::mapToDataWithSavedAddressIfAddressIsNew);
-        return dataGroupedByAddresses.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
-    /**
-     * @param data    - data with given address
-     * @param address - address of all data
-     * @return data with saved address
-     */
-    private List<Data> mapToDataWithSavedAddressIfAddressIsNew(final Address address, final List<Data> data) {
-        return isNewAddress(address) ? this.mapToDataWithSavedAddress(data, address) : data;
-    }
-
-    /**
-     * @param source     - data with given address
-     * @param newAddress - not saved address of all data
-     * @return data with saved address
-     */
-    private List<Data> mapToDataWithSavedAddress(final List<Data> source, final Address newAddress) {
-        final Address savedAddress = this.addressService.save(newAddress);
-        return source.stream()
-//                .map(data -> createWithAddress(data, savedAddress))
-                .toList();
-    }
-
-    private static boolean isNewAddress(final Address address) {
-        return address.getId() == null;
+    private void sendToSavedDataTopic(final List<Data> data) {
+        data.forEach(savedDataProducer::send);
     }
 }

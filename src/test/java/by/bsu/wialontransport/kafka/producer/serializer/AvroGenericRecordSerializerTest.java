@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.producer.serializer;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.kafka.transportable.Transportable;
+import by.bsu.wialontransport.kafka.model.transportable.Transportable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;

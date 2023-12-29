@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.producer;
 
-import by.bsu.wialontransport.kafka.transportable.Transportable;
+import by.bsu.wialontransport.kafka.model.transportable.Transportable;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.kafka.producer.data.view;
+package by.bsu.wialontransport.kafka.model.view;
 
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import com.fasterxml.jackson.annotation.JsonCreator;

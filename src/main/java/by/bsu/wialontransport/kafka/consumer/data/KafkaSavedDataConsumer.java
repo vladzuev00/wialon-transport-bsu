@@ -18,7 +18,7 @@ import static java.lang.String.format;
 
 @Slf4j
 @Component
-public final class KafkaSavedDataConsumer extends AbstractKafkaDataConsumer {
+public final class KafkaSavedDataConsumer extends KafkaDataConsumer {
     private final AddressService addressService;
 
     public KafkaSavedDataConsumer(final TrackerService trackerService, final AddressService addressService) {

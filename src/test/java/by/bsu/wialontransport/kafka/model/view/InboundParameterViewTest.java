@@ -1,6 +1,7 @@
-package by.bsu.wialontransport.kafka.producer.data.view;
+package by.bsu.wialontransport.kafka.model.view;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.junit.Assert.assertEquals;
 
-public final class SavedParameterViewTest extends AbstractContextTest {
+public final class InboundParameterViewTest extends AbstractContextTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -17,11 +18,10 @@ public final class SavedParameterViewTest extends AbstractContextTest {
     @Test
     public void viewShouldBeConvertedToJson()
             throws Exception {
-        final SavedParameterView givenView = SavedParameterView.builder()
+        final InboundParameterView givenView = InboundParameterView.builder()
                 .name("parameter-name")
                 .type(INTEGER)
                 .value("1")
-                .id(255L)
                 .build();
 
         final String actual = objectMapper.writeValueAsString(givenView);
@@ -29,8 +29,7 @@ public final class SavedParameterViewTest extends AbstractContextTest {
                 {
                   "name": "parameter-name",
                   "type": "INTEGER",
-                  "value": "1",
-                  "id": 255
+                  "value": "1"
                 }""";
         assertEquals(expected, actual, true);
     }
@@ -42,16 +41,14 @@ public final class SavedParameterViewTest extends AbstractContextTest {
                 {
                   "name": "parameter-name",
                   "type": "INTEGER",
-                  "value": "1",
-                  "id": 255
+                  "value": "1"
                 }""";
 
-        final SavedParameterView actual = objectMapper.readValue(givenJson, SavedParameterView.class);
-        final SavedParameterView expected = SavedParameterView.builder()
+        final InboundParameterView actual = objectMapper.readValue(givenJson, InboundParameterView.class);
+        final InboundParameterView expected = InboundParameterView.builder()
                 .name("parameter-name")
                 .type(INTEGER)
                 .value("1")
-                .id(255L)
                 .build();
         assertEquals(expected, actual);
     }

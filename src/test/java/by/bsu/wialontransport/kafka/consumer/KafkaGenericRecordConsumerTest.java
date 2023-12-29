@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+//TODO: simplify test
 public final class KafkaGenericRecordConsumerTest {
     private static final String GENERIC_RECORD_KEY_ID = "id";
     private static final String GENERIC_RECORD_KEY_PHONE_NUMBER = "phoneNumber";

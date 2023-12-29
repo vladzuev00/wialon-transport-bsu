@@ -3,8 +3,8 @@ package by.bsu.wialontransport.kafka.producer.data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import by.bsu.wialontransport.kafka.producer.data.KafkaDataProducer.CreatingTransportableContext;
-import by.bsu.wialontransport.kafka.producer.data.view.SavedParameterView;
-import by.bsu.wialontransport.kafka.transportable.data.TransportableSavedData;
+import by.bsu.wialontransport.kafka.model.view.SavedParameterView;
+import by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData;
 import org.junit.Test;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;

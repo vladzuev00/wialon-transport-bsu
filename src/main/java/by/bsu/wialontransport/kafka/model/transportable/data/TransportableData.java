@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.kafka.transportable.data;
+package by.bsu.wialontransport.kafka.model.transportable.data;
 
-import by.bsu.wialontransport.kafka.transportable.Transportable;
+import by.bsu.wialontransport.kafka.model.transportable.Transportable;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 

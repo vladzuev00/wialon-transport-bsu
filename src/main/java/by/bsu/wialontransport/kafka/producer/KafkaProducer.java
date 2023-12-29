@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.producer;
 
-import by.bsu.wialontransport.kafka.transportable.Transportable;
+import by.bsu.wialontransport.kafka.model.transportable.Transportable;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
