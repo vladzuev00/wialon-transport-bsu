@@ -14,4 +14,5 @@ public class Tracker implements Dto<Long> {
     String phoneNumber;
     User user;
     TrackerMileage mileage;
+    Data lastData;
 }
