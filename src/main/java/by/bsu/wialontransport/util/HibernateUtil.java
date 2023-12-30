@@ -13,7 +13,7 @@ public final class HibernateUtil {
         return object != null && isInitialized(object);
     }
 
-    public static <T> boolean isPropertyLoaded(final T object, final Function<T, Object> getter) {
+    public static <T> boolean isPropertyFetched(final T object, final Function<T, Object> getter) {
         final Object property = getter.apply(object);
         return isLoaded(property);
     }

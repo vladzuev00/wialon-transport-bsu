@@ -13,6 +13,7 @@ import java.util.Optional;
 import static io.netty.util.AttributeKey.valueOf;
 import static java.util.Optional.ofNullable;
 
+//TODO: remove attribute with tracker
 @Component
 public final class ContextAttributeManager {
     private static final String NAME_ATTRIBUTE_KEY_TRACKER_IMEI = "tracker_imei";

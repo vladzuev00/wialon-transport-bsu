@@ -101,13 +101,6 @@ ALTER TABLE trackers
 	ADD CONSTRAINT fk_trackers_to_tracker_mileages
 		FOREIGN KEY (mileage_id) REFERENCES tracker_mileages(id);
 
-ALTER TABLE trackers
-    ADD CONSTRAINT fk_trackers_to_data
-        FOREIGN KEY (last_data_id) REFERENCES data(id);
-
-ALTER TABLE trackers
-    ADD CONSTRAINT last_data_id_should_be_unique UNIQUE(last_data_id);
-
 CREATE TABLE addresses
 (
     id           BIGSERIAL PRIMARY KEY,
@@ -149,6 +142,13 @@ ALTER TABLE data
 
 ALTER TABLE data
     ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
+
+ALTER TABLE trackers
+    ADD CONSTRAINT fk_trackers_to_data
+        FOREIGN KEY (last_data_id) REFERENCES data(id);
+
+ALTER TABLE trackers
+    ADD CONSTRAINT last_data_id_should_be_unique UNIQUE(last_data_id);
 
 CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');
 

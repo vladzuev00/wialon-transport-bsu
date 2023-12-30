@@ -22,11 +22,12 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
 
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
-        return findUnique(
-                repository -> repository.findTrackerLastDataByTrackerId(
-                        tracker.getId()
-                )
-        );
+//        return findUnique(
+//                repository -> repository.findTrackerLastDataByTrackerId(
+//                        tracker.getId()
+//                )
+//        );
+        return null;
     }
 
     @Transactional(readOnly = true)

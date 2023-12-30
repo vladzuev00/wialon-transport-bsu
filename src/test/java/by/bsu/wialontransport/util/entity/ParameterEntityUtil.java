@@ -3,7 +3,7 @@ package by.bsu.wialontransport.util.entity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import lombok.experimental.UtilityClass;
 
-import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
+import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -19,6 +19,6 @@ public final class ParameterEntityUtil {
     }
 
     public static boolean isDataLoaded(final ParameterEntity entity) {
-        return isPropertyLoaded(entity, ParameterEntity::getData);
+        return isPropertyFetched(entity, ParameterEntity::getData);
     }
 }

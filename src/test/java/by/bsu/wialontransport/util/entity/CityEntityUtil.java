@@ -3,7 +3,7 @@ package by.bsu.wialontransport.util.entity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import lombok.experimental.UtilityClass;
 
-import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
+import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
 import static org.junit.Assert.assertEquals;
 
 @UtilityClass
@@ -25,11 +25,11 @@ public final class CityEntityUtil {
     }
 
     public static boolean isAddressLoaded(final CityEntity city) {
-        return isPropertyLoaded(city, CityEntity::getAddress);
+        return isPropertyFetched(city, CityEntity::getAddress);
     }
 
     public static boolean isSearchingCitiesProcessLoaded(final CityEntity city) {
-        return isPropertyLoaded(city, CityEntity::getSearchingCitiesProcess);
+        return isPropertyFetched(city, CityEntity::getSearchingCitiesProcess);
     }
 
 }

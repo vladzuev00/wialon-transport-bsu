@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
-import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
+import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
 import static org.junit.Assert.*;
 
 @UtilityClass
@@ -33,15 +33,15 @@ public final class DataEntityUtil {
     }
 
     public static boolean areParametersLoaded(final DataEntity data) {
-        return isPropertyLoaded(data, DataEntity::getParameters);
+        return isPropertyFetched(data, DataEntity::getParameters);
     }
 
     public static boolean isTrackerLoaded(final DataEntity data) {
-        return isPropertyLoaded(data, DataEntity::getTracker);
+        return isPropertyFetched(data, DataEntity::getTracker);
     }
 
     public static boolean isAddressLoaded(final DataEntity data) {
-        return isPropertyLoaded(data, DataEntity::getAddress);
+        return isPropertyFetched(data, DataEntity::getAddress);
     }
 
     public static boolean areParametersNotLoaded(final Collection<DataEntity> entities) {

@@ -32,7 +32,8 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByImei(final String imei) {
-        return findUnique(repository -> repository.findByImei(imei));
+//        return findUnique(repository -> repository.findByImei(imei));
+        return null;
     }
 
     @Transactional(readOnly = true)
@@ -47,7 +48,7 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByIdWithUser(final Long id) {
-        return findUnique(repository -> repository.findByIdWithUser(id));
+        return findUnique(repository -> repository.findByIdFetchingUser(id));
     }
 
     @Transactional(readOnly = true)

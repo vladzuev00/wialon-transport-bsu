@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Collection;
 
 import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
-import static by.bsu.wialontransport.util.HibernateUtil.isPropertyLoaded;
+import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
 import static org.junit.Assert.assertEquals;
 
 @UtilityClass
@@ -19,21 +19,30 @@ public final class TrackerEntityUtil {
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
         assertEquals(expected.getMileage(), actual.getMileage());
+        assertEquals(expected.getLastData(), actual.getLastData());
     }
 
-    public static boolean isUserLoaded(final TrackerEntity entity) {
-        return isPropertyLoaded(entity, TrackerEntity::getUser);
+    public static boolean isUserFetched(final TrackerEntity entity) {
+        return isPropertyFetched(entity, TrackerEntity::getUser);
     }
 
-    public static boolean isMileageLoaded(final TrackerEntity entity) {
-        return isPropertyLoaded(entity, TrackerEntity::getMileage);
+    public static boolean isMileageFetched(final TrackerEntity entity) {
+        return isPropertyFetched(entity, TrackerEntity::getMileage);
     }
 
-    public static boolean areUsersNotLoaded(final Collection<TrackerEntity> entities) {
-        return areAllMatch(entities, entity -> !isUserLoaded(entity));
+    public static boolean isLastDataFetched(final TrackerEntity entity) {
+        return isPropertyFetched(entity, TrackerEntity::getLastData);
     }
 
-    public static boolean areMileagesNotLoaded(final Collection<TrackerEntity> entities) {
-        return areAllMatch(entities, entity -> !isMileageLoaded(entity));
+    public static boolean areUsersNotFetched(final Collection<TrackerEntity> entities) {
+        return areAllMatch(entities, entity -> !isUserFetched(entity));
+    }
+
+    public static boolean areMileagesNotFetched(final Collection<TrackerEntity> entities) {
+        return areAllMatch(entities, entity -> !isMileageFetched(entity));
+    }
+
+    public static boolean areLastDataNotFetched(final Collection<TrackerEntity> entities) {
+        return areAllMatch(entities, entity -> !isLastDataFetched(entity));
     }
 }
