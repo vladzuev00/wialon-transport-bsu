@@ -33,7 +33,7 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
     @Transactional(readOnly = true)
     public Stream<Data> findDataWithTrackerAndAddress(final User user, final DateInterval dateInterval) {
         return findDtoStream(
-                repository -> repository.findDataWithTrackerAndAddressByUserId(
+                repository -> repository.findDataByUserIdFetchingTrackerAndAddress(
                         user.getId(),
                         dateInterval.getStart(),
                         dateInterval.getEnd()

@@ -30,8 +30,8 @@ public final class CityRepositoryTest extends AbstractContextTest {
         final CityEntity actual = repository.findById(258L).orElseThrow();
         checkQueryCount(1);
 
-        assertFalse(isAddressLoaded(actual));
-        assertFalse(isSearchingCitiesProcessLoaded(actual));
+        assertFalse(isAddressFetched(actual));
+        assertFalse(isSearchingCitiesProcessFetched(actual));
 
         final CityEntity expected = CityEntity.builder()
                 .id(258L)

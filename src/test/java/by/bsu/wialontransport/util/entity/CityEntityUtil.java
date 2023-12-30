@@ -24,11 +24,11 @@ public final class CityEntityUtil {
         );
     }
 
-    public static boolean isAddressLoaded(final CityEntity city) {
+    public static boolean isAddressFetched(final CityEntity city) {
         return isPropertyFetched(city, CityEntity::getAddress);
     }
 
-    public static boolean isSearchingCitiesProcessLoaded(final CityEntity city) {
+    public static boolean isSearchingCitiesProcessFetched(final CityEntity city) {
         return isPropertyFetched(city, CityEntity::getSearchingCitiesProcess);
     }
 

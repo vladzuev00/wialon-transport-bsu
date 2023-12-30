@@ -16,7 +16,7 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
                     + "WHERE te.user.id = :userId "
                     + "AND de.dateTime BETWEEN :startDateTime AND :endDateTime"
     )
-    Stream<DataEntity> findDataWithTrackerAndAddressByUserId(final Long userId,
-                                                             final LocalDateTime startDateTime,
-                                                             final LocalDateTime endDateTime);
+    Stream<DataEntity> findDataByUserIdFetchingTrackerAndAddress(final Long userId,
+                                                                 final LocalDateTime startDateTime,
+                                                                 final LocalDateTime endDateTime);
 }

@@ -32,28 +32,28 @@ public final class DataEntityUtil {
         assertEquals(expected.getAddress(), actual.getAddress());
     }
 
-    public static boolean areParametersLoaded(final DataEntity data) {
+    public static boolean areParametersFetched(final DataEntity data) {
         return isPropertyFetched(data, DataEntity::getParameters);
     }
 
-    public static boolean isTrackerLoaded(final DataEntity data) {
+    public static boolean isTrackerFetched(final DataEntity data) {
         return isPropertyFetched(data, DataEntity::getTracker);
     }
 
-    public static boolean isAddressLoaded(final DataEntity data) {
+    public static boolean isAddressFetched(final DataEntity data) {
         return isPropertyFetched(data, DataEntity::getAddress);
     }
 
-    public static boolean areParametersNotLoaded(final Collection<DataEntity> entities) {
-        return areAllMatch(entities, entity -> !areParametersLoaded(entity));
+    public static boolean areParametersNotFetched(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, entity -> !areParametersFetched(entity));
     }
 
-    public static boolean areTrackersLoaded(final Collection<DataEntity> entities) {
-        return areAllMatch(entities, DataEntityUtil::isTrackerLoaded);
+    public static boolean areTrackersFetched(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, DataEntityUtil::isTrackerFetched);
     }
 
-    public static boolean areAddressesLoaded(final Collection<DataEntity> entities) {
-        return areAllMatch(entities, DataEntityUtil::isAddressLoaded);
+    public static boolean areAddressesFetched(final Collection<DataEntity> entities) {
+        return areAllMatch(entities, DataEntityUtil::isAddressFetched);
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,

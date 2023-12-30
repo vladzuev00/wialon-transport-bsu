@@ -9,7 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.checkEquals;
-import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.isDataLoaded;
+import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.isDataFetched;
 import static org.junit.Assert.assertFalse;
 
 public final class ParameterRepositoryTest extends AbstractContextTest {
@@ -24,7 +24,7 @@ public final class ParameterRepositoryTest extends AbstractContextTest {
         final ParameterEntity actual = repository.findById(257L).orElseThrow();
         checkQueryCount(1);
 
-        assertFalse(isDataLoaded(actual));
+        assertFalse(isDataFetched(actual));
 
         final ParameterEntity expected = ParameterEntity.builder()
                 .id(257L)

@@ -18,7 +18,7 @@ public final class ParameterEntityUtil {
         assertEquals(expected.getData(), actual.getData());
     }
 
-    public static boolean isDataLoaded(final ParameterEntity entity) {
+    public static boolean isDataFetched(final ParameterEntity entity) {
         return isPropertyFetched(entity, ParameterEntity::getData);
     }
 }
