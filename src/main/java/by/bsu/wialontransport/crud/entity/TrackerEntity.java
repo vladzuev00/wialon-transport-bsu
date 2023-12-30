@@ -2,8 +2,8 @@ package by.bsu.wialontransport.crud.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -37,18 +37,25 @@ public class TrackerEntity extends EntityWithPassword<Long> {
     @ToString.Exclude
     private TrackerMileageEntity mileage;
 
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "last_data_id")
+    @ToString.Exclude
+    private DataEntity lastData;
+
     @Builder
     public TrackerEntity(final Long id,
                          final String imei,
                          final String password,
                          final String phoneNumber,
                          final UserEntity user,
-                         final TrackerMileageEntity mileage) {
+                         final TrackerMileageEntity mileage,
+                         final DataEntity lastData) {
         super(password);
         this.id = id;
         this.imei = imei;
         this.phoneNumber = phoneNumber;
         this.user = user;
         this.mileage = mileage;
+        this.lastData = lastData;
     }
 }
