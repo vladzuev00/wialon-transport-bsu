@@ -78,7 +78,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
         log.info("Consuming saved data: {}", data);
     }
 
-    private static Long extractDataId(final KafkaDataConsumer.ConsumingContext context) {
+    private static Long extractDataId(final ConsumingContext context) {
         return extractProperty(
                 context,
                 ConsumingContext::getDataId,
@@ -86,7 +86,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
         );
     }
 
-    private static Long extractAddressId(final KafkaDataConsumer.ConsumingContext context) {
+    private static Long extractAddressId(final ConsumingContext context) {
         return extractProperty(
                 context,
                 ConsumingContext::getAddressId,
@@ -94,8 +94,8 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
         );
     }
 
-    private static <T> T extractProperty(final KafkaDataConsumer.ConsumingContext context,
-                                         final Function<KafkaDataConsumer.ConsumingContext, Optional<T>> getter,
+    private static <T> T extractProperty(final ConsumingContext context,
+                                         final Function<ConsumingContext, Optional<T>> getter,
                                          final String noSuchPropertyExceptionMessage) {
         return getter.apply(context).orElseThrow(() -> new IllegalStateException(noSuchPropertyExceptionMessage));
     }

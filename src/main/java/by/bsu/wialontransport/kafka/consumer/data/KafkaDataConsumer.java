@@ -45,6 +45,10 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Parameter createParameter(final P view);
 
+//    //TODO: в inbound вытащить вместе с пробегами и последним data, чтобы потом прощитать пробеги
+//    //TODO: в saved достать просто по id
+//    protected abstract Tracker findTracker(final Long id);
+
     protected abstract Optional<Address> findAddress(final ConsumingContext context,
                                                      final AddressService addressService);
 

@@ -216,6 +216,7 @@ public final class KafkaInboundDataConsumerTest {
         return context;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static ConsumingContext createContext(final LocalDateTime dateTime,
                                                   final Coordinate coordinate,
                                                   final double speed,
@@ -253,6 +254,7 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Parameter createParameter(final String name, final Type type, final String value) {
         return Parameter.builder()
                 .name(name)
@@ -261,24 +263,28 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Tracker createTracker(final Long id) {
         return Tracker.builder()
                 .id(id)
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Address createAddress(final Long id) {
         return Address.builder()
                 .id(id)
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Address createAddress(final String cityName) {
         return Address.builder()
                 .cityName(cityName)
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Address createAddress(final Long id, final String cityName) {
         return Address.builder()
                 .id(id)

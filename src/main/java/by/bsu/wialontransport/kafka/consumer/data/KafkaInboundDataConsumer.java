@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
+public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
     private final DataService dataService;
     private final GeocodingService geocodingService;
     private final KafkaSavedDataProducer savedDataProducer;
