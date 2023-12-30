@@ -8,10 +8,10 @@ import java.util.List;
 
 import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkEquals;
 
-public final class TrackerMileageTriggerTest extends AbstractContextTest {
+public final class TrackerTriggerTest extends AbstractContextTest {
 
     @Test
-    public void mileagesShouldBeInserted() {
+    public void zeroMileagesShouldBeInserted() {
         final List<TrackerMileageEntity> actual = findAllMileagesOrderedById();
         final List<TrackerMileageEntity> expected = List.of(
                 createZeroMileage(1L),

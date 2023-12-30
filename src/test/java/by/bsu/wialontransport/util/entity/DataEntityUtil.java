@@ -58,10 +58,15 @@ public final class DataEntityUtil {
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,
                                                 final List<ParameterEntity> actual) {
-        assertTrue(
-                expected.size() == actual.size()
-                        && expected.containsAll(actual)
-                        && actual.containsAll(expected)
-        );
+        if (expected != null && actual != null) {
+            assertTrue(
+                    expected.size() == actual.size()
+                            && expected.containsAll(actual)
+                            && actual.containsAll(expected)
+            );
+        } else {
+            assertNull(expected);
+            assertNull(actual);
+        }
     }
 }
