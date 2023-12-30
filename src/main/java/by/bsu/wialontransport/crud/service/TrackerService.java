@@ -30,10 +30,16 @@ public class TrackerService extends CRUDEncryptingPasswordService<
         super(mapper, repository, passwordEncoder);
     }
 
+    //TODO: refactor test
     @Transactional(readOnly = true)
-    public Optional<Tracker> findByImei(final String imei) {
-//        return findUnique(repository -> repository.findByImei(imei));
-        return null;
+    public Optional<Tracker> findByImeiFetchingLastData(final String imei) {
+        return findUnique(repository -> repository.findByImeiFetchingLastData(imei));
+    }
+
+    //TODO: test
+    @Transactional(readOnly = true)
+    public Optional<Tracker> findByIdFetchingLastDataAndMileage(final Long id) {
+        return findUnique(repository -> repository.findByIdFetchingLastDataAndMileage(id));
     }
 
     @Transactional(readOnly = true)
@@ -47,7 +53,7 @@ public class TrackerService extends CRUDEncryptingPasswordService<
     }
 
     @Transactional(readOnly = true)
-    public Optional<Tracker> findByIdWithUser(final Long id) {
+    public Optional<Tracker> findByIdFetching(final Long id) {
         return findUnique(repository -> repository.findByIdFetchingUser(id));
     }
 

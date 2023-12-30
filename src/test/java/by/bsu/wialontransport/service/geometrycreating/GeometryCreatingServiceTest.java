@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geometrycreating;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import org.junit.Test;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -25,7 +25,7 @@ public final class GeometryCreatingServiceTest extends AbstractContextTest {
 
     @Test
     public void lineStringShouldBeCreatedByTrack() {
-        final Track givenTrack = new Track(
+        final TempTrack givenTrack = new TempTrack(
                 List.of(
                         new RequestCoordinate(1., 2.),
                         new RequestCoordinate(3., 4.),

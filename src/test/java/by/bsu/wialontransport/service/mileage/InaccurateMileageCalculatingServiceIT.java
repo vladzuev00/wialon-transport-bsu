@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.Mileage;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,7 +42,7 @@ public final class InaccurateMileageCalculatingServiceIT extends AbstractContext
     @MethodSource("provideTrackPointsFilePathAndExpectedMileage")
     public void mileageShouldBeCalculatedForFirstTrackPoints(final String filePath, final Mileage expected)
             throws Exception {
-        final Track givenTrack = readTrack(filePath);
+        final TempTrack givenTrack = readTrack(filePath);
 
         final Mileage actual = this.mileageCalculatingService.calculate(givenTrack);
         assertEquals(expected, actual);

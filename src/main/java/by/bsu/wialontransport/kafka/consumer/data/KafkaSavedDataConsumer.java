@@ -3,6 +3,7 @@ package by.bsu.wialontransport.kafka.consumer.data;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.SavedParameterView;
@@ -66,6 +67,11 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
                 .value(view.getValue())
                 .id(view.getId())
                 .build();
+    }
+
+    @Override
+    protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
+        return trackerService.findById(id);
     }
 
     @Override

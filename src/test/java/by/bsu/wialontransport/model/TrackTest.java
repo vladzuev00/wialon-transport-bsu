@@ -5,17 +5,17 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.model.Track.create;
+import static by.bsu.wialontransport.model.TempTrack.create;
 
 public final class TrackTest {
 
     @Test
     public void trackShouldBeCreatedByCoordinateArray() {
-        final Track actual = create(
+        final TempTrack actual = create(
                 new RequestCoordinate(1., 2.),
                 new RequestCoordinate(3., 4.)
         );
-        final Track expected = new Track(
+        final TempTrack expected = new TempTrack(
                 List.of(
                         new RequestCoordinate(1., 2.),
                         new RequestCoordinate(3., 4.)

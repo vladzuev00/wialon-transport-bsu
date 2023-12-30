@@ -7,7 +7,7 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.model.Mileage;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
@@ -17,14 +17,12 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import static by.bsu.wialontransport.util.FontFactoryUtil.loadFont;
 import static java.awt.Color.WHITE;
-import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
 
@@ -104,7 +102,7 @@ public final class UserMovementReportBuildingContextFactory {
     private TrackerMovement createTrackerMovement(final Entry<Tracker, List<Data>> dataByTracker) {
         final Tracker tracker = dataByTracker.getKey();
         final List<Data> trackerData = dataByTracker.getValue();
-        final Track track = this.trackFactory.create(trackerData);
+        final TempTrack track = this.trackFactory.create(trackerData);
         final Mileage mileage = this.mileageCalculatingService.calculate(track);
         return new TrackerMovement(tracker, trackerData, mileage);
     }

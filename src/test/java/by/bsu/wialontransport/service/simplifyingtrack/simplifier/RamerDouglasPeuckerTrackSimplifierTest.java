@@ -2,11 +2,11 @@ package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static by.bsu.wialontransport.model.Track.create;
+import static by.bsu.wialontransport.model.TempTrack.create;
 import static by.bsu.wialontransport.util.CsvReadingTestUtil.readTrack;
 import static java.io.File.separator;
 import static org.junit.Assert.assertEquals;
@@ -28,7 +28,7 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
 
     @Test
     public void trackShouldBeSimplified() {
-        final Track givenTrack = create(
+        final TempTrack givenTrack = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(2., 3.),
                 new RequestCoordinate(5., 1.),
@@ -40,8 +40,8 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
                 new RequestCoordinate(18., 5.)
         );
 
-        final Track actual = this.trackSimplifier.simplify(givenTrack);
-        final Track expected = create(
+        final TempTrack actual = this.trackSimplifier.simplify(givenTrack);
+        final TempTrack expected = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(5., 1.),
                 new RequestCoordinate(6., 4.),
@@ -54,7 +54,7 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
 
     @Test
     public void trackWithSamePointsShouldBeSimplified() {
-        final Track givenTrack = create(
+        final TempTrack givenTrack = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(2., 3.),
@@ -69,8 +69,8 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
                 new RequestCoordinate(18., 5.)
         );
 
-        final Track actual = this.trackSimplifier.simplify(givenTrack);
-        final Track expected = create(
+        final TempTrack actual = this.trackSimplifier.simplify(givenTrack);
+        final TempTrack expected = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(5., 1.),
                 new RequestCoordinate(6., 4.),
@@ -83,27 +83,27 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
 
     @Test
     public void trackWithoutPointsShouldNotBeSimplified() {
-        final Track givenTrack = create();
+        final TempTrack givenTrack = create();
 
-        final Track actual = this.trackSimplifier.simplify(givenTrack);
+        final TempTrack actual = this.trackSimplifier.simplify(givenTrack);
         assertSame(givenTrack, actual);
     }
 
     @Test
     public void trackWithTwoPointsShouldNotBeSimplified() {
-        final Track givenTrack = create(
+        final TempTrack givenTrack = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(5., 1.)
         );
 
-        final Track actual = this.trackSimplifier.simplify(givenTrack);
+        final TempTrack actual = this.trackSimplifier.simplify(givenTrack);
         assertSame(givenTrack, actual);
     }
 
     @Test
     public void trackShouldNotBeSimplifiedBecauseOfEpsilonIsNotPositive() {
         final TrackSimplifier givenTrackSimplifier = new RamerDouglasPeuckerTrackSimplifier(0.);
-        final Track givenTrack = create(
+        final TempTrack givenTrack = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(2., 3.),
@@ -118,17 +118,17 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
                 new RequestCoordinate(18., 5.)
         );
 
-        final Track actual = givenTrackSimplifier.simplify(givenTrack);
+        final TempTrack actual = givenTrackSimplifier.simplify(givenTrack);
         assertSame(givenTrack, actual);
     }
 
     @Test
     public void bigTrackShouldBeSimplified()
             throws Exception {
-        final Track givenTrack = readTrack(FILE_PATH_WITH_TRACK_POINTS_TO_BE_SIMPLIFIED);
+        final TempTrack givenTrack = readTrack(FILE_PATH_WITH_TRACK_POINTS_TO_BE_SIMPLIFIED);
 
-        final Track actual = this.trackSimplifier.simplify(givenTrack);
-        final Track expected = readTrack(FILE_PATH_WITH_TRACK_POINTS_AFTER_SIMPLIFIED);
+        final TempTrack actual = this.trackSimplifier.simplify(givenTrack);
+        final TempTrack expected = readTrack(FILE_PATH_WITH_TRACK_POINTS_AFTER_SIMPLIFIED);
         assertEquals(expected, actual);
     }
 

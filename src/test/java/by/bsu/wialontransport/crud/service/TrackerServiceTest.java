@@ -23,7 +23,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByImei() {
-        final Tracker actual = service.findByImei("11112222333344445555").orElseThrow();
+        final Tracker actual = service.findByImeiFetchingLastData("11112222333344445555").orElseThrow();
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
@@ -35,7 +35,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByImei() {
-        final Optional<Tracker> optionalActual = service.findByImei("00000000000000000000");
+        final Optional<Tracker> optionalActual = service.findByImeiFetchingLastData("00000000000000000000");
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -104,8 +104,8 @@ public final class TrackerServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void trackerShouldBeFoundByIdWithUser() {
-        final Optional<Tracker> optionalActual = service.findByIdWithUser(255L);
+    public void trackerShouldBeFoundByIdFetchingUser() {
+        final Optional<Tracker> optionalActual = service.findByIdFetching(255L);
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
@@ -127,8 +127,8 @@ public final class TrackerServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void trackerShouldNotBeFoundByIdWithUser() {
-        final Optional<Tracker> optionalActual = service.findByIdWithUser(MAX_VALUE);
+    public void trackerShouldNotBeFoundByIdFetchingUser() {
+        final Optional<Tracker> optionalActual = service.findByIdFetching(MAX_VALUE);
         assertTrue(optionalActual.isEmpty());
     }
 

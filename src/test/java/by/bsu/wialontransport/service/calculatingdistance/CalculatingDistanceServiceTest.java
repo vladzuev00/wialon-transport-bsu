@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import org.junit.Test;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public final class CalculatingDistanceServiceTest {
     @Test
     public void bigDistanceShouldBeCalculated()
             throws Exception {
-        final Track givenTrack = readTrack(FILE_PATH_WITH_TRACK);
+        final TempTrack givenTrack = readTrack(FILE_PATH_WITH_TRACK);
 
         final double actual = this.service.calculate(givenTrack);
         final double expected = 2231133.2720121145;
@@ -38,7 +38,7 @@ public final class CalculatingDistanceServiceTest {
     @Test
     public void distanceCalculatedByZeroCoordinatesShouldBeEqualZero() {
         final List<RequestCoordinate> givenCoordinates = emptyList();
-        final Track givenTrack = new Track(givenCoordinates);
+        final TempTrack givenTrack = new TempTrack(givenCoordinates);
 
         final double actual = this.service.calculate(givenTrack);
         final double expected = 0.;
@@ -48,7 +48,7 @@ public final class CalculatingDistanceServiceTest {
     @Test
     public void distanceCalculatedByOneCoordinatesShouldBeEqualZero() {
         final List<RequestCoordinate> givenCoordinates = List.of(new RequestCoordinate(55.534343, 23.54545));
-        final Track givenTrack = new Track(givenCoordinates);
+        final TempTrack givenTrack = new TempTrack(givenCoordinates);
 
         final double actual = this.service.calculate(givenTrack);
         final double expected = 0.;

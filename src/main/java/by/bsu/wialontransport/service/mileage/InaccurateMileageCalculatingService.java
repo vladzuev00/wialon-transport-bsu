@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
@@ -27,7 +27,7 @@ public final class InaccurateMileageCalculatingService extends MileageCalculatin
     }
 
     @Override
-    protected Stream<TrackSlice> createTrackSliceStream(final Track track,
+    protected Stream<TrackSlice> createTrackSliceStream(final TempTrack track,
                                                         final List<PreparedGeometry> cityGeometries,
                                                         final GeometryCreatingService geometryCreatingService) {
         final List<RequestCoordinate> trackCoordinates = track.getCoordinates();

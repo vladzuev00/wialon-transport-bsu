@@ -45,9 +45,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Parameter createParameter(final P view);
 
-//    //TODO: в inbound вытащить вместе с пробегами и последним data, чтобы потом прощитать пробеги
-//    //TODO: в saved достать просто по id
-//    protected abstract Tracker findTracker(final Long id);
+    protected abstract Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService);
 
     protected abstract Optional<Address> findAddress(final ConsumingContext context,
                                                      final AddressService addressService);
@@ -124,7 +122,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
         public Tracker getTracker() {
             final Long id = extractTrackerId();
-            return trackerService.findById(id)
+            return findTrackerById(id, trackerService)
                     .orElseThrow(
                             () -> new DataConsumingException(
                                     "There is no tracker with id '%s'".formatted(id)

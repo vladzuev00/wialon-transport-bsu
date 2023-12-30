@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.simplifyingtrack;
 
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import by.bsu.wialontransport.service.simplifyingtrack.simplifier.TrackSimplifier;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +27,12 @@ public final class SimplifyingTrackServiceTest {
 
     @Test
     public void trackShouldBeSimplified() {
-        final Track givenTrack = new Track(emptyList());
+        final TempTrack givenTrack = new TempTrack(emptyList());
 
-        final Track givenSimplifiedTrack = new Track(emptyList());
+        final TempTrack givenSimplifiedTrack = new TempTrack(emptyList());
         when(this.mockedTrackSimplifier.simplify(givenTrack)).thenReturn(givenSimplifiedTrack);
 
-        final Track actual = this.service.simplify(givenTrack);
+        final TempTrack actual = this.service.simplify(givenTrack);
         assertSame(givenSimplifiedTrack, actual);
     }
 

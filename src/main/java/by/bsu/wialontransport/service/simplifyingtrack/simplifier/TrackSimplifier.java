@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 
 @FunctionalInterface
 public interface TrackSimplifier {
-    Track simplify(final Track track);
+    TempTrack simplify(final TempTrack track);
 }

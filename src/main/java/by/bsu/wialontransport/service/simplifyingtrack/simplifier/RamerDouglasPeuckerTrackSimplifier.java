@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
@@ -20,7 +20,7 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
 
     private final double epsilon;
 
-    public Track simplify(final Track track) {
+    public TempTrack simplify(final TempTrack track) {
         if (!this.isEpsilonPositive() || !isTrackAbleToBeSimplified(track)) {
             return track;
         }
@@ -28,14 +28,14 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
         final List<RequestCoordinate> simplifiedAccumulator = createSimplifiedAccumulatorBySource(source);
         this.simplifyPart(source, simplifiedAccumulator, 0, source.size() - 1);
         simplifiedAccumulator.add(source.get(source.size() - 1));
-        return new Track(simplifiedAccumulator);
+        return new TempTrack(simplifiedAccumulator);
     }
 
     private boolean isEpsilonPositive() {
         return compare(this.epsilon, 0) > 0;
     }
 
-    private static boolean isTrackAbleToBeSimplified(final Track track) {
+    private static boolean isTrackAbleToBeSimplified(final TempTrack track) {
         final List<RequestCoordinate> coordinates = track.getCoordinates();
         return coordinates != null && coordinates.size() >= MINIMAL_AMOUNT_OF_POINTS_OF_TRACK_ABLE_TO_BE_SIMPLIFIED;
     }

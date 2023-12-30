@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.model.TempTrack;
 import by.bsu.wialontransport.util.CoordinateUtil;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.CoordinateSequence;
@@ -22,7 +22,7 @@ import static by.bsu.wialontransport.util.CoordinateUtil.mapToJtsCoordinate;
 public final class GeometryCreatingService {
     private final GeometryFactory geometryFactory;
 
-    public LineString createLineString(final Track track) {
+    public LineString createLineString(final TempTrack track) {
         return this.createLineString(
                 () -> mapToCoordinateSequence(track)
         );
@@ -44,7 +44,7 @@ public final class GeometryCreatingService {
         return new LineString(coordinateSequence, this.geometryFactory);
     }
 
-    private static CoordinateSequence mapToCoordinateSequence(final Track track) {
+    private static CoordinateSequence mapToCoordinateSequence(final TempTrack track) {
         return createCoordinateSequence(
                 () -> mapToJtsCoordinates(track)
         );
@@ -62,7 +62,7 @@ public final class GeometryCreatingService {
         return new CoordinateArraySequence(jtsCoordinates);
     }
 
-    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final Track track) {
+    private static org.locationtech.jts.geom.Coordinate[] mapToJtsCoordinates(final TempTrack track) {
         return mapToJtsCoordinates(
                 track::findCoordinateStream
         );

@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.service.login;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -41,7 +40,7 @@ public final class TEMPAuthorizationTrackerService {
     //TODO: remove
     public void authorize(final WialonRequestLoginPackage requestPackage, final ChannelHandlerContext context) {
         this.contextAttributeManager.putTrackerImei(context, requestPackage.getImei());
-        final Optional<Tracker> optionalTracker = this.trackerService.findByImei(requestPackage.getImei());
+        final Optional<Tracker> optionalTracker = this.trackerService.findByImeiFetchingLastData(requestPackage.getImei());
         final Status status = optionalTracker
                 .map(tracker -> this.checkPassword(tracker, requestPackage.getPassword()))
                 .orElse(CONNECTION_FAILURE);

@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -36,7 +35,7 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final String trackerImei = requestPackage.getImei();
         this.contextAttributeManager.putTrackerImei(context, trackerImei);
-        final Optional<Tracker> optionalTracker = this.trackerService.findByImei(trackerImei);
+        final Optional<Tracker> optionalTracker = this.trackerService.findByImeiFetchingLastData(trackerImei);
         optionalTracker.ifPresentOrElse(
                 tracker -> this.loginExistingTracker(tracker, requestPackage, context),
                 () -> this.sendNoSuchImeiResponse(context)
