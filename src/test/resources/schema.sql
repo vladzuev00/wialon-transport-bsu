@@ -74,7 +74,8 @@ CREATE TABLE trackers
     encrypted_password VARCHAR(256) NOT NULL,
     phone_number       CHAR(9)      NOT NULL,
     user_id            INTEGER      NOT NULL,
-    mileage_id        INTEGER      NOT NULL
+    mileage_id         INTEGER      NOT NULL,
+    last_data_id       BIGINT
 );
 
 ALTER TABLE trackers
@@ -99,6 +100,13 @@ ALTER TABLE trackers
 ALTER TABLE trackers
 	ADD CONSTRAINT fk_trackers_to_tracker_mileages
 		FOREIGN KEY (mileage_id) REFERENCES tracker_mileages(id);
+
+ALTER TABLE trackers
+    ADD CONSTRAINT fk_trackers_to_data
+        FOREIGN KEY (last_data_id) REFERENCES data(id);
+
+ALTER TABLE trackers
+    ADD CONSTRAINT last_data_id_should_be_unique UNIQUE(last_data_id);
 
 CREATE TABLE addresses
 (
@@ -205,7 +213,7 @@ OR REPLACE FUNCTION insert_zero_mileage() RETURNS TRIGGER AS
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_before_insert_tracker
+CREATE TRIGGER tr_before_insert_tracker
     BEFORE INSERT
     ON trackers
     FOR EACH ROW
@@ -222,7 +230,7 @@ OR REPLACE FUNCTION update_tracker_last_data() RETURNS TRIGGER AS
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_after_insert_data
+CREATE TRIGGER tr_after_insert_data
     AFTER INSERT
     ON data
     FOR EACH ROW
