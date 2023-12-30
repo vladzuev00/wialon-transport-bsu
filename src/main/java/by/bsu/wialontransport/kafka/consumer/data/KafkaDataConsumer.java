@@ -37,19 +37,19 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     @Override
     protected final Data mapToSource(final GenericRecord record) {
-        final DataCreatingContext context = new DataCreatingContext(record);
+        final ConsumingContext context = new ConsumingContext(record);
         return createData(context);
     }
 
-    protected abstract Data createData(final DataCreatingContext context);
+    protected abstract Data createData(final ConsumingContext context);
 
     protected abstract Parameter createParameter(final P view);
 
-    protected abstract Optional<Address> findAddress(final DataCreatingContext context,
+    protected abstract Optional<Address> findAddress(final ConsumingContext context,
                                                      final AddressService addressService);
 
     @RequiredArgsConstructor
-    protected final class DataCreatingContext {
+    protected final class ConsumingContext {
         private final GenericRecord record;
 
         public Optional<Long> getDataId() {

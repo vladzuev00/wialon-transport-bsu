@@ -38,7 +38,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected Data createData(final DataCreatingContext context) {
+    protected Data createData(final ConsumingContext context) {
         return Data.builder()
                 .id(extractDataId(context))
                 .dateTime(context.getDateTime())
@@ -69,7 +69,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected Optional<Address> findAddress(final DataCreatingContext context, final AddressService addressService) {
+    protected Optional<Address> findAddress(final ConsumingContext context, final AddressService addressService) {
         return addressService.findById(extractAddressId(context));
     }
 
@@ -78,24 +78,24 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
         log.info("Consuming saved data: {}", data);
     }
 
-    private static Long extractDataId(final DataCreatingContext context) {
+    private static Long extractDataId(final KafkaDataConsumer.ConsumingContext context) {
         return extractProperty(
                 context,
-                DataCreatingContext::getDataId,
+                ConsumingContext::getDataId,
                 "Consumer should consume only already saved data"
         );
     }
 
-    private static Long extractAddressId(final DataCreatingContext context) {
+    private static Long extractAddressId(final KafkaDataConsumer.ConsumingContext context) {
         return extractProperty(
                 context,
-                DataCreatingContext::getAddressId,
+                ConsumingContext::getAddressId,
                 "Consumer should consume data only with already saved address"
         );
     }
 
-    private static <T> T extractProperty(final DataCreatingContext context,
-                                         final Function<DataCreatingContext, Optional<T>> getter,
+    private static <T> T extractProperty(final KafkaDataConsumer.ConsumingContext context,
+                                         final Function<KafkaDataConsumer.ConsumingContext, Optional<T>> getter,
                                          final String noSuchPropertyExceptionMessage) {
         return getter.apply(context).orElseThrow(() -> new IllegalStateException(noSuchPropertyExceptionMessage));
     }

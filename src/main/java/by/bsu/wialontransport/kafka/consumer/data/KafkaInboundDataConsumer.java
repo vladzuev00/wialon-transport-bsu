@@ -41,14 +41,15 @@ public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundPar
     @KafkaListener(
             topics = "${kafka.topic.inbound-data.name}",
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactoryInboundData"
+            containerFactory = "kafkaListenerContainerFactoryInboundData",
+            concurrency = "1"  //Operation finding address isn't thread safe
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
         super.consume(records);
     }
 
     @Override
-    protected Data createData(final DataCreatingContext context) {
+    protected Data createData(final ConsumingContext context) {
         return Data.builder()
                 .dateTime(context.getDateTime())
                 .coordinate(context.getCoordinate())
@@ -77,7 +78,7 @@ public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundPar
     }
 
     @Override
-    protected Optional<Address> findAddress(final DataCreatingContext context, final AddressService addressService) {
+    protected Optional<Address> findAddress(final ConsumingContext context, final AddressService addressService) {
         return geocodingService.receive(context.getCoordinate())
                 .map(address -> mapToSavedAddress(address, addressService));
     }

@@ -429,7 +429,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         }
 
         @Override
-        protected Data createData(final DataCreatingContext context) {
+        protected Data createData(final ConsumingContext context) {
             return Data.builder()
                     .id(extractDataId(context))
                     .dateTime(context.getDateTime())
@@ -460,20 +460,20 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         }
 
         @Override
-        protected Optional<Address> findAddress(final DataCreatingContext context, final AddressService addressService) {
+        protected Optional<Address> findAddress(final ConsumingContext context, final AddressService addressService) {
             return addressService.findById(extractAddressId(context));
         }
 
-        private static Long extractDataId(final DataCreatingContext context) {
-            return extractProperty(context, DataCreatingContext::getDataId);
+        private static Long extractDataId(final ConsumingContext context) {
+            return extractProperty(context, ConsumingContext::getDataId);
         }
 
-        private static Long extractAddressId(final DataCreatingContext context) {
-            return extractProperty(context, DataCreatingContext::getAddressId);
+        private static Long extractAddressId(final ConsumingContext context) {
+            return extractProperty(context, ConsumingContext::getAddressId);
         }
 
-        private static <T> T extractProperty(final DataCreatingContext context,
-                                             final Function<DataCreatingContext, Optional<T>> getter) {
+        private static <T> T extractProperty(final ConsumingContext context,
+                                             final Function<ConsumingContext, Optional<T>> getter) {
             return getter.apply(context).orElseThrow(IllegalStateException::new);
         }
     }
