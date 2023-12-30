@@ -19,14 +19,6 @@ ALTER TABLE IF EXISTS parameters
 DROP
 CONSTRAINT IF EXISTS fk_parameters_to_data;
 
-ALTER TABLE IF EXISTS trackers_last_data
-DROP
-CONSTRAINT IF EXISTS fk_trackers_last_data_to_trackers;
-
-ALTER TABLE IF EXISTS trackers_last_data
-DROP
-CONSTRAINT IF EXISTS fk_trackers_last_data_to_data;
-
 ALTER TABLE IF EXISTS cities
 DROP
 CONSTRAINT IF EXISTS fk_cities_to_addresses;
@@ -40,7 +32,6 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
 DROP TABLE IF EXISTS data;
 DROP TABLE IF EXISTS parameters;
-DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
@@ -172,22 +163,6 @@ ALTER TABLE parameters
 ALTER TABLE parameters
     ADD CONSTRAINT correct_name CHECK (char_length(name) != 0);
 
-CREATE TABLE trackers_last_data
-(
-    id         SERIAL  NOT NULL PRIMARY KEY,
-    tracker_id INTEGER NOT NULL UNIQUE,
-    data_id    BIGINT UNIQUE
-);
-
-ALTER TABLE trackers_last_data
-    ADD CONSTRAINT fk_trackers_last_data_to_trackers FOREIGN KEY (tracker_id)
-        REFERENCES trackers (id)
-        ON DELETE CASCADE;
-
-ALTER TABLE trackers_last_data
-    ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY (data_id)
-        REFERENCES data (id);
-
 CREATE TYPE searching_cities_process_type AS ENUM('HANDLING', 'SUCCESS', 'ERROR');
 
 CREATE TABLE searching_cities_processes
@@ -222,7 +197,7 @@ ALTER TABLE cities
             REFERENCES searching_cities_processes (id);
 
 CREATE
-OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
+OR REPLACE FUNCTION insert_zero_mileage() RETURNS TRIGGER AS
 '
     BEGIN
 		INSERT INTO tracker_mileages(urban, country) VALUES(0, 0) RETURNING id INTO NEW.mileage_id;
@@ -230,41 +205,25 @@ OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_before_insert_tracker
+CREATE TRIGGER trigger_before_insert_tracker
     BEFORE INSERT
     ON trackers
     FOR EACH ROW
-    EXECUTE PROCEDURE before_insert_tracker();
+    EXECUTE PROCEDURE insert_zero_mileage();
 
 CREATE
-OR REPLACE FUNCTION after_insert_tracker() RETURNS TRIGGER AS
+OR REPLACE FUNCTION update_tracker_last_data() RETURNS TRIGGER AS
 '
     BEGIN
-        INSERT INTO trackers_last_data(tracker_id)
-        VALUES (NEW.id);
+		UPDATE trackers
+        SET last_data_id = NEW.id
+        WHERE id = NEW.tracker_id;
         RETURN NEW;
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_after_insert_tracker
-    AFTER INSERT
-    ON trackers
-    FOR EACH ROW
-    EXECUTE PROCEDURE after_insert_tracker();
-
-CREATE
-OR REPLACE FUNCTION after_insert_data() RETURNS TRIGGER AS
-'
-    BEGIN
-		UPDATE trackers_last_data
-        SET data_id = NEW.id
-        WHERE trackers_last_data.tracker_id = NEW.tracker_id;
-        RETURN NEW;
-    END;
-' LANGUAGE plpgsql;
-
-CREATE TRIGGER tr_after_insert_data
+CREATE TRIGGER trigger_after_insert_data
     AFTER INSERT
     ON data
     FOR EACH ROW
-    EXECUTE PROCEDURE after_insert_data();
+    EXECUTE PROCEDURE update_tracker_last_data();
