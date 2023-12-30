@@ -42,7 +42,7 @@ public final class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundPar
             topics = "${kafka.topic.inbound-data.name}",
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactoryInboundData",
-            concurrency = "1"  //Operation finding address isn't thread safe
+            concurrency = "1"  //TODO: increase concurrency after doing operation finding address thread safe
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
         super.consume(records);
