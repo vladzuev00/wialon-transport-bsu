@@ -62,8 +62,8 @@ public final class TEMPAuthorizationTrackerService {
     }
 
     private void putLastDataIfExist(final ChannelHandlerContext context, final Tracker tracker) {
-        final Optional<Data> optionalLastData = this.dataService.findTrackerLastData(tracker);
-        optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
+//        final Optional<Data> optionalLastData = this.dataService.findTrackerLastData(tracker);
+//        optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
     }
 
     private static void sendResponse(final ChannelHandlerContext context, final Status status) {

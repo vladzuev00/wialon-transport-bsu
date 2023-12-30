@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -34,33 +33,14 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerLastDataShouldBeFoundByTrackerId() {
-        final Tracker givenTracker = createTracker(255L);
-
-        final Optional<Data> optionalActual = dataService.findTrackerLastData(givenTracker);
-        final Long actualId = optionalActual.map(Data::getId).orElseThrow();
-        final Long expectedId = 257L;
-        assertEquals(expectedId, actualId);
-    }
-
-    @Test
-    public void trackerLastDataShouldNotBeFoundByTrackerId() {
-        final Tracker givenTracker = createTracker(255L);
-
-        final Optional<Data> optionalActual = dataService.findTrackerLastData(givenTracker);
-        assertTrue(optionalActual.isEmpty());
-    }
-
-    @Test
-    @Sql("classpath:sql/data/insert-data.sql")
-    public void dataWithTrackerAndAddressShouldBeFoundByUserAndDateInterval() {
+    public void dataShouldBeFoundByUserAndDateIntervalFetchingTrackerAndAddress() {
         final User givenUser = createUser(255L);
         final DateInterval givenDateInterval = new DateInterval(
                 LocalDateTime.of(2019, 10, 23, 14, 39, 50),
                 LocalDateTime.of(2019, 10, 24, 14, 39, 51)
         );
 
-        try (final Stream<Data> actual = dataService.findDataWithTrackerAndAddress(givenUser, givenDateInterval)) {
+        try (final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(givenUser, givenDateInterval)) {
             final Set<Data> actualAsSet = actual.collect(toSet());
             final Set<Data> expectedAsSet = Set.of(
                     Data.builder()
@@ -133,23 +113,16 @@ public final class DataServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void dataWithTrackerAndAddressShouldNotBeFoundByUser() {
+    public void dataShouldNotBeFoundByUserAndDateIntervalFetchingTrackerAndAddress() {
         final User givenUser = createUser(256L);
         final DateInterval givenDateInterval = new DateInterval(
                 LocalDateTime.of(2019, 10, 23, 14, 39, 50),
                 LocalDateTime.of(2019, 10, 24, 14, 39, 51)
         );
 
-        try (final Stream<Data> actual = dataService.findDataWithTrackerAndAddress(givenUser, givenDateInterval)) {
+        try (final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(givenUser, givenDateInterval)) {
             assertTrue(isEmpty(actual));
         }
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static Tracker createTracker(final Long id) {
-        return Tracker.builder()
-                .id(id)
-                .build();
     }
 
     private static User createUser(final Long id) {
