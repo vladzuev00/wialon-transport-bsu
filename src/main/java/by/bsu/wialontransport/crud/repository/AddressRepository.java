@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
             + "FROM addresses WHERE ST_Intersects(geometry, ST_SetSRID(ST_Point(:longitude, :latitude), 4326))",
             nativeQuery = true)
     Optional<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
+    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
             + "FROM addresses WHERE ST_Equals(addresses.geometry, :geometry)",
             nativeQuery = true)
     Optional<AddressEntity> findByGeometry(final Geometry geometry);
@@ -25,7 +25,7 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
             nativeQuery = true)
     boolean isExistByGeometry(final Geometry geometry);
 
-    @Query(value = "SELECT addresses.id, bounding_box, center, city_name, country_name, geometry, 0 AS clazz_ "
+    @Query(value = "SELECT addresses.id, bounding_box, center, city_name, country_name, geometry "
             + "FROM cities "
             + "INNER JOIN addresses "
             + "ON cities.address_id = addresses.id "
