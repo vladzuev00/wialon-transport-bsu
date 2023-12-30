@@ -1,9 +1,11 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.dto.User;
+import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
@@ -33,6 +35,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .user(createUserDto(256L))
                 .mileage(createTrackerMileageDto(257L))
+                .lastData(createDataDto(258L))
                 .build();
 
         final TrackerEntity actual = mapper.mapToEntity(givenDto);
@@ -43,6 +46,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .user(createUserEntity(256L))
                 .mileage(createTrackerMileageEntity(257L))
+                .lastData(createDataEntity(258L))
                 .build();
 
         assertNotNull(actual);
@@ -58,6 +62,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .user(createUserEntity(256L))
                 .mileage(createTrackerMileageEntity(257L))
+                .lastData(createDataEntity(258L))
                 .build();
 
         final Tracker actual = mapper.mapToDto(givenEntity);
@@ -68,6 +73,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .user(createUserDto(256L))
                 .mileage(createTrackerMileageDto(257L))
+                .lastData(createDataDto(258L))
                 .build();
         assertEquals(expected, actual);
     }
@@ -77,6 +83,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
             final UserEntity givenUser = createUserEntity(256L);
             final TrackerMileageEntity givenMileage = createTrackerMileageEntity(257L);
+            final DataEntity givenLastData = createDataEntity(258L);
             final TrackerEntity givenEntity = TrackerEntity.builder()
                     .id(255L)
                     .imei("11112222333344445555")
@@ -84,6 +91,7 @@ public final class TrackerMapperTest extends AbstractContextTest {
                     .phoneNumber("447336934")
                     .user(givenUser)
                     .mileage(givenMileage)
+                    .lastData(givenLastData)
                     .build();
 
             mockedStatic
@@ -91,6 +99,9 @@ public final class TrackerMapperTest extends AbstractContextTest {
                     .thenReturn(false);
             mockedStatic
                     .when(() -> isInitialized(same(givenMileage)))
+                    .thenReturn(false);
+            mockedStatic
+                    .when(() -> isInitialized(same(givenLastData)))
                     .thenReturn(false);
 
             final Tracker actual = mapper.mapToDto(givenEntity);
@@ -128,6 +139,20 @@ public final class TrackerMapperTest extends AbstractContextTest {
     @SuppressWarnings("SameParameterValue")
     private static TrackerMileage createTrackerMileageDto(final Long id) {
         return TrackerMileage.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static DataEntity createDataEntity(final Long id) {
+        return DataEntity.builder()
+                .id(id)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Data createDataDto(final Long id) {
+        return Data.builder()
                 .id(id)
                 .build();
     }
