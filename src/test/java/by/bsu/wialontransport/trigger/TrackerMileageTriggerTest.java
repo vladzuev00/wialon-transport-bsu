@@ -4,27 +4,34 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.List;
 
-import static java.util.stream.Collectors.toSet;
-import static org.junit.Assert.assertEquals;
+import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkEquals;
 
 public final class TrackerMileageTriggerTest extends AbstractContextTest {
-    private static final String HQL_QUERY_TO_FIND_ALL_TRACKER_MILEAGES = "SELECT e FROM TrackerMileageEntity e";
 
     @Test
-    public void trackerMileagesShouldBeInserted() {
-        final Set<TrackerMileageEntity> actual = this.findAllTrackerMileages();
-        assertEquals(1, actual.size());
-        final TrackerMileageEntity foundTrackerMileage = actual.iterator().next();
-        assertEquals(0, foundTrackerMileage.getUrban(), 0);
-        assertEquals(0, foundTrackerMileage.getCountry(), 0);
+    public void mileagesShouldBeInserted() {
+        final List<TrackerMileageEntity> actual = findAllMileagesOrderedById();
+        final List<TrackerMileageEntity> expected = List.of(
+                createZeroMileage(1L),
+                createZeroMileage(2L)
+        );
+        checkEquals(expected, actual);
     }
 
-    private Set<TrackerMileageEntity> findAllTrackerMileages() {
-        return super.entityManager
-                .createQuery(HQL_QUERY_TO_FIND_ALL_TRACKER_MILEAGES, TrackerMileageEntity.class)
+    private List<TrackerMileageEntity> findAllMileagesOrderedById() {
+        return entityManager
+                .createQuery("SELECT e FROM TrackerMileageEntity e ORDER BY e.id", TrackerMileageEntity.class)
                 .getResultStream()
-                .collect(toSet());
+                .toList();
+    }
+
+    private static TrackerMileageEntity createZeroMileage(final Long id) {
+        return TrackerMileageEntity.builder()
+                .id(id)
+                .urban(0)
+                .country(0)
+                .build();
     }
 }

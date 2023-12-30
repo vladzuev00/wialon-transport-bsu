@@ -1,6 +1,9 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
-import by.bsu.wialontransport.crud.dto.*;
+import by.bsu.wialontransport.crud.dto.Address;
+import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Parameter;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.*;
@@ -102,6 +104,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     @Override
     @Transactional
     protected void process(final List<Data> data) {
+        //TODO: get last data from trackers, update last_data_id in db,
         createTracks(data).forEach(track -> trackerMileageService.increaseMileage(track.getTracker(), mileageCalculatingService.calculate(track.getCoordinates())));
         final List<Data> savedData = dataService.saveAll(data);
         sendToSavedDataTopic(savedData);
