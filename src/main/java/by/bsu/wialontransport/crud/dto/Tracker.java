@@ -20,7 +20,6 @@ public class Tracker implements Dto<Long> {
     TrackerMileage mileage;
     Data lastData;
 
-    //TODO: test
     public Optional<Data> findLastData() {
         return ofNullable(lastData);
     }

@@ -56,7 +56,7 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
     }
 
     protected final <S extends Entity<?>, D extends Dto<?>> D mapLazy(final S source, final Class<D> destinationType) {
-        return mapIfMatchOrElseNull(source, HibernateUtil::isLoaded, destinationType);
+        return mapIfMatchOrElseNull(source, HibernateUtil::isFetched, destinationType);
     }
 
     protected final <S extends Entity<?>, E extends Dto<?>> List<E> mapLazyToList(final Collection<S> source,
@@ -99,7 +99,7 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
     private <S extends Entity<?>, E extends Dto<?>, D> D mapLazyCollection(final Collection<S> source,
                                                                            final Class<E> destinationElementType,
                                                                            final Collector<E, ?, D> collector) {
-        return mapIfMatchOrElseNull(source, HibernateUtil::isLoaded, destinationElementType, collector);
+        return mapIfMatchOrElseNull(source, HibernateUtil::isFetched, destinationElementType, collector);
     }
 
     private <E, D> D mapIfMatchOrElseNull(final Collection<?> sources,

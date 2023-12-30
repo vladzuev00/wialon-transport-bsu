@@ -18,11 +18,10 @@ public class Parameter implements Dto<Long> {
     Data data;
 
     public static Parameter createDoubleParameter(final String name, final double value) {
-        final String valueAsString = Double.toString(value);
         return Parameter.builder()
                 .name(name)
                 .type(DOUBLE)
-                .value(valueAsString)
+                .value(Double.toString(value))
                 .build();
     }
 }

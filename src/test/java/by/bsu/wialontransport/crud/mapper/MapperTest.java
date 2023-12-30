@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static by.bsu.wialontransport.util.HibernateUtil.isLoaded;
+import static by.bsu.wialontransport.util.HibernateUtil.isFetched;
 import static java.lang.String.join;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -164,7 +164,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazySourceShouldBeMapped() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final AddressEntity givenSource = new AddressEntity(255L);
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(true);
 
             final AddressDto actual = personMapper.mapLazy(givenSource, AddressDto.class);
             final AddressDto expected = new AddressDto(255L);
@@ -176,7 +176,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazySourceShouldBeMappedToNull() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final AddressEntity givenSource = new AddressEntity(255L);
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(false);
 
             final AddressDto actual = personMapper.mapLazy(givenSource, AddressDto.class);
             assertNull(actual);
@@ -187,7 +187,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazyCollectionShouldBeMappedToList() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final Collection<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(true);
 
             final List<PhoneDto> actual = personMapper.mapLazyToList(givenSource, PhoneDto.class);
             final List<PhoneDto> expected = List.of(new PhoneDto(257L), new PhoneDto(258L));
@@ -199,7 +199,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazyCollectionShouldBeMappedToNullList() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final List<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(false);
 
             final List<PhoneDto> actual = personMapper.mapLazyToList(givenSource, PhoneDto.class);
             assertNull(actual);
@@ -210,7 +210,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazyCollectionShouldBeMappedToMap() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final Collection<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(true);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(true);
 
             final Map<Long, PhoneDto> actual = personMapper.mapLazyToMap(givenSource, PhoneDto.class, PhoneDto::getId);
             final Map<Long, PhoneDto> expected = Map.of(
@@ -225,7 +225,7 @@ public final class MapperTest extends AbstractContextTest {
     public void lazyCollectionShouldBeMappedToNullMap() {
         try (final MockedStatic<HibernateUtil> mockedHibernateUtil = mockStatic(HibernateUtil.class)) {
             final List<PhoneEntity> givenSource = List.of(new PhoneEntity(257L), new PhoneEntity(258L));
-            mockedHibernateUtil.when(() -> isLoaded(same(givenSource))).thenReturn(false);
+            mockedHibernateUtil.when(() -> isFetched(same(givenSource))).thenReturn(false);
 
             final Map<Long, PhoneDto> actual = personMapper.mapLazyToMap(givenSource, PhoneDto.class, PhoneDto::getId);
             assertNull(actual);

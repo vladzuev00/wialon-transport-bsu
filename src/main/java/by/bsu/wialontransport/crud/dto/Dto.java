@@ -6,7 +6,6 @@ import static java.util.Objects.isNull;
 public interface Dto<IdType> {
     IdType getId();
 
-    //TODO: test
     default boolean isNew() {
         return isNull(getId());
     }

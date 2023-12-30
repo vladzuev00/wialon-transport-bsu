@@ -16,7 +16,11 @@ public final class CityMapper extends Mapper<CityEntity, City> {
 
     @Override
     protected City createDto(final CityEntity entity) {
-        return new City(entity.getId(), mapAddress(entity), mapSearchingCitiesProcess(entity));
+        return new City(
+                entity.getId(),
+                mapAddress(entity),
+                mapSearchingCitiesProcess(entity)
+        );
     }
 
     @Override
