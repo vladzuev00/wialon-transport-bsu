@@ -1,12 +1,14 @@
 package by.bsu.wialontransport.trigger;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerLastDataEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.entity.TrackerLastDataEntityUtil.checkEquals;
 import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkEquals;
@@ -34,10 +36,13 @@ public final class TrackerTriggerTest extends AbstractContextTest {
     }
 
     private List<TrackerLastDataEntity> findAllTrackerLastDataOrderedById() {
-        return entityManager
-                .createQuery("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", TrackerLastDataEntity.class)
-                .getResultStream()
-                .toList();
+        return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", TrackerLastDataEntity.class);
+    }
+
+    private <E extends Entity<?>> List<E> findEntities(final String query, final Class<E> entityType) {
+        try (final Stream<E> stream = entityManager.createQuery(query, entityType).getResultStream()) {
+            return stream.toList();
+        }
     }
 
     private static TrackerLastDataEntity createInitialTrackerLastDataEntity(final Long id, final Long trackerId) {
@@ -54,10 +59,7 @@ public final class TrackerTriggerTest extends AbstractContextTest {
     }
 
     private List<TrackerMileageEntity> findAllMileagesOrderedById() {
-        return entityManager
-                .createQuery("SELECT e FROM TrackerMileageEntity e ORDER BY e.id", TrackerMileageEntity.class)
-                .getResultStream()
-                .toList();
+        return findEntities("SELECT e FROM TrackerMileageEntity e ORDER BY e.id", TrackerMileageEntity.class);
     }
 
     private static TrackerMileageEntity createZeroMileage(final Long id) {
