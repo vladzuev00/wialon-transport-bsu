@@ -58,7 +58,7 @@ CREATE TYPE user_type AS ENUM('USER', 'ADMIN');
 
 CREATE TABLE users
 (
-    id                 SERIAL       NOT NULL PRIMARY KEY,
+    id                 SERIAL       PRIMARY KEY,
     email              VARCHAR(256) NOT NULL,
     encrypted_password VARCHAR(256) NOT NULL,
     role               user_type NOT NULL
@@ -78,7 +78,7 @@ CREATE TABLE tracker_mileages(
 
 CREATE TABLE trackers
 (
-    id                 SERIAL       NOT NULL PRIMARY KEY,
+    id                 SERIAL       PRIMARY KEY,
     imei               CHAR(20)     NOT NULL,
     encrypted_password VARCHAR(256) NOT NULL,
     phone_number       CHAR(9)      NOT NULL,
@@ -125,7 +125,7 @@ CREATE INDEX ON addresses using GIST(geometry);
 
 CREATE TABLE data
 (
-    id                     BIGSERIAL    NOT NULL PRIMARY KEY,
+    id                     BIGSERIAL    PRIMARY KEY,
     date_time              TIMESTAMP(0) NOT NULL,
     latitude               DECIMAL      NOT NULL,
     longitude              DECIMAL      NOT NULL,
@@ -155,7 +155,7 @@ CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');
 
 CREATE TABLE parameters
 (
-    id      BIGSERIAL      NOT NULL PRIMARY KEY,
+    id      BIGSERIAL      PRIMARY KEY,
     name    VARCHAR(256)   NOT NULL,
     type    parameter_type NOT NULL,
     value   VARCHAR(256)   NOT NULL,
@@ -174,7 +174,7 @@ ALTER TABLE parameters
 
 CREATE TABLE trackers_last_data
 (
-    id         SERIAL  NOT NULL PRIMARY KEY,
+    id         SERIAL  PRIMARY KEY,
     tracker_id INTEGER NOT NULL UNIQUE,
     data_id    BIGINT UNIQUE
 );

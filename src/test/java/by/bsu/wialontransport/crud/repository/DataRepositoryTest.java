@@ -13,12 +13,14 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 
@@ -34,9 +36,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
         final DataEntity actual = repository.findById(256L).orElseThrow();
         checkQueryCount(1);
 
-        assertFalse(areParametersFetched(actual));
-        assertFalse(isTrackerFetched(actual));
-        assertFalse(isAddressFetched(actual));
+        assertFalse(areParametersLoaded(actual));
+        assertFalse(isTrackerLoaded(actual));
+        assertFalse(isAddressLoaded(actual));
 
         final DataEntity expected = DataEntity.builder()
                 .id(256L)
@@ -92,6 +94,46 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataShouldBeFoundByTrackerIdFetchingParameters() {
+        startQueryCount();
+        final DataEntity actual = repository.findTrackerLastDataByTrackerIdFetchingParameters(255L).orElseThrow();
+        checkQueryCount(1);
+
+        assertTrue(areParametersLoaded(actual));
+        assertFalse(isTrackerLoaded(actual));
+        assertFalse(isAddressLoaded(actual));
+
+        final DataEntity expected = DataEntity.builder()
+                .id(257L)
+                .dateTime(LocalDateTime.of(2019, 10, 26, 14, 39, 53))
+                .coordinate(new Coordinate(53.233, 27.3434))
+                .speed(8)
+                .course(9)
+                .altitude(10)
+                .amountOfSatellites(11)
+                .reductionPrecision(12.4)
+                .inputs(13)
+                .outputs(14)
+                .analogInputs(new double[]{0.2, 0.3, 0.4})
+                .driverKeyCode("driver key code")
+                .parameters(emptyList())
+                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParameters() {
+        startQueryCount();
+        final Optional<DataEntity> actual = repository.findTrackerLastDataByTrackerIdFetchingParameters(256L);
+        checkQueryCount(1);
+
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeFoundByUserIdFetchingTrackerAndAddress() {
         final Long givenUserId = 255L;
         final LocalDateTime givenStartDateTime = LocalDateTime.of(2019, 10, 23, 0, 0, 0);
@@ -103,9 +145,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
             final Set<DataEntity> actualAsSet = actual.collect(toSet());
 
-            assertTrue(areParametersNotFetched(actualAsSet));
-            assertTrue(areTrackersFetched(actualAsSet));
-            assertTrue(areAddressesFetched(actualAsSet));
+            assertTrue(areParametersNotLoaded(actualAsSet));
+            assertTrue(areTrackersLoaded(actualAsSet));
+            assertTrue(areAddressesLoaded(actualAsSet));
 
             final Set<Long> actualIds = EntityUtil.mapToIdsSet(actualAsSet);
             final Set<Long> expectedIds = Set.of(254L, 255L, 256L);
