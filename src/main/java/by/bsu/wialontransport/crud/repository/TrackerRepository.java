@@ -10,11 +10,8 @@ import java.util.Optional;
 
 public interface TrackerRepository extends EntityWithPasswordRepository<Long, TrackerEntity> {
 
-    @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.lastData WHERE e.imei = :imei")
-    Optional<TrackerEntity> findByImeiFetchingLastData(final String imei);
-
-    @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.lastData JOIN FETCH e.mileage WHERE e.id = :id")
-    Optional<TrackerEntity> findByIdFetchingLastDataAndMileage(final Long id);
+    @Query
+    Optional<TrackerEntity> findByImei(final String imei);
 
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId ORDER BY e.imei")
     Page<TrackerEntity> findByUserIdOrderedByImei(final Long userId, final Pageable pageable);

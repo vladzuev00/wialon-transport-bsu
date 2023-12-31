@@ -131,7 +131,7 @@ public final class UserActionService {
         this.checkWhetherOtherTrackerWithGivenPropertyExists(
                 trackerForm,
                 TrackerForm::getImei,
-                TrackerService::findByImeiFetchingLastData,
+                TrackerService::findByImei,
                 model,
                 UserActionService::addErrorAttributeOfImeiAlreadyExists,
                 TrackerImeiAlreadyExistsException::new

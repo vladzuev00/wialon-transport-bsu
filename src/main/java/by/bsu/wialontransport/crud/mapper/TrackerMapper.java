@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.dto.User;
@@ -23,8 +22,7 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
                 source.getPassword(),
                 source.getPhoneNumber(),
                 mapUser(source),
-                mapMileage(source),
-                mapLastData(source)
+                mapMileage(source)
         );
     }
 
@@ -39,9 +37,5 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
 
     private TrackerMileage mapMileage(final TrackerEntity source) {
         return mapLazy(source.getMileage(), TrackerMileage.class);
-    }
-
-    private Data mapLastData(final TrackerEntity source) {
-        return mapLazy(source.getLastData(), Data.class);
     }
 }
