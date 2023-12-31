@@ -30,12 +30,16 @@ public final class AddressRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundById() {
+        final Long givenId = 255L;
+
         startQueryCount();
-        final AddressEntity actual = repository.findById(255L).orElseThrow();
+        final Optional<AddressEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final AddressEntity actual = optionalActual.get();
         final AddressEntity expected = AddressEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .boundingBox(createPolygon(geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
                 .center(createPoint(geometryFactory, 1.5, 1.5))
                 .cityName("first-city")
@@ -67,7 +71,10 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         final double givenLongitude = 1;
 
         final Optional<AddressEntity> optionalActual = repository.findByGpsCoordinates(givenLatitude, givenLongitude);
-        final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        assertTrue(optionalActual.isPresent());
+        final AddressEntity actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }
@@ -78,8 +85,8 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         final double givenLatitude = 20;
         final double givenLongitude = 20;
 
-        final Optional<AddressEntity> actual = repository.findByGpsCoordinates(givenLatitude, givenLongitude);
-        assertTrue(actual.isEmpty());
+        final Optional<AddressEntity> optionalActual = repository.findByGpsCoordinates(givenLatitude, givenLongitude);
+        assertTrue(optionalActual.isEmpty());
     }
 
     @Test
@@ -91,7 +98,10 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         final Optional<AddressEntity> optionalActual = repository.findByGeometry(givenGeometry);
-        final Long actualId = optionalActual.map(AddressEntity::getId).orElseThrow();
+        assertTrue(optionalActual.isPresent());
+        final AddressEntity actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }
@@ -141,12 +151,12 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         startQueryCount();
-        try (final Stream<AddressEntity> foundAddresses = repository.findCityAddressesIntersectedByLineString(givenLineString)) {
+        try (final Stream<AddressEntity> actual = repository.findCityAddressesIntersectedByLineString(givenLineString)) {
             checkQueryCount(1);
 
-            final Set<Long> actual = mapToIdsSet(foundAddresses);
-            final Set<Long> expected = Set.of(257L);
-            assertEquals(expected, actual);
+            final Set<Long> actualIds = mapToIdsSet(actual);
+            final Set<Long> expectedIds = Set.of(257L);
+            assertEquals(expectedIds, actualIds);
         }
     }
 
@@ -159,9 +169,10 @@ public final class AddressRepositoryTest extends AbstractContextTest {
         );
 
         startQueryCount();
-        final Stream<AddressEntity> actual = repository.findCityAddressesIntersectedByLineString(givenLineString);
-        checkQueryCount(1);
+        try (final Stream<AddressEntity> actual = repository.findCityAddressesIntersectedByLineString(givenLineString)) {
+            checkQueryCount(1);
 
-        assertTrue(isEmpty(actual));
+            assertTrue(isEmpty(actual));
+        }
     }
 }
