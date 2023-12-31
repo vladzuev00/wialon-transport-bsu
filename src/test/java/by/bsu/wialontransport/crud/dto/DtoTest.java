@@ -9,14 +9,14 @@ public final class DtoTest {
 
     @Test
     public void dtoShouldBeNew() {
-        final Dto<Long> givenDto = createDto(255L);
-        assertFalse(givenDto.isNew());
+        final Dto<Long> givenDto = createDto();
+        assertTrue(givenDto.isNew());
     }
 
     @Test
     public void dtoShouldNotBeNew() {
-        final Dto<Long> givenDto = createDto();
-        assertTrue(givenDto.isNew());
+        final Dto<Long> givenDto = createDto(255L);
+        assertFalse(givenDto.isNew());
     }
 
     private static Dto<Long> createDto(final Long id) {

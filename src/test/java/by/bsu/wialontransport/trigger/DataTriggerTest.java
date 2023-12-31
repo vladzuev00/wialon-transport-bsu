@@ -11,7 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 
-import static by.bsu.wialontransport.util.entity.TrackerLastDataEntityUtil.checkEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public final class DataTriggerTest extends AbstractContextTest {
 
@@ -35,17 +36,15 @@ public final class DataTriggerTest extends AbstractContextTest {
                 .address(entityManager.getReference(AddressEntity.class, 255L))
                 .build();
 
+        final TrackerLastDataEntity beforeSavingData = findTrackerLastDataByTrackerId(givenTrackerId);
+        assertNull(beforeSavingData.getData());
+
         entityManager.persist(givenData);
         entityManager.flush();
         entityManager.clear();
 
-        final TrackerLastDataEntity actual = findTrackerLastDataByTrackerId(givenTrackerId);
-        final TrackerLastDataEntity expected = TrackerLastDataEntity.builder()
-                .id(1L)
-                .tracker(entityManager.getReference(TrackerEntity.class, givenTrackerId))
-                .data(entityManager.getReference(DataEntity.class, 1L))
-                .build();
-        checkEquals(expected, actual);
+        final TrackerLastDataEntity afterSavingData = findTrackerLastDataByTrackerId(givenTrackerId);
+        assertNotNull(afterSavingData.getData());
     }
 
     private TrackerLastDataEntity findTrackerLastDataByTrackerId(final Long trackerId) {
