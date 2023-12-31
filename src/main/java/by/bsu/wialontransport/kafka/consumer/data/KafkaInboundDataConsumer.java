@@ -86,8 +86,8 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     }
 
     @Override
-    protected Optional<Address> findAddress(final ConsumingContext context) {
-        return geocodingManager.receive(context.getCoordinate());
+    protected Optional<Address> findSavedAddress(final ConsumingContext context) {
+        return geocodingManager.findSavedAddress(context.getCoordinate());
     }
 
     @Override

@@ -43,7 +43,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Parameter createParameter(final P view);
 
-    protected abstract Optional<Address> findAddress(final ConsumingContext context);
+    protected abstract Optional<Address> findSavedAddress(final ConsumingContext context);
 
     @RequiredArgsConstructor
     protected final class ConsumingContext {
@@ -130,7 +130,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
         }
 
         public Address getAddress() {
-            return findAddress(this).orElseThrow(() -> new ConsumingException("Impossible to find address"));
+            return findSavedAddress(this).orElseThrow(() -> new ConsumingException("Impossible to find address"));
         }
 
         private double extractLatitude() {

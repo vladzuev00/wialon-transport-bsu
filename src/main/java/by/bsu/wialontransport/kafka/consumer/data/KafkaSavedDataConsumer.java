@@ -71,7 +71,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected Optional<Address> findAddress(final ConsumingContext context) {
+    protected Optional<Address> findSavedAddress(final ConsumingContext context) {
         return addressService.findById(extractAddressId(context));
     }
 

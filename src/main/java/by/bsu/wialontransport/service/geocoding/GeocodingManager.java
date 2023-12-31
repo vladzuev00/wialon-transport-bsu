@@ -5,7 +5,6 @@ import by.bsu.wialontransport.model.Coordinate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.function.UnaryOperator.identity;
@@ -15,7 +14,7 @@ import static java.util.function.UnaryOperator.identity;
 public class GeocodingManager {
 //    private final List<?> componentServices;
 
-    public Optional<Address> receive(final Coordinate coordinate) {
+    public Optional<Address> findSavedAddress(final Coordinate coordinate) {
         //TODO: always return saved address
 //        return this.componentServices.stream()
 //                .map(service -> service.receive(latitude, longitude))
