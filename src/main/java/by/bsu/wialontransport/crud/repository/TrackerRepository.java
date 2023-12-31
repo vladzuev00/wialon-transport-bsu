@@ -16,7 +16,7 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId ORDER BY e.imei")
     Page<TrackerEntity> findByUserIdOrderedByImei(final Long userId, final Pageable pageable);
 
-    @Query("SELECT te FROM TrackerEntity te JOIN FETCH te.user WHERE te.id = :id")
+    @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.user WHERE e.id = :id")
     Optional<TrackerEntity> findByIdFetchingUser(final Long id);
 
     Optional<TrackerEntity> findByPhoneNumber(final String phoneNumber);
@@ -25,4 +25,7 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
     @Modifying
     @Query("UPDATE TrackerEntity e SET e.password = :newEncryptedPassword WHERE e.id = :id")
     int updatePassword(final Long id, final String newEncryptedPassword);
+
+    @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.mileage WHERE e.id = :id")
+    Optional<TrackerEntity> findByIdFetchingMileage(final Long id);
 }

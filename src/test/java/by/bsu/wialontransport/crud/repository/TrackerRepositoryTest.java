@@ -7,6 +7,7 @@ import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +25,19 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundById() {
+        final Long givenId = 255L;
+
         startQueryCount();
-        final TrackerEntity actual = repository.findById(255L).orElseThrow();
+        final Optional<TrackerEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final TrackerEntity actual = optionalActual.get();
         assertFalse(isUserFetched(actual));
         assertFalse(isMileageFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
@@ -59,16 +64,20 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByImei() {
+        final String givenImei = "11112222333344445555";
+
         startQueryCount();
-        final TrackerEntity actual = repository.findByImei("11112222333344445555").orElseThrow();
+        final Optional<TrackerEntity> optionalActual = repository.findByImei(givenImei);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final TrackerEntity actual = optionalActual.get();
         assertFalse(isUserFetched(actual));
         assertFalse(isMileageFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
-                .imei("11112222333344445555")
+                .imei(givenImei)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
@@ -79,8 +88,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByImei() {
+        final String givenImei = "00000000000000000000";
+
         startQueryCount();
-        final Optional<TrackerEntity> optionalFoundTracker = repository.findByImei("00000000000000000000");
+        final Optional<TrackerEntity> optionalFoundTracker = repository.findByImei(givenImei);
         checkQueryCount(1);
 
         assertTrue(optionalFoundTracker.isEmpty());
@@ -88,8 +99,11 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackersOrderedByImeiShouldBeFoundByUserId() {
+        final Long givenUserId = 255L;
+        final Pageable givenPageable = ofSize(5);
+
         startQueryCount();
-        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(255L, ofSize(5));
+        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(givenUserId, givenPageable);
         checkQueryCount(1);
 
         final List<TrackerEntity> actualAsSet = actual.toList();
@@ -104,8 +118,11 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackersOrderedByImeiShouldNotBeFoundByUserId() {
+        final Long givenUserId = 256L;
+        final Pageable givenPageable = ofSize(5);
+
         startQueryCount();
-        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(256L, ofSize(5));
+        final Page<TrackerEntity> actual = repository.findByUserIdOrderedByImei(givenUserId, givenPageable);
         checkQueryCount(1);
 
         assertTrue(actual.isEmpty());
@@ -113,8 +130,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByIdFetchingUser() {
+        final Long givenId = 255L;
+
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingUser(255L);
+        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingUser(givenId);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isPresent());
@@ -124,7 +143,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
         assertFalse(isMileageFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
@@ -136,8 +155,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByIdFetchingUser() {
+        final Long givenId = MAX_VALUE;
+
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingUser(257L);
+        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingUser(givenId);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
@@ -145,8 +166,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByPhoneNumber() {
+        final String givenPhoneNumber = "447336934";
+
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber("447336934");
+        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber(givenPhoneNumber);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isPresent());
@@ -159,7 +182,7 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .phoneNumber("447336934")
+                .phoneNumber(givenPhoneNumber)
                 .user(entityManager.getReference(UserEntity.class, 255L))
                 .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
                 .build();
@@ -168,8 +191,10 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByPhoneNumber() {
+        final String givenPhoneNumber = "000000000";
+
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber("447336936");
+        final Optional<TrackerEntity> optionalActual = repository.findByPhoneNumber(givenPhoneNumber);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
@@ -210,5 +235,40 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+    }
+
+    @Test
+    public void trackerShouldBeFoundByByIdFetchingMileage() {
+        final Long givenId = 255L;
+
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingMileage(givenId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isPresent());
+        final TrackerEntity actual = optionalActual.get();
+        assertFalse(isUserFetched(actual));
+        assertTrue(isMileageFetched(actual));
+
+        final TrackerEntity expected = TrackerEntity.builder()
+                .id(givenId)
+                .imei("11112222333344445555")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
+                .phoneNumber("447336934")
+                .user(entityManager.getReference(UserEntity.class, 255L))
+                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByIdFetchingMileage() {
+        final Long givenId = MAX_VALUE;
+
+        startQueryCount();
+        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingUser(givenId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
     }
 }
