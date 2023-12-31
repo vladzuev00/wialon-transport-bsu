@@ -2,13 +2,16 @@ package by.bsu.wialontransport.crud.repository;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
+import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.*;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
@@ -30,12 +33,16 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processShouldBeFoundById() {
+        final Long givenId = 255L;
+
         startQueryCount();
-        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
+        final Optional<SearchingCitiesProcessEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final SearchingCitiesProcessEntity actual = optionalActual.get();
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
@@ -63,21 +70,24 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void statusOfProcessShouldBeUpdated() {
+        final Long givenId = 255L;
+        final Status givenNewStatus = SUCCESS;
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.updateStatus(255L, SUCCESS);
+        final int actualCountUpdatedRows = repository.updateStatus(givenId, givenNewStatus);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
+        final SearchingCitiesProcessEntity actual = repository.findById(givenId).orElseThrow();
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
-                .status(SUCCESS)
+                .status(givenNewStatus)
                 .build();
         checkEquals(expected, actual);
     }
@@ -85,8 +95,10 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void statusOfProcessShouldBeUpdatedBecauseOfNotExistingProcessId() {
+        final Long givenId = MAX_VALUE;
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.updateStatus(MAX_VALUE, SUCCESS);
+        final int actualCountUpdatedRows = repository.updateStatus(givenId, SUCCESS);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
@@ -96,16 +108,19 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void handledPointsShouldBeIncreased() {
+        final Long givenId = 255L;
+        final long givenDelta = 100;
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.increaseHandledPoints(255L, 100);
+        final int actualCountUpdatedRows = repository.increaseHandledPoints(givenId, givenDelta);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final SearchingCitiesProcessEntity actual = repository.findById(255L).orElseThrow();
+        final SearchingCitiesProcessEntity actual = repository.findById(givenId).orElseThrow();
         final SearchingCitiesProcessEntity expected = SearchingCitiesProcessEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
@@ -118,8 +133,11 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void handledPointsShouldBeIncreasedBecauseOfNotExistingProcessId() {
+        final Long givenId = MAX_VALUE;
+        final long givenDelta = 100;
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.increaseHandledPoints(MAX_VALUE, 100);
+        final int actualCountUpdatedRows = repository.increaseHandledPoints(MAX_VALUE, givenDelta);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;
@@ -129,8 +147,10 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesOrderedByIdShouldBeFoundByStatus() {
+        final Pageable givenPageable = ofSize(4);
+
         startQueryCount();
-        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(HANDLING, ofSize(4));
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(HANDLING, givenPageable);
         checkQueryCount(1);
 
         final List<Long> actualIds = mapToIds(actual);
@@ -141,8 +161,10 @@ public final class SearchingCitiesProcessRepositoryTest extends AbstractContextT
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void processesOrderedByIdShouldNotBeFoundByStatus() {
+        final Pageable givenPageable = ofSize(4);
+
         startQueryCount();
-        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(ERROR, ofSize(4));
+        final Page<SearchingCitiesProcessEntity> actual = repository.findByStatusOrderedById(ERROR, givenPageable);
         checkQueryCount(1);
 
         assertTrue(actual.isEmpty());

@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface TrackerMileageRepository extends JpaRepository<TrackerMileageEntity, Long> {
 
     @Modifying
-    @Query("UPDATE TrackerMileageEntity m SET m.urban = m.urban + :urbanDelta, m.country = m.country + :countryDelta "
-            + "WHERE m.id = (SELECT t.mileage.id FROM TrackerEntity t WHERE t.id = :trackerId)")
+    @Query("UPDATE TrackerMileageEntity me SET me.urban = me.urban + :urbanDelta, me.country = me.country + :countryDelta "
+            + "WHERE me.id = (SELECT te.mileage.id FROM TrackerEntity te WHERE te.id = :trackerId)")
     int increaseMileage(final Long trackerId, final double urbanDelta, final double countryDelta);
 
 }

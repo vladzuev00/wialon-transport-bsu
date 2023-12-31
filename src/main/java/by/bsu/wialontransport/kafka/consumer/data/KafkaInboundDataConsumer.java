@@ -9,21 +9,29 @@ import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
+import by.bsu.wialontransport.service.mileage.MileageIncreasingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.*;
 
 @Component
 public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
     private final DataService dataService;
     private final GeocodingService geocodingService;
+    private final MileageIncreasingService mileageIncreasingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
@@ -31,10 +39,12 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
                                     final AddressService addressService,
                                     final DataService dataService,
                                     @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
+                                    final MileageIncreasingService mileageIncreasingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         super(objectMapper, trackerService, addressService, InboundParameterView.class);
         this.dataService = dataService;
         this.geocodingService = geocodingService;
+        this.mileageIncreasingService = mileageIncreasingService;
         this.savedDataProducer = savedDataProducer;
     }
 
@@ -43,7 +53,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
             topics = "${kafka.topic.inbound-data.name}",
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactoryInboundData",
-            concurrency = "1"  //TODO: increase concurrency after doing operation finding address thread safe
+            concurrency = "1"
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
         super.consume(records);
@@ -80,23 +90,44 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
 
     @Override
     protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-        return null;
+        return trackerService.findByIdFetchingMileage(id);
     }
 
     @Override
-    protected Optional<Address> findAddress(final ConsumingContext context, final AddressService addressService) {
+    protected Optional<Address> findSavedAddress(final ConsumingContext context,
+                                                 final AddressService addressService) {
         return geocodingService.receive(context.getCoordinate())
                 .map(address -> mapToSavedAddress(address, addressService));
     }
 
     @Override
+    @Transactional
     protected void process(final List<Data> data) {
+        increaseMileages(data);
         final List<Data> savedData = dataService.saveAll(data);
         sendToSavedDataTopic(savedData);
     }
 
     private static Address mapToSavedAddress(final Address address, final AddressService addressService) {
         return address.isNew() ? addressService.save(address) : address;
+    }
+
+    private void increaseMileages(final List<Data> data) {
+        groupCoordinatesByTrackers(data)
+                .entrySet()
+                .stream()
+                .map(coordinatesByTracker -> new Track(coordinatesByTracker.getKey(), coordinatesByTracker.getValue()))
+                .forEach(mileageIncreasingService::increase);
+    }
+
+    private static Map<Tracker, List<Coordinate>> groupCoordinatesByTrackers(final List<Data> data) {
+        return data.stream()
+                .collect(
+                        groupingBy(
+                                Data::getTracker,
+                                mapping(Data::getCoordinate, toList())
+                        )
+                );
     }
 
     private void sendToSavedDataTopic(final List<Data> data) {

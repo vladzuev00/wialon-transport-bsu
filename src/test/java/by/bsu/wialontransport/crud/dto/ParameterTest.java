@@ -11,7 +11,7 @@ public final class ParameterTest {
     @Test
     public void doubleParameterShouldBeCreated() {
         final String givenName = "name";
-        final double givenValue = 10.;
+        final double givenValue = 10;
 
         final Parameter actual = createDoubleParameter(givenName, givenValue);
         final Parameter expected = Parameter.builder()

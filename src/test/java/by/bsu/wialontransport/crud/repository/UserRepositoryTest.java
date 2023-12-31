@@ -19,12 +19,16 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldBeFoundById() {
+        final Long givenId = 255L;
+
         startQueryCount();
-        final UserEntity actual = repository.findById(255L).orElseThrow();
+        final Optional<UserEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final UserEntity actual = optionalActual.get();
         final UserEntity expected = UserEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .email("vladzuev.00@mail.ru")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .role(USER)
@@ -50,9 +54,11 @@ public final class UserRepositoryTest extends AbstractContextTest {
         final String givenEmail = "vladzuev.00@mail.ru";
 
         startQueryCount();
-        final UserEntity actual = repository.findByEmail(givenEmail).orElseThrow();
+        final Optional<UserEntity> optionalActual = repository.findByEmail(givenEmail);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final UserEntity actual = optionalActual.get();
         final UserEntity expected = UserEntity.builder()
                 .id(255L)
                 .email(givenEmail)
@@ -64,8 +70,10 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldNotBeFoundByEmail() {
+        final String givenEmail = "email@mail.ru";
+
         startQueryCount();
-        final Optional<UserEntity> optionalEntity = repository.findByEmail("email@mail.ru");
+        final Optional<UserEntity> optionalEntity = repository.findByEmail(givenEmail);
         checkQueryCount(1);
 
         assertTrue(optionalEntity.isEmpty());
@@ -73,8 +81,10 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldExistsByEmail() {
+        final String givenEmail = "vladzuev.00@mail.ru";
+
         startQueryCount();
-        final boolean exists = repository.existsByEmail("vladzuev.00@mail.ru");
+        final boolean exists = repository.existsByEmail(givenEmail);
         checkQueryCount(1);
 
         assertTrue(exists);
@@ -82,8 +92,10 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userShouldNotExistsByEmail() {
+        final String givenEmail = "notexist@mail.ru";
+
         startQueryCount();
-        final boolean exists = repository.existsByEmail("notexist@mail.ru");
+        final boolean exists = repository.existsByEmail(givenEmail);
         checkQueryCount(1);
 
         assertFalse(exists);
@@ -126,18 +138,21 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userPasswordShouldBeUpdated() {
+        final Long givenId = 255L;
+        final String givenNewEncryptedPassword = "new-password";
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.updatePassword(255L, "new-password");
+        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewEncryptedPassword);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final UserEntity actual = repository.findById(255L).orElseThrow();
+        final UserEntity actual = repository.findById(givenId).orElseThrow();
         final UserEntity expected = UserEntity.builder()
-                .id(255L)
+                .id(givenId)
                 .email("vladzuev.00@mail.ru")
-                .password("new-password")
+                .password(givenNewEncryptedPassword)
                 .role(USER)
                 .build();
         checkEquals(expected, actual);
@@ -145,8 +160,11 @@ public final class UserRepositoryTest extends AbstractContextTest {
 
     @Test
     public void userPasswordShouldBeUpdatedBecauseOfNotExistingId() {
+        final Long givenId = MAX_VALUE;
+        final String givenNewEncryptedPassword = "new-password";
+
         startQueryCount();
-        final int actualCountUpdatedRows = repository.updatePassword(MAX_VALUE, "new-password");
+        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewEncryptedPassword);
         checkQueryCount(1);
 
         final int expectedCountUpdatedRows = 0;

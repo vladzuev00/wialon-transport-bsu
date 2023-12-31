@@ -47,8 +47,8 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService);
 
-    protected abstract Optional<Address> findAddress(final ConsumingContext context,
-                                                     final AddressService addressService);
+    protected abstract Optional<Address> findSavedAddress(final ConsumingContext context,
+                                                          final AddressService addressService);
 
     @RequiredArgsConstructor
     protected final class ConsumingContext {
@@ -135,7 +135,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
         }
 
         public Address getAddress() {
-            return findAddress(this, addressService)
+            return findSavedAddress(this, addressService)
                     .orElseThrow(
                             () -> new DataConsumingException(
                                     "Impossible to find address"

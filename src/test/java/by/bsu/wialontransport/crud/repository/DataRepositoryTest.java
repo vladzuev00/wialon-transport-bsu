@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
+import static java.lang.Long.MAX_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
@@ -32,16 +33,20 @@ public final class DataRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeFoundById() {
+        final Long givenId = 256L;
+
         startQueryCount();
-        final DataEntity actual = repository.findById(256L).orElseThrow();
+        final Optional<DataEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final DataEntity actual = optionalActual.get();
         assertFalse(areParametersFetched(actual));
         assertFalse(isTrackerFetched(actual));
         assertFalse(isAddressFetched(actual));
 
         final DataEntity expected = DataEntity.builder()
-                .id(256L)
+                .id(givenId)
                 .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 52))
                 .coordinate(new Coordinate(53.233, 27.3434))
                 .speed(8)
@@ -95,10 +100,16 @@ public final class DataRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void trackerLastDataShouldBeFoundByTrackerIdFetchingParameters() {
+        final Long givenTrackerId = 255L;
+
         startQueryCount();
-        final DataEntity actual = repository.findTrackerLastDataByTrackerIdFetchingParameters(255L).orElseThrow();
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerIdFetchingParameters(
+                givenTrackerId
+        );
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final DataEntity actual = optionalActual.get();
         assertTrue(areParametersFetched(actual));
         assertFalse(isTrackerFetched(actual));
         assertFalse(isAddressFetched(actual));
@@ -117,7 +128,7 @@ public final class DataRepositoryTest extends AbstractContextTest {
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
                 .driverKeyCode("driver key code")
                 .parameters(emptyList())
-                .tracker(entityManager.getReference(TrackerEntity.class, 255L))
+                .tracker(entityManager.getReference(TrackerEntity.class, givenTrackerId))
                 .address(entityManager.getReference(AddressEntity.class, 258L))
                 .build();
         checkEquals(expected, actual);
@@ -125,22 +136,45 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
     @Test
     public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParameters() {
+        final Long givenTrackerId = MAX_VALUE;
+
         startQueryCount();
-        final Optional<DataEntity> actual = repository.findTrackerLastDataByTrackerIdFetchingParameters(256L);
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerIdFetchingParameters(
+                givenTrackerId
+        );
         checkQueryCount(1);
 
-        assertTrue(actual.isEmpty());
+        assertTrue(optionalActual.isEmpty());
     }
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldBeFoundByUserIdFetchingTrackerAndAddress() {
         final Long givenUserId = 255L;
-        final LocalDateTime givenStartDateTime = LocalDateTime.of(2019, 10, 23, 0, 0, 0);
-        final LocalDateTime givenEndDateTime = LocalDateTime.of(2019, 10, 25, 0, 0, 0);
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(
+                2019,
+                10,
+                23,
+                0,
+                0,
+                0);
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(
+                2019,
+                10,
+                25,
+                0,
+                0,
+                0
+        );
 
         startQueryCount();
-        try (final Stream<DataEntity> actual = repository.findDataByUserIdFetchingTrackerAndAddress(givenUserId, givenStartDateTime, givenEndDateTime)) {
+        try (
+                final Stream<DataEntity> actual = repository.findDataByUserIdFetchingTrackerAndAddress(
+                        givenUserId,
+                        givenStartDateTime,
+                        givenEndDateTime
+                )
+        ) {
             checkQueryCount(1);
 
             final Set<DataEntity> actualAsSet = actual.collect(toSet());
@@ -159,10 +193,30 @@ public final class DataRepositoryTest extends AbstractContextTest {
     @Sql("classpath:sql/data/insert-data.sql")
     public void dataShouldNotBeFoundByUserIdFetchingTrackerAndAddress() {
         final Long givenUserId = 255L;
-        final LocalDateTime givenStartDateTime = LocalDateTime.of(2015, 10, 23, 0, 0, 0);
-        final LocalDateTime givenEndDateTime = LocalDateTime.of(2015, 10, 25, 0, 0, 0);
+        final LocalDateTime givenStartDateTime = LocalDateTime.of(
+                2015,
+                10,
+                23,
+                0,
+                0,
+                0
+        );
+        final LocalDateTime givenEndDateTime = LocalDateTime.of(
+                2015,
+                10,
+                25,
+                0,
+                0,
+                0
+        );
 
-        try (final Stream<DataEntity> actual = repository.findDataByUserIdFetchingTrackerAndAddress(givenUserId, givenStartDateTime, givenEndDateTime)) {
+        try (
+                final Stream<DataEntity> actual = repository.findDataByUserIdFetchingTrackerAndAddress(
+                        givenUserId,
+                        givenStartDateTime,
+                        givenEndDateTime
+                )
+        ) {
             assertTrue(isEmpty(actual));
         }
     }

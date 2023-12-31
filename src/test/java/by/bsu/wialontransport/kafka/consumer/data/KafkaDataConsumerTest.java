@@ -465,7 +465,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         }
 
         @Override
-        protected Optional<Address> findAddress(final ConsumingContext context, final AddressService addressService) {
+        protected Optional<Address> findSavedAddress(final ConsumingContext context, final AddressService addressService) {
             return addressService.findById(extractAddressId(context));
         }
 
