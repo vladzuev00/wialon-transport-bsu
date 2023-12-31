@@ -1,7 +1,31 @@
---DROPPING foreign keys
+--DROPPING constraint
+ALTER TABLE IF EXISTS users
+DROP CONSTRAINT IF EXISTS email_should_be_correct;
+
+ALTER TABLE IF EXISTS users
+DROP CONSTRAINT IF EXISTS email_should_be_unique;
+
 ALTER TABLE IF EXISTS trackers
 DROP
 CONSTRAINT IF EXISTS fk_trackers_to_users;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS imei_should_be_unique;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS imei_should_be_correct;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS phone_number_should_be_unique;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS correct_phone_number;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
+
+ALTER TABLE IF EXISTS trackers
+DROP CONSTRAINT IF EXISTS fk_trackers_to_tracker_mileages;
 
 ALTER TABLE IF EXISTS data
 DROP
@@ -11,9 +35,12 @@ ALTER TABLE IF EXISTS data
 DROP
 CONSTRAINT IF EXISTS fk_data_to_addresses;
 
-ALTER TABLE IF EXISTS data
+ALTER TABLE IF EXISTS cities
 DROP
 CONSTRAINT IF EXISTS address_id_should_be_unique;
+
+ALTER TABLE IF EXISTS parameters
+DROP CONSTRAINT IF EXISTS parameter_name_should_be_correct;
 
 ALTER TABLE IF EXISTS parameters
 DROP
@@ -34,6 +61,11 @@ CONSTRAINT IF EXISTS fk_cities_to_addresses;
 ALTER TABLE IF EXISTS cities
 DROP
 CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
+
+--DROPPING SEQUENCES
+DROP SEQUENCE IF EXISTS addresses_id_seq;
+DROP SEQUENCE IF EXISTS data_id_seq;
+DROP SEQUENCE IF EXISTS parameters_id_seq;
 
 --DROPPING tables
 DROP TABLE IF EXISTS users;
@@ -170,7 +202,7 @@ ALTER TABLE parameters
             ON DELETE CASCADE;
 
 ALTER TABLE parameters
-    ADD CONSTRAINT correct_name CHECK (char_length(name) != 0);
+    ADD CONSTRAINT parameter_name_should_be_correct CHECK (char_length(name) != 0);
 
 CREATE TABLE trackers_last_data
 (
@@ -219,7 +251,8 @@ ALTER TABLE cities
 ALTER TABLE cities
     ADD CONSTRAINT fk_cities_to_searching_cities_processes
         FOREIGN KEY (searching_cities_process_id)
-            REFERENCES searching_cities_processes (id);
+            REFERENCES searching_cities_processes (id)
+                ON DELETE CASCADE;
 
 CREATE
 OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
