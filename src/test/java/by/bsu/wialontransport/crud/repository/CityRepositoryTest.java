@@ -10,6 +10,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Optional;
+
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static by.bsu.wialontransport.util.entity.CityEntityUtil.*;
 import static org.junit.Assert.assertFalse;
@@ -26,15 +28,19 @@ public final class CityRepositoryTest extends AbstractContextTest {
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void cityShouldBeFoundById() {
+        final Long givenId = 258L;
+
         startQueryCount();
-        final CityEntity actual = repository.findById(258L).orElseThrow();
+        final Optional<CityEntity> optionalActual = repository.findById(givenId);
         checkQueryCount(1);
 
+        assertTrue(optionalActual.isPresent());
+        final CityEntity actual = optionalActual.get();
         assertFalse(isAddressFetched(actual));
         assertFalse(isSearchingCitiesProcessFetched(actual));
 
         final CityEntity expected = CityEntity.builder()
-                .id(258L)
+                .id(givenId)
                 .address(entityManager.getReference(AddressEntity.class, 257L))
                 .searchingCitiesProcess(entityManager.getReference(SearchingCitiesProcessEntity.class, 254L))
                 .build();
