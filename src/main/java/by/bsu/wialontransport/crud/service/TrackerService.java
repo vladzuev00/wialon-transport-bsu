@@ -54,4 +54,9 @@ public class TrackerService extends CRUDEncryptingPasswordService<
     public Optional<Tracker> findByPhoneNumber(final String phoneNumber) {
         return findUnique(repository -> repository.findByPhoneNumber(phoneNumber));
     }
+
+    @Transactional(readOnly = true)
+    public Optional<Tracker> findByIdFetchingMileage(final Long id) {
+        return findUnique(repository -> repository.findByIdFetchingMileage(id));
+    }
 }

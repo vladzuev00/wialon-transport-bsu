@@ -2,6 +2,7 @@ package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.dto.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,14 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByImei() {
-        final Tracker actual = service.findByImei("11112222333344445555").orElseThrow();
+        final String givenImei = "11112222333344445555";
+
+        final Optional<Tracker> optionalActual = service.findByImei(givenImei);
+        assertTrue(optionalActual.isPresent());
+        final Tracker actual = optionalActual.get();
         final Tracker expected = Tracker.builder()
                 .id(255L)
-                .imei("11112222333344445555")
+                .imei(givenImei)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .build();
@@ -35,7 +40,9 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByImei() {
-        final Optional<Tracker> optionalActual = service.findByImei("00000000000000000000");
+        final String givenImei = "00000000000000000000";
+
+        final Optional<Tracker> optionalActual = service.findByImei(givenImei);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -105,12 +112,14 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByIdFetchingUser() {
-        final Optional<Tracker> optionalActual = service.findByIdFetchingUser(255L);
+        final Long givenId = 255L;
+
+        final Optional<Tracker> optionalActual = service.findByIdFetchingUser(givenId);
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
         final Tracker expected = Tracker.builder()
-                .id(255L)
+                .id(givenId)
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
@@ -134,7 +143,34 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByPhoneNumber() {
-        final Optional<Tracker> optionalActual = service.findByPhoneNumber("447336934");
+        final String givenPhoneNumber = "447336934";
+
+        final Optional<Tracker> optionalActual = service.findByPhoneNumber(givenPhoneNumber);
+        assertTrue(optionalActual.isPresent());
+
+        final Tracker actual = optionalActual.get();
+        final Tracker expected = Tracker.builder()
+                .id(255L)
+                .imei("11112222333344445555")
+                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
+                .phoneNumber(givenPhoneNumber)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldNotBeFoundByPhoneNumber() {
+        final String givenPhoneNumber = "000000000";
+
+        final Optional<Tracker> optionalActual = service.findByPhoneNumber(givenPhoneNumber);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerShouldBeFoundByIdFetchingMileage() {
+        final Long givenId = 255L;
+
+        final Optional<Tracker> optionalActual = service.findByIdFetchingMileage(givenId);
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
@@ -143,13 +179,16 @@ public final class TrackerServiceTest extends AbstractContextTest {
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
+                .mileage(new TrackerMileage(1L, 0, 0))
                 .build();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void trackerShouldNotBeFoundByPhoneNumber() {
-        final Optional<Tracker> optionalActual = service.findByPhoneNumber("997336935");
+    public void trackerShouldNotBeFoundByIdFetchingMileage() {
+        final Long givenId = MAX_VALUE;
+
+        final Optional<Tracker> optionalActual = service.findByIdFetchingMileage(givenId);
         assertTrue(optionalActual.isEmpty());
     }
 
