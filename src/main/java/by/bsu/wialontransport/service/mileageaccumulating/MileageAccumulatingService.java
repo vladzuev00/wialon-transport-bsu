@@ -18,9 +18,9 @@ public final class MileageAccumulatingService {
 
     public void accumulate(final Data inboundData) {
         final Tracker tracker = inboundData.getTracker();
-//        this.dataService.findTrackerLastData(tracker)
-//                .map(previousData -> this.calculateMileage(previousData, inboundData))
-//                .ifPresent(mileage -> this.trackerMileageService.increaseMileage(tracker, mileage));
+        this.dataService.findTrackerLastDataByTrackerIdFetchingParameters(tracker)
+                .map(previousData -> this.calculateMileage(previousData, inboundData))
+                .ifPresent(mileage -> this.trackerMileageService.increaseMileage(tracker, mileage));
     }
 
 //    public void accumulate(final List<Data> inboundData) {

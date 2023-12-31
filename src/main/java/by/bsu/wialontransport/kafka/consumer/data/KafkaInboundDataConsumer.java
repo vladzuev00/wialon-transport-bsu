@@ -6,32 +6,24 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
-import by.bsu.wialontransport.crud.service.TrackerMileageService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
-import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.geocoding.GeocodingService;
-import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.*;
 
 @Component
 public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
     private final DataService dataService;
     private final GeocodingService geocodingService;
-    private final TrackerMileageService trackerMileageService;
-    private final MileageCalculatingService mileageCalculatingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
@@ -39,14 +31,10 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
                                     final AddressService addressService,
                                     final DataService dataService,
                                     @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
-                                    final TrackerMileageService trackerMileageService,
-                                    final MileageCalculatingService mileageCalculatingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         super(objectMapper, trackerService, addressService, InboundParameterView.class);
         this.dataService = dataService;
         this.geocodingService = geocodingService;
-        this.trackerMileageService = trackerMileageService;
-        this.mileageCalculatingService = mileageCalculatingService;
         this.savedDataProducer = savedDataProducer;
     }
 
@@ -92,7 +80,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
 
     @Override
     protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-        return trackerService.findByIdFetchingLastDataAndMileage(id);
+        return null;
     }
 
     @Override
@@ -102,25 +90,13 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     }
 
     @Override
-    @Transactional
     protected void process(final List<Data> data) {
-        //TODO: get last data from trackers
-        createTracks(data).forEach(track -> trackerMileageService.increaseMileage(track.getTracker(), mileageCalculatingService.calculate(track.getCoordinates())));
         final List<Data> savedData = dataService.saveAll(data);
         sendToSavedDataTopic(savedData);
     }
 
     private static Address mapToSavedAddress(final Address address, final AddressService addressService) {
         return address.isNew() ? addressService.save(address) : address;
-    }
-
-    private static List<Track> createTracks(final List<Data> data) {
-        return data.stream()
-                .collect(groupingBy(Data::getTracker, mapping(Data::getCoordinate, toList())))
-                .entrySet()
-                .stream()
-                .map(dataByTracker -> new Track(dataByTracker.getKey(), dataByTracker.getValue()))
-                .toList();
     }
 
     private void sendToSavedDataTopic(final List<Data> data) {

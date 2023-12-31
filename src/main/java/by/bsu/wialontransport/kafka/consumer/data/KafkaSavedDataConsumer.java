@@ -71,7 +71,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
 
     @Override
     protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-        return trackerService.findById(id);
+        return Optional.empty();
     }
 
     @Override

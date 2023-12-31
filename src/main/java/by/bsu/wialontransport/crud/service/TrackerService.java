@@ -46,7 +46,7 @@ public class TrackerService extends CRUDEncryptingPasswordService<
     }
 
     @Transactional(readOnly = true)
-    public Optional<Tracker> findByIdWithUser(final Long id) {
+    public Optional<Tracker> findByIdFetchingUser(final Long id) {
         return findUnique(repository -> repository.findByIdFetchingUser(id));
     }
 

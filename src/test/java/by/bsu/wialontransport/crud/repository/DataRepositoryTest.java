@@ -36,9 +36,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
         final DataEntity actual = repository.findById(256L).orElseThrow();
         checkQueryCount(1);
 
-        assertFalse(areParametersLoaded(actual));
-        assertFalse(isTrackerLoaded(actual));
-        assertFalse(isAddressLoaded(actual));
+        assertFalse(areParametersFetched(actual));
+        assertFalse(isTrackerFetched(actual));
+        assertFalse(isAddressFetched(actual));
 
         final DataEntity expected = DataEntity.builder()
                 .id(256L)
@@ -99,9 +99,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
         final DataEntity actual = repository.findTrackerLastDataByTrackerIdFetchingParameters(255L).orElseThrow();
         checkQueryCount(1);
 
-        assertTrue(areParametersLoaded(actual));
-        assertFalse(isTrackerLoaded(actual));
-        assertFalse(isAddressLoaded(actual));
+        assertTrue(areParametersFetched(actual));
+        assertFalse(isTrackerFetched(actual));
+        assertFalse(isAddressFetched(actual));
 
         final DataEntity expected = DataEntity.builder()
                 .id(257L)
@@ -145,9 +145,9 @@ public final class DataRepositoryTest extends AbstractContextTest {
 
             final Set<DataEntity> actualAsSet = actual.collect(toSet());
 
-            assertTrue(areParametersNotLoaded(actualAsSet));
-            assertTrue(areTrackersLoaded(actualAsSet));
-            assertTrue(areAddressesLoaded(actualAsSet));
+            assertTrue(areParametersNotFetched(actualAsSet));
+            assertTrue(areTrackersFetched(actualAsSet));
+            assertTrue(areAddressesFetched(actualAsSet));
 
             final Set<Long> actualIds = EntityUtil.mapToIdsSet(actualAsSet);
             final Set<Long> expectedIds = Set.of(254L, 255L, 256L);

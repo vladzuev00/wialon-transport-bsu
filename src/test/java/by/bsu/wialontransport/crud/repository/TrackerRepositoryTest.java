@@ -1,14 +1,12 @@
 package by.bsu.wialontransport.crud.repository;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +15,7 @@ import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIdsList;
 import static by.bsu.wialontransport.util.entity.TrackerEntityUtil.*;
 import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
-import static org.springframework.data.domain.PageRequest.ofSize;
+import static org.springframework.data.domain.Pageable.ofSize;
 
 public final class TrackerRepositoryTest extends AbstractContextTest {
 
@@ -32,7 +30,6 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
         assertFalse(isUserFetched(actual));
         assertFalse(isMileageFetched(actual));
-        assertFalse(isLastDataFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
@@ -61,59 +58,13 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
     }
 
     @Test
-    @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerShouldBeFoundByImeiFetchingLastData() {
-        final String givenImei = "11112222333344445555";
-
+    public void trackerShouldBeFoundByImei() {
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByImeiFetchingLastData(givenImei);
+        final TrackerEntity actual = repository.findByImei("11112222333344445555").orElseThrow();
         checkQueryCount(1);
-
-        assertTrue(optionalActual.isPresent());
-        final TrackerEntity actual = optionalActual.get();
 
         assertFalse(isUserFetched(actual));
         assertFalse(isMileageFetched(actual));
-        assertTrue(isLastDataFetched(actual));
-
-        final TrackerEntity expected = TrackerEntity.builder()
-                .id(255L)
-                .imei(givenImei)
-                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .phoneNumber("447336934")
-                .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
-                .lastData(entityManager.getReference(DataEntity.class, 257L))
-                .build();
-        checkEquals(expected, actual);
-    }
-
-    @Test
-    public void trackerShouldNotBeFoundByImeiFetchingLastData() {
-        final String givenImei = "00000000000000000000";
-
-        startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByImeiFetchingLastData(givenImei);
-        checkQueryCount(1);
-
-        assertTrue(optionalActual.isEmpty());
-    }
-
-    @Test
-    @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerShouldBeFoundByIdFetchingLastDataAndMileage() {
-        final Long givenId = 255L;
-
-        startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingLastDataAndMileage(givenId);
-        checkQueryCount(1);
-
-        assertTrue(optionalActual.isPresent());
-        final TrackerEntity actual = optionalActual.get();
-
-        assertFalse(isUserFetched(actual));
-        assertTrue(isMileageFetched(actual));
-        assertTrue(isLastDataFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)
@@ -122,20 +73,17 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
                 .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
-                .lastData(entityManager.getReference(DataEntity.class, 257L))
                 .build();
         checkEquals(expected, actual);
     }
 
     @Test
-    public void trackerShouldNotBeFoundByIdFetchingLastDataAndMileage() {
-        final Long givenId = MAX_VALUE;
-
+    public void trackerShouldNotBeFoundByImei() {
         startQueryCount();
-        final Optional<TrackerEntity> optionalActual = repository.findByIdFetchingLastDataAndMileage(givenId);
+        final Optional<TrackerEntity> optionalFoundTracker = repository.findByImei("00000000000000000000");
         checkQueryCount(1);
 
-        assertTrue(optionalActual.isEmpty());
+        assertTrue(optionalFoundTracker.isEmpty());
     }
 
     @Test
@@ -148,7 +96,6 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
         assertTrue(areUsersNotFetched(actualAsSet));
         assertTrue(areMileagesNotFetched(actualAsSet));
-        assertTrue(areLastDataNotFetched(actualAsSet));
 
         final List<Long> actualIds = mapToIdsList(actualAsSet);
         final List<Long> expectedIds = List.of(255L, 256L);
@@ -207,7 +154,6 @@ public final class TrackerRepositoryTest extends AbstractContextTest {
 
         assertFalse(isUserFetched(actual));
         assertFalse(isMileageFetched(actual));
-        assertFalse(isLastDataFetched(actual));
 
         final TrackerEntity expected = TrackerEntity.builder()
                 .id(255L)

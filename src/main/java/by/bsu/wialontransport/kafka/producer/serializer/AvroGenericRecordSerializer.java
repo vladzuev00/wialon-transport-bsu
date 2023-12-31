@@ -27,15 +27,19 @@ public final class AvroGenericRecordSerializer implements Serializer<GenericReco
         if (record == null) {
             return null;
         }
-        try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            final BinaryEncoder binaryEncoder = EncoderFactory.get().binaryEncoder(byteArrayOutputStream, null);
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            final BinaryEncoder binaryEncoder = createBinaryEncoder(outputStream);
             final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
             datumWriter.write(record, binaryEncoder);
             binaryEncoder.flush();
-            return byteArrayOutputStream.toByteArray();
+            return outputStream.toByteArray();
         } catch (final IOException cause) {
             throw new RecordSerializationException(cause);
         }
+    }
+
+    private static BinaryEncoder createBinaryEncoder(final ByteArrayOutputStream outputStream) {
+        return EncoderFactory.get().binaryEncoder(outputStream, null);
     }
 
     static final class RecordSerializationException extends RuntimeException {

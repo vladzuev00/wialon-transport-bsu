@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -30,6 +31,25 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Autowired
     private GeometryFactory geometryFactory;
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataShouldBeFoundByTrackerIdFetchingParameters() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = dataService.findTrackerLastDataByTrackerIdFetchingParameters(givenTracker);
+        final Long actualId = optionalActual.map(Data::getId).orElseThrow();
+        final Long expectedId = 257L;
+        assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParameters() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = dataService.findTrackerLastDataByTrackerIdFetchingParameters(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
@@ -123,6 +143,13 @@ public final class DataServiceTest extends AbstractContextTest {
         try (final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(givenUser, givenDateInterval)) {
             assertTrue(isEmpty(actual));
         }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Tracker createTracker(final Long id) {
+        return Tracker.builder()
+                .id(id)
+                .build();
     }
 
     private static User createUser(final Long id) {

@@ -1,17 +1,13 @@
 package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.model.Coordinate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,37 +22,20 @@ public final class TrackerServiceTest extends AbstractContextTest {
     private TrackerService service;
 
     @Test
-    @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerShouldBeFoundByImeiFetchingLastData() {
-        final Tracker actual = service.findByImeiFetchingLastData("11112222333344445555").orElseThrow();
+    public void trackerShouldBeFoundByImei() {
+        final Tracker actual = service.findByImei("11112222333344445555").orElseThrow();
         final Tracker expected = Tracker.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
-                .lastData(
-                        Data.builder()
-                                .id(257L)
-                                .dateTime(LocalDateTime.of(2019, 10, 26, 14, 39, 53))
-                                .coordinate(new Coordinate(53.233, 27.3434))
-                                .speed(8)
-                                .course(9)
-                                .altitude(10)
-                                .amountOfSatellites(11)
-                                .reductionPrecision(12.4)
-                                .inputs(13)
-                                .outputs(14)
-                                .analogInputs(new double[]{0.2, 0.3, 0.4})
-                                .driverKeyCode("driver key code")
-                                .build()
-                )
                 .build();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void trackerShouldNotBeFoundByImeiFetchingLastData() {
-        final Optional<Tracker> optionalActual = service.findByImeiFetchingLastData("00000000000000000000");
+    public void trackerShouldNotBeFoundByImei() {
+        final Optional<Tracker> optionalActual = service.findByImei("00000000000000000000");
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -126,7 +105,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldBeFoundByIdFetchingUser() {
-        final Optional<Tracker> optionalActual = service.findByIdFetching(255L);
+        final Optional<Tracker> optionalActual = service.findByIdFetchingUser(255L);
         assertTrue(optionalActual.isPresent());
 
         final Tracker actual = optionalActual.get();
@@ -149,7 +128,7 @@ public final class TrackerServiceTest extends AbstractContextTest {
 
     @Test
     public void trackerShouldNotBeFoundByIdFetchingUser() {
-        final Optional<Tracker> optionalActual = service.findByIdFetching(MAX_VALUE);
+        final Optional<Tracker> optionalActual = service.findByIdFetchingUser(MAX_VALUE);
         assertTrue(optionalActual.isEmpty());
     }
 

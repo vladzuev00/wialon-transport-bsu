@@ -19,7 +19,6 @@ public final class TrackerEntityUtil {
         assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
         assertEquals(expected.getUser(), actual.getUser());
         assertEquals(expected.getMileage(), actual.getMileage());
-        assertEquals(expected.getLastData(), actual.getLastData());
     }
 
     public static boolean isUserFetched(final TrackerEntity entity) {
@@ -30,19 +29,11 @@ public final class TrackerEntityUtil {
         return isPropertyFetched(entity, TrackerEntity::getMileage);
     }
 
-    public static boolean isLastDataFetched(final TrackerEntity entity) {
-        return isPropertyFetched(entity, TrackerEntity::getLastData);
-    }
-
     public static boolean areUsersNotFetched(final Collection<TrackerEntity> entities) {
         return areAllMatch(entities, entity -> !isUserFetched(entity));
     }
 
     public static boolean areMileagesNotFetched(final Collection<TrackerEntity> entities) {
         return areAllMatch(entities, entity -> !isMileageFetched(entity));
-    }
-
-    public static boolean areLastDataNotFetched(final Collection<TrackerEntity> entities) {
-        return areAllMatch(entities, entity -> !isLastDataFetched(entity));
     }
 }
