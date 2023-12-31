@@ -38,7 +38,10 @@ public final class DataServiceTest extends AbstractContextTest {
         final Tracker givenTracker = createTracker(255L);
 
         final Optional<Data> optionalActual = dataService.findTrackerLastDataByTrackerIdFetchingParameters(givenTracker);
-        final Long actualId = optionalActual.map(Data::getId).orElseThrow();
+        assertTrue(optionalActual.isPresent());
+        final Data actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
         final Long expectedId = 257L;
         assertEquals(expectedId, actualId);
     }
@@ -60,7 +63,12 @@ public final class DataServiceTest extends AbstractContextTest {
                 LocalDateTime.of(2019, 10, 24, 14, 39, 51)
         );
 
-        try (final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(givenUser, givenDateInterval)) {
+        try (
+                final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(
+                        givenUser,
+                        givenDateInterval
+                )
+        ) {
             final Set<Data> actualAsSet = actual.collect(toSet());
             final Set<Data> expectedAsSet = Set.of(
                     Data.builder()
@@ -140,7 +148,12 @@ public final class DataServiceTest extends AbstractContextTest {
                 LocalDateTime.of(2019, 10, 24, 14, 39, 51)
         );
 
-        try (final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(givenUser, givenDateInterval)) {
+        try (
+                final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(
+                        givenUser,
+                        givenDateInterval
+                )
+        ) {
             assertTrue(isEmpty(actual));
         }
     }

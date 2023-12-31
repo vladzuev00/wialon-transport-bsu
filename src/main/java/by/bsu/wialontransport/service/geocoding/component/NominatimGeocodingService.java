@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.geocoding.component;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -12,11 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static java.util.Optional.empty;
-
 @Service
 @Order(2)
-public class NominatimGeocodingService implements GeocodingChainComponent {
+public class NominatimGeocodingService implements GeocodingService {
     private final NominatimService nominatimService;
     private final ReverseResponseToAddressMapper responseToAddressMapper;
     private final AddressService addressService;
@@ -36,6 +35,7 @@ public class NominatimGeocodingService implements GeocodingChainComponent {
 //                ? Optional.of(this.mapToPossiblySavedAddress(response))
 //                : empty();
         return null;
+        //TODO: return not saved address
     }
 
     private Address mapToPossiblySavedAddress(final NominatimReverseResponse response) {

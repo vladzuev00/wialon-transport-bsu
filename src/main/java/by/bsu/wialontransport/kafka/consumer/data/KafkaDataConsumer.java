@@ -4,7 +4,6 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.KafkaGenericRecordConsumer;
 import by.bsu.wialontransport.kafka.model.view.ParameterView;
@@ -32,7 +31,6 @@ import static java.util.stream.Collectors.toMap;
 public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGenericRecordConsumer<Long, Data> {
     private final ObjectMapper objectMapper;
     private final TrackerService trackerService;
-    private final AddressService addressService;
     private final Class<P> parameterViewType;
 
     @Override
@@ -45,10 +43,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
     protected abstract Parameter createParameter(final P view);
 
-    protected abstract Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService);
-
-    protected abstract Optional<Address> findSavedAddress(final ConsumingContext context,
-                                                          final AddressService addressService);
+    protected abstract Optional<Address> findAddress(final ConsumingContext context);
 
     @RequiredArgsConstructor
     protected final class ConsumingContext {
@@ -122,9 +117,9 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
 
         public Tracker getTracker() {
             final Long id = extractTrackerId();
-            return findTrackerById(id, trackerService)
+            return trackerService.findById(id)
                     .orElseThrow(
-                            () -> new DataConsumingException(
+                            () -> new ConsumingException(
                                     "There is no tracker with id '%s'".formatted(id)
                             )
                     );
@@ -135,12 +130,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
         }
 
         public Address getAddress() {
-            return findSavedAddress(this, addressService)
-                    .orElseThrow(
-                            () -> new DataConsumingException(
-                                    "Impossible to find address"
-                            )
-                    );
+            return findAddress(this).orElseThrow(() -> new ConsumingException("Impossible to find address"));
         }
 
         private double extractLatitude() {
@@ -158,7 +148,7 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
                 final String serialized = extractString(record, key);
                 return deserializer.deserialize(serialized);
             } catch (final IOException cause) {
-                throw new DataConsumingException(cause);
+                throw new ConsumingException(cause);
             }
         }
 
@@ -186,24 +176,24 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
         }
     }
 
-    static final class DataConsumingException extends RuntimeException {
+    static final class ConsumingException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public DataConsumingException() {
+        public ConsumingException() {
 
         }
 
         @SuppressWarnings("unused")
-        public DataConsumingException(final String description) {
+        public ConsumingException(final String description) {
             super(description);
         }
 
-        public DataConsumingException(final Exception cause) {
+        public ConsumingException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public DataConsumingException(final String description, final Exception cause) {
+        public ConsumingException(final String description, final Exception cause) {
             super(description, cause);
         }
     }

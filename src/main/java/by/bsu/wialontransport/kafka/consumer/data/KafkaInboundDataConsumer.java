@@ -4,19 +4,17 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Track;
-import by.bsu.wialontransport.service.geocoding.GeocodingService;
+import by.bsu.wialontransport.service.geocoding.GeocodingManager;
 import by.bsu.wialontransport.service.mileage.MileageIncreasingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,21 +27,20 @@ import static java.util.stream.Collectors.*;
 
 @Component
 public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
+    private final GeocodingManager geocodingManager;
     private final DataService dataService;
-    private final GeocodingService geocodingService;
     private final MileageIncreasingService mileageIncreasingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
                                     final TrackerService trackerService,
-                                    final AddressService addressService,
+                                    final GeocodingManager geocodingManager,
                                     final DataService dataService,
-                                    @Qualifier("chainGeocodingService") final GeocodingService geocodingService,
                                     final MileageIncreasingService mileageIncreasingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
-        super(objectMapper, trackerService, addressService, InboundParameterView.class);
+        super(objectMapper, trackerService, InboundParameterView.class);
+        this.geocodingManager = geocodingManager;
         this.dataService = dataService;
-        this.geocodingService = geocodingService;
         this.mileageIncreasingService = mileageIncreasingService;
         this.savedDataProducer = savedDataProducer;
     }
@@ -89,15 +86,8 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     }
 
     @Override
-    protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-        return trackerService.findByIdFetchingMileage(id);
-    }
-
-    @Override
-    protected Optional<Address> findSavedAddress(final ConsumingContext context,
-                                                 final AddressService addressService) {
-        return geocodingService.receive(context.getCoordinate())
-                .map(address -> mapToSavedAddress(address, addressService));
+    protected Optional<Address> findAddress(final ConsumingContext context) {
+        return geocodingManager.receive(context.getCoordinate());
     }
 
     @Override
@@ -106,10 +96,6 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
         increaseMileages(data);
         final List<Data> savedData = dataService.saveAll(data);
         sendToSavedDataTopic(savedData);
-    }
-
-    private static Address mapToSavedAddress(final Address address, final AddressService addressService) {
-        return address.isNew() ? addressService.save(address) : address;
     }
 
     private void increaseMileages(final List<Data> data) {

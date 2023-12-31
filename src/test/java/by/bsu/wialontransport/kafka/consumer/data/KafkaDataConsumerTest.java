@@ -8,7 +8,7 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.kafka.consumer.data.KafkaDataConsumer.DataConsumingException;
+import by.bsu.wialontransport.kafka.consumer.data.KafkaDataConsumer.ConsumingException;
 import by.bsu.wialontransport.kafka.model.transportable.data.TransportableData;
 import by.bsu.wialontransport.kafka.model.transportable.data.TransportableSavedData;
 import by.bsu.wialontransport.kafka.model.view.ParameterView;
@@ -149,7 +149,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         assertEquals(expected, actual);
     }
 
-    @Test(expected = DataConsumingException.class)
+    @Test(expected = ConsumingException.class)
     public void genericRecordShouldNotBeMappedToSourceBecauseOfThereIsNoTrackerWithGivenId() {
         final Long givenDataId = 256L;
         final LocalDateTime givenDateTime = LocalDateTime.of(
@@ -212,8 +212,8 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         consumer.mapToSource(givenGenericRecord);
     }
 
-    @Test(expected = DataConsumingException.class)
-    public void genericRecordShouldNotBeMappedToSourceBecauseOfThereIsNoAddressWithGivenId() {
+    @Test(expected = ConsumingException.class)
+    public void genericRecordShouldNotBeMappedToSourceBecauseAddressWithGivenIdNotExist() {
         final Long givenDataId = 255L;
         final LocalDateTime givenDateTime = LocalDateTime.of(
                 2023,
@@ -274,6 +274,66 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         when(mockedTrackerService.findById(same(givenTrackerId))).thenReturn(Optional.of(givenTracker));
 
         when(mockedAddressService.findById(same(givenAddressId))).thenReturn(empty());
+
+        consumer.mapToSource(givenGenericRecord);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void genericRecordShouldNotBeMappedToSourceBecauseOfThereIsNoDataId() {
+        final LocalDateTime givenDateTime = LocalDateTime.of(
+                2023,
+                12,
+                30,
+                2,
+                43,
+                15
+        );
+        final double givenLatitude = 53.3434;
+        final double givenLongitude = 27.4343;
+        final int givenCourse = 40;
+        final int givenSpeed = 60;
+        final int givenAltitude = 10;
+        final int givenAmountOfSatellites = 20;
+        final double givenReductionPrecision = 40.4;
+        final int givenInputs = 15;
+        final int givenOutputs = 16;
+        final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
+        final String givenDriverKeyCode = "driver key code";
+        final String givenSerializedParameters = """
+                [
+                  {
+                    "name": "first-param",
+                    "type": "INTEGER",
+                    "value": "1",
+                    "id": 256
+                  },
+                  {
+                    "name": "second-param",
+                    "type": "STRING",
+                    "value": "string",
+                    "id": 257
+                  }
+                ]""";
+        final Long givenTrackerId = 256L;
+        final Long givenAddressId = 257L;
+        final GenericRecord givenGenericRecord = createGenericRecord(
+                null,
+                givenDateTime,
+                givenLatitude,
+                givenLongitude,
+                givenCourse,
+                givenSpeed,
+                givenAltitude,
+                givenAmountOfSatellites,
+                givenReductionPrecision,
+                givenInputs,
+                givenOutputs,
+                givenSerializedAnalogInputs,
+                givenDriverKeyCode,
+                givenSerializedParameters,
+                givenTrackerId,
+                givenAddressId
+        );
 
         consumer.mapToSource(givenGenericRecord);
     }
@@ -416,11 +476,13 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
     }
 
     private static final class TestKafkaDataConsumer extends KafkaDataConsumer<TestParameterView> {
+        private final AddressService addressService;
 
         public TestKafkaDataConsumer(final ObjectMapper objectMapper,
                                      final TrackerService trackerService,
                                      final AddressService addressService) {
-            super(objectMapper, trackerService, addressService, TestParameterView.class);
+            super(objectMapper, trackerService, TestParameterView.class);
+            this.addressService = addressService;
         }
 
         @Override
@@ -460,12 +522,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         }
 
         @Override
-        protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-            return trackerService.findById(id);
-        }
-
-        @Override
-        protected Optional<Address> findSavedAddress(final ConsumingContext context, final AddressService addressService) {
+        protected Optional<Address> findAddress(final ConsumingContext context) {
             return addressService.findById(extractAddressId(context));
         }
 

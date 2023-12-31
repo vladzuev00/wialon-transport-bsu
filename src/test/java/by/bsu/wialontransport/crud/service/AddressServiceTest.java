@@ -33,7 +33,10 @@ public final class AddressServiceTest extends AbstractContextTest {
         final Coordinate givenCoordinate = new Coordinate(1, 1);
 
         final Optional<Address> optionalActual = addressService.findByGpsCoordinates(givenCoordinate);
-        final Long actualId = optionalActual.map(Address::getId).orElseThrow();
+        assertTrue(optionalActual.isPresent());
+        final Address actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }
@@ -56,7 +59,10 @@ public final class AddressServiceTest extends AbstractContextTest {
         );
 
         final Optional<Address> optionalActual = addressService.findByGeometry(givenGeometry);
-        final Long actualId = optionalActual.map(Address::getId).orElseThrow();
+        assertTrue(optionalActual.isPresent());
+        final Address actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
         final Long expectedId = 255L;
         assertEquals(expectedId, actualId);
     }

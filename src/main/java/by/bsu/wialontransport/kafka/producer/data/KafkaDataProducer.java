@@ -36,16 +36,16 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
 
     @Override
     protected final TransportableData mapToTransportable(final Data data) {
-        final CreatingTransportableContext context = createCreatingContext(data);
+        final ProducingContext context = createCreatingContext(data);
         return createTransportable(context);
     }
 
-    protected abstract TransportableData createTransportable(final CreatingTransportableContext context);
+    protected abstract TransportableData createTransportable(final ProducingContext context);
 
     protected abstract ParameterView createParameterView(final Parameter parameter);
 
-    private CreatingTransportableContext createCreatingContext(final Data data) {
-        return CreatingTransportableContext.builder()
+    private ProducingContext createCreatingContext(final Data data) {
+        return ProducingContext.builder()
                 .data(data)
                 .epochSeconds(findEpochSeconds(data))
                 .serializedAnalogInputs(serializeAnalogInputs(data))
@@ -74,13 +74,13 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
         try {
             return objectMapper.writeValueAsString(object);
         } catch (final JsonProcessingException cause) {
-            throw new SerializationException(cause);
+            throw new ProducingException(cause);
         }
     }
 
     @RequiredArgsConstructor
     @Builder
-    protected static final class CreatingTransportableContext {
+    protected static final class ProducingContext {
 
         @Getter(NONE)
         private final Data data;
@@ -147,24 +147,24 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
         }
     }
 
-    static final class SerializationException extends RuntimeException {
+    static final class ProducingException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public SerializationException() {
+        public ProducingException() {
 
         }
 
         @SuppressWarnings("unused")
-        public SerializationException(final String description) {
+        public ProducingException(final String description) {
             super(description);
         }
 
-        public SerializationException(final Exception cause) {
+        public ProducingException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public SerializationException(final String description, final Exception cause) {
+        public ProducingException(final String description, final Exception cause) {
             super(description, cause);
         }
     }

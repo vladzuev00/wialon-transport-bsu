@@ -3,7 +3,6 @@ package by.bsu.wialontransport.kafka.consumer.data;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.SavedParameterView;
@@ -21,11 +20,13 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParameterView> {
+    private final AddressService addressService;
 
     public KafkaSavedDataConsumer(final ObjectMapper objectMapper,
                                   final TrackerService trackerService,
                                   final AddressService addressService) {
-        super(objectMapper, trackerService, addressService, SavedParameterView.class);
+        super(objectMapper, trackerService, SavedParameterView.class);
+        this.addressService = addressService;
     }
 
     @Override
@@ -70,12 +71,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected Optional<Tracker> findTrackerById(final Long id, final TrackerService trackerService) {
-        return Optional.empty();
-    }
-
-    @Override
-    protected Optional<Address> findSavedAddress(final ConsumingContext context, final AddressService addressService) {
+    protected Optional<Address> findAddress(final ConsumingContext context) {
         return addressService.findById(extractAddressId(context));
     }
 

@@ -22,7 +22,7 @@ public final class KafkaSavedDataProducer extends KafkaDataProducer {
     }
 
     @Override
-    protected TransportableSavedData createTransportable(final CreatingTransportableContext context) {
+    protected TransportableSavedData createTransportable(final ProducingContext context) {
         return TransportableSavedData.builder()
                 .id(context.getDataId())
                 .epochSeconds(context.getEpochSeconds())

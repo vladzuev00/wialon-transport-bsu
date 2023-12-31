@@ -21,7 +21,9 @@ public final class TrackerMileageServiceTest extends AbstractContextTest {
     @Test
     public void mileageShouldBeIncreased() {
         final Tracker givenTracker = createTracker(255L);
-        final Mileage givenMileageDelta = new Mileage(5.5, 6.6);
+        final double givenUrban = 5.5;
+        final double givenCountry = 6.6;
+        final Mileage givenMileageDelta = new Mileage(givenUrban, givenCountry);
 
         final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
         final int expectedCountUpdatedRows = 1;
@@ -29,11 +31,12 @@ public final class TrackerMileageServiceTest extends AbstractContextTest {
 
         final Optional<TrackerMileage> optionalActual = service.findById(1L);
         assertTrue(optionalActual.isPresent());
+
         final TrackerMileage actual = optionalActual.get();
         final TrackerMileage expected = TrackerMileage.builder()
                 .id(1L)
-                .urban(5.5)
-                .country(6.6)
+                .urban(givenUrban)
+                .country(givenCountry)
                 .build();
         assertEquals(expected, actual);
     }
@@ -41,7 +44,9 @@ public final class TrackerMileageServiceTest extends AbstractContextTest {
     @Test
     public void mileageShouldBeIncreasedBecauseOfNotExistingTrackerId() {
         final Tracker givenTracker = createTracker(MAX_VALUE);
-        final Mileage givenMileageDelta = new Mileage(5.5, 6.6);
+        final double givenUrban = 5.5;
+        final double givenCountry = 6.6;
+        final Mileage givenMileageDelta = new Mileage(givenUrban, givenCountry);
 
         final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
         final int expectedCountUpdatedRows = 0;

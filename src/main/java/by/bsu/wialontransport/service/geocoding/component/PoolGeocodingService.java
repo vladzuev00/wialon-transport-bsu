@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.geocoding.component;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Service
 @Order(1)
 @RequiredArgsConstructor
-public class PoolGeocodingService implements GeocodingChainComponent {
+public class PoolGeocodingService implements GeocodingService {
     private final AddressService addressService;
 
     @Override

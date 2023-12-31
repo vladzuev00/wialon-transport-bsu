@@ -15,6 +15,7 @@ import java.util.List;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.ERROR;
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,20 +31,21 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void statusOfProcessShouldBeUpdated() {
         final Long givenId = 255L;
+        final Status givenNewStatus = ERROR;
         final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
-        final int actualCountUpdatedRows = service.updateStatus(givenProcess, ERROR);
+        final int actualCountUpdatedRows = service.updateStatus(givenProcess, givenNewStatus);
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
         final SearchingCitiesProcess actual = service.findById(givenId).orElseThrow();
         final SearchingCitiesProcess expected = SearchingCitiesProcess.builder()
-                .id(255L)
+                .id(givenId)
                 .bounds(createPolygon(geometryFactory, 1, 1, 1, 4, 4, 4, 4, 1))
                 .searchStep(0.5)
                 .totalPoints(1000)
                 .handledPoints(100)
-                .status(ERROR)
+                .status(givenNewStatus)
                 .build();
         assertEquals(expected, actual);
     }
@@ -51,7 +53,7 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
     @Test
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void statusOfProcessShouldNotBeUpdatedBecauseOfNotExistingProcessId() {
-        final Long givenId = 258L;
+        final Long givenId = MAX_VALUE;
         final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
         final int actualCountUpdatedRows = service.updateStatus(givenProcess, ERROR);
@@ -63,9 +65,10 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void handledPointsShouldBeIncreased() {
         final Long givenId = 255L;
+        final long givenDelta = 100;
         final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
-        final int actualCountUpdatedRows = service.increaseHandledPoints(givenProcess, 100);
+        final int actualCountUpdatedRows = service.increaseHandledPoints(givenProcess, givenDelta);
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
@@ -85,9 +88,10 @@ public final class SearchingCitiesProcessServiceTest extends AbstractContextTest
     @Sql("classpath:sql/searching-cities-process/insert-searching-cities-processes.sql")
     public void handledPointsShouldNotBeIncreasedBecauseOfNotExistingProcessId() {
         final Long givenId = 258L;
+        final long givenDelta = 100;
         final SearchingCitiesProcess givenProcess = createSearchingCitiesProcess(givenId);
 
-        final int actualCountUpdatedRows = service.increaseHandledPoints(givenProcess, 100);
+        final int actualCountUpdatedRows = service.increaseHandledPoints(givenProcess, givenDelta);
         final int expectedCountUpdatedRows = 0;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
     }

@@ -20,7 +20,10 @@ public final class UserServiceTest extends AbstractContextTest {
     public void userShouldBeFoundByEmail() {
         final String givenEmail = "vladzuev.00@mail.ru";
 
-        final User actual = service.findByEmail(givenEmail).orElseThrow();
+        final Optional<User> optionalActual = service.findByEmail(givenEmail);
+        assertTrue(optionalActual.isPresent());
+
+        final User actual = optionalActual.get();
         final User expected = User.builder()
                 .id(255L)
                 .email(givenEmail)
@@ -32,19 +35,25 @@ public final class UserServiceTest extends AbstractContextTest {
 
     @Test
     public void userShouldNotBeFoundByEmail() {
-        final Optional<User> optionalUser = service.findByEmail("email@mail.ru");
-        assertTrue(optionalUser.isEmpty());
+        final String givenEmail = "email@mail.ru";
+
+        final Optional<User> optionalActual = service.findByEmail(givenEmail);
+        assertTrue(optionalActual.isEmpty());
     }
 
     @Test
     public void userShouldExistsByEmail() {
-        final boolean exists = service.isExistByEmail("vladzuev.00@mail.ru");
+        final String givenEmail = "vladzuev.00@mail.ru";
+
+        final boolean exists = service.isExistByEmail(givenEmail);
         assertTrue(exists);
     }
 
     @Test
     public void userShouldNotExistByEmail() {
-        final boolean exists = service.isExistByEmail("notexist@mail.ru");
+        final String givenEmail = "notexist@mail.ru";
+
+        final boolean exists = service.isExistByEmail(givenEmail);
         assertFalse(exists);
     }
 

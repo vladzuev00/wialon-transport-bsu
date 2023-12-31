@@ -160,7 +160,7 @@ public final class KafkaDataProducerTest {
         }
 
         @Override
-        protected TestTransportableData createTransportable(final CreatingTransportableContext context) {
+        protected TestTransportableData createTransportable(final ProducingContext context) {
             return TestTransportableData.builder()
                     .epochSeconds(context.getEpochSeconds())
                     .latitude(context.getLatitude())

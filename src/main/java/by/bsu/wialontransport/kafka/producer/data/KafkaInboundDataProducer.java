@@ -22,7 +22,7 @@ public final class KafkaInboundDataProducer extends KafkaDataProducer {
     }
 
     @Override
-    protected TransportableInboundData createTransportable(final CreatingTransportableContext context) {
+    protected TransportableInboundData createTransportable(final ProducingContext context) {
         return TransportableInboundData.builder()
                 .epochSeconds(context.getEpochSeconds())
                 .latitude(context.getLatitude())

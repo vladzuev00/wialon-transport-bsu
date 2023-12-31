@@ -2,7 +2,7 @@ package by.bsu.wialontransport.kafka.producer.data;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
-import by.bsu.wialontransport.kafka.producer.data.KafkaDataProducer.CreatingTransportableContext;
+import by.bsu.wialontransport.kafka.producer.data.KafkaDataProducer.ProducingContext;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.model.transportable.data.TransportableInboundData;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public final class KafkaInboundDataProducerTest {
                   }
                 ]""";
         final Long givenTrackerId = 256L;
-        final CreatingTransportableContext givenContext = createContext(
+        final ProducingContext givenContext = createContext(
                 givenEpochSeconds,
                 givenLatitude,
                 givenLongitude,
@@ -100,21 +100,21 @@ public final class KafkaInboundDataProducerTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static CreatingTransportableContext createContext(final long epochSeconds,
-                                                              final double latitude,
-                                                              final double longitude,
-                                                              final int course,
-                                                              final double speed,
-                                                              final int altitude,
-                                                              final int amountOfSatellites,
-                                                              final double reductionPrecision,
-                                                              final int inputs,
-                                                              final int outputs,
-                                                              final String serializedAnalogInputs,
-                                                              final String driverKeyCode,
-                                                              final String serializedParameters,
-                                                              final Long trackerId) {
-        final CreatingTransportableContext context = mock(CreatingTransportableContext.class);
+    private static ProducingContext createContext(final long epochSeconds,
+                                                  final double latitude,
+                                                  final double longitude,
+                                                  final int course,
+                                                  final double speed,
+                                                  final int altitude,
+                                                  final int amountOfSatellites,
+                                                  final double reductionPrecision,
+                                                  final int inputs,
+                                                  final int outputs,
+                                                  final String serializedAnalogInputs,
+                                                  final String driverKeyCode,
+                                                  final String serializedParameters,
+                                                  final Long trackerId) {
+        final ProducingContext context = mock(ProducingContext.class);
         when(context.getEpochSeconds()).thenReturn(epochSeconds);
         when(context.getLatitude()).thenReturn(latitude);
         when(context.getLongitude()).thenReturn(longitude);
