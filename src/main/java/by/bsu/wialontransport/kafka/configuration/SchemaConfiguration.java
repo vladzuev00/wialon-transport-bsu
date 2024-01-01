@@ -9,19 +9,19 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SchemaConfiguration {
-    private final ReflectData reflectData;
 
-    public SchemaConfiguration() {
-        this.reflectData = ReflectData.get();
+    @Bean
+    public ReflectData reflectData() {
+        return ReflectData.get();
     }
 
     @Bean
-    public Schema transportableDataSchema() {
-        return this.reflectData.getSchema(TransportableData.class);
+    public Schema transportableDataSchema(final ReflectData reflectData) {
+        return reflectData.getSchema(TransportableData.class);
     }
 
     @Bean
-    public Schema transportableSavedDataSchema() {
-        return this.reflectData.getSchema(TransportableSavedData.class);
+    public Schema transportableSavedDataSchema(final ReflectData reflectData) {
+        return reflectData.getSchema(TransportableSavedData.class);
     }
 }
