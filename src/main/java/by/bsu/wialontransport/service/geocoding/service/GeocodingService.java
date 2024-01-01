@@ -11,8 +11,6 @@ public interface GeocodingService {
     Optional<Address> receive(final Coordinate coordinate);
 
     default String findName() {
-        final Class<?> componentClass = this.getClass();
-        return componentClass.getSimpleName();
+        return getClass().getSimpleName();
     }
-
 }
