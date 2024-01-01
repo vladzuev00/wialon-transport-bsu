@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
-import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
+import by.bsu.wialontransport.service.geocoding.service.nominatim.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesInterruptedException;

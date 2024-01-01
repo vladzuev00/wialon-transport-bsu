@@ -3,7 +3,7 @@
 //import by.bsu.wialontransport.crud.dto.Address;
 //import by.bsu.wialontransport.crud.service.AddressService;
 //import by.bsu.wialontransport.service.nominatim.NominatimService;
-//import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
+//import by.bsu.wialontransport.service.geocoding.service.nominatim.ReverseResponseToAddressMapper;
 //import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 //import org.junit.Before;
 //import org.junit.Test;

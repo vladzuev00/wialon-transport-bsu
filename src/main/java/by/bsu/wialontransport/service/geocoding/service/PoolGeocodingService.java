@@ -12,12 +12,11 @@ import java.util.Optional;
 @Service
 @Order(1)
 @RequiredArgsConstructor
-public class PoolGeocodingService implements GeocodingService {
+public final class PoolGeocodingService implements GeocodingService {
     private final AddressService addressService;
 
     @Override
     public Optional<Address> receive(final Coordinate coordinate) {
-//        return this.addressService.findByGpsCoordinates(latitude, longitude);
-        return null;
+        return addressService.findByGpsCoordinates(coordinate);
     }
 }

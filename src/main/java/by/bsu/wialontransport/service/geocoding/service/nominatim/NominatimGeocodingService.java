@@ -1,10 +1,10 @@
-package by.bsu.wialontransport.service.geocoding.service;
+package by.bsu.wialontransport.service.geocoding.service.nominatim;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
-import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.core.annotation.Order;

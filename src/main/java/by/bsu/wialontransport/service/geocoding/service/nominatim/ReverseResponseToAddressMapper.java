@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.nominatim.mapper;
+package by.bsu.wialontransport.service.geocoding.service.nominatim;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
