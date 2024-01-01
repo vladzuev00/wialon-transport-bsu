@@ -33,7 +33,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     @KafkaListener(
             topics = "${kafka.topic.saved-data.name}",
             groupId = "${kafka.topic.saved-data.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactorySavedData"
+            containerFactory = "listenerContainerFactorySavedData"
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
         super.consume(records);

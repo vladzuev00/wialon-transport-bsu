@@ -49,7 +49,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     @KafkaListener(
             topics = "${kafka.topic.inbound-data.name}",
             groupId = "${kafka.topic.inbound-data.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactoryInboundData",
+            containerFactory = "listenerContainerFactoryInboundData",
             concurrency = "1"
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {

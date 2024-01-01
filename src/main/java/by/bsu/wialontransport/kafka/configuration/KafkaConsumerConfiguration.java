@@ -4,6 +4,7 @@ import by.bsu.wialontransport.kafka.consumer.deserializer.AvroGenericRecordDeser
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.LongDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class KafkaConsumerConfiguration {
     private String bootstrapAddress;
 
     @Bean
+    @Autowired
     public ConsumerFactory<Long, GenericRecord> consumerFactoryInboundData(
             @Value("${kafka.topic.inbound-data.consumer.group-id}") final String groupId,
             @Value("${kafka.topic.inbound-data.consumer.max-poll-records}") final int maxPollRecords,
@@ -38,6 +40,7 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
+    @Autowired
     public ConcurrentKafkaListenerContainerFactory<Long, GenericRecord> listenerContainerFactoryInboundData(
             @Qualifier("consumerFactoryInboundData") final ConsumerFactory<Long, GenericRecord> consumerFactory
     ) {

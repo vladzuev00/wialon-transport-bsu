@@ -27,7 +27,7 @@ public final class TestKafkaSavedDataConsumer {
     @KafkaListener(
             topics = "${kafka.topic.saved-data.name}",
             groupId = "${kafka.topic.saved-data.consumer.group-id}",
-            containerFactory = "kafkaListenerContainerFactoryInboundData"
+            containerFactory = "listenerContainerFactorySavedData"
     )
     public void consume(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
         this.payload = convertToPayload(consumerRecords);
