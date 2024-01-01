@@ -2,17 +2,17 @@ package by.bsu.wialontransport.service.geocoding;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-
-import static java.util.function.UnaryOperator.identity;
 
 @Service
 @RequiredArgsConstructor
-public class GeocodingManager {
-//    private final List<?> componentServices;
+public final class GeocodingManager {
+    private final List<GeocodingService> componentServices;
 
     public Optional<Address> findSavedAddress(final Coordinate coordinate) {
         //TODO: always return saved address

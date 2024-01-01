@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.geocoding.aspect;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.service.geocoding.GeocodingService;
+import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -37,7 +37,7 @@ public final class GeocodingServiceAspect {
 
     @Pointcut("execution("
             + "public java.util.Optional<by.bsu.wialontransport.crud.dto.Address> "
-            + "by.bsu.wialontransport.service.geocoding.GeocodingService.receive(..)"
+            + "by.bsu.wialontransport.service.geocoding.serivce.GeocodingService.receive(..)"
             + ")")
     private void receiveMethod() {
 

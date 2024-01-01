@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.geocoding;
+package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.model.Coordinate;
@@ -9,12 +9,6 @@ import java.util.Optional;
 public interface GeocodingService {
 
     Optional<Address> receive(final Coordinate coordinate);
-
-//    default Optional<Address> receive(final Latitude latitude, final Longitude longitude) {
-//        final double latitudeDoubleValue = latitude.findDoubleValue();
-//        final double longitudeDoubleValue = longitude.findDoubleValue();
-//        return this.receive(latitudeDoubleValue, longitudeDoubleValue);
-//    }
 
     default String findName() {
         final Class<?> componentClass = this.getClass();

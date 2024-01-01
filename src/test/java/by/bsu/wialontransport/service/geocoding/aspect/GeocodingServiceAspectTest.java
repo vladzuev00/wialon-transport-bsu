@@ -4,7 +4,7 @@
 //import by.bsu.wialontransport.crud.dto.Address;
 //import by.bsu.wialontransport.crud.dto.Data.Latitude;
 //import by.bsu.wialontransport.crud.dto.Data.Longitude;
-//import by.bsu.wialontransport.service.geocoding.GeocodingService;
+//import by.bsu.wialontransport.service.geocoding.serivce.GeocodingService;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.mockito.ArgumentCaptor;

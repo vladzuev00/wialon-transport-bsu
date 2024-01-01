@@ -1,9 +1,8 @@
-package by.bsu.wialontransport.service.geocoding.component;
+package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseToAddressMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;

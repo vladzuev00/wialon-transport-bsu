@@ -1,9 +1,8 @@
-package by.bsu.wialontransport.service.geocoding.component;
+package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.service.geocoding.GeocodingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
