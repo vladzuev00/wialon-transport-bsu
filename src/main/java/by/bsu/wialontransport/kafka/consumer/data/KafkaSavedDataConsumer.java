@@ -99,6 +99,6 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     private static <T> T extractProperty(final ConsumingContext context,
                                          final Function<ConsumingContext, Optional<T>> getter,
                                          final String noSuchPropertyExceptionMessage) {
-        return getter.apply(context).orElseThrow(() -> new IllegalStateException(noSuchPropertyExceptionMessage));
+        return getter.apply(context).orElseThrow(() -> new ConsumingException(noSuchPropertyExceptionMessage));
     }
 }

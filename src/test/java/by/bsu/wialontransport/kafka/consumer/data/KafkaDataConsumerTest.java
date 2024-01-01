@@ -278,7 +278,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         consumer.mapToSource(givenGenericRecord);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = ConsumingException.class)
     public void genericRecordShouldNotBeMappedToSourceBecauseOfThereIsNoDataId() {
         final LocalDateTime givenDateTime = LocalDateTime.of(
                 2023,
@@ -338,7 +338,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         consumer.mapToSource(givenGenericRecord);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = ConsumingException.class)
     public void genericRecordShouldNotBeMappedToSourceBecauseOfThereIsNoAddressId() {
         final Long givenDataId = 255L;
         final LocalDateTime givenDateTime = LocalDateTime.of(
@@ -536,7 +536,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
 
         private static <T> T extractProperty(final ConsumingContext context,
                                              final Function<ConsumingContext, Optional<T>> getter) {
-            return getter.apply(context).orElseThrow(IllegalStateException::new);
+            return getter.apply(context).orElseThrow(ConsumingException::new);
         }
     }
 }
