@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -30,69 +31,76 @@ public final class NominatimServiceAspect implements AutoCloseable {
     private final ExecutorService executorService;
     private final Lock lock;
     private final Condition condition;
-    private boolean durationBetweenRequestsPassed;
+    private boolean requestAllowed;
 
     public NominatimServiceAspect(@Value("${nominatim.millis-between-requests}") final long millisBetweenRequests) {
         this.millisBetweenRequests = millisBetweenRequests;
-        this.executorService = newSingleThreadExecutor();
-        this.lock = new ReentrantLock();
-        this.condition = this.lock.newCondition();
-        this.durationBetweenRequestsPassed = true;
+        executorService = newSingleThreadExecutor();
+        lock = new ReentrantLock();
+        condition = lock.newCondition();
+        requestAllowed = true;
     }
 
     @PostConstruct
-    public void runTaskWaitingNecessaryDurationBetweenRequests() {
-        final Runnable taskWaitingNecessaryDurationBetweenRequests
-                = this.createTaskWaitingNecessaryDurationBetweenRequests();
-        this.executorService.submit(taskWaitingNecessaryDurationBetweenRequests);
+    public void runThreadProtectingFrequentRequests() {
+        final Runnable taskProtectingFrequentRequests = createTaskProtectingFrequentRequests();
+        executorService.submit(taskProtectingFrequentRequests);
     }
 
     @Around("reverseMethod()")
-    public NominatimReverseResponse reverseWithWaitingBetweenRequests(final ProceedingJoinPoint proceedingJoinPoint)
+    public Optional<NominatimReverseResponse> reverseProtectingFrequentRequest(final ProceedingJoinPoint joinPoint)
             throws Throwable {
-        this.lock.lock();
+        lock.lock();
         try {
-            while (!this.durationBetweenRequestsPassed) {
-                this.condition.await();
+            while (!requestAllowed) {
+                condition.await();
             }
-            final NominatimReverseResponse response = (NominatimReverseResponse) proceedingJoinPoint.proceed();
-            this.durationBetweenRequestsPassed = false;
-            this.condition.signalAll();
-            return response;
+            final Optional<NominatimReverseResponse> optionalResponse = proceed(joinPoint);
+            requestAllowed = false;
+            condition.signalAll();
+            return optionalResponse;
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
     @Override
     @PreDestroy
     public void close() {
-        this.executorService.shutdownNow();
+        executorService.shutdownNow();
     }
 
-    private Runnable createTaskWaitingNecessaryDurationBetweenRequests() {
+    private Runnable createTaskProtectingFrequentRequests() {
         return () -> {
-            this.lock.lock();
+            lock.lock();
             try {
                 while (!currentThread().isInterrupted()) {
-                    while (this.durationBetweenRequestsPassed) {
-                        this.condition.await();
+                    while (requestAllowed) {
+                        condition.await();
                     }
-                    MILLISECONDS.sleep(this.millisBetweenRequests);
-                    this.durationBetweenRequestsPassed = true;
-                    this.condition.signalAll();
+                    MILLISECONDS.sleep(millisBetweenRequests);
+                    requestAllowed = true;
+                    condition.signalAll();
                 }
             } catch (final InterruptedException cause) {
                 currentThread().interrupt();
             } finally {
-                this.lock.unlock();
+                lock.unlock();
             }
         };
     }
 
-    @Pointcut("execution(public by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse "
-            + "by.bsu.wialontransport.service.nominatim.NominatimService.reverse(..)"
-            + ")")
+    @SuppressWarnings("unchecked")
+    private static Optional<NominatimReverseResponse> proceed(final ProceedingJoinPoint joinPoint)
+            throws Throwable {
+        return (Optional<NominatimReverseResponse>) joinPoint.proceed();
+    }
+
+    @Pointcut(
+            "execution(public java.util.Optional<by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse> "
+                    + "by.bsu.wialontransport.service.nominatim.NominatimService.reverse("
+                    + "by.bsu.wialontransport.model.Coordinate))"
+    )
     private void reverseMethod() {
 
     }

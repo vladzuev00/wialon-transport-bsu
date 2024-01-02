@@ -33,6 +33,7 @@ public class NominatimService {
         this.restTemplate = restTemplate;
     }
 
+    //TODO: remove
     public NominatimReverseResponse reverse(final RequestCoordinate coordinate) {
         return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }

@@ -37,6 +37,7 @@ public class NominatimReverseResponse {
         String countryName;
 
         //TODO: refactor test
+        @Builder
         @JsonCreator
         public Address(@JsonProperty(value = "city") final String cityName,
                        @JsonProperty(value = "town", defaultValue = "not defined") final String townName,
