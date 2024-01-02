@@ -2,7 +2,6 @@ package by.bsu.wialontransport.service.nominatim;
 
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +64,25 @@ public class NominatimService {
             throw new NominatimException(
                     format("Http status after doing request to '%s' is '%s'.", url, httpStatus)
             );
+        }
+    }
+
+    static final class NominatimException extends RuntimeException {
+
+        public NominatimException() {
+
+        }
+
+        public NominatimException(final String description) {
+            super(description);
+        }
+
+        public NominatimException(final Exception cause) {
+            super(cause);
+        }
+
+        public NominatimException(final String description, final Exception cause) {
+            super(description, cause);
         }
     }
 }

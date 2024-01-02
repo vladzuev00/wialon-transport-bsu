@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.nominatim;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
+import by.bsu.wialontransport.service.nominatim.NominatimService.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
