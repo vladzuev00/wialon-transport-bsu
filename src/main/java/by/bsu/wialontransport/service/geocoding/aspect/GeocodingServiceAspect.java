@@ -17,10 +17,8 @@ import static java.lang.String.format;
 @Aspect
 @Component
 public final class GeocodingServiceAspect {
-    private static final String TEMPLATE_MESSAGE_ABOUT_SUCCESSFUL_RECEIVING
-            = "Address '%s' was successfully received by '%s'";
-    private static final String TEMPLATE_MESSAGE_ABOUT_FAILURE_RECEIVING
-            = "Address wasn't received by '%s'";
+    private static final String TEMPLATE_MESSAGE_SUCCESS_RECEIVING = "Address '%s' was successfully received by '%s'";
+    private static final String TEMPLATE_MESSAGE_FAILED_RECEIVING = "Address wasn't received by '%s'";
 
     @AfterReturning(
             pointcut = "receiveMethod()",
@@ -28,18 +26,33 @@ public final class GeocodingServiceAspect {
     )
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public void logReceivingResult(final JoinPoint joinPoint, final Optional<Address> optionalAddress) {
-        final GeocodingService component = (GeocodingService) joinPoint.getTarget();
+        final String serviceName = findServiceName(joinPoint);
         final String message = optionalAddress
-                .map(address -> format(TEMPLATE_MESSAGE_ABOUT_SUCCESSFUL_RECEIVING, address, component.findName()))
-                .orElseGet(() -> format(TEMPLATE_MESSAGE_ABOUT_FAILURE_RECEIVING, component.findName()));
+                .map(address -> createSuccessReceivingMessage(address, serviceName))
+                .orElseGet(() -> createFailedReceivingMessage(serviceName));
         log.info(message);
     }
 
-    @Pointcut("execution("
-            + "public java.util.Optional<by.bsu.wialontransport.crud.dto.Address> "
-            + "by.bsu.wialontransport.service.geocoding.serivce.GeocodingService.receive(..)"
-            + ")")
+    @Pointcut(
+            "execution("
+                    + "public java.util.Optional<by.bsu.wialontransport.crud.dto.Address> "
+                    + "by.bsu.wialontransport.service.geocoding.service.GeocodingService.receive("
+                    + "by.bsu.wialontransport.model.Coordinate))"
+    )
     private void receiveMethod() {
 
+    }
+
+    private static String findServiceName(final JoinPoint joinPoint) {
+        final GeocodingService service = (GeocodingService) joinPoint.getTarget();
+        return service.findName();
+    }
+
+    private static String createSuccessReceivingMessage(final Address address, final String serviceName) {
+        return format(TEMPLATE_MESSAGE_SUCCESS_RECEIVING, address, serviceName);
+    }
+
+    private static String createFailedReceivingMessage(final String serviceName) {
+        return format(TEMPLATE_MESSAGE_FAILED_RECEIVING, serviceName);
     }
 }
