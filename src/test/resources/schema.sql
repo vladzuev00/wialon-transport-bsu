@@ -62,11 +62,6 @@ ALTER TABLE IF EXISTS cities
 DROP
 CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
 
---DROPPING SEQUENCES
-DROP SEQUENCE IF EXISTS addresses_id_seq;
-DROP SEQUENCE IF EXISTS data_id_seq;
-DROP SEQUENCE IF EXISTS parameters_id_seq;
-
 --DROPPING tables
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
@@ -77,6 +72,11 @@ DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS tracker_mileages;
+
+--DROPPING SEQUENCES
+DROP SEQUENCE IF EXISTS addresses_id_seq;
+DROP SEQUENCE IF EXISTS data_id_seq;
+DROP SEQUENCE IF EXISTS parameters_id_seq;
 
 --DROPPING TYPES
 DROP TYPE IF EXISTS user_type;
