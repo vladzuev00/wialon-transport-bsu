@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.nominatim;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.junit.Test;
@@ -12,8 +12,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 import static java.lang.String.format;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpEntity.EMPTY;
@@ -25,7 +28,7 @@ import static org.springframework.http.ResponseEntity.status;
 public final class NominatimServiceTest extends AbstractContextTest {
 
     @Value("${nominatim.reverse.url.template}")
-    private String urlTemplate;
+    private String reverseUrlTemplate;
 
     @MockBean
     private RestTemplate mockedRestTemplate;
@@ -35,63 +38,66 @@ public final class NominatimServiceTest extends AbstractContextTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void latitudeAndLongitudeShouldBeReversed() {
-        final double givenLatitude = 5.5;
-        final double givenLongitude = 4.5;
+    public void coordinateShouldBeReversed() {
+        final Coordinate givenCoordinate = new Coordinate(4.4, 6.6);
 
-        final String givenUrl = this.createUrl(givenLatitude, givenLongitude);
+        final String givenUrl = createReverseUrl(givenCoordinate);
         final NominatimReverseResponse givenResponse = createReverseResponse();
-        when(this.mockedRestTemplate.exchange(
-                eq(givenUrl),
-                same(GET),
-                same(EMPTY),
-                any(ParameterizedTypeReference.class))
+        when(
+                mockedRestTemplate.exchange(
+                        eq(givenUrl),
+                        same(GET),
+                        same(EMPTY),
+                        any(ParameterizedTypeReference.class)
+                )
         ).thenReturn(ok(givenResponse));
 
-        final NominatimReverseResponse actual = this.nominatimService.reverse(givenLatitude, givenLongitude);
+        final Optional<NominatimReverseResponse> optionalActual = nominatimService.reverse(givenCoordinate);
+        assertTrue(optionalActual.isPresent());
+        final NominatimReverseResponse actual = optionalActual.get();
         assertSame(givenResponse, actual);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void coordinateShouldBeReversed() {
-        final double givenLatitude = 5.5;
-        final double givenLongitude = 4.5;
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(givenLatitude, givenLongitude);
+    public void coordinateShouldNotBeReversed() {
+        final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
 
-        final String givenUrl = this.createUrl(givenLatitude, givenLongitude);
-        final NominatimReverseResponse givenResponse = createReverseResponse();
-        when(this.mockedRestTemplate.exchange(
-                eq(givenUrl),
-                same(GET),
-                same(EMPTY),
-                any(ParameterizedTypeReference.class))
-        ).thenReturn(ok(givenResponse));
+        final String givenUrl = createReverseUrl(givenCoordinate);
+        final ResponseEntity<?> givenResponseEntity = ok().build();
+        when(
+                mockedRestTemplate.exchange(
+                        eq(givenUrl),
+                        same(GET),
+                        same(EMPTY),
+                        any(ParameterizedTypeReference.class)
+                )
+        ).thenReturn(givenResponseEntity);
 
-        final NominatimReverseResponse actual = this.nominatimService.reverse(givenCoordinate);
-        assertSame(givenResponse, actual);
+        nominatimService.reverse(givenCoordinate);
     }
 
     @SuppressWarnings("unchecked")
     @Test(expected = NominatimException.class)
-    public void latitudeAndLongitudeShouldNotBeReversedBecauseOfBadHttpStatus() {
-        final double givenLatitude = 6.5;
-        final double givenLongitude = 5.5;
+    public void coordinateShouldNotBeReversedBecauseOfBadHttpStatus() {
+        final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
 
-        final String givenUrl = this.createUrl(givenLatitude, givenLongitude);
+        final String givenUrl = createReverseUrl(givenCoordinate);
         final ResponseEntity<?> givenResponseEntity = status(BAD_REQUEST).build();
-        when(this.mockedRestTemplate.exchange(
-                eq(givenUrl),
-                same(GET),
-                same(EMPTY),
-                any(ParameterizedTypeReference.class))
+        when(
+                mockedRestTemplate.exchange(
+                        eq(givenUrl),
+                        same(GET),
+                        same(EMPTY),
+                        any(ParameterizedTypeReference.class)
+                )
         ).thenReturn(givenResponseEntity);
 
-        this.nominatimService.reverse(givenLatitude, givenLongitude);
+        nominatimService.reverse(givenCoordinate);
     }
 
-    private String createUrl(final double latitude, final double longitude) {
-        return format(this.urlTemplate, latitude, longitude);
+    private String createReverseUrl(final Coordinate coordinate) {
+        return format(reverseUrlTemplate, coordinate.getLatitude(), coordinate.getLongitude());
     }
 
     private static NominatimReverseResponse createReverseResponse() {

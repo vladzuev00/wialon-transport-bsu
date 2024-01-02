@@ -33,7 +33,8 @@ public final class SearchingCitiesService {
 
     private NominatimReverseResponse reverseInterruptibly(final RequestCoordinate coordinate) {
         checkInterrupted();
-        return this.nominatimService.reverse(coordinate);
+//        return this.nominatimService.reverse(coordinate);
+        return null;
     }
 
     private static void checkInterrupted() {
