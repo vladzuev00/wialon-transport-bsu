@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 @Order(1)
 @RequiredArgsConstructor
-public final class PoolGeocodingService implements GeocodingService {
+public class PoolGeocodingService implements GeocodingService {
     private final AddressService addressService;
 
     @Override

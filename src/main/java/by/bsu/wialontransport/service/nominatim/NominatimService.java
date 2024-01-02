@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.service.nominatim;
 
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.nominatim.exception.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.springframework.http.HttpEntity.EMPTY;
@@ -34,6 +37,12 @@ public class NominatimService {
         return this.reverse(coordinate.getLatitude(), coordinate.getLongitude());
     }
 
+    public Optional<NominatimReverseResponse> reverse(final Coordinate coordinate) {
+        final NominatimReverseResponse response = reverse(coordinate.getLatitude(), coordinate.getLongitude());
+        return Optional.ofNullable(response);
+    }
+
+    //TODO: do private
     public NominatimReverseResponse reverse(final double latitude, final double longitude) {
         final String url = this.createUrl(latitude, longitude);
         log.info(TEMPLATE_MESSAGE_OF_REQUESTING, url);

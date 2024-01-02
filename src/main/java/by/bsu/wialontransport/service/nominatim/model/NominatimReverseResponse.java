@@ -7,7 +7,6 @@ import lombok.Value;
 import org.wololo.geojson.Geometry;
 
 @Value
-@Builder
 public class NominatimReverseResponse {
     double centerLatitude;
     double centerLongitude;
@@ -16,6 +15,7 @@ public class NominatimReverseResponse {
     Geometry geometry;
     ExtraTags extraTags;
 
+    @Builder
     @JsonCreator
     public NominatimReverseResponse(@JsonProperty(value = "lat") final double centerLatitude,
                                     @JsonProperty(value = "lon") final double centerLongitude,

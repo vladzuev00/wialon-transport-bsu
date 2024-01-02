@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.geocoding.service.nominatim;
+package by.bsu.wialontransport.service.nominatim.mapper;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -9,7 +9,7 @@ import org.wololo.jts2geojson.GeoJSONReader;
 
 @Component
 @RequiredArgsConstructor
-public final class ReverseResponseToAddressMapper {
+public final class ReverseResponseMapper {
     private static final String NOT_DEFINED_CITY_NAME = "not defined";
 
     private static final int INDEX_LEFT_BOTTOM_LATITUDE_OF_BOUNDING_BOX = 0;

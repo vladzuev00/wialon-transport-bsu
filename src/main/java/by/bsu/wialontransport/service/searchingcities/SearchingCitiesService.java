@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
-import by.bsu.wialontransport.service.geocoding.service.nominatim.ReverseResponseToAddressMapper;
+import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesInterruptedException;
@@ -20,7 +20,7 @@ public final class SearchingCitiesService {
     private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "^(city)|(town)$";
 
     private final NominatimService nominatimService;
-    private final ReverseResponseToAddressMapper responseToAddressMapper;
+    private final ReverseResponseMapper responseToAddressMapper;
 
     public List<City> findByCoordinates(final List<RequestCoordinate> coordinates) {
         return coordinates.stream()
