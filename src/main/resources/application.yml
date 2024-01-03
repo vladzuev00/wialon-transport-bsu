@@ -84,6 +84,9 @@ track-simplifier:
   ramer-douglas-peucker:
     epsilon: 0.0015
 
+mileage-calculator:
+  enable-accurate-calculator: false
+
 
 
 

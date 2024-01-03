@@ -5,11 +5,13 @@ import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceSer
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
 import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingCoordinatesService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
 
 @Component
+@ConditionalOnProperty(prefix = "mileage-calculator", name = "enable-accurate-calculator", havingValue = "true")
 public final class AccurateMileageCalculator extends MileageCalculator {
 
     public AccurateMileageCalculator(final SimplifyingCoordinatesService simplifyingCoordinatesService,

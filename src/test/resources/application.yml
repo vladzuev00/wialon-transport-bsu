@@ -84,3 +84,6 @@ search-cities:
 track-simplifier:
   ramer-douglas-peucker:
     epsilon: 1
+
+mileage-calculator:
+  enable-accurate-calculator: false
