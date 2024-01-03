@@ -81,7 +81,7 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
     }
 
     private void putLastDataInContextIfExist(final Tracker tracker, final ChannelHandlerContext context) {
-        final Optional<Data> optionalLastData = this.dataService.findTrackerLastDataByTrackerIdFetchingParameters(tracker);
+        final Optional<Data> optionalLastData = this.dataService.findTrackerLastDataFetchingParameters(tracker);
         optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
     }
 }

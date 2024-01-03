@@ -5,9 +5,8 @@ import lombok.experimental.UtilityClass;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Optional.empty;
 import static java.util.function.Function.identity;
@@ -69,6 +68,13 @@ public final class CollectionUtil {
     public static <S, R> List<R> collectValuesToList(final Map<?, S> sourceMap, final Function<S, R> valueMapper) {
         final Collection<S> source = sourceMap.values();
         return mapToList(source, valueMapper);
+    }
+
+    public static <T> List<T> concat(final T first, final List<T> values) {
+        return Stream.concat(
+                Stream.of(first),
+                values.stream()
+        ).toList();
     }
 
 //    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {

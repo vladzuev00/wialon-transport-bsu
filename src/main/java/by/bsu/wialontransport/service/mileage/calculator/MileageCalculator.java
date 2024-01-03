@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.mileage;
+package by.bsu.wialontransport.service.mileage.calculator;
 
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.*;
@@ -15,12 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.model.TempTrack.create;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
 
 @RequiredArgsConstructor
-public abstract class MileageCalculatingService {
+public abstract class MileageCalculator {
     private final SimplifyingTrackService simplifyingTrackService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;

@@ -52,7 +52,7 @@ public final class LoginPackageHandlerTest {
         when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
 
         final Data givenLastData = createData(256L);
-        when(this.mockedDataService.findTrackerLastDataByTrackerIdFetchingParameters(same(givenTracker))).thenReturn(Optional.of(givenLastData));
+        when(this.mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(Optional.of(givenLastData));
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
@@ -86,7 +86,7 @@ public final class LoginPackageHandlerTest {
         final Tracker givenTracker = createTracker(255L);
         when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
 
-        when(this.mockedDataService.findTrackerLastDataByTrackerIdFetchingParameters(same(givenTracker))).thenReturn(empty());
+        when(this.mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(empty());
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
@@ -130,7 +130,7 @@ public final class LoginPackageHandlerTest {
                 any(Tracker.class)
         );
         verify(this.mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
-        verify(this.mockedDataService, times(0)).findTrackerLastDataByTrackerIdFetchingParameters(any(Tracker.class));
+        verify(this.mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
         verify(this.mockedContextAttributeManager, times(0)).putLastData(
                 any(ChannelHandlerContext.class),
                 any(Data.class)
@@ -163,7 +163,7 @@ public final class LoginPackageHandlerTest {
                 any(Tracker.class)
         );
         verify(this.mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
-        verify(this.mockedDataService, times(0)).findTrackerLastDataByTrackerIdFetchingParameters(any(Tracker.class));
+        verify(this.mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
         verify(this.mockedContextAttributeManager, times(0)).putLastData(
                 any(ChannelHandlerContext.class),
                 any(Data.class)

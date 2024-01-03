@@ -34,10 +34,10 @@ public final class DataServiceTest extends AbstractContextTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerLastDataShouldBeFoundByTrackerIdFetchingParameters() {
+    public void trackerLastDataShouldBeFoundFetchingParameters() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = dataService.findTrackerLastDataByTrackerIdFetchingParameters(givenTracker);
+        final Optional<Data> optionalActual = dataService.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isPresent());
         final Data actual = optionalActual.get();
 
@@ -47,10 +47,10 @@ public final class DataServiceTest extends AbstractContextTest {
     }
 
     @Test
-    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParameters() {
+    public void trackerLastDataShouldNotBeFoundFetchingParameters() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = dataService.findTrackerLastDataByTrackerIdFetchingParameters(givenTracker);
+        final Optional<Data> optionalActual = dataService.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 

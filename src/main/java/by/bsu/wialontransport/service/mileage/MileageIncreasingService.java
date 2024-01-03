@@ -1,37 +1,41 @@
 package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
+import by.bsu.wialontransport.service.mileage.calculator.MileageCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+import static by.bsu.wialontransport.util.CollectionUtil.concat;
 
 @Service
 @RequiredArgsConstructor
 public final class MileageIncreasingService {
     private final DataService dataService;
-    private final MileageCalculatingService mileageCalculatingService;
+    private final MileageCalculator mileageCalculator;
     private final TrackerMileageService trackerMileageService;
 
     public void increase(final Track track) {
-        //TODO: don't forget take last data of tracker
-//        final Tracker tracker = inboundData.getTracker();
-//        this.dataService.findTrackerLastDataByTrackerIdFetchingParameters(tracker)
-//                .map(previousData -> this.calculateMileage(previousData, inboundData))
-//                .ifPresent(mileage -> this.trackerMileageService.increaseMileage(tracker, mileage));
+        final List<Coordinate> pathCoordinates = findPathCoordinates(track);
+        final Mileage mileageDelta = mileageCalculator.calculate(pathCoordinates);
+        trackerMileageService.increaseMileage(track.getTracker(), mileageDelta);
     }
 
-//    public void accumulate(final List<Data> inboundData) {
-//        final Tracker tracker = inboundData.getTracker();
-//        this.dataService.findTrackerLastData(tracker)
-//    }
+    private List<Coordinate> findPathCoordinates(final Track track) {
+        return findLastCoordinate(track.getTracker())
+                .map(lastCoordinate -> concat(lastCoordinate, track.getCoordinates()))
+                .orElse(track.getCoordinates());
+    }
 
-    private Mileage calculateMileage(final Data previousData, final Data inboundData) {
-//        final Coordinate previousCoordinate = previousData.findCoordinate();
-//        final Coordinate inboundCoordinate = inboundData.findCoordinate();
-//        return this.mileageCalculatingService.calculate(previousCoordinate, inboundCoordinate);
-        return null;
+    private Optional<Coordinate> findLastCoordinate(final Tracker tracker) {
+        return dataService.findTrackerLastDataFetchingParameters(tracker).map(Data::getCoordinate);
     }
 }

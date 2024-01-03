@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.mileage;
+package by.bsu.wialontransport.service.mileage.calculator;
 
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.model.RequestCoordinate;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import static java.util.stream.IntStream.rangeClosed;
 
 @Service
-public final class InaccurateMileageCalculatingService extends MileageCalculatingService {
+public final class InaccurateMileageCalculatingService extends MileageCalculator {
 
     public InaccurateMileageCalculatingService(final SimplifyingTrackService simplifyingTrackService,
                                                final GeometryCreatingService geometryCreatingService,
