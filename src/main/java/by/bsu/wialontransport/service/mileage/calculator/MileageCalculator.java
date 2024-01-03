@@ -24,19 +24,29 @@ import static java.util.stream.IntStream.range;
 
 @RequiredArgsConstructor
 public abstract class MileageCalculator {
+    private static final Mileage ZERO_MILEAGE = new Mileage(0, 0);
+
     private final SimplifyingCoordinatesService simplifyingCoordinatesService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;
     private final AddressService addressService;
 
     public final Mileage calculate(final List<Coordinate> coordinates) {
+        return !isZeroMileage(coordinates) ? calculateNotZeroMileage(coordinates) : ZERO_MILEAGE;
+    }
+
+    protected abstract Stream<TrackSlice> createTrackSlices(final TrackSlicesCreatingContext context);
+
+    private static boolean isZeroMileage(final List<Coordinate> coordinates) {
+        return coordinates.isEmpty() || coordinates.size() == 1;
+    }
+
+    private Mileage calculateNotZeroMileage(final List<Coordinate> coordinates) {
         final Map<Boolean, Double> mileagesByLocatedInCity = calculateMileagesByLocatedInCity(coordinates);
         final double urban = mileagesByLocatedInCity.get(true);
         final double country = mileagesByLocatedInCity.get(false);
         return new Mileage(urban, country);
     }
-
-    protected abstract Stream<TrackSlice> createTrackSlices(final TrackSlicesCreatingContext context);
 
     private Map<Boolean, Double> calculateMileagesByLocatedInCity(final List<Coordinate> coordinates) {
         final Set<PreparedGeometry> intersectedCityGeometries = findIntersectedCityGeometries(coordinates);

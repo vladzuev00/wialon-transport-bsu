@@ -2,11 +2,13 @@ package by.bsu.wialontransport.util;
 
 import lombok.experimental.UtilityClass;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.prep.PreparedGeometry;
 
 import static java.util.Arrays.copyOf;
 import static java.util.Arrays.deepEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+import static org.locationtech.jts.geom.prep.PreparedGeometryFactory.prepare;
 
 @UtilityClass
 public final class GeometryTestUtil {
@@ -34,6 +36,26 @@ public final class GeometryTestUtil {
                 new CoordinateXY(secondLongitude, secondLatitude),
                 new CoordinateXY(thirdLongitude, thirdLatitude),
                 new CoordinateXY(fourthLongitude, fourthLatitude)
+        );
+    }
+
+    public static PreparedGeometry createPreparedPolygon(final GeometryFactory geometryFactory,
+                                                         final double firstLongitude, final double firstLatitude,
+                                                         final double secondLongitude, final double secondLatitude,
+                                                         final double thirdLongitude, final double thirdLatitude,
+                                                         final double fourthLongitude, final double fourthLatitude) {
+        return prepare(
+                createPolygon(
+                        geometryFactory,
+                        firstLongitude,
+                        firstLatitude,
+                        secondLongitude,
+                        secondLatitude,
+                        thirdLongitude,
+                        thirdLatitude,
+                        fourthLongitude,
+                        fourthLatitude
+                )
         );
     }
 
