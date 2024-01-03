@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.model.TempTrack;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,28 +19,14 @@ public final class CalculatingDistanceService {
                 + cos(toRadians(first.getLatitude()))
                 * cos(toRadians(second.getLatitude()))
                 * square(sin(longitudeDistance / 2));
-        double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+        final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
         return EARTH_RADIUS_IN_KILOMETERS * c;
     }
 
-    //TODO: remove
-    public double calculate(final TempTrack track) {
-        final List<RequestCoordinate> coordinates = track.getCoordinates();
+    public double calculate(final List<Coordinate> coordinates) {
         return range(0, coordinates.size() - 1)
                 .mapToDouble(i -> calculate(coordinates.get(i), coordinates.get(i + 1)))
                 .sum();
-    }
-
-    //TODO: remove
-    public double calculate(final RequestCoordinate first, final RequestCoordinate second) {
-        final double latitudeDistance = toRadians(second.getLatitude() - first.getLatitude());
-        final double longitudeDistance = toRadians(second.getLongitude() - first.getLongitude());
-        final double a = square(sin(latitudeDistance / 2))
-                + cos(toRadians(first.getLatitude()))
-                * cos(toRadians(second.getLatitude()))
-                * square(sin(longitudeDistance / 2));
-        double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-        return EARTH_RADIUS_IN_KILOMETERS * c;
     }
 
     private static double square(final double value) {
