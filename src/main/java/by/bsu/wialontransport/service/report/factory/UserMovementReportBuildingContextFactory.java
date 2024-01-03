@@ -8,7 +8,6 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.TempTrack;
-import by.bsu.wialontransport.service.mileage.MileageCalculatingService;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public final class UserMovementReportBuildingContextFactory {
     private final TrackerService trackerService;
     private final DataService dataService;
     private final TrackFactory trackFactory;
-    private final MileageCalculatingService mileageCalculatingService;
+//    private final MileageCalculatingService mileageCalculatingService;
 
     public UserMovementReportBuildingContext create(final User user, final DateInterval dateInterval) {
         final PDDocument document = new PDDocument();
@@ -103,7 +102,8 @@ public final class UserMovementReportBuildingContextFactory {
         final Tracker tracker = dataByTracker.getKey();
         final List<Data> trackerData = dataByTracker.getValue();
         final TempTrack track = this.trackFactory.create(trackerData);
-        final Mileage mileage = this.mileageCalculatingService.calculate(track);
-        return new TrackerMovement(tracker, trackerData, mileage);
+//        final Mileage mileage = this.mileageCalculatingService.calculate(track);
+//        return new TrackerMovement(tracker, trackerData, mileage);
+        return null;
     }
 }
