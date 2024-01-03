@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.TempTrack;
+import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.util.CoordinateUtil;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.CoordinateSequence;
@@ -11,6 +13,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -22,10 +25,15 @@ import static by.bsu.wialontransport.util.CoordinateUtil.mapToJtsCoordinate;
 public final class GeometryCreatingService {
     private final GeometryFactory geometryFactory;
 
+    //TODO: remove
     public LineString createLineString(final TempTrack track) {
         return this.createLineString(
                 () -> mapToCoordinateSequence(track)
         );
+    }
+
+    public LineString createLineString(final List<Coordinate> coordinates) {
+        return null;
     }
 
     public LineString createLineString(final RequestCoordinate first, final RequestCoordinate second) {
@@ -37,6 +45,10 @@ public final class GeometryCreatingService {
     public Point createPoint(final RequestCoordinate coordinate) {
         final org.locationtech.jts.geom.Coordinate jtsCoordinate = mapToJtsCoordinate(coordinate);
         return this.geometryFactory.createPoint(jtsCoordinate);
+    }
+
+    public Point createPoint(final Coordinate coordinate) {
+        return null;
     }
 
     private LineString createLineString(final Supplier<CoordinateSequence> coordinateSequenceSupplier) {

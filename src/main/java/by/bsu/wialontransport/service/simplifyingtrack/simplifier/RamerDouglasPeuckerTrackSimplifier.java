@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
 
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.model.TempTrack;
+import by.bsu.wialontransport.model.Track;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
@@ -21,14 +22,15 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
     private final double epsilon;
 
     public TempTrack simplify(final TempTrack track) {
-        if (!this.isEpsilonPositive() || !isTrackAbleToBeSimplified(track)) {
-            return track;
-        }
-        final List<RequestCoordinate> source = track.getCoordinates();
-        final List<RequestCoordinate> simplifiedAccumulator = createSimplifiedAccumulatorBySource(source);
-        this.simplifyPart(source, simplifiedAccumulator, 0, source.size() - 1);
-        simplifiedAccumulator.add(source.get(source.size() - 1));
-        return new TempTrack(simplifiedAccumulator);
+//        if (!this.isEpsilonPositive() || !isTrackAbleToBeSimplified(track)) {
+//            return track;
+//        }
+//        final List<RequestCoordinate> source = track.getCoordinates();
+//        final List<RequestCoordinate> simplifiedAccumulator = createSimplifiedAccumulatorBySource(source);
+//        this.simplifyPart(source, simplifiedAccumulator, 0, source.size() - 1);
+//        simplifiedAccumulator.add(source.get(source.size() - 1));
+//        return new TempTrack(simplifiedAccumulator);
+        return null;
     }
 
     private boolean isEpsilonPositive() {
@@ -103,6 +105,11 @@ public final class RamerDouglasPeuckerTrackSimplifier implements TrackSimplifier
 
     private static double square(final double source) {
         return pow(source, 2);
+    }
+
+    @Override
+    public Track simplify(Track track) {
+        return null;
     }
 
     @Value

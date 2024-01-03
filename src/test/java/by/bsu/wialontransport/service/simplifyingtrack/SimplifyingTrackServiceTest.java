@@ -18,11 +18,11 @@ public final class SimplifyingTrackServiceTest {
     @Mock
     private TrackSimplifier mockedTrackSimplifier;
 
-    private SimplifyingTrackService service;
+    private SimplifyingCoordinatesService service;
 
     @Before
     public void initializeService() {
-        this.service = new SimplifyingTrackService(this.mockedTrackSimplifier);
+        this.service = new SimplifyingCoordinatesService(this.mockedTrackSimplifier);
     }
 
     @Test

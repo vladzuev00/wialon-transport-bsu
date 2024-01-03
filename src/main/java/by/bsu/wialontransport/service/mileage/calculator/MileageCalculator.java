@@ -1,11 +1,13 @@
 package by.bsu.wialontransport.service.mileage.calculator;
 
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.*;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
-import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingTrackService;
+import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingCoordinatesService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -13,40 +15,34 @@ import org.locationtech.jts.geom.prep.PreparedGeometry;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summingDouble;
+import static java.util.stream.IntStream.range;
 
 @RequiredArgsConstructor
 public abstract class MileageCalculator {
-    private final SimplifyingTrackService simplifyingTrackService;
+    private final SimplifyingCoordinatesService simplifyingCoordinatesService;
     private final GeometryCreatingService geometryCreatingService;
     private final CalculatingDistanceService calculatingDistanceService;
     private final AddressService addressService;
 
-    //TODO: test
     public final Mileage calculate(final List<Coordinate> coordinates) {
-//        final TempTrack track = create(firstCoordinate, secondCoordinate);
-//        return this.calculate(track);
-        return null;
-    }
-
-    public final Mileage calculate(final TempTrack track) {
-        final Map<Boolean, Double> mileagesByLocatedInCity = this.findMileagesByLocatedInCity(track);
+        final Map<Boolean, Double> mileagesByLocatedInCity = calculateMileagesByLocatedInCity(coordinates);
         final double urban = mileagesByLocatedInCity.get(true);
         final double country = mileagesByLocatedInCity.get(false);
         return new Mileage(urban, country);
     }
 
-    protected abstract Stream<TrackSlice> createTrackSliceStream(final TempTrack track,
-                                                                 //TODO: replace by List<Geometry>
-                                                                 final List<PreparedGeometry> cityGeometries,
-                                                                 final GeometryCreatingService geometryCreatingService);
+    protected abstract Stream<TrackSlice> createTrackSlices(final TrackSlicesCreatingContext context);
 
-    private Map<Boolean, Double> findMileagesByLocatedInCity(final TempTrack track) {
-        final List<PreparedGeometry> intersectedCityGeometries = this.findCityGeometriesIntersectedBySimplifiedTrack(track);
-        return this.createTrackSliceStream(track, intersectedCityGeometries, this.geometryCreatingService)
+    private Map<Boolean, Double> calculateMileagesByLocatedInCity(final List<Coordinate> coordinates) {
+        final Set<PreparedGeometry> intersectedCityGeometries = findIntersectedCityGeometries(coordinates);
+        return range(0, coordinates.size() - 1)
+                .mapToObj(i -> createContext(coordinates.get(i), coordinates.get(i + 1), intersectedCityGeometries))
+                .flatMap(this::createTrackSlices)
                 .collect(
                         partitioningBy(
                                 TrackSlice::isLocatedInCity,
@@ -55,28 +51,47 @@ public abstract class MileageCalculator {
                 );
     }
 
-    private List<PreparedGeometry> findCityGeometriesIntersectedBySimplifiedTrack(final TempTrack track) {
-        final LineString lineString = this.createLineStringBySimplifiedTrack(track);
-//        return this.addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
-        return null;
+    private Set<PreparedGeometry> findIntersectedCityGeometries(final List<Coordinate> coordinates) {
+        final LineString lineString = createLineStringSimplifyingCoordinates(coordinates);
+        return addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
     }
 
-    private LineString createLineStringBySimplifiedTrack(final TempTrack track) {
-        final TempTrack simplifiedTrack = this.simplifyingTrackService.simplify(track);
-        return this.geometryCreatingService.createLineString(simplifiedTrack);
+    private LineString createLineStringSimplifyingCoordinates(final List<Coordinate> coordinates) {
+        final List<Coordinate> simplifiedCoordinates = simplifyingCoordinatesService.simplify(coordinates);
+        return geometryCreatingService.createLineString(simplifiedCoordinates);
     }
 
-    private static boolean isAnyGeometryContainCoordinate(final RequestCoordinate coordinate,
-                                                          final List<PreparedGeometry> cityGeometries,
-                                                          final GeometryCreatingService geometryCreatingService) {
-        final Point point = geometryCreatingService.createPoint(coordinate);
-        return cityGeometries.stream()
-                .anyMatch(geometry -> geometry.contains(point));
+    private TrackSlicesCreatingContext createContext(final Coordinate firstCoordinate,
+                                                     final Coordinate secondCoordinate,
+                                                     final Set<PreparedGeometry> cityGeometries) {
+        return new TrackSlicesCreatingContext(
+                firstCoordinate,
+                secondCoordinate,
+                cityGeometries,
+                geometryCreatingService
+        );
     }
 
-    private double calculateDistance(final TrackSlice trackSlice) {
-        final RequestCoordinate first = trackSlice.getFirst();
-        final RequestCoordinate second = trackSlice.getSecond();
-        return this.calculatingDistanceService.calculate(first, second);
+    private double calculateDistance(final TrackSlice slice) {
+        return calculatingDistanceService.calculate(slice.getFirst(), slice.getSecond());
+    }
+
+    @RequiredArgsConstructor
+    protected static final class TrackSlicesCreatingContext {
+
+        @Getter
+        private final Coordinate firstCoordinate;
+
+        @Getter
+        private final Coordinate secondCoordinate;
+
+        @Getter
+        private final Set<PreparedGeometry> cityGeometries;
+
+        private final GeometryCreatingService geometryCreatingService;
+
+        public Point getSecondPoint() {
+            return geometryCreatingService.createPoint(secondCoordinate);
+        }
     }
 }
