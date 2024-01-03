@@ -24,7 +24,7 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
             = FOLDER_PATH_WITH_TRACK_POINTS + separator + FILE_NAME_WITH_TRACK_POINTS_AFTER_SIMPLIFYING;
 
     @Autowired
-    private RamerDouglasPeuckerTrackSimplifier trackSimplifier;
+    private RamerDouglasPeuckerCoordinatesSimplifier trackSimplifier;
 
     @Test
     public void trackShouldBeSimplified() {
@@ -102,7 +102,7 @@ public final class RamerDouglasPeuckerTrackSimplifierTest extends AbstractContex
 
     @Test
     public void trackShouldNotBeSimplifiedBecauseOfEpsilonIsNotPositive() {
-        final TrackSimplifier givenTrackSimplifier = new RamerDouglasPeuckerTrackSimplifier(0.);
+        final CoordinatesSimplifier givenTrackSimplifier = new RamerDouglasPeuckerCoordinatesSimplifier(0.);
         final TempTrack givenTrack = create(
                 new RequestCoordinate(1., 5.),
                 new RequestCoordinate(1., 5.),

@@ -26,4 +26,7 @@ public final class NumberUtil {
         return resultValue;
     }
 
+    public static boolean isPositive(final double value) {
+        return compare(value, 0) > 0;
+    }
 }
