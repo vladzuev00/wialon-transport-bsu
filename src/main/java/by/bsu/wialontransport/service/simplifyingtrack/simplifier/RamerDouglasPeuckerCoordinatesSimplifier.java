@@ -31,7 +31,7 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
             return coordinates;
         }
         final List<Coordinate> accumulator = createSimplifyingAccumulator(coordinates);
-        simplifyPart(coordinates, accumulator, 0, coordinates.size() - 1);
+        simplify(coordinates, accumulator, 0, coordinates.size() - 1);
         accumulator.add(coordinates.get(coordinates.size() - 1));
         return accumulator;
     }
@@ -52,46 +52,41 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
         return accumulator;
     }
 
-    private void simplifyPart(final List<Coordinate> source,
-                              final List<Coordinate> accumulator,
-                              final int startPartIndex,
-                              final int endPartIndex) {
-        if (startPartIndex + 1 == endPartIndex) {
+    private void simplify(final List<Coordinate> coordinates,
+                          final List<Coordinate> accumulator,
+                          final int startIndex,
+                          final int endIndex) {
+        if (startIndex + 1 == endIndex) {
             return;
         }
-        final IntAndDoublePair furthestPartPointIndexAndDistanceFromLineOfPartBorders
-                = findFurthestPartPointIndexAndDistanceFromLineOfPartBorders(source, startPartIndex, endPartIndex);
-        final int furthestPartPointIndex = furthestPartPointIndexAndDistanceFromLineOfPartBorders.getFirst();
-        final double furthestPartPointDistanceFromPart = furthestPartPointIndexAndDistanceFromLineOfPartBorders.getSecond();
-        if (compare(furthestPartPointDistanceFromPart, epsilon) > 0) {
-            simplifyPart(source, accumulator, startPartIndex, furthestPartPointIndex);
-            accumulator.add(source.get(furthestPartPointIndex));
-            simplifyPart(source, accumulator, furthestPartPointIndex, endPartIndex);
+        final FurthestCoordinate furthestCoordinate = findFurthestCoordinate(coordinates, startIndex, endIndex);
+        final int furthestCoordinateIndex = furthestCoordinate.getIndex();
+        if (compare(furthestCoordinate.getDistanceFromLine(), epsilon) > 0) {
+            simplify(coordinates, accumulator, startIndex, furthestCoordinateIndex);
+            accumulator.add(coordinates.get(furthestCoordinateIndex));
+            simplify(coordinates, accumulator, furthestCoordinateIndex, endIndex);
         }
     }
 
-    private IntAndDoublePair findFurthestPartPointIndexAndDistanceFromLineOfPartBorders(final List<Coordinate> source,
-                                                                                        final int startPartIndex,
-                                                                                        final int endPartIndex) {
-        final Coordinate startPartPoint = source.get(startPartIndex);
-        final Coordinate endPartPoint = source.get(endPartIndex);
-        return rangeClosed(startPartIndex, endPartIndex)
-                .mapToObj(i -> new IntAndDoublePair(i, findDistanceBetweenLineAndPoint(startPartPoint, endPartPoint, source.get(i))))
-                .max(comparingDouble(IntAndDoublePair::getSecond))
-                .orElseThrow(() -> new IllegalArgumentException("Given track part doesn't have points"));
+    private FurthestCoordinate findFurthestCoordinate(final List<Coordinate> coordinates,
+                                                      final int startIndex,
+                                                      final int endIndex) {
+        final Line line = new Line(coordinates.get(startIndex), coordinates.get(endIndex));
+        return rangeClosed(startIndex, endIndex)
+                .mapToObj(i -> new FurthestCoordinate(i, findDistance(line, coordinates.get(i))))
+                .max(comparingDouble(FurthestCoordinate::getDistanceFromLine))
+                .orElseThrow(() -> new IllegalArgumentException("There is no coordinates"));
     }
 
-    private static double findDistanceBetweenLineAndPoint(final Coordinate lineFirstPoint,
-                                                          final Coordinate lineSecondPoint,
-                                                          final Coordinate point) {
-        final double doubleAreaOfTriangleOfPoints = findDoubleAreaOfTriangle(lineFirstPoint, lineSecondPoint, point);
-        final double lineLength = findDistanceBetweenPoints(lineFirstPoint, lineSecondPoint);
-        return doubleAreaOfTriangleOfPoints / lineLength;
+    private static double findDistance(final Line line, final Coordinate coordinate) {
+        final double triangleDoubleArea = findTriangleDoubleArea(line.first, line.second, coordinate);
+        final double lineLength = findLength(line);
+        return triangleDoubleArea / lineLength;
     }
 
-    private static double findDoubleAreaOfTriangle(final Coordinate first,
-                                                   final Coordinate second,
-                                                   final Coordinate third) {
+    private static double findTriangleDoubleArea(final Coordinate first,
+                                                 final Coordinate second,
+                                                 final Coordinate third) {
         return abs(
                 (second.getLongitude() - first.getLongitude()) * third.getLatitude()
                         - (second.getLatitude() - first.getLatitude()) * third.getLongitude()
@@ -100,10 +95,10 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
         );
     }
 
-    private static double findDistanceBetweenPoints(final Coordinate first, final Coordinate second) {
+    private static double findLength(final Line line) {
         return sqrt(
-                square(second.getLatitude() - first.getLatitude())
-                        + square(second.getLongitude() - first.getLongitude())
+                square(line.second.getLatitude() - line.first.getLatitude())
+                        + square(line.second.getLongitude() - line.first.getLongitude())
         );
     }
 
@@ -112,8 +107,14 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
     }
 
     @lombok.Value
-    private static class IntAndDoublePair {
-        int first;
-        double second;
+    private static class Line {
+        Coordinate first;
+        Coordinate second;
+    }
+
+    @lombok.Value
+    private static class FurthestCoordinate {
+        int index;
+        double distanceFromLine;
     }
 }
