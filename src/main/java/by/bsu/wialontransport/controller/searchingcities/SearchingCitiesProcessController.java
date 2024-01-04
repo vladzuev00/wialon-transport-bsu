@@ -62,7 +62,8 @@ public class SearchingCitiesProcessController {
             @Valid @RequestBody final StartSearchingCitiesRequest request) {
         this.validator.validate(request);
         final SearchingCitiesProcess createdProcess = this.startingProcessService.start(
-                request.getAreaCoordinate(),
+//                request.getAreaCoordinate(),
+                null,
                 request.getSearchStep()
         );
         return ok(this.mapper.mapToResponse(createdProcess));

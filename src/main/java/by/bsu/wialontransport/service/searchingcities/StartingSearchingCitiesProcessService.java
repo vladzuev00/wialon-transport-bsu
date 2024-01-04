@@ -3,8 +3,9 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
-import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import by.bsu.wialontransport.service.searchingcities.threadpoolexecutor.SearchingCitiesThreadPoolExecutor;
@@ -18,112 +19,115 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.IntStream.range;
 
-//TODO: draw working schema
 @Service
 public final class StartingSearchingCitiesProcessService {
     private final SearchingCitiesProcessFactory processFactory;
-    private final SearchingCitiesProcessService searchingCitiesProcessService;
+    private final SearchingCitiesProcessService processService;
     private final ApplicationEventPublisher eventPublisher;
     private final SearchingCitiesService searchingCitiesService;
-    private final ExecutorService executorService;
-    private final int amountHandledPointsToSaveState;
+    private final SearchingCitiesThreadPoolExecutor threadPoolExecutor;
+    private final int handledPointCountToSaveState;
 
     public StartingSearchingCitiesProcessService(final SearchingCitiesProcessFactory processFactory,
-                                                 final SearchingCitiesProcessService searchingCitiesProcessService,
+                                                 final SearchingCitiesProcessService processService,
                                                  final ApplicationEventPublisher eventPublisher,
                                                  final SearchingCitiesService searchingCitiesService,
-                                                 final SearchingCitiesThreadPoolExecutor executorService,
-                                                 @Value("${searching-cities.handled-points-count-to-save-state}") final int amountHandledPointsToSaveState) {
+                                                 final SearchingCitiesThreadPoolExecutor threadPoolExecutor,
+                                                 @Value("${searching-cities.handled-point-count-to-save-state}") final int handledPointCountToSaveState) {
         this.processFactory = processFactory;
-        this.searchingCitiesProcessService = searchingCitiesProcessService;
+        this.processService = processService;
         this.eventPublisher = eventPublisher;
         this.searchingCitiesService = searchingCitiesService;
-        this.executorService = executorService;
-        this.amountHandledPointsToSaveState = amountHandledPointsToSaveState;
+        this.threadPoolExecutor = threadPoolExecutor;
+        this.handledPointCountToSaveState = handledPointCountToSaveState;
     }
 
-    public SearchingCitiesProcess start(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
-//        final SearchingCitiesProcess process = this.processFactory.create(areaCoordinate, searchStep);
-        final SearchingCitiesProcess process = null;
-        final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(process);
-        this.eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, savedProcess));
-        runAsync(new TaskSearchingAllCities(areaCoordinate, searchStep, savedProcess), this.executorService);
+    public SearchingCitiesProcess start(final AreaCoordinate areaCoordinate, final double searchStep) {
+        final SearchingCitiesProcess process = processFactory.create(areaCoordinate, searchStep);
+        final SearchingCitiesProcess savedProcess = processService.save(process);
+        eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, savedProcess));
+        runAsync(new TaskSearchingAllCities(areaCoordinate, searchStep, savedProcess), threadPoolExecutor);
         return savedProcess;
     }
 
     @RequiredArgsConstructor
-    private final class TaskSearchingAllCities implements Runnable {
-        private final AreaCoordinateRequest areaCoordinate;
+    final class TaskSearchingAllCities implements Runnable {
+        private final AreaCoordinate areaCoordinate;
         private final double searchStep;
         private final SearchingCitiesProcess process;
 
         @Override
         public void run() {
             try {
-                final Set<Geometry> geometriesAlreadyFoundCities = newKeySet();
-                final List<RequestCoordinate> coordinates = this.findCoordinates();
-                final int amountOfSubAreas = this.findAmountOfSubAreas();
-                final CompletableFuture<List<City>> foundUniqueCitiesFuture = range(0, amountOfSubAreas)
-                        .mapToObj(i -> this.extractSubAreaCoordinatesByItsIndex(coordinates, i))
-                        .map(subAreaCoordinates -> new SubtaskSearchingCities(subAreaCoordinates, this.process))
-                        .map(subtask -> supplyAsync(subtask::search, executorService))
-                        .map(future -> afterCompleteRemoveDuplicatedByGeometries(future, geometriesAlreadyFoundCities))
-                        .reduce(completedFuture(new ArrayList<>()), TaskSearchingAllCities::combineFutures);
+                final Set<Geometry> geometriesAccumulator = newKeySet();
+                final CompletableFuture<List<City>> foundUniqueCitiesFuture = splitArea()
+                        .map(this::createSubtask)
+                        .map(this::run)
+                        .map(future -> thenRemoveDuplicates(future, geometriesAccumulator))
+                        .reduce(completedFuture(new ArrayList<>()), TaskSearchingAllCities::combine);
                 final List<City> foundUniqueCities = foundUniqueCitiesFuture.get();
-                this.publishSuccessSearchingEvent(foundUniqueCities);
+                publishSuccessSearchingEvent(foundUniqueCities);
             } catch (final Exception exception) {
-                this.publishFailedSearchingEvent(exception);
+                publishFailedSearchingEvent(exception);
             }
         }
 
-        private int findAmountOfSubAreas() {
-            return (int) ceil(((double) this.process.getTotalPoints()) / amountHandledPointsToSaveState);
+        private Stream<List<Coordinate>> splitArea() {
+            final List<Coordinate> coordinates = findCoordinates();
+            final int subAreaCount = findSubAreaCount();
+            return range(0, subAreaCount).mapToObj(i -> extractSubAreaCoordinates(coordinates, i));
         }
 
-        private List<RequestCoordinate> findCoordinates() {
-//            final List<RequestCoordinate> coordinates = new ArrayList<>();
-//            final AreaIterator areaIterator = new AreaIterator(this.areaCoordinate, this.searchStep);
-//            areaIterator.forEachRemaining(coordinates::add);
-//            return coordinates;
-            return null;
+        private int findSubAreaCount() {
+            return (int) ceil(((double) process.getTotalPoints()) / handledPointCountToSaveState);
         }
 
-        private List<RequestCoordinate> extractSubAreaCoordinatesByItsIndex(final List<RequestCoordinate> coordinates,
-                                                                            int subAreaIndex) {
+        private List<Coordinate> findCoordinates() {
+            final AreaIterator areaIterator = new AreaIterator(areaCoordinate, searchStep);
+            return convertToList(areaIterator);
+        }
+
+        private List<Coordinate> extractSubAreaCoordinates(final List<Coordinate> coordinates, final int subAreaIndex) {
             return coordinates.subList(
-                    subAreaIndex * amountHandledPointsToSaveState,
-                    min(amountHandledPointsToSaveState * (subAreaIndex + 1), coordinates.size())
+                    subAreaIndex * handledPointCountToSaveState,
+                    min(handledPointCountToSaveState * (subAreaIndex + 1), coordinates.size())
             );
         }
 
-        private static CompletableFuture<List<City>> afterCompleteRemoveDuplicatedByGeometries(
-                final CompletableFuture<List<City>> future, final Set<Geometry> geometriesAlreadyFoundCities) {
-            return future.thenApply(
-                    foundCities -> removeDuplicatesByGeometries(foundCities, geometriesAlreadyFoundCities)
-            );
+        private SubtaskSearchingCities createSubtask(final List<Coordinate> coordinates) {
+            return new SubtaskSearchingCities(coordinates, process);
         }
 
-        private static List<City> removeDuplicatesByGeometries(final List<City> foundCities,
-                                                               final Set<Geometry> geometriesAlreadyFoundCities) {
-            return foundCities.stream()
-                    .filter(city -> geometriesAlreadyFoundCities.add(city.findGeometry()))
+        private CompletableFuture<List<City>> run(final SubtaskSearchingCities subtask) {
+            return supplyAsync(subtask::search, threadPoolExecutor);
+        }
+
+        private static CompletableFuture<List<City>> thenRemoveDuplicates(final CompletableFuture<List<City>> future,
+                                                                          final Set<Geometry> geometriesAccumulator) {
+            return future.thenApply(cities -> removeDuplicates(cities, geometriesAccumulator));
+        }
+
+        private static List<City> removeDuplicates(final List<City> cities, final Set<Geometry> geometriesAccumulator) {
+            return cities.stream()
+                    .filter(city -> geometriesAccumulator.add(city.findGeometry()))
                     .toList();
         }
 
-        private static CompletableFuture<List<City>> combineFutures(
-                final CompletableFuture<List<City>> first, final CompletableFuture<List<City>> second) {
-            return first.thenCombine(second, TaskSearchingAllCities::unionCities);
+        private static CompletableFuture<List<City>> combine(final CompletableFuture<List<City>> first,
+                                                             final CompletableFuture<List<City>> second) {
+            return first.thenCombine(second, TaskSearchingAllCities::union);
         }
 
-        private static List<City> unionCities(final List<City> first, final List<City> second) {
+        private static List<City> union(final List<City> first, final List<City> second) {
             first.addAll(second);
             return first;
         }
@@ -131,7 +135,7 @@ public final class StartingSearchingCitiesProcessService {
         private void publishSuccessSearchingEvent(final List<City> foundCities) {
             final SearchingCitiesProcessEvent event = new SuccessSearchingAllCitiesEvent(
                     StartingSearchingCitiesProcessService.this,
-                    this.process,
+                    process,
                     foundCities
             );
             eventPublisher.publishEvent(event);
@@ -140,7 +144,7 @@ public final class StartingSearchingCitiesProcessService {
         private void publishFailedSearchingEvent(final Exception exception) {
             final SearchingCitiesProcessEvent event = new FailedSearchingAllCitiesEvent(
                     StartingSearchingCitiesProcessService.this,
-                    this.process,
+                    process,
                     exception
             );
             eventPublisher.publishEvent(event);
@@ -148,18 +152,17 @@ public final class StartingSearchingCitiesProcessService {
     }
 
     @RequiredArgsConstructor
-    private final class SubtaskSearchingCities {
-        private final List<RequestCoordinate> coordinates;
+    final class SubtaskSearchingCities {
+        private final List<Coordinate> coordinates;
         private final SearchingCitiesProcess process;
 
         public List<City> search() {
             try {
-//                final List<City> foundCities = searchingCitiesService.findByCoordinates(this.coordinates);
-                this.publishSuccessSearchingEvent();
-//                return foundCities;
-                return null;
+                final List<City> foundCities = searchingCitiesService.findByCoordinates(coordinates);
+                publishSuccessSearchingEvent();
+                return foundCities;
             } catch (final Exception exception) {
-                this.publishFailedSearchingEvent(exception);
+                publishFailedSearchingEvent(exception);
                 throw new SearchingCitiesException(exception);
             }
         }
@@ -167,8 +170,8 @@ public final class StartingSearchingCitiesProcessService {
         private void publishSuccessSearchingEvent() {
             final SearchingCitiesProcessEvent event = new SuccessSearchingCitiesBySubtaskEvent(
                     StartingSearchingCitiesProcessService.this,
-                    this.process,
-                    this.coordinates.size()
+                    process,
+                    coordinates.size()
             );
             eventPublisher.publishEvent(event);
         }
@@ -184,10 +187,12 @@ public final class StartingSearchingCitiesProcessService {
 
     static final class SearchingCitiesException extends RuntimeException {
 
+        @SuppressWarnings("unused")
         public SearchingCitiesException() {
 
         }
 
+        @SuppressWarnings("unused")
         public SearchingCitiesException(final String description) {
             super(description);
         }
@@ -196,6 +201,7 @@ public final class StartingSearchingCitiesProcessService {
             super(cause);
         }
 
+        @SuppressWarnings("unused")
         public SearchingCitiesException(final String description, final Exception cause) {
             super(description, cause);
         }
