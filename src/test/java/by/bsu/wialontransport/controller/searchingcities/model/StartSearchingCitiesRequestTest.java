@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.controller.searchingcities.model;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldBeValid() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(1.1, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -53,7 +53,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldNotBeValidBecauseOfAreaCoordinateIsNotValid() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(null, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -70,7 +70,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsNull() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(1.1, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -87,7 +87,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsLessThanMinimalAllowable() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(1.1, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -107,7 +107,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsMoreThanMaximalAllowable() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(1.1, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -128,7 +128,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldBeMappedToJson()
             throws Exception {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(1.1, 2.2),
                 new RequestCoordinate(4.4, 5.5)
         );
@@ -152,7 +152,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 givenJson, StartSearchingCitiesRequest.class
         );
         final StartSearchingCitiesRequest expected = new StartSearchingCitiesRequest(
-                new AreaCoordinate(
+                new AreaCoordinateRequest(
                         new RequestCoordinate(1.1, 2.2),
                         new RequestCoordinate(4.4, 5.5)
                 ),

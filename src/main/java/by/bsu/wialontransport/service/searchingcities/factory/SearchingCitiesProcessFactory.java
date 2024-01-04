@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.searchingcities.factory;
 
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -18,7 +18,7 @@ import static java.math.RoundingMode.UP;
 public final class SearchingCitiesProcessFactory {
     private final GeometryFactory geometryFactory;
 
-    public SearchingCitiesProcess create(final AreaCoordinate areaCoordinate, final double searchStep) {
+    public SearchingCitiesProcess create(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
         return SearchingCitiesProcess.builder()
                 .bounds(this.findBounds(areaCoordinate))
                 .searchStep(searchStep)
@@ -27,12 +27,12 @@ public final class SearchingCitiesProcessFactory {
                 .build();
     }
 
-    private static long findTotalPoints(final AreaCoordinate areaCoordinate, final double searchStep) {
+    private static long findTotalPoints(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
         return findTotalPointsInBottomSide(areaCoordinate, searchStep)
                 * findTotalPointsInLeftSide(areaCoordinate, searchStep);
     }
 
-    private static long findTotalPointsInBottomSide(final AreaCoordinate areaCoordinate, final double searchStep) {
+    private static long findTotalPointsInBottomSide(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
         return findTotalPointsInLine(
                 areaCoordinate.getLeftBottom().getLatitude(),
                 areaCoordinate.getRightUpper().getLatitude(),
@@ -40,7 +40,7 @@ public final class SearchingCitiesProcessFactory {
         );
     }
 
-    private static long findTotalPointsInLeftSide(final AreaCoordinate areaCoordinate, final double searchStep) {
+    private static long findTotalPointsInLeftSide(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
         return findTotalPointsInLine(
                 areaCoordinate.getLeftBottom().getLongitude(),
                 areaCoordinate.getRightUpper().getLongitude(),
@@ -57,7 +57,7 @@ public final class SearchingCitiesProcessFactory {
                 .longValue() + 1;
     }
 
-    private Geometry findBounds(final AreaCoordinate areaCoordinate) {
+    private Geometry findBounds(final AreaCoordinateRequest areaCoordinate) {
         final CoordinateXY leftBottom = findLeftBottom(areaCoordinate);
         return this.geometryFactory.createPolygon(new CoordinateXY[]{
                 leftBottom,
@@ -68,23 +68,23 @@ public final class SearchingCitiesProcessFactory {
         });
     }
 
-    private static CoordinateXY findLeftBottom(final AreaCoordinate areaCoordinate) {
+    private static CoordinateXY findLeftBottom(final AreaCoordinateRequest areaCoordinate) {
         final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
         return new CoordinateXY(leftBottom.getLatitude(), leftBottom.getLongitude());
     }
 
-    private static CoordinateXY findLeftUpper(AreaCoordinate areaCoordinate) {
+    private static CoordinateXY findLeftUpper(AreaCoordinateRequest areaCoordinate) {
         final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
         final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(leftBottom.getLatitude(), rightUpper.getLongitude());
     }
 
-    private static CoordinateXY findRightUpper(AreaCoordinate areaCoordinate) {
+    private static CoordinateXY findRightUpper(AreaCoordinateRequest areaCoordinate) {
         final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(rightUpper.getLatitude(), rightUpper.getLongitude());
     }
 
-    private static CoordinateXY findRightBottom(AreaCoordinate areaCoordinate) {
+    private static CoordinateXY findRightBottom(AreaCoordinateRequest areaCoordinate) {
         final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
         final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return new CoordinateXY(rightUpper.getLatitude(), leftBottom.getLongitude());

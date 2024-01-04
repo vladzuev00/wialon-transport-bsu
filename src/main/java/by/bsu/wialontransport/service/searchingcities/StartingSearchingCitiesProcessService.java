@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
-import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
@@ -52,7 +52,7 @@ public final class StartingSearchingCitiesProcessService {
         this.amountHandledPointsToSaveState = amountHandledPointsToSaveState;
     }
 
-    public SearchingCitiesProcess start(final AreaCoordinate areaCoordinate, final double searchStep) {
+    public SearchingCitiesProcess start(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
         final SearchingCitiesProcess process = this.processFactory.create(areaCoordinate, searchStep);
         final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(process);
         this.eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, savedProcess));
@@ -62,7 +62,7 @@ public final class StartingSearchingCitiesProcessService {
 
     @RequiredArgsConstructor
     private final class TaskSearchingAllCities implements Runnable {
-        private final AreaCoordinate areaCoordinate;
+        private final AreaCoordinateRequest areaCoordinate;
         private final double searchStep;
         private final SearchingCitiesProcess process;
 
@@ -90,10 +90,11 @@ public final class StartingSearchingCitiesProcessService {
         }
 
         private List<RequestCoordinate> findCoordinates() {
-            final List<RequestCoordinate> coordinates = new ArrayList<>();
-            final AreaIterator areaIterator = new AreaIterator(this.areaCoordinate, this.searchStep);
-            areaIterator.forEachRemaining(coordinates::add);
-            return coordinates;
+//            final List<RequestCoordinate> coordinates = new ArrayList<>();
+//            final AreaIterator areaIterator = new AreaIterator(this.areaCoordinate, this.searchStep);
+//            areaIterator.forEachRemaining(coordinates::add);
+//            return coordinates;
+            return null;
         }
 
         private List<RequestCoordinate> extractSubAreaCoordinatesByItsIndex(final List<RequestCoordinate> coordinates,

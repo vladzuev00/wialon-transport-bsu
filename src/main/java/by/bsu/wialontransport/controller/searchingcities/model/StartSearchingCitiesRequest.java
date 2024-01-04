@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.searchingcities.model;
 
-import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class StartSearchingCitiesRequest {
 
     @NotNull
     @Valid
-    AreaCoordinate areaCoordinate;
+    AreaCoordinateRequest areaCoordinate;
 
     @NotNull
     @DecimalMin(value = "0.01")
@@ -25,7 +25,7 @@ public class StartSearchingCitiesRequest {
     Double searchStep;
 
     @JsonCreator
-    public StartSearchingCitiesRequest(@JsonProperty(value = "areaCoordinate") final AreaCoordinate areaCoordinate,
+    public StartSearchingCitiesRequest(@JsonProperty(value = "areaCoordinate") final AreaCoordinateRequest areaCoordinate,
                                        @JsonProperty(value = "searchStep") final Double searchStep) {
         this.areaCoordinate = areaCoordinate;
         this.searchStep = searchStep;

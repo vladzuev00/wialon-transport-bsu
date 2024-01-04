@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.searchingcities;
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
-import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.RequestCoordinate;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public final class StartingSearchingCitiesProcessServiceTest extends AbstractCon
 
     @Test
     public void processShouldBeStartedAndFinishedSuccessfully() {
-        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 new RequestCoordinate(0., 0.),
                 new RequestCoordinate(2., 2.)
         );
