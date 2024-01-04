@@ -16,7 +16,7 @@ import static java.util.stream.IntStream.rangeClosed;
 //https://habr.com/ru/articles/448618/
 @Component
 public final class RamerDouglasPeuckerCoordinatesSimplifier implements CoordinatesSimplifier {
-    private static final int MINIMAL_COORDINATE_COUNT_TO_BE_SIMPLIFIED = 3;
+    private static final int MINIMAL_COUNT_TO_BE_SIMPLIFIED = 3;
 
     private final double epsilon;
 
@@ -43,7 +43,7 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
     }
 
     private static boolean isAbleToBeSimplified(final List<Coordinate> coordinates) {
-        return coordinates != null && coordinates.size() >= MINIMAL_COORDINATE_COUNT_TO_BE_SIMPLIFIED;
+        return coordinates != null && coordinates.size() >= MINIMAL_COUNT_TO_BE_SIMPLIFIED;
     }
 
     private static List<Coordinate> createSimplifyingAccumulator(final List<Coordinate> coordinates) {
