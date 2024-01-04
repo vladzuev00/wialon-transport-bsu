@@ -24,7 +24,7 @@ import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.St
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 
 
-/**
+/*
  * events are handled synchronously
  */
 @Slf4j

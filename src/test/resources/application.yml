@@ -77,9 +77,9 @@ nominatim:
   millis-between-requests: 100
   enable-waiting-between-requests: true
 
-search-cities:
-  amount-handled-points-to-save-state: 4 #10 was there before(remove this comment)
-  amount-of-threads-to-search-cities: 5
+searching-cities:
+  handled-points-count-to-save-state: 4
+  thread-count: 5
 
 track-simplifier:
   ramer-douglas-peucker:
