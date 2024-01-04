@@ -6,7 +6,6 @@ import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
-import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesInterruptedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +48,25 @@ public final class SearchingCitiesService {
                 && extraTags.getPlace() != null
                 && extraTags.getPlace().matches(REGEX_PLACE_VALUE_IN_JSON_OF_CITY);
     }
+
+    static final class SearchingCitiesInterruptedException extends RuntimeException {
+
+        public SearchingCitiesInterruptedException() {
+
+        }
+
+        public SearchingCitiesInterruptedException(final String description) {
+            super(description);
+        }
+
+        public SearchingCitiesInterruptedException(final Exception cause) {
+            super(cause);
+        }
+
+        public SearchingCitiesInterruptedException(final String description, final Exception cause) {
+            super(description, cause);
+        }
+
+    }
+
 }

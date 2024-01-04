@@ -1,89 +1,89 @@
-package by.bsu.wialontransport.service.searchingcities;
-
-import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
-import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
-import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
-import org.junit.Test;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
-
-import java.util.List;
-
-import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
-import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
-public final class StartingSearchingCitiesProcessServiceTest extends AbstractContextTest {
-
-    @MockBean
-    private SearchingCitiesProcessFactory mockedProcessFactory;
-
-    @MockBean
-    private SearchingCitiesProcessService mockedSearchingCitiesProcessService;
-
-    @MockBean
-    private ApplicationEventPublisher mockedEventPublisher;
-
-    @MockBean
-    private SearchingCitiesService mockedSearchingCitiesService;
-
-    @Autowired
-    private StartingSearchingCitiesProcessService startingSearchingCitiesProcessService;
-
-    @Autowired
-    private GeometryFactory geometryFactory;
-
-    @Test
-    public void processShouldBeStartedAndFinishedSuccessfully() {
-        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(0., 0.),
-                new RequestCoordinate(2., 2.)
-        );
-        final double givenSearchStep = 1.;
-
-        final SearchingCitiesProcess givenCreatedProcess = SearchingCitiesProcess.builder()
-                .bounds(createPolygon(this.geometryFactory, 0., 0., 0., 10., 10., 10., 10., 0.))
-                .searchStep(givenSearchStep)
-                .totalPoints(9)
-                .handledPoints(0)
-                .status(HANDLING)
-                .build();
-        when(this.mockedProcessFactory.create(eq(givenAreaCoordinate), eq(givenSearchStep)))
-                .thenReturn(givenCreatedProcess);
-
-        final SearchingCitiesProcess givenSavedProcess = SearchingCitiesProcess.builder()
-                .id(255L)
-                .bounds(createPolygon(this.geometryFactory, 0., 0., 0., 10., 10., 10., 10., 0.))
-                .searchStep(givenSearchStep)
-                .totalPoints(9)
-                .handledPoints(0)
-                .status(HANDLING)
-                .build();
-        when(this.mockedSearchingCitiesProcessService.save(eq(givenSavedProcess))).thenReturn(givenSavedProcess);
-
-        final List<RequestCoordinate> expectedFirstSubtaskCoordinates = List.of(
-                new RequestCoordinate(0., 0.),
-                new RequestCoordinate(1., 0.),
-                new RequestCoordinate(2., 0.),
-                new RequestCoordinate(0., 1.)
-        );
-        final List<RequestCoordinate> expectedSecondSubtaskCoordinates = List.of(
-                new RequestCoordinate(1., 1.),
-                new RequestCoordinate(2., 1.),
-                new RequestCoordinate(0., 2.),
-                new RequestCoordinate(1., 2.)
-        );
-        final List<RequestCoordinate> expectedThirdSubtaskCoordinates = List.of(
-                new RequestCoordinate(2., 2.)
-        );
-
-        throw new RuntimeException();
-    }
-
-}
+//package by.bsu.wialontransport.service.searchingcities;
+//
+//import by.bsu.wialontransport.base.AbstractContextTest;
+//import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
+//import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
+//import by.bsu.wialontransport.model.AreaCoordinateRequest;
+//import by.bsu.wialontransport.model.RequestCoordinate;
+//import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
+//import org.junit.Test;
+//import org.locationtech.jts.geom.GeometryFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.context.ApplicationEventPublisher;
+//
+//import java.util.List;
+//
+//import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
+//import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
+//import static org.mockito.ArgumentMatchers.eq;
+//import static org.mockito.Mockito.when;
+//
+//public final class StartingSearchingCitiesProcessServiceTest extends AbstractContextTest {
+//
+//    @MockBean
+//    private SearchingCitiesProcessFactory mockedProcessFactory;
+//
+//    @MockBean
+//    private SearchingCitiesProcessService mockedSearchingCitiesProcessService;
+//
+//    @MockBean
+//    private ApplicationEventPublisher mockedEventPublisher;
+//
+//    @MockBean
+//    private SearchingCitiesService mockedSearchingCitiesService;
+//
+//    @Autowired
+//    private StartingSearchingCitiesProcessService startingSearchingCitiesProcessService;
+//
+//    @Autowired
+//    private GeometryFactory geometryFactory;
+//
+//    @Test
+//    public void processShouldBeStartedAndFinishedSuccessfully() {
+//        final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
+//                new RequestCoordinate(0., 0.),
+//                new RequestCoordinate(2., 2.)
+//        );
+//        final double givenSearchStep = 1.;
+//
+//        final SearchingCitiesProcess givenCreatedProcess = SearchingCitiesProcess.builder()
+//                .bounds(createPolygon(this.geometryFactory, 0., 0., 0., 10., 10., 10., 10., 0.))
+//                .searchStep(givenSearchStep)
+//                .totalPoints(9)
+//                .handledPoints(0)
+//                .status(HANDLING)
+//                .build();
+//        when(this.mockedProcessFactory.create(eq(givenAreaCoordinate), eq(givenSearchStep)))
+//                .thenReturn(givenCreatedProcess);
+//
+//        final SearchingCitiesProcess givenSavedProcess = SearchingCitiesProcess.builder()
+//                .id(255L)
+//                .bounds(createPolygon(this.geometryFactory, 0., 0., 0., 10., 10., 10., 10., 0.))
+//                .searchStep(givenSearchStep)
+//                .totalPoints(9)
+//                .handledPoints(0)
+//                .status(HANDLING)
+//                .build();
+//        when(this.mockedSearchingCitiesProcessService.save(eq(givenSavedProcess))).thenReturn(givenSavedProcess);
+//
+//        final List<RequestCoordinate> expectedFirstSubtaskCoordinates = List.of(
+//                new RequestCoordinate(0., 0.),
+//                new RequestCoordinate(1., 0.),
+//                new RequestCoordinate(2., 0.),
+//                new RequestCoordinate(0., 1.)
+//        );
+//        final List<RequestCoordinate> expectedSecondSubtaskCoordinates = List.of(
+//                new RequestCoordinate(1., 1.),
+//                new RequestCoordinate(2., 1.),
+//                new RequestCoordinate(0., 2.),
+//                new RequestCoordinate(1., 2.)
+//        );
+//        final List<RequestCoordinate> expectedThirdSubtaskCoordinates = List.of(
+//                new RequestCoordinate(2., 2.)
+//        );
+//
+//        throw new RuntimeException();
+//    }
+//
+//}

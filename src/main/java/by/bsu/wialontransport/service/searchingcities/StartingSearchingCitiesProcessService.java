@@ -5,14 +5,11 @@ import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.RequestCoordinate;
-import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
-import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesException;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import by.bsu.wialontransport.service.searchingcities.threadpoolexecutor.SearchingCitiesThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -54,7 +51,8 @@ public final class StartingSearchingCitiesProcessService {
     }
 
     public SearchingCitiesProcess start(final AreaCoordinateRequest areaCoordinate, final double searchStep) {
-        final SearchingCitiesProcess process = this.processFactory.create(areaCoordinate, searchStep);
+//        final SearchingCitiesProcess process = this.processFactory.create(areaCoordinate, searchStep);
+        final SearchingCitiesProcess process = null;
         final SearchingCitiesProcess savedProcess = this.searchingCitiesProcessService.save(process);
         this.eventPublisher.publishEvent(new StartSearchingCitiesProcessEvent(this, savedProcess));
         runAsync(new TaskSearchingAllCities(areaCoordinate, searchStep, savedProcess), this.executorService);
@@ -181,5 +179,25 @@ public final class StartingSearchingCitiesProcessService {
             );
             eventPublisher.publishEvent(event);
         }
+    }
+
+    static final class SearchingCitiesException extends RuntimeException {
+
+        public SearchingCitiesException() {
+
+        }
+
+        public SearchingCitiesException(final String description) {
+            super(description);
+        }
+
+        public SearchingCitiesException(final Exception cause) {
+            super(cause);
+        }
+
+        public SearchingCitiesException(final String description, final Exception cause) {
+            super(description, cause);
+        }
+
     }
 }
