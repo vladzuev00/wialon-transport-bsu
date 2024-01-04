@@ -6,7 +6,7 @@ import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
-import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingCoordinatesService;
+import by.bsu.wialontransport.service.coordinatessimplifier.SimplifyingCoordinatesService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

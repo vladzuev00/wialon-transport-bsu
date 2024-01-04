@@ -1,7 +1,7 @@
-package by.bsu.wialontransport.service.simplifyingtrack;
+package by.bsu.wialontransport.service.coordinatessimplifier;
 
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.service.simplifyingtrack.simplifier.CoordinatesSimplifier;
+import by.bsu.wialontransport.service.coordinatessimplifier.simplifier.CoordinatesSimplifier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
-import by.bsu.wialontransport.service.simplifyingtrack.SimplifyingCoordinatesService;
+import by.bsu.wialontransport.service.coordinatessimplifier.SimplifyingCoordinatesService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

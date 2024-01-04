@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.simplifyingtrack.simplifier;
+package by.bsu.wialontransport.service.coordinatessimplifier.simplifier;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.Coordinate;
