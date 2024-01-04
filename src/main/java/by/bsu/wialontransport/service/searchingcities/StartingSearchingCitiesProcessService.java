@@ -154,9 +154,10 @@ public final class StartingSearchingCitiesProcessService {
 
         public List<City> search() {
             try {
-                final List<City> foundCities = searchingCitiesService.findByCoordinates(this.coordinates);
+//                final List<City> foundCities = searchingCitiesService.findByCoordinates(this.coordinates);
                 this.publishSuccessSearchingEvent();
-                return foundCities;
+//                return foundCities;
+                return null;
             } catch (final Exception exception) {
                 this.publishFailedSearchingEvent(exception);
                 throw new SearchingCitiesException(exception);

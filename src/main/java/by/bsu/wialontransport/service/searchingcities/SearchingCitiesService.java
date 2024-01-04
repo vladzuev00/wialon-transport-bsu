@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.searchingcities;
 
 import by.bsu.wialontransport.crud.dto.City;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -16,29 +16,33 @@ import static java.lang.Thread.currentThread;
 @Service
 @RequiredArgsConstructor
 public final class SearchingCitiesService {
-    private static final String REGEX_PLACE_VALUE_IN_JSON_OF_CITY = "^(city)|(town)$";
+    private static final String REGEX_CITY_PLACE_VALUE_IN_JSON = "^(city)|(town)$";
 
     private final NominatimService nominatimService;
-    private final ReverseResponseMapper responseToAddressMapper;
+    private final ReverseResponseMapper responseMapper;
 
-    public List<City> findByCoordinates(final List<RequestCoordinate> coordinates) {
+    public List<City> findByCoordinates(final List<Coordinate> coordinates) {
         return coordinates.stream()
                 .map(this::reverseInterruptibly)
                 .filter(SearchingCitiesService::isCity)
-                .map(this.responseToAddressMapper::map)
+                .map(responseMapper::map)
                 .map(City::createWithAddress)
                 .toList();
     }
 
-    private NominatimReverseResponse reverseInterruptibly(final RequestCoordinate coordinate) {
+    private NominatimReverseResponse reverseInterruptibly(final Coordinate coordinate) {
         checkInterrupted();
-//        return this.nominatimService.reverse(coordinate);
-        return null;
+        return nominatimService.reverse(coordinate)
+                .orElseThrow(
+                        () -> new SearchingCitiesException(
+                                "There is no reverse response from Nominatim by coordinate: %s".formatted(coordinate)
+                        )
+                );
     }
 
     private static void checkInterrupted() {
         if (currentThread().isInterrupted()) {
-            throw new SearchingCitiesInterruptedException();
+            throw new SearchingCitiesException("Thread was interrupted");
         }
     }
 
@@ -46,24 +50,27 @@ public final class SearchingCitiesService {
         final ExtraTags extraTags = response.getExtraTags();
         return extraTags != null
                 && extraTags.getPlace() != null
-                && extraTags.getPlace().matches(REGEX_PLACE_VALUE_IN_JSON_OF_CITY);
+                && extraTags.getPlace().matches(REGEX_CITY_PLACE_VALUE_IN_JSON);
     }
 
-    static final class SearchingCitiesInterruptedException extends RuntimeException {
+    static final class SearchingCitiesException extends RuntimeException {
 
-        public SearchingCitiesInterruptedException() {
+        @SuppressWarnings("unused")
+        public SearchingCitiesException() {
 
         }
 
-        public SearchingCitiesInterruptedException(final String description) {
+        public SearchingCitiesException(final String description) {
             super(description);
         }
 
-        public SearchingCitiesInterruptedException(final Exception cause) {
+        @SuppressWarnings("unused")
+        public SearchingCitiesException(final Exception cause) {
             super(cause);
         }
 
-        public SearchingCitiesInterruptedException(final String description, final Exception cause) {
+        @SuppressWarnings("unused")
+        public SearchingCitiesException(final String description, final Exception cause) {
             super(description, cause);
         }
 
