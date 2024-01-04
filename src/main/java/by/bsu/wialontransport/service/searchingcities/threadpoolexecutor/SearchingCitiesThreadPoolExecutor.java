@@ -3,6 +3,7 @@ package by.bsu.wialontransport.service.searchingcities.threadpoolexecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -28,6 +29,12 @@ public final class SearchingCitiesThreadPoolExecutor extends ThreadPoolExecutor 
                 MILLISECONDS,
                 new LinkedBlockingQueue<>()
         );
+    }
+
+    @Override
+    @PreDestroy
+    public void shutdown() {
+        super.shutdown();
     }
 
     private static int validateThreadCountWithReturning(final int threadCount) {

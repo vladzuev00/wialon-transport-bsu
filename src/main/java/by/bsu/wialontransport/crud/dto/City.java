@@ -20,8 +20,7 @@ public class City implements Dto<Long> {
     public static City copyWithAddressAndProcess(final City source,
                                                  final Address address,
                                                  final SearchingCitiesProcess process) {
-        final Long sourceId = source.getId();
-        return new City(sourceId, address, process);
+        return new City(source.getId(), address, process);
     }
 
     public static City createWithAddress(final Address address) {

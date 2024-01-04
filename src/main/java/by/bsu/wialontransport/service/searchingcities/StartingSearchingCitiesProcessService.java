@@ -9,6 +9,7 @@ import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.exception.SearchingCitiesException;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
+import by.bsu.wialontransport.service.searchingcities.threadpoolexecutor.SearchingCitiesThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,8 +43,8 @@ public final class StartingSearchingCitiesProcessService {
                                                  final SearchingCitiesProcessService searchingCitiesProcessService,
                                                  final ApplicationEventPublisher eventPublisher,
                                                  final SearchingCitiesService searchingCitiesService,
-                                                 @Qualifier("executorServiceToSearchCities") final ExecutorService executorService,
-                                                 @Value("${search-cities.amount-handled-points-to-save-state}") final int amountHandledPointsToSaveState) {
+                                                 final SearchingCitiesThreadPoolExecutor executorService,
+                                                 @Value("${searching-cities.handled-points-count-to-save-state}") final int amountHandledPointsToSaveState) {
         this.processFactory = processFactory;
         this.searchingCitiesProcessService = searchingCitiesProcessService;
         this.eventPublisher = eventPublisher;
