@@ -10,18 +10,18 @@ import static java.lang.Double.compare;
 
 @Component
 public final class StartSearchingCitiesRequestValidator {
-    private static final String EXCEPTION_MESSAGE_NOT_VALID_AREA_COORDINATE
-            = "Left bottom point's coordinates should be less than right upper point's coordinates.";
 
     public void validate(final StartSearchingCitiesRequest request) {
         if (!isValidAreaCoordinate(request.getAreaCoordinate())) {
-            throw new CustomValidationException(EXCEPTION_MESSAGE_NOT_VALID_AREA_COORDINATE);
+            throw new CustomValidationException(
+                    "Left bottom point's coordinates should be less than right upper point's coordinates."
+            );
         }
     }
 
-    private static boolean isValidAreaCoordinate(final AreaCoordinateRequest research) {
-        final RequestCoordinate leftBottom = research.getLeftBottom();
-        final RequestCoordinate rightUpper = research.getRightUpper();
+    private static boolean isValidAreaCoordinate(final AreaCoordinateRequest areaCoordinate) {
+        final RequestCoordinate leftBottom = areaCoordinate.getLeftBottom();
+        final RequestCoordinate rightUpper = areaCoordinate.getRightUpper();
         return compare(leftBottom.getLatitude(), rightUpper.getLatitude()) <= 0
                 && compare(leftBottom.getLongitude(), rightUpper.getLongitude()) <= 0;
     }

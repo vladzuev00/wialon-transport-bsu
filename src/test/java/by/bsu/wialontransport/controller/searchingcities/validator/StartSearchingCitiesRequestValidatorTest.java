@@ -20,7 +20,7 @@ public final class StartSearchingCitiesRequestValidatorTest {
                 1.
         );
 
-        this.validator.validate(givenRequest);
+        validator.validate(givenRequest);
     }
 
     @Test(expected = CustomValidationException.class)
@@ -33,7 +33,7 @@ public final class StartSearchingCitiesRequestValidatorTest {
                 1.
         );
 
-        this.validator.validate(givenRequest);
+        validator.validate(givenRequest);
     }
 
 }
