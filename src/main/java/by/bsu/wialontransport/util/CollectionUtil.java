@@ -77,6 +77,13 @@ public final class CollectionUtil {
         ).toList();
     }
 
+    public static <T> List<T> concat(final List<T> first, final List<T> second) {
+        return Stream.concat(
+                first.stream(),
+                second.stream()
+        ).toList();
+    }
+
 //    public static <S, P> Optional<P> findGeneralProperty(final List<S> sources, final Function<S, P> propertyExtractor) {
 //        final Set<P> properties = mapToSet(sources, propertyExtractor);
 //        if(properties.size() != 1)

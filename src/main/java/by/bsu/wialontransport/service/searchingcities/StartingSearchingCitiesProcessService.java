@@ -9,24 +9,28 @@ import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
 import by.bsu.wialontransport.service.searchingcities.threadpoolexecutor.SearchingCitiesThreadPoolExecutor;
+import by.bsu.wialontransport.util.CollectionUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
+import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.IntStream.range;
+import static lombok.AccessLevel.PACKAGE;
 
 @Service
 public final class StartingSearchingCitiesProcessService {
@@ -60,6 +64,7 @@ public final class StartingSearchingCitiesProcessService {
     }
 
     @RequiredArgsConstructor
+    @Getter(PACKAGE)
     final class TaskSearchingAllCities implements Runnable {
         private final AreaCoordinate areaCoordinate;
         private final double searchStep;
@@ -73,7 +78,8 @@ public final class StartingSearchingCitiesProcessService {
                         .map(this::createSubtask)
                         .map(this::run)
                         .map(future -> thenRemoveDuplicates(future, geometriesAccumulator))
-                        .reduce(completedFuture(new ArrayList<>()), TaskSearchingAllCities::combine);
+                        .reduce(TaskSearchingAllCities::combine)
+                        .orElseGet(() -> completedFuture(emptyList()));
                 final List<City> foundUniqueCities = foundUniqueCitiesFuture.get();
                 publishSuccessSearchingEvent(foundUniqueCities);
             } catch (final Exception exception) {
@@ -108,7 +114,7 @@ public final class StartingSearchingCitiesProcessService {
         }
 
         private CompletableFuture<List<City>> run(final SubtaskSearchingCities subtask) {
-            return supplyAsync(subtask::search, threadPoolExecutor);
+            return supplyAsync(subtask, threadPoolExecutor);
         }
 
         private static CompletableFuture<List<City>> thenRemoveDuplicates(final CompletableFuture<List<City>> future,
@@ -124,12 +130,7 @@ public final class StartingSearchingCitiesProcessService {
 
         private static CompletableFuture<List<City>> combine(final CompletableFuture<List<City>> first,
                                                              final CompletableFuture<List<City>> second) {
-            return first.thenCombine(second, TaskSearchingAllCities::union);
-        }
-
-        private static List<City> union(final List<City> first, final List<City> second) {
-            first.addAll(second);
-            return first;
+            return first.thenCombine(second, CollectionUtil::concat);
         }
 
         private void publishSuccessSearchingEvent(final List<City> foundCities) {
@@ -152,11 +153,12 @@ public final class StartingSearchingCitiesProcessService {
     }
 
     @RequiredArgsConstructor
-    final class SubtaskSearchingCities {
+    final class SubtaskSearchingCities implements Supplier<List<City>> {
         private final List<Coordinate> coordinates;
         private final SearchingCitiesProcess process;
 
-        public List<City> search() {
+        @Override
+        public List<City> get() {
             try {
                 final List<City> cities = searchingCitiesService.findByCoordinates(coordinates);
                 publishSuccessSearchingEvent();
