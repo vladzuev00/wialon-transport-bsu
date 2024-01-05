@@ -27,7 +27,6 @@ public final class SearchingCitiesProcessControllerMapper {
                 .build();
     }
 
-    //TODO: test
     public AreaCoordinate mapToAreaCoordinate(final AreaCoordinateRequest request) {
         final Coordinate leftBottom = mapToCoordinate(request.getLeftBottom());
         final Coordinate rightUpper = mapToCoordinate(request.getRightUpper());

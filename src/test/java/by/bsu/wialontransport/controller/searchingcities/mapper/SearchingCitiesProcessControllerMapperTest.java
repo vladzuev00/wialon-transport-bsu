@@ -4,6 +4,10 @@ import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
+import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.util.GeometryTestUtil;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -58,6 +62,21 @@ public final class SearchingCitiesProcessControllerMapperTest extends AbstractCo
                 .status(givenStatus)
                 .build();
         checkEquals(expected, actual);
+    }
+
+    @Test
+    public void requestShouldBeMappedToAreaCoordinate() {
+        final AreaCoordinateRequest givenRequest = new AreaCoordinateRequest(
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(3.3, 4.4)
+        );
+
+        final AreaCoordinate actual = mapper.mapToAreaCoordinate(givenRequest);
+        final AreaCoordinate expected = new AreaCoordinate(
+                new Coordinate(1.1, 2.2),
+                new Coordinate(3.3, 4.4)
+        );
+        assertEquals(expected, actual);
     }
 
     private static void checkEquals(final SearchingCitiesProcessResponse expected,
