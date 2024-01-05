@@ -22,26 +22,26 @@ public final class CoordinateTest extends AbstractContextTest {
 
     @Test
     public void coordinateShouldBeValid() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(45., 150.);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(45., 150.);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertTrue(constraintViolations.isEmpty());
     }
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLatitudeIsNull() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(null, 150.);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(null, 150.);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
     }
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLatitudeIsLessThanMinimalAllowable() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(-90.1, 150.);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(-90.1, 150.);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals(
                 "must be greater than or equal to -90",
@@ -51,9 +51,9 @@ public final class CoordinateTest extends AbstractContextTest {
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLatitudeIsMoreThanMaximalAllowable() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(90.1, 150.);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(90.1, 150.);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals(
                 "must be less than or equal to 90",
@@ -63,9 +63,9 @@ public final class CoordinateTest extends AbstractContextTest {
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLongitudeIsNull() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(45., null);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(45., null);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals(
                 "must not be null",
@@ -75,9 +75,9 @@ public final class CoordinateTest extends AbstractContextTest {
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLongitudeIsLessThanMinimalAllowable() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(45., -180.1);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(45., -180.1);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals(
                 "must be greater than or equal to -180",
@@ -87,9 +87,9 @@ public final class CoordinateTest extends AbstractContextTest {
 
     @Test
     public void coordinateShouldNotBeValidBecauseOfLongitudeIsMoreThanMaximalAllowable() {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(45., 180.1);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(45., 180.1);
 
-        final Set<ConstraintViolation<RequestCoordinate>> constraintViolations = this.validator.validate(givenCoordinate);
+        final Set<ConstraintViolation<CoordinateRequest>> constraintViolations = this.validator.validate(givenCoordinate);
         assertEquals(1, constraintViolations.size());
         assertEquals(
                 "must be less than or equal to 180",
@@ -100,7 +100,7 @@ public final class CoordinateTest extends AbstractContextTest {
     @Test
     public void coordinateShouldBeConvertedToJson()
             throws Exception {
-        final RequestCoordinate givenCoordinate = new RequestCoordinate(45., 90.);
+        final CoordinateRequest givenCoordinate = new CoordinateRequest(45., 90.);
 
         final String actual = this.objectMapper.writeValueAsString(givenCoordinate);
         final String expected = "{\"latitude\":45.0,\"longitude\":90.0}";
@@ -112,8 +112,8 @@ public final class CoordinateTest extends AbstractContextTest {
             throws Exception {
         final String givenJson = "{\"latitude\":45.0,\"longitude\":90.0}";
 
-        final RequestCoordinate actual = this.objectMapper.readValue(givenJson, RequestCoordinate.class);
-        final RequestCoordinate expected = new RequestCoordinate(45., 90.);
+        final CoordinateRequest actual = this.objectMapper.readValue(givenJson, CoordinateRequest.class);
+        final CoordinateRequest expected = new CoordinateRequest(45., 90.);
         assertEquals(expected, actual);
     }
 }

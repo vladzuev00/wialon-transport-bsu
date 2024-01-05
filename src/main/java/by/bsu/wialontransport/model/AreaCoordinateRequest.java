@@ -12,15 +12,15 @@ public class AreaCoordinateRequest {
 
     @NotNull
     @Valid
-    RequestCoordinate leftBottom;
+    CoordinateRequest leftBottom;
 
     @NotNull
     @Valid
-    RequestCoordinate rightUpper;
+    CoordinateRequest rightUpper;
 
     @JsonCreator
-    public AreaCoordinateRequest(@JsonProperty("leftBottom") final RequestCoordinate leftBottom,
-                                 @JsonProperty("rightUpper") final RequestCoordinate rightUpper) {
+    public AreaCoordinateRequest(@JsonProperty("leftBottom") final CoordinateRequest leftBottom,
+                                 @JsonProperty("rightUpper") final CoordinateRequest rightUpper) {
         this.leftBottom = leftBottom;
         this.rightUpper = rightUpper;
     }

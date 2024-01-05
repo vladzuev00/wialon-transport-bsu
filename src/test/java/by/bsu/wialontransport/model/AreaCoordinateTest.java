@@ -23,8 +23,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldBeValid() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -37,7 +37,7 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
                 null,
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -50,8 +50,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLatitudeIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(null, 46.),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(null, 46.),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -64,8 +64,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLatitudeIsLessThanMinimalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(-90.1, 46.),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(-90.1, 46.),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -81,8 +81,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLatitudeIsMoreThanMaximalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(90.1, 46.),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(90.1, 46.),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -98,8 +98,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLongitudeIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., null),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(45., null),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -112,8 +112,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLongitudeIsLessThanMinimalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., -180.1),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(45., -180.1),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -129,8 +129,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfLeftBottomLongitudeIsMoreThanMaximalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 180.1),
-                new RequestCoordinate(47., 48.)
+                new CoordinateRequest(45., 180.1),
+                new CoordinateRequest(47., 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -143,7 +143,7 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
+                new CoordinateRequest(45., 46.),
                 null
         );
 
@@ -157,8 +157,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLatitudeIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(null, 48.)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(null, 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -171,8 +171,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLatitudeIsLessThanMinimalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(-90.1, 48.)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(-90.1, 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -188,8 +188,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLatitudeIsMoreThanMaximalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(90.1, 48.)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(90.1, 48.)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -205,8 +205,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLongitudeIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., null)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., null)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -219,8 +219,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLongitudeIsLessThanMinimalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., -180.1)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., -180.1)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -236,8 +236,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     @Test
     public void areaCoordinateShouldNotBeValidBecauseOfRightUpperLongitudeIsMoreThanMaximalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., 180.1)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., 180.1)
         );
 
         final Set<ConstraintViolation<AreaCoordinateRequest>> constraintViolations = this.validator.validate(
@@ -251,8 +251,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
     public void areaCoordinateShouldBeConvertedToJson()
             throws Exception {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., 48.1)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., 48.1)
         );
 
         final String actual = this.objectMapper.writeValueAsString(givenAreaCoordinate);
@@ -269,8 +269,8 @@ public final class AreaCoordinateTest extends AbstractContextTest {
 
         final AreaCoordinateRequest actual = this.objectMapper.readValue(givenJson, AreaCoordinateRequest.class);
         final AreaCoordinateRequest expected = new AreaCoordinateRequest(
-                new RequestCoordinate(45., 46.),
-                new RequestCoordinate(47., 48.1)
+                new CoordinateRequest(45., 46.),
+                new CoordinateRequest(47., 48.1)
         );
         assertEquals(expected, actual);
     }

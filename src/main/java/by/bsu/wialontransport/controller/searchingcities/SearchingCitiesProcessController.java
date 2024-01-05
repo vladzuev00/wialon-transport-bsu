@@ -8,16 +8,17 @@ import by.bsu.wialontransport.controller.searchingcities.validator.StartSearchin
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
+import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Optional;
 
 import static java.lang.String.format;
 import static org.springframework.http.ResponseEntity.ok;
@@ -27,44 +28,40 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 @Validated
 public class SearchingCitiesProcessController {
-    private static final String MESSAGE_EXCEPTION_OF_NO_SUCH_PROCESS = "Process with id '%d' doesn't exist.";
-
-    private final StartSearchingCitiesRequestValidator validator;
+    private final StartSearchingCitiesRequestValidator requestValidator;
     private final SearchingCitiesProcessService processService;
     private final SearchingCitiesProcessControllerMapper mapper;
     private final StartingSearchingCitiesProcessService startingProcessService;
 
     @GetMapping("/{id}")
     public ResponseEntity<SearchingCitiesProcessResponse> findById(@PathVariable final Long id) {
-        final Optional<SearchingCitiesProcess> optionalFoundProcess = this.processService.findById(id);
-        return optionalFoundProcess.map(this.mapper::mapToResponse)
+        return processService.findById(id)
+                .map(mapper::mapToResponse)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NoSuchEntityException(format(MESSAGE_EXCEPTION_OF_NO_SUCH_PROCESS, id)));
+                .orElseThrow(() -> new NoSuchEntityException(format("Process with id '%d' doesn't exist.", id)));
     }
 
     @GetMapping
     public ResponseEntity<Page<SearchingCitiesProcess>> findByStatus(
             @RequestParam(name = "status") final Status status,
             @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
-            @RequestParam(name = "pageSize") @Min(1) final Integer pageSize) {
-//        final List<SearchingCitiesProcess> foundProcesses = this.processService.findByStatus(
-//                status,
-//                pageNumber,
-//                pageSize
-//        );
-//        return ok(this.mapper.mapToResponse(pageNumber, pageSize, foundProcesses));
-        return null;
+            @RequestParam(name = "pageSize") @Min(1) final Integer pageSize
+    ) {
+        final Page<SearchingCitiesProcess> page = processService.findByStatusOrderedById(
+                status,
+                PageRequest.of(pageNumber, pageSize)
+        );
+        return ok(page);
     }
 
     @PostMapping
     public ResponseEntity<SearchingCitiesProcessResponse> start(
-            @Valid @RequestBody final StartSearchingCitiesRequest request) {
-        this.validator.validate(request);
-        final SearchingCitiesProcess createdProcess = this.startingProcessService.start(
-//                request.getAreaCoordinate(),
-                null,
-                request.getSearchStep()
-        );
-        return ok(this.mapper.mapToResponse(createdProcess));
+            @Valid @RequestBody final StartSearchingCitiesRequest request
+    ) {
+        requestValidator.validate(request);
+        final AreaCoordinate areaCoordinate = mapper.mapToAreaCoordinate(request.getAreaCoordinate());
+        final SearchingCitiesProcess process = startingProcessService.start(areaCoordinate, request.getSearchStep());
+        final SearchingCitiesProcessResponse response = mapper.mapToResponse(process);
+        return ok(response);
     }
 }

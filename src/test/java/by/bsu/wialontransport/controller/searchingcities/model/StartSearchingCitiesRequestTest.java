@@ -2,7 +2,7 @@ package by.bsu.wialontransport.controller.searchingcities.model;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.CoordinateRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldBeValid() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(1.1, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -54,8 +54,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldNotBeValidBecauseOfAreaCoordinateIsNotValid() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(null, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(null, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -72,8 +72,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsNull() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(1.1, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -90,8 +90,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsLessThanMinimalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(1.1, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -108,8 +108,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     @Test
     public void requestShouldNotBeValidBecauseOfSearchStepIsMoreThanMaximalAllowable() {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(1.1, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -127,8 +127,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
     public void requestShouldBeMappedToJson()
             throws Exception {
         final AreaCoordinateRequest givenAreaCoordinate = new AreaCoordinateRequest(
-                new RequestCoordinate(1.1, 2.2),
-                new RequestCoordinate(4.4, 5.5)
+                new CoordinateRequest(1.1, 2.2),
+                new CoordinateRequest(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
                 givenAreaCoordinate,
@@ -177,8 +177,8 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
         );
         final StartSearchingCitiesRequest expected = new StartSearchingCitiesRequest(
                 new AreaCoordinateRequest(
-                        new RequestCoordinate(1.1, 2.2),
-                        new RequestCoordinate(4.4, 5.5)
+                        new CoordinateRequest(1.1, 2.2),
+                        new CoordinateRequest(4.4, 5.5)
                 ),
                 1.
         );

@@ -4,7 +4,7 @@ import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultProperty
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
@@ -76,7 +76,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         private LocalDateTime dateTime;
 
         @Getter(PRIVATE)
-        private RequestCoordinate coordinate;
+        private CoordinateRequest coordinate;
 
         private int course;
         private int altitude;
@@ -106,7 +106,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
             this.dateTime = dateTime;
         }
 
-        public void coordinate(final RequestCoordinate coordinate) {
+        public void coordinate(final CoordinateRequest coordinate) {
             this.coordinate = coordinate;
         }
 
@@ -178,7 +178,7 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
 
         ReceivedData build(final Tracker tracker) {
             final LocalDateTime dateTime = this.getRequiredProperty(ReceivedDataBuilder::getDateTime);
-            final RequestCoordinate coordinate = this.getRequiredProperty(ReceivedDataBuilder::getCoordinate);
+            final CoordinateRequest coordinate = this.getRequiredProperty(ReceivedDataBuilder::getCoordinate);
             return new ReceivedData(
                     dateTime,
                     coordinate,

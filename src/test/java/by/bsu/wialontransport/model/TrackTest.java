@@ -12,13 +12,13 @@ public final class TrackTest {
     @Test
     public void trackShouldBeCreatedByCoordinateArray() {
         final TempTrack actual = create(
-                new RequestCoordinate(1., 2.),
-                new RequestCoordinate(3., 4.)
+                new CoordinateRequest(1., 2.),
+                new CoordinateRequest(3., 4.)
         );
         final TempTrack expected = new TempTrack(
                 List.of(
-                        new RequestCoordinate(1., 2.),
-                        new RequestCoordinate(3., 4.)
+                        new CoordinateRequest(1., 2.),
+                        new CoordinateRequest(3., 4.)
                 )
         );
         Assert.assertEquals(expected, actual);

@@ -9,14 +9,14 @@ import static java.util.Arrays.asList;
 
 @Value
 public class TempTrack {
-    List<RequestCoordinate> coordinates;
+    List<CoordinateRequest> coordinates;
 
     //TODO: test
-    public Stream<RequestCoordinate> findCoordinateStream() {
+    public Stream<CoordinateRequest> findCoordinateStream() {
         return this.coordinates.stream();
     }
 
-    public static TempTrack create(final RequestCoordinate... coordinates) {
+    public static TempTrack create(final CoordinateRequest... coordinates) {
         return new TempTrack(asList(coordinates));
     }
 }

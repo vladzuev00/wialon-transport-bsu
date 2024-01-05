@@ -5,7 +5,7 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.BiIntToDoubleFunction;
 import by.bsu.wialontransport.function.ToShortFunction;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
-import by.bsu.wialontransport.model.RequestCoordinate;
+import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivingDataPackageHandler;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
@@ -114,10 +114,10 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
         return LocalDateTime.of(year, month, day, hour, minute, second);
     }
 
-    private static RequestCoordinate extractCoordinate(final NewWingData data) {
+    private static CoordinateRequest extractCoordinate(final NewWingData data) {
         final double latitude = extractLatitude(data);
         final double longitude = extractLongitude(data);
-        return new RequestCoordinate(latitude, longitude);
+        return new CoordinateRequest(latitude, longitude);
     }
 
     private static double extractLatitude(final NewWingData data) {
