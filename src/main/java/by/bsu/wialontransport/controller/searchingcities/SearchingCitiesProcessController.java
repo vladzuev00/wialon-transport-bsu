@@ -2,7 +2,6 @@ package by.bsu.wialontransport.controller.searchingcities;
 
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.controller.searchingcities.mapper.SearchingCitiesProcessControllerMapper;
-import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessPageResponse;
 import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
 import by.bsu.wialontransport.controller.searchingcities.model.StartSearchingCitiesRequest;
 import by.bsu.wialontransport.controller.searchingcities.validator.StartSearchingCitiesRequestValidator;
@@ -11,13 +10,13 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -44,7 +43,7 @@ public class SearchingCitiesProcessController {
     }
 
     @GetMapping
-    public ResponseEntity<SearchingCitiesProcessPageResponse> findByStatus(
+    public ResponseEntity<Page<SearchingCitiesProcess>> findByStatus(
             @RequestParam(name = "status") final Status status,
             @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
             @RequestParam(name = "pageSize") @Min(1) final Integer pageSize) {

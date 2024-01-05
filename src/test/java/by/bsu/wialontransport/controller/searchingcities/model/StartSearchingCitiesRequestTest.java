@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
@@ -29,10 +30,11 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, 1.
+                givenAreaCoordinate,
+                1.
         );
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertTrue(constraintViolations.isEmpty());
@@ -40,15 +42,13 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
 
     @Test
     public void requestShouldNotBeValidBecauseOfAreaCoordinateIsNull() {
-        final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                null, 1.
-        );
+        final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(null, 1.);
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", findFirstMessage(constraintViolations));
     }
 
     @Test
@@ -58,14 +58,15 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, 1.
+                givenAreaCoordinate,
+                1.
         );
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", findFirstMessage(constraintViolations));
     }
 
     @Test
@@ -75,14 +76,15 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, null
+                givenAreaCoordinate,
+                null
         );
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals("must not be null", constraintViolations.iterator().next().getMessage());
+        assertEquals("must not be null", findFirstMessage(constraintViolations));
     }
 
     @Test
@@ -92,17 +94,15 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, 0.009
+                givenAreaCoordinate,
+                0.009
         );
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals(
-                "must be greater than or equal to 0.01",
-                constraintViolations.iterator().next().getMessage()
-        );
+        assertEquals("must be greater than or equal to 0.01", findFirstMessage(constraintViolations));
     }
 
     @Test
@@ -112,17 +112,15 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, 5.0001
+                givenAreaCoordinate,
+                5.0001
         );
 
-        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = this.validator.validate(
+        final Set<ConstraintViolation<StartSearchingCitiesRequest>> constraintViolations = validator.validate(
                 givenRequest
         );
         assertEquals(1, constraintViolations.size());
-        assertEquals(
-                "must be less than or equal to 5",
-                constraintViolations.iterator().next().getMessage()
-        );
+        assertEquals("must be less than or equal to 5", findFirstMessage(constraintViolations));
     }
 
     @Test
@@ -133,23 +131,49 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
                 new RequestCoordinate(4.4, 5.5)
         );
         final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
-                givenAreaCoordinate, 1.
+                givenAreaCoordinate,
+                1.
         );
 
-        final String actual = this.objectMapper.writeValueAsString(givenRequest);
-        final String expected = "{\"areaCoordinate\":{\"leftBottom\":{\"latitude\":1.1,\"longitude\":2.2},"
-                + "\"rightUpper\":{\"latitude\":4.4,\"longitude\":5.5}},\"searchStep\":1.0}";
-        assertEquals(expected, actual);
+        final String actual = objectMapper.writeValueAsString(givenRequest);
+        final String expected = """
+                {
+                  "areaCoordinate": {
+                    "leftBottom": {
+                      "latitude": 1.1,
+                      "longitude": 2.2
+                    },
+                    "rightUpper": {
+                      "latitude": 4.4,
+                      "longitude": 5.5
+                    }
+                  },
+                  "searchStep": 1
+                }""";
+        assertEquals(expected, actual, true);
     }
 
     @Test
     public void jsonShouldBeConvertedToRequest()
             throws Exception {
-        final String givenJson = "{\"areaCoordinate\":{\"leftBottom\":{\"latitude\":1.1,\"longitude\":2.2},"
-                + "\"rightUpper\":{\"latitude\":4.4,\"longitude\":5.5}},\"searchStep\":1.0}";
+        final String givenJson = """
+                {
+                  "areaCoordinate": {
+                    "leftBottom": {
+                      "latitude": 1.1,
+                      "longitude": 2.2
+                    },
+                    "rightUpper": {
+                      "latitude": 4.4,
+                      "longitude": 5.5
+                    }
+                  },
+                  "searchStep": 1
+                }""";
 
-        final StartSearchingCitiesRequest actual = this.objectMapper.readValue(
-                givenJson, StartSearchingCitiesRequest.class
+        final StartSearchingCitiesRequest actual = objectMapper.readValue(
+                givenJson,
+                StartSearchingCitiesRequest.class
         );
         final StartSearchingCitiesRequest expected = new StartSearchingCitiesRequest(
                 new AreaCoordinateRequest(
@@ -161,4 +185,7 @@ public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
         assertEquals(expected, actual);
     }
 
+    private static String findFirstMessage(final Set<ConstraintViolation<StartSearchingCitiesRequest>> violations) {
+        return violations.iterator().next().getMessage();
+    }
 }
