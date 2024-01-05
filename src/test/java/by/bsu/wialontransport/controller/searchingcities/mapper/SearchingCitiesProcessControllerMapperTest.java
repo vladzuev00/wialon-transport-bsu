@@ -32,7 +32,7 @@ public final class SearchingCitiesProcessControllerMapperTest extends AbstractCo
     public void processShouldBeMappedToResponse() {
         final Long givenId = 255L;
         final Geometry givenBounds = createPolygon(
-                this.geometryFactory,
+                geometryFactory,
                 1, 1, 1, 4, 4, 4, 4, 1
         );
         final double givenSearchStep = 0.5;
@@ -48,10 +48,10 @@ public final class SearchingCitiesProcessControllerMapperTest extends AbstractCo
                 .status(givenStatus)
                 .build();
 
-        final SearchingCitiesProcessResponse actual = this.mapper.mapToResponse(givenProcess);
+        final SearchingCitiesProcessResponse actual = mapper.mapToResponse(givenProcess);
         final SearchingCitiesProcessResponse expected = SearchingCitiesProcessResponse.builder()
                 .id(givenId)
-                .bounds(this.geoJSONWriter.write(givenBounds))
+                .bounds(geoJSONWriter.write(givenBounds))
                 .searchStep(givenSearchStep)
                 .totalPoints(givenTotalPoints)
                 .handledPoints(givenHandledPoints)
