@@ -28,16 +28,12 @@ public abstract class ProtectedLoginPackageHandler extends LoginPackageHandler<P
     @Override
     protected final Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
                                                                          final ProtectedLoginPackage loginPackage) {
-        return this.isPasswordCorrect(tracker, loginPackage)
-                ? empty()
-                : Optional.of(this.createWrongPasswordResponse());
+        return isPasswordCorrect(tracker, loginPackage) ? empty() : Optional.of(createWrongPasswordResponse());
     }
 
     protected abstract Package createWrongPasswordResponse();
 
     private boolean isPasswordCorrect(final Tracker tracker, final ProtectedLoginPackage loginPackage) {
-        final String packagePassword = loginPackage.getPassword();
-        final String trackerEncodedPassword = tracker.getPassword();
-        return this.passwordEncoder.matches(packagePassword, trackerEncodedPassword);
+        return passwordEncoder.matches(loginPackage.getPassword(), tracker.getPassword());
     }
 }

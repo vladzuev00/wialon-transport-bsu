@@ -29,8 +29,8 @@ public final class ProtectedLoginPackageHandlerTest {
 
     @Before
     public void initializeLoginPackageHandler() {
-        this.loginPackageHandler = new TestProtectedLoginPackageHandler(
-                this.mockedPasswordEncoder,
+        loginPackageHandler = new TestProtectedLoginPackageHandler(
+                mockedPasswordEncoder,
                 GIVEN_WRONG_PASSWORD_RESPONSE
         );
     }
@@ -43,10 +43,10 @@ public final class ProtectedLoginPackageHandlerTest {
         final String givenPackagePassword = "111";
         final ProtectedLoginPackage givenLoginPackage = createLoginPackage(givenPackagePassword);
 
-        when(this.mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
+        when(mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
                 .thenReturn(true);
 
-        final Optional<Package> optionalActual = this.loginPackageHandler.checkLoginCreatingResponseIfFailed(
+        final Optional<Package> optionalActual = loginPackageHandler.checkLoginCreatingResponseIfFailed(
                 givenTracker,
                 givenLoginPackage
         );
@@ -61,10 +61,10 @@ public final class ProtectedLoginPackageHandlerTest {
         final String givenPackagePassword = "1111";
         final ProtectedLoginPackage givenLoginPackage = createLoginPackage(givenPackagePassword);
 
-        when(this.mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
+        when(mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
                 .thenReturn(false);
 
-        final Optional<Package> optionalActual = this.loginPackageHandler.checkLoginCreatingResponseIfFailed(
+        final Optional<Package> optionalActual = loginPackageHandler.checkLoginCreatingResponseIfFailed(
                 givenTracker,
                 givenLoginPackage
         );
@@ -116,7 +116,7 @@ public final class ProtectedLoginPackageHandlerTest {
 
         @Override
         protected Package createWrongPasswordResponse() {
-            return this.wrongPasswordResponse;
+            return wrongPasswordResponse;
         }
     }
 }
