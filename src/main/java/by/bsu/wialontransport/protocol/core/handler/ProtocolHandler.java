@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE = "Start handling request package: '{}'";
     private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
-    private static final String ALIAS_NOT_DEFINED_TRACKER_IMEI = "not defined imei";
+    private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
     private final List<PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
@@ -31,7 +30,7 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     public final void channelRead(final ChannelHandlerContext context, final Object requestObject) {
         final Package requestPackage = (Package) requestObject;
         logStartHandlingPackage(requestPackage);
-        final PackageHandler<?> packageHandler = this.findPackageHandler(requestPackage);
+        final PackageHandler<?> packageHandler = findPackageHandler(requestPackage);
         packageHandler.handle(requestPackage, context);
     }
 
@@ -52,8 +51,8 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public final void channelInactive(final ChannelHandlerContext context) {
-        this.logAboutInactiveChannel(context);
-        this.removeConnectionInfoIfTrackerWasAuthorized(context);
+        logAboutInactiveChannel(context);
+        removeConnectionInfoIfTrackerWasAuthorized(context);
     }
 
     private static void logStartHandlingPackage(final Package requestPackage) {
@@ -61,7 +60,7 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private PackageHandler<?> findPackageHandler(final Package requestPackage) {
-        return this.packageHandlers.stream()
+        return packageHandlers.stream()
                 .filter(packageHandler -> packageHandler.isAbleToHandle(requestPackage))
                 .findFirst()
                 .orElseThrow(
@@ -81,15 +80,14 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void logAboutInactiveChannel(final ChannelHandlerContext context) {
-        final Optional<String> optionalTrackerImei = this.contextAttributeManager.findTrackerImei(context);
-        final String trackerImei = optionalTrackerImei.orElse(ALIAS_NOT_DEFINED_TRACKER_IMEI);
+        final String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
         log.info(TEMPLATE_MESSAGE_INACTIVE_CHANNEL, trackerImei);
     }
 
     private void removeConnectionInfoIfTrackerWasAuthorized(final ChannelHandlerContext context) {
-        this.contextAttributeManager.findTracker(context)
+        contextAttributeManager.findTracker(context)
                 .map(Tracker::getId)
-                .ifPresent(this.connectionManager::remove);
+                .ifPresent(connectionManager::remove);
     }
 
     static final class NoSuitablePackageHandlerException extends RuntimeException {
