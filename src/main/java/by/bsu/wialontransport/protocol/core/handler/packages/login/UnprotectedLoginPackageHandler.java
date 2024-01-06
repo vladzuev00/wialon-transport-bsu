@@ -26,5 +26,4 @@ public abstract class UnprotectedLoginPackageHandler extends LoginPackageHandler
                                                                          final LoginPackage loginPackage) {
         return empty();
     }
-
 }

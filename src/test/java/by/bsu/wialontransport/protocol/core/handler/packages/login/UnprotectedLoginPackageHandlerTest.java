@@ -18,7 +18,7 @@ public final class UnprotectedLoginPackageHandlerTest {
         final Tracker givenTracker = Tracker.builder().build();
         final LoginPackage givenLoginPackage = mock(LoginPackage.class);
 
-        final Optional<Package> optionalActual = this.loginPackageHandler.checkLoginCreatingResponseIfFailed(
+        final Optional<Package> optionalActual = loginPackageHandler.checkLoginCreatingResponseIfFailed(
                 givenTracker,
                 givenLoginPackage
         );
