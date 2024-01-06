@@ -20,7 +20,7 @@ public final class ProtocolBufferDecoderTest {
     public void sourceShouldBeCreated() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final ByteBuf actual = this.decoder.createSource(givenBuffer);
+        final ByteBuf actual = decoder.createSource(givenBuffer);
         assertSame(givenBuffer, actual);
     }
 }
