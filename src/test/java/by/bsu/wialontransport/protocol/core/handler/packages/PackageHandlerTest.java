@@ -67,7 +67,7 @@ public final class PackageHandlerTest {
 
         @Override
         protected void handleConcretePackage(final TestPackage requestPackage, final ChannelHandlerContext context) {
-            this.packageHandled = true;
+            packageHandled = true;
         }
     }
 }
