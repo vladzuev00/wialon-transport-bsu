@@ -42,16 +42,16 @@ public class SearchingCitiesProcessController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SearchingCitiesProcess>> findByStatus(
+    public ResponseEntity<Page<SearchingCitiesProcessResponse>> findByStatus(
             @RequestParam(name = "status") final Status status,
             @RequestParam(name = "pageNumber") @Min(0) final Integer pageNumber,
             @RequestParam(name = "pageSize") @Min(1) final Integer pageSize
     ) {
-        final Page<SearchingCitiesProcess> page = processService.findByStatusOrderedById(
+        final Page<SearchingCitiesProcessResponse> responses = processService.findByStatusOrderedById(
                 status,
                 PageRequest.of(pageNumber, pageSize)
-        );
-        return ok(page);
+        ).map(mapper::mapToResponse);
+        return ok(responses);
     }
 
     @PostMapping

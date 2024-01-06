@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.kafka.model.view;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.kafka.model.view.SavedParameterView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

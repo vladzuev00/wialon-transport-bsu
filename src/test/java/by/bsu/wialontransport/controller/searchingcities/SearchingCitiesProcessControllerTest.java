@@ -1,36 +1,63 @@
 package by.bsu.wialontransport.controller.searchingcities;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.controller.exception.CustomValidationException;
 import by.bsu.wialontransport.controller.searchingcities.mapper.SearchingCitiesProcessControllerMapper;
+import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
+import by.bsu.wialontransport.controller.searchingcities.model.StartSearchingCitiesRequest;
 import by.bsu.wialontransport.controller.searchingcities.validator.StartSearchingCitiesRequestValidator;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
+import by.bsu.wialontransport.model.AreaCoordinate;
+import by.bsu.wialontransport.model.AreaCoordinateRequest;
+import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.wololo.jts2geojson.GeoJSONWriter;
 
+import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status.HANDLING;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
-import static org.junit.Assert.assertEquals;
+import static java.util.Optional.empty;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.*;
+import static org.skyscreamer.jsonassert.Customization.customization;
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public final class SearchingCitiesProcessControllerTest extends AbstractContextTest {
+    private static final String JSON_PROPERTY_NAME_DATE_TIME = "dateTime";
+    private static final CustomComparator COMPARATOR_IGNORING_DATE_TIME = new CustomComparator(
+            STRICT,
+            customization(JSON_PROPERTY_NAME_DATE_TIME, (first, second) -> true)
+    );
+
     private static final String CONTROLLER_URL = "/searchCities";
 
     private static final String PARAM_NAME_STATUS = "status";
@@ -53,10 +80,14 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
     private GeometryFactory geometryFactory;
 
     @Autowired
+    private GeoJSONWriter geoJSONWriter;
+
+    @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
-    public void processShouldBeFoundById() {
+    public void processShouldBeFoundById()
+            throws Exception {
         final Long givenId = 255L;
         final Geometry givenBounds = createPolygon(
                 geometryFactory,
@@ -77,293 +108,536 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
                 .build();
         when(mockedProcessService.findById(eq(givenId))).thenReturn(Optional.of(givenProcess));
 
+        final SearchingCitiesProcessResponse givenResponse = SearchingCitiesProcessResponse.builder()
+                .id(givenId)
+                .bounds(geoJSONWriter.write(givenBounds))
+                .searchStep(givenSearchStep)
+                .totalPoints(givenTotalPoints)
+                .handledPoints(givenHandledPoints)
+                .status(givenStatus)
+                .build();
+        when(mockedMapper.mapToResponse(same(givenProcess))).thenReturn(givenResponse);
+
         final String url = createUrlToFindProcessById(givenId);
-        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
         assertSame(OK, responseEntity.getStatusCode());
 
         final String actual = responseEntity.getBody();
-        final String expected = "{\"id\":255,\"bounds\":{\"type\":\"Polygon\","
-                + "\"coordinates\":[[[1.0,1.0],[1.0,2.0],[2.0,2.0],[2.0,1.0],[1.0,1.0]]]},"
-                + "\"searchStep\":0.5,\"totalPoints\":100,\"handledPoints\":0,\"status\":\"HANDLING\"}";
-        assertEquals(expected, actual);
+        final String expected = """
+                {
+                  "id": 255,
+                  "bounds": {
+                    "type": "Polygon",
+                    "coordinates": [
+                      [
+                        [
+                          1,
+                          1
+                        ],
+                        [
+                          1,
+                          2
+                        ],
+                        [
+                          2,
+                          2
+                        ],
+                        [
+                          2,
+                          1
+                        ],
+                        [
+                          1,
+                          1
+                        ]
+                      ]
+                    ]
+                  },
+                  "searchStep": 0.5,
+                  "totalPoints": 100,
+                  "handledPoints": 0,
+                  "status": "HANDLING"
+                }""";
+        assertEquals(expected, actual, true);
     }
 
-//    @Test
-//    public void processShouldNotBeFoundById() {
-//        final Long givenId = 255L;
-//
-//        when(this.mockedProcessService.findById(givenId)).thenReturn(empty());
-//
-//        final String url = createUrlToFindProcessById(givenId);
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_FOUND, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_FOUND\",\"message\":\"Process with id '255' doesn't exist\\.\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldBeFoundByStatuses() {
-//        final SearchingCitiesProcess firstGivenProcess = SearchingCitiesProcess.builder()
-//                .id(255L)
-//                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
-//                .searchStep(0.5)
-//                .totalPoints(100)
-//                .handledPoints(0)
-//                .status(HANDLING)
-//                .build();
-//        final SearchingCitiesProcess secondGivenProcess = SearchingCitiesProcess.builder()
-//                .id(256L)
-//                .bounds(createPolygon(this.geometryFactory, 1, 1, 1, 2, 2, 2, 2, 1))
-//                .searchStep(0.5)
-//                .totalPoints(100)
-//                .handledPoints(0)
-//                .status(HANDLING)
-//                .build();
-//        final List<SearchingCitiesProcess> givenProcesses = List.of(firstGivenProcess, secondGivenProcess);
-//
-//        final Status givenStatus = HANDLING;
-//        final int givenPageNumber = 0;
-//        final int givenPageSize = 2;
-//        when(this.mockedProcessService.findByStatus(givenStatus, givenPageNumber, givenPageSize))
-//                .thenReturn(givenProcesses);
-//
-//        final String url = createUrlToFindProcessesByStatus(givenStatus, givenPageNumber, givenPageSize);
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(OK, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expected = "{\"pageNumber\":0,\"pageSize\":2,"
-//                + "\"processes\":[{\"id\":255,\"bounds\":{\"type\":\"Polygon\","
-//                + "\"coordinates\":[[[1.0,1.0],[1.0,2.0],[2.0,2.0],[2.0,1.0],[1.0,1.0]]]},"
-//                + "\"searchStep\":0.5,\"totalPoints\":100,\"handledPoints\":0,\"status\":\"HANDLING\"},"
-//                + "{\"id\":256,\"bounds\":{\"type\":\"Polygon\","
-//                + "\"coordinates\":[[[1.0,1.0],[1.0,2.0],[2.0,2.0],[2.0,1.0],[1.0,1.0]]]},"
-//                + "\"searchStep\":0.5,\"totalPoints\":100,\"handledPoints\":0,\"status\":\"HANDLING\"}]}";
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfStatusIsNotDefined() {
-//        final int givenPageNumber = 0;
-//        final int givenPageSize = 2;
-//
-//        final String url = createUrlToFindProcessesByStatus((Status) null, givenPageNumber, givenPageSize);
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"Required request parameter 'status' for method parameter type Status "
-//                + "is not present\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfNotValidStatus() {
-//        final int givenPageNumber = 0;
-//        final int givenPageSize = 2;
-//
-//        final String url = createUrlToFindProcessesByStatus(
-//                "some-status", givenPageNumber, givenPageSize
-//        );
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"'some-status' should be replaced by one of: HANDLING, SUCCESS, ERROR\\.\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfPageNumberIsNotDefined() {
-//        final String url = createUrlToFindProcessesByStatus(
-//                HANDLING, null, 2
-//        );
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"Required request parameter 'pageNumber' for method parameter type Integer "
-//                + "is not present\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfPageNumberIsLessThanMinimalAllowable() {
-//        final String url = createUrlToFindProcessesByStatus(
-//                HANDLING, -1, 2
-//        );
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"findByStatus\\.pageNumber: must be greater than or equal to 0\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfPageSizeIsNotDefined() {
-//        final String url = createUrlToFindProcessesByStatus(
-//                HANDLING, 0, null
-//        );
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"Required request parameter 'pageSize' for method parameter type Integer "
-//                + "is not present\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processesShouldNotBeFoundBecauseOfPageSizeIsLessThanMinimalAllowable() {
-//        final String url = createUrlToFindProcessesByStatus(
-//                HANDLING, 0, 0
-//        );
-//        final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity(url, String.class);
-//
-//        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
-//
-//        final String actual = responseEntity.getBody();
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"findByStatus\\.pageSize: must be greater than or equal to 1\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processShouldBeStarted() {
-//        final String givenBody = "{"
-//                + "\"areaCoordinate\" : {"
-//                + "\"leftBottom\" : {"
-//                + "\"latitude\" : 53.669375,"
-//                + "\"longitude\" : 27.053689"
-//                + "},"
-//                + "\"rightUpper\" : {"
-//                + "\"latitude\" : 53.896085,"
-//                + "\"longitude\" : 27.443176"
-//                + "}"
-//                + "},"
-//                + "\"searchStep\": 0.04"
-//                + "}";
-//
-//        final HttpHeaders givenHeaders = new HttpHeaders();
-//        givenHeaders.setContentType(APPLICATION_JSON);
-//
-//        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
-//
-//        final String url = createUrlToStartProcess();
-//
-//        final SearchingCitiesProcess givenProcess = SearchingCitiesProcess.builder()
-//                .id(255L)
-//                .bounds(createPolygon(this.geometryFactory, 1., 2., 3., 4., 5., 6.))
-//                .searchStep(0.5)
-//                .totalPoints(100)
-//                .handledPoints(0)
-//                .status(HANDLING)
-//                .build();
-//        final AreaCoordinate expectedAreaCoordinate = new AreaCoordinate(
-//                new Coordinate(53.669375, 27.053689),
-//                new Coordinate(53.896085, 27.443176)
-//        );
-//        final double expectedSearchStep = 0.04;
-//        when(this.mockedStartingProcessService.start(expectedAreaCoordinate, expectedSearchStep))
-//                .thenReturn(givenProcess);
-//
-//        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
-//        final String expected = "{\"id\":255,\"bounds\":{\"type\":\"Polygon\","
-//                + "\"coordinates\":[[[1.0,2.0],[3.0,4.0],[5.0,6.0],[1.0,2.0]]]},"
-//                + "\"searchStep\":0.5,\"totalPoints\":100,\"handledPoints\":0,\"status\":\"HANDLING\"}";
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void processShouldNotBeStartedBecauseOfRequestIsNotValid() {
-//        final String givenBody = "{"
-//                + "\"areaCoordinate\" : {"
-//                + "\"leftBottom\" : {"
-//                + "\"latitude\" : 53.669375,"
-//                + "\"longitude\" : 27.053689"
-//                + "},"
-//                + "\"rightUpper\" : {"
-//                + "\"latitude\" : 53.896085,"
-//                + "\"longitude\" : 27.443176"
-//                + "}"
-//                + "}"
-//                + "}";
-//
-//        final HttpHeaders givenHeaders = new HttpHeaders();
-//        givenHeaders.setContentType(APPLICATION_JSON);
-//
-//        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
-//
-//        final String url = createUrlToStartProcess();
-//
-//        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"searchStep : must not be null\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
-//
-//    @Test
-//    public void processShouldBeStartedBecauseOfAreaCoordinateIsNotValid() {
-//        final String givenBody = "{"
-//                + "\"areaCoordinate\" : {"
-//                + "\"leftBottom\" : {"
-//                + "\"latitude\" : 53.896085,"
-//                + "\"longitude\" : 27.443176"
-//                + "},"
-//                + "\"rightUpper\" : {"
-//                + "\"latitude\" : 53.896084,"
-//                + "\"longitude\" : 27.443175"
-//                + "}"
-//                + "},"
-//                + "\"searchStep\": 0.04"
-//                + "}";
-//
-//        final HttpHeaders givenHeaders = new HttpHeaders();
-//        givenHeaders.setContentType(APPLICATION_JSON);
-//
-//        final HttpEntity<String> givenHttpEntity = new HttpEntity<>(givenBody, givenHeaders);
-//
-//        final String url = createUrlToStartProcess();
-//
-//        final String actual = this.restTemplate.postForObject(url, givenHttpEntity, String.class);
-//        final String expectedRegex = "\\{\"httpStatus\":\"NOT_ACCEPTABLE\","
-//                + "\"message\":\"Left bottom point's coordinates should be less than right upper point's coordinates.\","
-//                + "\"dateTime\":\"\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}-\\d{2}\"}";
-//        assertNotNull(actual);
-//        assertTrue(actual.matches(expectedRegex));
-//    }
+    @Test
+    public void processShouldNotBeFoundById()
+            throws Exception {
+        final Long givenId = 255L;
+
+        when(mockedProcessService.findById(givenId)).thenReturn(empty());
+
+        final String url = createUrlToFindProcessById(givenId);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_FOUND, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_FOUND",
+                  "message": "Process with id '255' doesn't exist.",
+                  "dateTime": "2024-01-05 21-34-41"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldBeFoundByStatuses()
+            throws Exception {
+        final Status givenStatus = HANDLING;
+        final int givenPageNumber = 0;
+        final int givenPageSize = 2;
+
+        final Long firstGivenProcessId = 255L;
+        final Geometry firstGivenProcessGeometry = createPolygon(
+                geometryFactory,
+                1, 1, 1, 2, 2, 2, 2, 1
+        );
+        final double firstGivenProcessSearchStep = 0.5;
+        final long firstGivenProcessTotalPoints = 100;
+        final long firstGivenProcessHandledPoints = 0;
+        final SearchingCitiesProcess firstGivenProcess = SearchingCitiesProcess.builder()
+                .id(firstGivenProcessId)
+                .bounds(firstGivenProcessGeometry)
+                .searchStep(firstGivenProcessSearchStep)
+                .totalPoints(firstGivenProcessTotalPoints)
+                .handledPoints(firstGivenProcessHandledPoints)
+                .status(givenStatus)
+                .build();
+
+        final Long secondGivenProcessId = 256L;
+        final Geometry secondGivenProcessGeometry = createPolygon(
+                geometryFactory,
+                1, 1, 1, 2, 2, 2, 2, 1
+        );
+        final double secondGivenProcessSearchStep = 0.5;
+        final long secondGivenProcessTotalPoints = 100;
+        final long secondGivenProcessHandledPoints = 0;
+        final SearchingCitiesProcess secondGivenProcess = SearchingCitiesProcess.builder()
+                .id(secondGivenProcessId)
+                .bounds(secondGivenProcessGeometry)
+                .searchStep(secondGivenProcessSearchStep)
+                .totalPoints(secondGivenProcessTotalPoints)
+                .handledPoints(secondGivenProcessHandledPoints)
+                .status(givenStatus)
+                .build();
+
+        final Page<SearchingCitiesProcess> givenProcesses = new PageImpl<>(
+                List.of(firstGivenProcess, secondGivenProcess)
+        );
+        final PageRequest expectedPageRequest = PageRequest.of(givenPageNumber, givenPageSize);
+        when(mockedProcessService.findByStatusOrderedById(same(givenStatus), eq(expectedPageRequest)))
+                .thenReturn(givenProcesses);
+
+        final SearchingCitiesProcessResponse firstGivenResponse = SearchingCitiesProcessResponse.builder()
+                .id(firstGivenProcessId)
+                .bounds(geoJSONWriter.write(firstGivenProcessGeometry))
+                .searchStep(firstGivenProcessSearchStep)
+                .totalPoints(firstGivenProcessTotalPoints)
+                .handledPoints(firstGivenProcessHandledPoints)
+                .status(givenStatus)
+                .build();
+        when(mockedMapper.mapToResponse(same(firstGivenProcess))).thenReturn(firstGivenResponse);
+
+        final SearchingCitiesProcessResponse secondGivenResponse = SearchingCitiesProcessResponse.builder()
+                .id(secondGivenProcessId)
+                .bounds(geoJSONWriter.write(secondGivenProcessGeometry))
+                .searchStep(secondGivenProcessSearchStep)
+                .totalPoints(secondGivenProcessTotalPoints)
+                .handledPoints(secondGivenProcessHandledPoints)
+                .status(givenStatus)
+                .build();
+        when(mockedMapper.mapToResponse(same(secondGivenProcess))).thenReturn(secondGivenResponse);
+
+        final String url = createUrlToFindProcessesByStatus(givenStatus, givenPageNumber, givenPageSize);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(OK, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "content": [
+                    {
+                      "id": 255,
+                      "bounds": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              1,
+                              1
+                            ],
+                            [
+                              1,
+                              2
+                            ],
+                            [
+                              2,
+                              2
+                            ],
+                            [
+                              2,
+                              1
+                            ],
+                            [
+                              1,
+                              1
+                            ]
+                          ]
+                        ]
+                      },
+                      "searchStep": 0.5,
+                      "totalPoints": 100,
+                      "handledPoints": 0,
+                      "status": "HANDLING"
+                    },
+                    {
+                      "id": 256,
+                      "bounds": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              1,
+                              1
+                            ],
+                            [
+                              1,
+                              2
+                            ],
+                            [
+                              2,
+                              2
+                            ],
+                            [
+                              2,
+                              1
+                            ],
+                            [
+                              1,
+                              1
+                            ]
+                          ]
+                        ]
+                      },
+                      "searchStep": 0.5,
+                      "totalPoints": 100,
+                      "handledPoints": 0,
+                      "status": "HANDLING"
+                    }
+                  ],
+                  "pageable": "INSTANCE",
+                  "last": true,
+                  "totalElements": 2,
+                  "totalPages": 1,
+                  "size": 2,
+                  "number": 0,
+                  "sort": {
+                    "empty": true,
+                    "sorted": false,
+                    "unsorted": true
+                  },
+                  "first": true,
+                  "numberOfElements": 2,
+                  "empty": false
+                }""";
+        assertEquals(expected, actual, true);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfStatusIsNotDefined()
+            throws Exception {
+        final Integer givenPageNumber = 0;
+        final Integer givenPageSize = 2;
+
+        final String url = createUrlToFindProcessesByStatus((Status) null, givenPageNumber, givenPageSize);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "Required request parameter 'status' for method parameter type Status is not present",
+                  "dateTime": "2024-01-05 22-30-16"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfNotValidStatus()
+            throws Exception {
+        final String givenStatusName = "some-status";
+        final Integer givenPageNumber = 0;
+        final Integer givenPageSize = 2;
+
+        final String url = createUrlToFindProcessesByStatus(givenStatusName, givenPageNumber, givenPageSize);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "'some-status' should be replaced by one of: HANDLING, SUCCESS, ERROR.",
+                  "dateTime": "2024-01-05 22-56-05"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfPageNumberIsNotDefined()
+            throws Exception {
+        final Integer givenPageSize = 2;
+
+        final String url = createUrlToFindProcessesByStatus(
+                HANDLING,
+                null,
+                givenPageSize
+        );
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "Required request parameter 'pageNumber' for method parameter type Integer is not present",
+                  "dateTime": "2024-01-05 22-59-32"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfPageNumberIsLessThanMinimalAllowable()
+            throws Exception {
+        final Integer givenPageNumber = -1;
+        final Integer givenPageSize = 2;
+
+        final String url = createUrlToFindProcessesByStatus(
+                HANDLING,
+                givenPageNumber,
+                givenPageSize
+        );
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "findByStatus.pageNumber: must be greater than or equal to 0",
+                  "dateTime": "2024-01-05 23-03-07"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfPageSizeIsNotDefined()
+            throws Exception {
+        final Integer givenPageNumber = 0;
+
+        final String url = createUrlToFindProcessesByStatus(
+                HANDLING,
+                givenPageNumber,
+                null
+        );
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "Required request parameter 'pageSize' for method parameter type Integer is not present",
+                  "dateTime": "2024-01-05 23-06-54"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processesShouldNotBeFoundBecauseOfPageSizeIsLessThanMinimalAllowable()
+            throws Exception {
+        final Integer givenPageNumber = 0;
+        final Integer givenPageSize = 0;
+
+        final String url = createUrlToFindProcessesByStatus(
+                HANDLING,
+                givenPageNumber,
+                givenPageSize
+        );
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        assertSame(NOT_ACCEPTABLE, responseEntity.getStatusCode());
+
+        final String actual = responseEntity.getBody();
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "findByStatus.pageSize: must be greater than or equal to 1",
+                  "dateTime": "2024-01-05 23-10-27"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processShouldBeStarted()
+            throws Exception {
+        final AreaCoordinateRequest givenAreaCoordinateRequest = new AreaCoordinateRequest(
+                new CoordinateRequest(53.669375, 27.053689),
+                new CoordinateRequest(53.896085, 27.443176)
+        );
+        final double givenSearchStep = 0.04;
+        final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
+                givenAreaCoordinateRequest,
+                givenSearchStep
+        );
+        final HttpEntity<StartSearchingCitiesRequest> givenHttpEntity = createHttpEntityToStartProcess(givenRequest);
+
+        final String url = createUrlToStartProcess();
+
+        final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
+                new Coordinate(53.669375, 27.053689),
+                new Coordinate(53.896085, 27.443176)
+        );
+        when(mockedMapper.mapToAreaCoordinate(eq(givenAreaCoordinateRequest))).thenReturn(givenAreaCoordinate);
+
+        final Long givenProcessId = 255L;
+        final Geometry givenProcessGeometry = createPolygon(
+                geometryFactory,
+                1., 2., 3., 4., 5., 6.
+        );
+        final long givenTotalPoints = 100;
+        final long givenHandledPoints = 0;
+        final Status givenStatus = HANDLING;
+        final SearchingCitiesProcess givenProcess = SearchingCitiesProcess.builder()
+                .id(givenProcessId)
+                .bounds(givenProcessGeometry)
+                .searchStep(givenSearchStep)
+                .totalPoints(givenTotalPoints)
+                .handledPoints(givenHandledPoints)
+                .status(givenStatus)
+                .build();
+        when(mockedStartingProcessService.start(same(givenAreaCoordinate), eq(givenSearchStep)))
+                .thenReturn(givenProcess);
+
+        final SearchingCitiesProcessResponse givenResponse = SearchingCitiesProcessResponse.builder()
+                .id(givenProcessId)
+                .bounds(geoJSONWriter.write(givenProcessGeometry))
+                .searchStep(givenSearchStep)
+                .totalPoints(givenTotalPoints)
+                .handledPoints(givenHandledPoints)
+                .status(givenStatus)
+                .build();
+        when(mockedMapper.mapToResponse(same(givenProcess))).thenReturn(givenResponse);
+
+        final String actual = restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expected = """
+                {
+                  "id": 255,
+                  "bounds": {
+                    "type": "Polygon",
+                    "coordinates": [
+                      [
+                        [
+                          1,
+                          2
+                        ],
+                        [
+                          3,
+                          4
+                        ],
+                        [
+                          5,
+                          6
+                        ],
+                        [
+                          1,
+                          2
+                        ]
+                      ]
+                    ]
+                  },
+                  "searchStep": 0.04,
+                  "totalPoints": 100,
+                  "handledPoints": 0,
+                  "status": "HANDLING"
+                }""";
+        assertEquals(expected, actual, true);
+
+        verify(mockedRequestValidator, times(1)).validate(eq(givenRequest));
+    }
+
+    @Test
+    public void processShouldNotBeStartedBecauseOfRequestIsNotValid()
+            throws Exception {
+        final AreaCoordinateRequest givenAreaCoordinateRequest = new AreaCoordinateRequest(
+                new CoordinateRequest(53.669375, 27.053689),
+                new CoordinateRequest(53.896085, 27.443176)
+        );
+        final StartSearchingCitiesRequest givenRequest = StartSearchingCitiesRequest.builder()
+                .areaCoordinate(givenAreaCoordinateRequest)
+                .build();
+        final HttpEntity<StartSearchingCitiesRequest> givenHttpEntity = createHttpEntityToStartProcess(givenRequest);
+
+        final String url = createUrlToStartProcess();
+
+        final String actual = restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "searchStep : must not be null",
+                  "dateTime": "2024-01-06 08-53-13"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void processShouldBeStartedBecauseOfAreaCoordinateIsNotValid()
+            throws Exception {
+        final AreaCoordinateRequest givenAreaCoordinateRequest = new AreaCoordinateRequest(
+                new CoordinateRequest(53.669375, 27.053689),
+                new CoordinateRequest(53.896085, 27.443176)
+        );
+        final double givenSearchStep = 0.04;
+        final StartSearchingCitiesRequest givenRequest = new StartSearchingCitiesRequest(
+                givenAreaCoordinateRequest,
+                givenSearchStep
+        );
+        final HttpEntity<StartSearchingCitiesRequest> givenHttpEntity = createHttpEntityToStartProcess(givenRequest);
+
+        final String url = createUrlToStartProcess();
+
+        final Exception givenException = new CustomValidationException("Request isn't valid");
+        doThrow(givenException).when(mockedRequestValidator).validate(eq(givenRequest));
+
+        final String actual = restTemplate.postForObject(url, givenHttpEntity, String.class);
+        final String expected = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "Request isn't valid",
+                  "dateTime": "2024-01-06 08-58-48"
+                }""";
+        assertNotNull(actual);
+        assertEquals(expected, actual, COMPARATOR_IGNORING_DATE_TIME);
+    }
 
     private static String createUrlToFindProcessById(final Long id) {
         return CONTROLLER_URL + "/" + id;
@@ -389,12 +663,18 @@ public final class SearchingCitiesProcessControllerTest extends AbstractContextT
         if (pageSize != null) {
             builder.queryParam(PARAM_NAME_PAGE_SIZE, pageSize);
         }
-        return builder
-                .build()
-                .toUriString();
+        return builder.build().toUriString();
     }
 
     private static String createUrlToStartProcess() {
         return CONTROLLER_URL;
+    }
+
+    private HttpEntity<StartSearchingCitiesRequest> createHttpEntityToStartProcess(
+            final StartSearchingCitiesRequest request
+    ) {
+        final HttpHeaders givenHeaders = new HttpHeaders();
+        givenHeaders.setContentType(APPLICATION_JSON);
+        return new HttpEntity<>(request, givenHeaders);
     }
 }
