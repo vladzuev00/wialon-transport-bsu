@@ -46,26 +46,26 @@ public final class LoginPackageHandlerTest {
 
         final Package givenSuccessResponse = new Package() {
         };
-        final TestLoginPackageHandler givenHandler = this.createHandlerBySuccessResponse(givenSuccessResponse);
+        final TestLoginPackageHandler givenHandler = createHandlerBySuccessResponse(givenSuccessResponse);
 
         final Tracker givenTracker = createTracker(255L);
-        when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
+        when(mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
 
         final Data givenLastData = createData(256L);
-        when(this.mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(Optional.of(givenLastData));
+        when(mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(Optional.of(givenLastData));
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
-        verify(this.mockedContextAttributeManager, times(1)).putTrackerImei(
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(
                 same(givenContext),
                 same(givenTrackerImei)
         );
-        verify(this.mockedContextAttributeManager, times(1)).putTracker(
+        verify(mockedContextAttributeManager, times(1)).putTracker(
                 same(givenContext),
                 same(givenTracker)
         );
-        verify(this.mockedConnectionManager, times(1)).add(same(givenContext));
-        verify(this.mockedContextAttributeManager, times(1)).putLastData(
+        verify(mockedConnectionManager, times(1)).add(same(givenContext));
+        verify(mockedContextAttributeManager, times(1)).putLastData(
                 same(givenContext),
                 same(givenLastData)
         );
@@ -81,25 +81,25 @@ public final class LoginPackageHandlerTest {
 
         final Package givenSuccessResponse = new Package() {
         };
-        final TestLoginPackageHandler givenHandler = this.createHandlerBySuccessResponse(givenSuccessResponse);
+        final TestLoginPackageHandler givenHandler = createHandlerBySuccessResponse(givenSuccessResponse);
 
         final Tracker givenTracker = createTracker(255L);
-        when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
+        when(mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
 
-        when(this.mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(empty());
+        when(mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(empty());
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
-        verify(this.mockedContextAttributeManager, times(1)).putTrackerImei(
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(
                 same(givenContext),
                 same(givenTrackerImei)
         );
-        verify(this.mockedContextAttributeManager, times(1)).putTracker(
+        verify(mockedContextAttributeManager, times(1)).putTracker(
                 same(givenContext),
                 same(givenTracker)
         );
-        verify(this.mockedConnectionManager, times(1)).add(same(givenContext));
-        verify(this.mockedContextAttributeManager, times(0)).putLastData(
+        verify(mockedConnectionManager, times(1)).add(same(givenContext));
+        verify(mockedContextAttributeManager, times(0)).putLastData(
                 any(ChannelHandlerContext.class),
                 any(Data.class)
         );
@@ -115,23 +115,23 @@ public final class LoginPackageHandlerTest {
 
         final Package givenNoSuchImeiResponse = new Package() {
         };
-        final TestLoginPackageHandler givenHandler = this.createHandlerByNoSuchImeiResponse(givenNoSuchImeiResponse);
+        final TestLoginPackageHandler givenHandler = createHandlerByNoSuchImeiResponse(givenNoSuchImeiResponse);
 
-        when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(empty());
+        when(mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(empty());
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
-        verify(this.mockedContextAttributeManager, times(1)).putTrackerImei(
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(
                 same(givenContext),
                 same(givenTrackerImei)
         );
-        verify(this.mockedContextAttributeManager, times(0)).putTracker(
+        verify(mockedContextAttributeManager, times(0)).putTracker(
                 any(ChannelHandlerContext.class),
                 any(Tracker.class)
         );
-        verify(this.mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
-        verify(this.mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
-        verify(this.mockedContextAttributeManager, times(0)).putLastData(
+        verify(mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
+        verify(mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
+        verify(mockedContextAttributeManager, times(0)).putLastData(
                 any(ChannelHandlerContext.class),
                 any(Data.class)
         );
@@ -147,24 +147,24 @@ public final class LoginPackageHandlerTest {
 
         final Package givenLoginFailedResponse = new Package() {
         };
-        final TestLoginPackageHandler givenHandler = this.createHandlerByLoginFailedResponse(givenLoginFailedResponse);
+        final TestLoginPackageHandler givenHandler = createHandlerByLoginFailedResponse(givenLoginFailedResponse);
 
         final Tracker givenTracker = createTracker(259L);
-        when(this.mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
+        when(mockedTrackerService.findByImei(same(givenTrackerImei))).thenReturn(Optional.of(givenTracker));
 
         givenHandler.handleConcretePackage(givenLoginPackage, givenContext);
 
-        verify(this.mockedContextAttributeManager, times(1)).putTrackerImei(
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(
                 same(givenContext),
                 same(givenTrackerImei)
         );
-        verify(this.mockedContextAttributeManager, times(0)).putTracker(
+        verify(mockedContextAttributeManager, times(0)).putTracker(
                 any(ChannelHandlerContext.class),
                 any(Tracker.class)
         );
-        verify(this.mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
-        verify(this.mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
-        verify(this.mockedContextAttributeManager, times(0)).putLastData(
+        verify(mockedConnectionManager, times(0)).add(any(ChannelHandlerContext.class));
+        verify(mockedDataService, times(0)).findTrackerLastDataFetchingParameters(any(Tracker.class));
+        verify(mockedContextAttributeManager, times(0)).putLastData(
                 any(ChannelHandlerContext.class),
                 any(Data.class)
         );
@@ -172,29 +172,29 @@ public final class LoginPackageHandlerTest {
     }
 
     private TestLoginPackageHandler createHandlerBySuccessResponse(final Package successResponse) {
-        return this.createHandlerBuilder()
+        return createHandlerBuilder()
                 .successResponse(successResponse)
                 .build();
     }
 
     private TestLoginPackageHandler createHandlerByNoSuchImeiResponse(final Package noSuchImeiResponse) {
-        return this.createHandlerBuilder()
+        return createHandlerBuilder()
                 .noSuchImeiResponse(noSuchImeiResponse)
                 .build();
     }
 
     private TestLoginPackageHandler createHandlerByLoginFailedResponse(final Package loginFailedResponse) {
-        return this.createHandlerBuilder()
+        return createHandlerBuilder()
                 .loginFailedResponse(loginFailedResponse)
                 .build();
     }
 
     private TestLoginPackageHandler.TestLoginPackageHandlerBuilder createHandlerBuilder() {
         return TestLoginPackageHandler.builder()
-                .contextAttributeManager(this.mockedContextAttributeManager)
-                .trackerService(this.mockedTrackerService)
-                .connectionManager(this.mockedConnectionManager)
-                .dataService(this.mockedDataService);
+                .contextAttributeManager(mockedContextAttributeManager)
+                .trackerService(mockedTrackerService)
+                .connectionManager(mockedConnectionManager)
+                .dataService(mockedDataService);
     }
 
     private static Tracker createTracker(final Long id) {
@@ -203,6 +203,7 @@ public final class LoginPackageHandlerTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Data createData(final Long id) {
         return Data.builder()
                 .id(id)
@@ -236,17 +237,17 @@ public final class LoginPackageHandlerTest {
         @Override
         protected Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
                                                                        final TestLoginPackage loginPackage) {
-            return ofNullable(this.loginFailedResponse);
+            return ofNullable(loginFailedResponse);
         }
 
         @Override
         protected Package createNoSuchImeiResponse() {
-            return this.noSuchImeiResponse;
+            return noSuchImeiResponse;
         }
 
         @Override
         protected Package createSuccessResponse() {
-            return this.successResponse;
+            return successResponse;
         }
     }
 }

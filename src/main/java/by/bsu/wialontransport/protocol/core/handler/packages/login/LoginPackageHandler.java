@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -35,12 +34,12 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final String trackerImei = requestPackage.getImei();
-        this.contextAttributeManager.putTrackerImei(context, trackerImei);
-        final Optional<Tracker> optionalTracker = this.trackerService.findByImei(trackerImei);
-        optionalTracker.ifPresentOrElse(
-                tracker -> this.loginExistingTracker(tracker, requestPackage, context),
-                () -> this.sendNoSuchImeiResponse(context)
-        );
+        contextAttributeManager.putTrackerImei(context, trackerImei);
+        trackerService.findByImei(trackerImei)
+                .ifPresentOrElse(
+                        tracker -> loginExistingTracker(tracker, requestPackage, context),
+                        () -> sendNoSuchImeiResponse(context)
+                );
     }
 
     protected abstract Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
@@ -59,29 +58,28 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
     }
 
     private static void sendResponse(final Supplier<Package> responseSupplier, final ChannelHandlerContext context) {
-        final Package response = responseSupplier.get();
-        context.writeAndFlush(response);
+        context.writeAndFlush(responseSupplier.get());
     }
 
     private void loginExistingTracker(final Tracker tracker,
                                       final PACKAGE loginPackage,
                                       final ChannelHandlerContext context) {
-        final Optional<Package> optionalFailedResponse = this.checkLoginCreatingResponseIfFailed(tracker, loginPackage);
-        optionalFailedResponse.ifPresentOrElse(
-                context::writeAndFlush,
-                () -> this.handleSuccessLogin(tracker, context)
-        );
+        checkLoginCreatingResponseIfFailed(tracker, loginPackage)
+                .ifPresentOrElse(
+                        context::writeAndFlush,
+                        () -> handleSuccessLogin(tracker, context)
+                );
     }
 
     private void handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
-        this.contextAttributeManager.putTracker(context, tracker);
-        this.connectionManager.add(context);
-        this.putLastDataInContextIfExist(tracker, context);
-        this.sendSuccessResponse(context);
+        contextAttributeManager.putTracker(context, tracker);
+        connectionManager.add(context);
+        putLastDataInContext(tracker, context);
+        sendSuccessResponse(context);
     }
 
-    private void putLastDataInContextIfExist(final Tracker tracker, final ChannelHandlerContext context) {
-        final Optional<Data> optionalLastData = this.dataService.findTrackerLastDataFetchingParameters(tracker);
-        optionalLastData.ifPresent(data -> this.contextAttributeManager.putLastData(context, data));
+    private void putLastDataInContext(final Tracker tracker, final ChannelHandlerContext context) {
+        dataService.findTrackerLastDataFetchingParameters(tracker)
+                .ifPresent(data -> contextAttributeManager.putLastData(context, data));
     }
 }
