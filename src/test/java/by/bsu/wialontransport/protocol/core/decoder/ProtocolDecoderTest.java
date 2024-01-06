@@ -34,11 +34,11 @@ public final class ProtocolDecoderTest {
 
     @Before
     public void initializeProtocolDecoder() {
-        this.protocolDecoder = new TestProtocolDecoder(
+        protocolDecoder = new TestProtocolDecoder(
                 List.of(
-                        this.firstMockedPackageDecoder,
-                        this.secondMockedPackageDecoder,
-                        this.thirdMockedPackageDecoder
+                        firstMockedPackageDecoder,
+                        secondMockedPackageDecoder,
+                        thirdMockedPackageDecoder
                 ),
                 GIVEN_PREFIX,
                 GIVEN_SOURCE
@@ -52,15 +52,15 @@ public final class ProtocolDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
-        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
-        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(true);
+        when(firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(true);
 
         final Package givenPackage = mock(Package.class);
-        when(this.secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
+        when(secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
 
-        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
+        protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
 
-        verifyNoInteractions(this.thirdMockedPackageDecoder);
+        verifyNoInteractions(thirdMockedPackageDecoder);
         verify(givenOutObjects, times(1)).add(same(givenPackage));
     }
 
@@ -71,11 +71,11 @@ public final class ProtocolDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOutObjects = mock(List.class);
 
-        when(this.firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
-        when(this.secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
-        when(this.thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
+        when(thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
 
-        this.protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
+        protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
     }
 
     private static final class TestProtocolDecoder extends ProtocolDecoder<Object, Object> {
@@ -92,12 +92,12 @@ public final class ProtocolDecoderTest {
 
         @Override
         protected Object createSource(final ByteBuf buffer) {
-            return this.source;
+            return source;
         }
 
         @Override
         protected Object extractPackagePrefix(final Object source) {
-            return this.prefix;
+            return prefix;
         }
     }
 }
