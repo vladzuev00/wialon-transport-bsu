@@ -5,8 +5,6 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -17,7 +15,6 @@ import java.util.Optional;
 
 import static java.util.Arrays.stream;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,69 +24,47 @@ public final class ConnectionManagerTest {
     @Mock
     private ContextAttributeManager mockedContextAttributeManager;
 
-    @Captor
-    private ArgumentCaptor<ChannelHandlerContext> contextArgumentCaptor;
-
     @Test
     public void contextShouldBeAddedWithoutClosingOldContext()
             throws Exception {
         final Map<Long, ChannelHandlerContext> givenContextsByTrackerIds = new HashMap<>();
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
-
-        final Tracker givenTracker = Tracker.builder()
-                .id(255L)
-                .imei("11111222223333344444")
-                .password("password")
-                .phoneNumber("447336934")
-                .build();
-        when(this.mockedContextAttributeManager.findTracker(any(ChannelHandlerContext.class)))
-                .thenReturn(Optional.of(givenTracker));
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
 
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+
+        final Long givenTrackerId = 255L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
+        when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.of(givenTracker));
 
         givenConnectionManager.add(givenContext);
 
         assertEquals(1, givenContextsByTrackerIds.size());
-        assertTrue(givenContextsByTrackerIds.containsKey(255L));
+        assertTrue(givenContextsByTrackerIds.containsKey(givenTrackerId));
         assertTrue(givenContextsByTrackerIds.containsValue(givenContext));
-
-        verify(this.mockedContextAttributeManager, times(1))
-                .findTracker(this.contextArgumentCaptor.capture());
-
-        assertSame(givenContext, this.contextArgumentCaptor.getValue());
     }
 
     @Test
     public void contextShouldBeAddedWithClosingOldContext()
             throws Exception {
-        final Tracker givenTracker = Tracker.builder()
-                .id(255L)
-                .imei("11111222223333344444")
-                .password("password")
-                .phoneNumber("447336934")
-                .build();
+        final Long givenTrackerId = 255L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
         final ChannelHandlerContext givenOldContext = mock(ChannelHandlerContext.class);
 
         final Map<Long, ChannelHandlerContext> givenContextsByTrackerIds = new HashMap<>();
         givenContextsByTrackerIds.put(givenTracker.getId(), givenOldContext);
 
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
 
-        when(this.mockedContextAttributeManager.findTracker(any(ChannelHandlerContext.class)))
-                .thenReturn(Optional.of(givenTracker));
+        final ChannelHandlerContext givenNewContext = mock(ChannelHandlerContext.class);
+        when(mockedContextAttributeManager.findTracker(same(givenNewContext))).thenReturn(Optional.of(givenTracker));
 
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        givenConnectionManager.add(givenContext);
+        givenConnectionManager.add(givenNewContext);
 
         assertEquals(1, givenContextsByTrackerIds.size());
-        assertTrue(givenContextsByTrackerIds.containsKey(255L));
-        assertTrue(givenContextsByTrackerIds.containsValue(givenContext));
+        assertTrue(givenContextsByTrackerIds.containsKey(givenTrackerId));
+        assertTrue(givenContextsByTrackerIds.containsValue(givenNewContext));
 
-        verify(this.mockedContextAttributeManager, times(1))
-                .findTracker(this.contextArgumentCaptor.capture());
         verify(givenOldContext, times(1)).close();
-
-        assertSame(givenContext, this.contextArgumentCaptor.getValue());
     }
 
     @Test
@@ -101,9 +76,11 @@ public final class ConnectionManagerTest {
         final Map<Long, ChannelHandlerContext> givenContextsByTrackerIds = new HashMap<>();
         givenContextsByTrackerIds.put(givenTrackerId, givenContext);
 
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
 
-        final ChannelHandlerContext actual = givenConnectionManager.find(givenTrackerId).orElseThrow();
+        final Optional<ChannelHandlerContext> optionalActual = givenConnectionManager.find(givenTrackerId);
+        assertTrue(optionalActual.isPresent());
+        final ChannelHandlerContext actual = optionalActual.get();
         assertSame(givenContext, actual);
     }
 
@@ -112,7 +89,8 @@ public final class ConnectionManagerTest {
             throws Exception {
         final Long givenTrackerId = 255L;
         final Map<Long, ChannelHandlerContext> givenContextsByTrackerIds = new HashMap<>();
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
+
         final Optional<ChannelHandlerContext> optionalActual = givenConnectionManager.find(givenTrackerId);
         assertTrue(optionalActual.isEmpty());
     }
@@ -126,7 +104,7 @@ public final class ConnectionManagerTest {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         givenContextsByTrackerIds.put(givenTrackerId, givenContext);
 
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
 
         givenConnectionManager.remove(givenTrackerId);
 
@@ -144,41 +122,41 @@ public final class ConnectionManagerTest {
 
         final Long givenNotExistingTrackerId = 256L;
 
-        final ConnectionManager givenConnectionManager = this.createConnectionManager(givenContextsByTrackerIds);
+        final ConnectionManager givenConnectionManager = createConnectionManager(givenContextsByTrackerIds);
 
         givenConnectionManager.remove(givenNotExistingTrackerId);
 
         assertEquals(1, givenContextsByTrackerIds.size());
-        assertTrue(givenContextsByTrackerIds.containsKey(255L));
+        assertTrue(givenContextsByTrackerIds.containsKey(givenExistingTrackerId));
         assertTrue(givenContextsByTrackerIds.containsValue(givenContext));
     }
 
     @Test
     public void addingConnectionInfoByContextShouldBeThreadSafe()
             throws Exception {
-        final ConnectionManager givenConnectionManager = this.createConnectionManager();
+        final ConnectionManager givenConnectionManager = createConnectionManager();
 
         final Long firstGivenTrackerId = 255L;
-        final ChannelHandlerContext firstGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext firstGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 firstGivenTrackerId
         );
-        final ChannelHandlerContext secondGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext secondGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 firstGivenTrackerId
         );
 
         final Long secondGivenTrackerId = 256L;
-        final ChannelHandlerContext thirdGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext thirdGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 secondGivenTrackerId
         );
-        final ChannelHandlerContext fourthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext fourthGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 secondGivenTrackerId
         );
 
         final Long thirdGivenTrackerId = 257L;
-        final ChannelHandlerContext fifthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext fifthGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 thirdGivenTrackerId
         );
-        final ChannelHandlerContext sixthGivenContext = this.createContextAssociatedWithTrackerWithGivenId(
+        final ChannelHandlerContext sixthGivenContext = createContextAssociatedWithTrackerWithGivenId(
                 thirdGivenTrackerId
         );
 
@@ -209,13 +187,16 @@ public final class ConnectionManagerTest {
         );
 
         final ChannelHandlerContext firstNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
-                firstGivenContext, secondGivenContext
+                firstGivenContext,
+                secondGivenContext
         );
         final ChannelHandlerContext secondNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
-                thirdGivenContext, fourthGivenContext
+                thirdGivenContext,
+                fourthGivenContext
         );
         final ChannelHandlerContext thirdNotClosedContext = verifyOneContextWasClosedAndReturnNotClosed(
-                fifthGivenContext, sixthGivenContext
+                fifthGivenContext,
+                sixthGivenContext
         );
 
         final Map<Long, ChannelHandlerContext> expectedContextsByTrackerIds = Map.of(
@@ -223,8 +204,9 @@ public final class ConnectionManagerTest {
                 secondGivenTrackerId, secondNotClosedContext,
                 thirdGivenTrackerId, thirdNotClosedContext
         );
-        final Map<Long, ChannelHandlerContext> actualContextsByTrackersIds
-                = findContextsByTrackerIds(givenConnectionManager);
+        final Map<Long, ChannelHandlerContext> actualContextsByTrackersIds = findContextsByTrackerIds(
+                givenConnectionManager
+        );
         assertEquals(expectedContextsByTrackerIds, actualContextsByTrackersIds);
     }
 
@@ -255,14 +237,15 @@ public final class ConnectionManagerTest {
     }
 
     private ConnectionManager createConnectionManager() {
-        return new ConnectionManager(this.mockedContextAttributeManager);
+        return new ConnectionManager(mockedContextAttributeManager);
     }
 
     private ConnectionManager createConnectionManager(final Map<Long, ChannelHandlerContext> contextsByTrackerIds)
             throws Exception {
-        final ConnectionManager connectionManager = this.createConnectionManager();
+        final ConnectionManager connectionManager = createConnectionManager();
         final Field fieldContextsByTrackerIds = ConnectionManager.class.getDeclaredField(
-                FIELD_NAME_CONTEXTS_BY_TRACKER_IDS);
+                FIELD_NAME_CONTEXTS_BY_TRACKER_IDS
+        );
         fieldContextsByTrackerIds.setAccessible(true);
         try {
             fieldContextsByTrackerIds.set(connectionManager, contextsByTrackerIds);
@@ -275,8 +258,7 @@ public final class ConnectionManagerTest {
     private ChannelHandlerContext createContextAssociatedWithTrackerWithGivenId(final Long trackerId) {
         final Tracker tracker = createTracker(trackerId);
         final ChannelHandlerContext context = mock(ChannelHandlerContext.class);
-        when(this.mockedContextAttributeManager.findTracker(context))
-                .thenReturn(Optional.of(tracker));
+        when(mockedContextAttributeManager.findTracker(context)).thenReturn(Optional.of(tracker));
         return context;
     }
 

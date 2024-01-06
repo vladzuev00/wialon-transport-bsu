@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.core.connectionmanager;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.connectionmanager.exception.TrackerAssociatedWithContextNotExist;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
@@ -19,24 +18,52 @@ public final class ConnectionManager {
 
     public ConnectionManager(final ContextAttributeManager contextAttributeManager) {
         this.contextAttributeManager = contextAttributeManager;
-        this.contextsByTrackerIds = new ConcurrentHashMap<>();
+        contextsByTrackerIds = new ConcurrentHashMap<>();
     }
 
     public void add(final ChannelHandlerContext context) {
-        final Optional<Tracker> optionalAssociatedTracker = this.contextAttributeManager.findTracker(context);
-        final Tracker associatedTracker = optionalAssociatedTracker.orElseThrow(
-                TrackerAssociatedWithContextNotExist::new);
-        this.contextsByTrackerIds.merge(associatedTracker.getId(), context, (oldContext, newContext) -> {
-            oldContext.close();
-            return newContext;
-        });
+        contextsByTrackerIds.merge(
+                findTrackerId(context),
+                context,
+                (oldContext, newContext) -> {
+                    oldContext.close();
+                    return newContext;
+                }
+        );
     }
 
     public Optional<ChannelHandlerContext> find(final Long trackerId) {
-        return ofNullable(this.contextsByTrackerIds.get(trackerId));
+        return ofNullable(contextsByTrackerIds.get(trackerId));
     }
 
     public void remove(final Long trackerId) {
-        this.contextsByTrackerIds.remove(trackerId);
+        contextsByTrackerIds.remove(trackerId);
+    }
+
+    private Long findTrackerId(final ChannelHandlerContext context) {
+        return contextAttributeManager.findTracker(context)
+                .map(Tracker::getId)
+                .orElseThrow(NoTrackerInContextException::new);
+    }
+
+    static final class NoTrackerInContextException extends RuntimeException {
+        public NoTrackerInContextException() {
+
+        }
+
+        @SuppressWarnings("unused")
+        public NoTrackerInContextException(final String description) {
+            super(description);
+        }
+
+        @SuppressWarnings("unused")
+        public NoTrackerInContextException(final Exception cause) {
+            super(cause);
+        }
+
+        @SuppressWarnings("unused")
+        public NoTrackerInContextException(final String description, final Exception cause) {
+            super(description, cause);
+        }
     }
 }

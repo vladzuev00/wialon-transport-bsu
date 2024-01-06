@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 
+@Transactional
 public abstract class CRUDService<
         ID,
         ENTITY extends Entity<ID>,
