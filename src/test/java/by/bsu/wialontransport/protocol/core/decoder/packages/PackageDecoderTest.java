@@ -22,7 +22,7 @@ public final class PackageDecoderTest {
     public void decoderShouldBeAbleToDecode() {
         final String givenPackagePrefix = "#TEST#";
 
-        final boolean actual = this.decoder.isAbleToDecode(givenPackagePrefix);
+        final boolean actual = decoder.isAbleToDecode(givenPackagePrefix);
         assertTrue(actual);
     }
 
@@ -30,7 +30,7 @@ public final class PackageDecoderTest {
     public void decoderShouldNotBeAbleToDecode() {
         final String givenPackagePrefix = "#tEST#";
 
-        final boolean actual = this.decoder.isAbleToDecode(givenPackagePrefix);
+        final boolean actual = decoder.isAbleToDecode(givenPackagePrefix);
         assertFalse(actual);
     }
 
