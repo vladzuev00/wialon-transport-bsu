@@ -18,7 +18,6 @@ public final class ProtocolStringDecoderTest {
     private static final Charset EXPECTED_CHARSET = UTF_8;
 
     private final ProtocolStringDecoder decoder = new ProtocolStringDecoder(null, GIVEN_PACKAGE_PREFIX_REGEX) {
-
     };
 
     @Test
@@ -28,7 +27,7 @@ public final class ProtocolStringDecoderTest {
         final String givenSource = "source";
         when(givenBuffer.toString(same(EXPECTED_CHARSET))).thenReturn(givenSource);
 
-        final String actual = this.decoder.createSource(givenBuffer);
+        final String actual = decoder.createSource(givenBuffer);
         assertSame(givenSource, actual);
     }
 
@@ -36,7 +35,7 @@ public final class ProtocolStringDecoderTest {
     public void packagePrefixShouldBeExtracted() {
         final String givenSource = "#L#11112222333344445555;111";
 
-        final String actual = this.decoder.extractPackagePrefix(givenSource);
+        final String actual = decoder.extractPackagePrefix(givenSource);
         final String expected = "#L#";
         assertEquals(expected, actual);
     }
@@ -45,6 +44,6 @@ public final class ProtocolStringDecoderTest {
     public void packagePrefixShouldNotBeExtracted() {
         final String givenSource = "#L11112222333344445555;111";
 
-        this.decoder.extractPackagePrefix(givenSource);
+        decoder.extractPackagePrefix(givenSource);
     }
 }
