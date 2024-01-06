@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.core.contextattributemanager;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
@@ -13,7 +12,6 @@ import java.util.Optional;
 import static io.netty.util.AttributeKey.valueOf;
 import static java.util.Optional.ofNullable;
 
-//TODO: remove attribute with tracker
 @Component
 public final class ContextAttributeManager {
     private static final String NAME_ATTRIBUTE_KEY_TRACKER_IMEI = "tracker_imei";
@@ -25,47 +23,46 @@ public final class ContextAttributeManager {
     private final AttributeKey<Data> attributeKeyLastData;
 
     public ContextAttributeManager() {
-        this.attributeKeyTrackerImei = valueOf(NAME_ATTRIBUTE_KEY_TRACKER_IMEI);
-        this.attributeKeyTracker = valueOf(NAME_ATTRIBUTE_KEY_TRACKER);
-        this.attributeKeyLastData = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA);
+        attributeKeyTrackerImei = valueOf(NAME_ATTRIBUTE_KEY_TRACKER_IMEI);
+        attributeKeyTracker = valueOf(NAME_ATTRIBUTE_KEY_TRACKER);
+        attributeKeyLastData = valueOf(NAME_ATTRIBUTE_KEY_LAST_DATA);
     }
 
     public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
-        putAttributeValue(context, this.attributeKeyTrackerImei, imei);
+        putAttributeValue(context, attributeKeyTrackerImei, imei);
     }
 
     public Optional<String> findTrackerImei(final ChannelHandlerContext context) {
-        return findAttributeValue(context, this.attributeKeyTrackerImei);
+        return findAttributeValue(context, attributeKeyTrackerImei);
     }
 
     public void putTracker(final ChannelHandlerContext context, final Tracker tracker) {
-        putAttributeValue(context, this.attributeKeyTracker, tracker);
+        putAttributeValue(context, attributeKeyTracker, tracker);
     }
 
     public Optional<Tracker> findTracker(final ChannelHandlerContext context) {
-        return findAttributeValue(context, this.attributeKeyTracker);
+        return findAttributeValue(context, attributeKeyTracker);
     }
 
     public void putLastData(final ChannelHandlerContext context, final Data data) {
-        putAttributeValue(context, this.attributeKeyLastData, data);
+        putAttributeValue(context, attributeKeyLastData, data);
     }
 
     public Optional<Data> findLastData(final ChannelHandlerContext context) {
-        return findAttributeValue(context, this.attributeKeyLastData);
+        return findAttributeValue(context, attributeKeyLastData);
     }
 
-    private static <ValueType> Optional<ValueType> findAttributeValue(final ChannelHandlerContext context,
-                                                                      final AttributeKey<ValueType> attributeKey) {
-        final Channel channel = context.channel();
-        final Attribute<ValueType> attribute = channel.attr(attributeKey);
-        return ofNullable(attribute.get());
+    private static <V> Optional<V> findAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key) {
+        final V attributeValue = context.channel()
+                .attr(key)
+                .get();
+        return ofNullable(attributeValue);
     }
 
-    private static <ValueType> void putAttributeValue(final ChannelHandlerContext context,
-                                                      final AttributeKey<ValueType> attributeKey,
-                                                      final ValueType value) {
-        final Channel channel = context.channel();
-        final Attribute<ValueType> attribute = channel.attr(attributeKey);
+    private static <V> void putAttributeValue(final ChannelHandlerContext context,
+                                              final AttributeKey<V> key,
+                                              final V value) {
+        final Attribute<V> attribute = context.channel().attr(key);
         attribute.set(value);
     }
 }
