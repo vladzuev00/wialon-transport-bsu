@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
-import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.BiIntToDoubleFunction;
 import by.bsu.wialontransport.function.ToShortFunction;
@@ -8,7 +8,7 @@ import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivingDataPackageHandler;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
@@ -26,23 +26,23 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
     private static final int YEAR_MARK_POINT = 2000;
     private static final int MILLI_VOLTS_IN_VOLT = 1000;
 
-    public NewWingDataPackageHandler(final ReceivedDataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+    public NewWingDataPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
                                      final ContextAttributeManager contextAttributeManager,
-                                     final DataFilter dataFilter,
+                                     final ReceivedDataValidator dataValidator,
                                      final KafkaInboundDataProducer kafkaInboundDataProducer,
                                      final DataFixer dataFixer) {
         super(
                 NewWingDataPackage.class,
                 dataDefaultPropertyConfiguration,
                 contextAttributeManager,
-                dataFilter,
+                dataValidator,
                 kafkaInboundDataProducer,
                 dataFixer
         );
     }
 
     @Override
-    protected Stream<NewWingData> extractDataSources(final NewWingDataPackage requestPackage) {
+    protected Stream<NewWingData> extractSources(final NewWingDataPackage requestPackage) {
         return requestPackage.getDataStream();
     }
 
@@ -76,7 +76,7 @@ public final class NewWingDataPackageHandler extends ReceivingDataPackageHandler
         builder.accumulateComponent(
                 data,
                 NewWingDataPackageHandler::extractHdop,
-                ReceivedDataBuilder::parameter
+                ReceivedDataBuilder::addParameter
         );
     }
 

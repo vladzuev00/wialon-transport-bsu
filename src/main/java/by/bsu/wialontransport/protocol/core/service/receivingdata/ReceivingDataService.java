@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.core.service.receivingdata;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -11,16 +11,16 @@ import java.util.List;
 
 public final class ReceivingDataService {
     private final ContextAttributeManager contextAttributeManager;
-    private final DataFilter dataFilter;
+    private final ReceivedDataValidator dataValidator;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
     private final DataFixer dataFixer;
 
     public ReceivingDataService(final ContextAttributeManager contextAttributeManager,
-                                final DataFilter dataFilter,
+                                final ReceivedDataValidator dataValidator,
                                 final KafkaInboundDataProducer kafkaInboundDataProducer,
                                 final DataFixer dataFixer) {
         this.contextAttributeManager = contextAttributeManager;
-        this.dataFilter = dataFilter;
+        this.dataValidator = dataValidator;
         this.kafkaInboundDataProducer = kafkaInboundDataProducer;
         this.dataFixer = dataFixer;
     }

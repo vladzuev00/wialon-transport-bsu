@@ -1,82 +1,105 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.configuration.property.ReceivedDataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
-import by.bsu.wialontransport.model.CoordinateRequest;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.DataFilter;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
+import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.time.LocalDateTime.MIN;
+import static java.util.Comparator.comparing;
 import static lombok.AccessLevel.PRIVATE;
 
-public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_SOURCE> extends PackageHandler<PACKAGE> {
-    private final ReceivedDataDefaultPropertyConfiguration receivedDataDefaultPropertyConfiguration;
+public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURCE> extends PackageHandler<PACKAGE> {
+    private static final Comparator<ReceivedData> DATE_TIME_COMPARATOR = comparing(ReceivedData::getDateTime);
+
+    private final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration;
     private final ContextAttributeManager contextAttributeManager;
-    private final DataFilter dataFilter;
+    private final ReceivedDataValidator receivedDataValidator;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
-    private final DataFixer dataFixer;
 
     public ReceivingDataPackageHandler(final Class<PACKAGE> handledPackageType,
-                                       final ReceivedDataDefaultPropertyConfiguration receivedDataDefaultPropertyConfiguration,
+                                       final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
                                        final ContextAttributeManager contextAttributeManager,
-                                       final DataFilter dataFilter,
-                                       final KafkaInboundDataProducer kafkaInboundDataProducer,
-                                       final DataFixer dataFixer) {
+                                       final ReceivedDataValidator receivedDataValidator,
+                                       final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(handledPackageType);
-        this.receivedDataDefaultPropertyConfiguration = receivedDataDefaultPropertyConfiguration;
+        this.dataDefaultPropertyConfiguration = dataDefaultPropertyConfiguration;
         this.contextAttributeManager = contextAttributeManager;
-        this.dataFilter = dataFilter;
+        this.receivedDataValidator = receivedDataValidator;
         this.kafkaInboundDataProducer = kafkaInboundDataProducer;
-        this.dataFixer = dataFixer;
     }
 
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
-        final Tracker tracker = this.extractTracker(context);
-        final Stream<ReceivedData> receivedData = this.extractReceivedData(requestPackage, tracker);
-
+        final Tracker tracker = extractTracker(context);
+        final LocalDateTime lastReceivingDateTime = findLastDataDateTime(context);
+        extractSources(requestPackage)
+                .map(source -> createReceivedData(source, tracker))
+                .filter(receivedDataValidator::isValid)
+                .sorted(DATE_TIME_COMPARATOR)
+                .dropWhile(receivedData -> receivedData.getDateTime().isBefore(lastReceivingDateTime))
+                .map(ReceivingDataPackageHandler::mapToData)
+                .forEach(kafkaInboundDataProducer::send);
     }
 
-    protected abstract Stream<DATA_SOURCE> extractDataSources(final PACKAGE requestPackage);
+    protected abstract Stream<SOURCE> extractSources(final PACKAGE requestPackage);
 
-    protected abstract void accumulateComponents(final ReceivedDataBuilder builder, final DATA_SOURCE source);
+    protected abstract void accumulateComponents(final ReceivedDataBuilder builder, final SOURCE source);
 
     private Tracker extractTracker(final ChannelHandlerContext context) {
-        final Optional<Tracker> optionalTracker = this.contextAttributeManager.findTracker(context);
-        return optionalTracker.orElseThrow(() -> new ReceivingDataException("There is no tracker in context"));
+        return contextAttributeManager.findTracker(context)
+                .orElseThrow(
+                        () -> new ReceivingDataException("There is no tracker in context")
+                );
     }
 
-    private Stream<ReceivedData> extractReceivedData(final PACKAGE requestPackage, final Tracker tracker) {
-        return this.extractDataSources(requestPackage).map(source -> this.createReceivedData(source, tracker));
-    }
-
-    private ReceivedData createReceivedData(final DATA_SOURCE source, final Tracker tracker) {
-        final ReceivedDataBuilder builder = new ReceivedDataBuilder(this.receivedDataDefaultPropertyConfiguration);
-        this.accumulateComponents(builder, source);
+    private ReceivedData createReceivedData(final SOURCE source, final Tracker tracker) {
+        final ReceivedDataBuilder builder = new ReceivedDataBuilder(dataDefaultPropertyConfiguration);
+        accumulateComponents(builder, source);
         return builder.build(tracker);
     }
 
+    private LocalDateTime findLastDataDateTime(final ChannelHandlerContext context) {
+        return contextAttributeManager.findLastData(context)
+                .map(Data::getDateTime)
+                .orElse(MIN);
+    }
+
+    private static Data mapToData(final ReceivedData receivedData) {
+        return Data.builder()
+                .dateTime(receivedData.getDateTime())
+                .coordinate(receivedData.getCoordinate())
+                .
+                .build();
+    }
+
+    @Setter
     protected static final class ReceivedDataBuilder {
+        private static final String PROPERTY_NAME_DATE_TIME = "date time";
+        private static final String PROPERTY_NAME_COORDINATE = "coordinate";
 
         @Getter(PRIVATE)
         private LocalDateTime dateTime;
 
         @Getter(PRIVATE)
-        private CoordinateRequest coordinate;
+        private Coordinate coordinate;
 
         private int course;
         private int altitude;
@@ -89,149 +112,49 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, DATA_
         private String driverKeyCode;
         private final Map<String, Parameter> parametersByNames;
 
-        public ReceivedDataBuilder(final ReceivedDataDefaultPropertyConfiguration defaultPropertyConfiguration) {
-            this.course = defaultPropertyConfiguration.getCourse();
-            this.altitude = defaultPropertyConfiguration.getAltitude();
-            this.speed = defaultPropertyConfiguration.getSpeed();
-            this.amountOfSatellites = defaultPropertyConfiguration.getAmountOfSatellites();
-            this.reductionPrecision = defaultPropertyConfiguration.getReductionPrecision();
-            this.inputs = defaultPropertyConfiguration.getInputs();
-            this.outputs = defaultPropertyConfiguration.getOutputs();
-            this.analogInputs = new double[]{};
-            this.driverKeyCode = defaultPropertyConfiguration.getDriverKeyCode();
-            this.parametersByNames = new HashMap<>();
+        public ReceivedDataBuilder(final DataDefaultPropertyConfiguration defaultPropertyConfiguration) {
+            course = defaultPropertyConfiguration.getCourse();
+            altitude = defaultPropertyConfiguration.getAltitude();
+            speed = defaultPropertyConfiguration.getSpeed();
+            amountOfSatellites = defaultPropertyConfiguration.getAmountOfSatellites();
+            reductionPrecision = defaultPropertyConfiguration.getReductionPrecision();
+            inputs = defaultPropertyConfiguration.getInputs();
+            outputs = defaultPropertyConfiguration.getOutputs();
+            analogInputs = new double[]{};
+            driverKeyCode = defaultPropertyConfiguration.getDriverKeyCode();
+            parametersByNames = new HashMap<>();
         }
 
-        public void dateTime(final LocalDateTime dateTime) {
-            this.dateTime = dateTime;
-        }
-
-        public void coordinate(final CoordinateRequest coordinate) {
-            this.coordinate = coordinate;
-        }
-
-        public void course(final int course) {
-            this.course = course;
-        }
-
-        public void altitude(final int altitude) {
-            this.altitude = altitude;
-        }
-
-        public void speed(final double speed) {
-            this.speed = speed;
-        }
-
-        public void amountOfSatellites(final int amountOfSatellites) {
-            this.amountOfSatellites = amountOfSatellites;
-        }
-
-        public void reductionPrecision(final double reductionPrecision) {
-            this.reductionPrecision = reductionPrecision;
-        }
-
-        public void inputs(final int inputs) {
-            this.inputs = inputs;
-        }
-
-        public void outputs(final int outputs) {
-            this.outputs = outputs;
-        }
-
-        public void analogInputs(final double[] analogInputs) {
-            this.analogInputs = analogInputs;
-        }
-
-        public void driverKeyCode(final String driverKeyCode) {
-            this.driverKeyCode = driverKeyCode;
-        }
-
-        public void parameter(final Parameter parameter) {
-            final String parameterName = parameter.getName();
-            this.parametersByNames.put(parameterName, parameter);
-        }
-
-        public <DATA_SOURCE, COMPONENT> void accumulateComponent(
-                final DATA_SOURCE source,
-                final ComponentExtractor<DATA_SOURCE, COMPONENT> componentExtractor,
-                final ComponentAccumulator<COMPONENT> componentAccumulator
-        ) {
-            final COMPONENT component = componentExtractor.extract(source);
-            componentAccumulator.accumulate(this, component);
-        }
-
-        public <DATA_SOURCE> void accumulateDoubleComponent(
-                final DATA_SOURCE source,
-                final DoubleComponentExtractor<DATA_SOURCE> componentExtractor,
-                final DoubleComponentAccumulator componentAccumulator
-        ) {
-            final double component = componentExtractor.extract(source);
-            componentAccumulator.accumulate(this, component);
-        }
-
-        public <DATA_SOURCE> void accumulateIntComponent(final DATA_SOURCE source,
-                                                         final IntComponentExtractor<DATA_SOURCE> componentExtractor,
-                                                         final IntComponentAccumulator componentAccumulator) {
-            final int component = componentExtractor.extract(source);
-            componentAccumulator.accumulate(this, component);
+        public void addParameter(final Parameter parameter) {
+            parametersByNames.put(parameter.getName(), parameter);
         }
 
         ReceivedData build(final Tracker tracker) {
-            final LocalDateTime dateTime = this.getRequiredProperty(ReceivedDataBuilder::getDateTime);
-            final CoordinateRequest coordinate = this.getRequiredProperty(ReceivedDataBuilder::getCoordinate);
             return new ReceivedData(
-                    dateTime,
-                    coordinate,
-                    this.course,
-                    this.speed,
-                    this.altitude,
-                    this.amountOfSatellites,
-                    this.reductionPrecision,
-                    this.inputs,
-                    this.outputs,
-                    this.analogInputs,
-                    this.driverKeyCode,
-                    this.parametersByNames,
+                    getRequiredProperty(ReceivedDataBuilder::getDateTime, PROPERTY_NAME_DATE_TIME),
+                    getRequiredProperty(ReceivedDataBuilder::getCoordinate, PROPERTY_NAME_COORDINATE),
+                    course,
+                    speed,
+                    altitude,
+                    amountOfSatellites,
+                    reductionPrecision,
+                    inputs,
+                    outputs,
+                    analogInputs,
+                    driverKeyCode,
+                    parametersByNames,
                     tracker
             );
         }
 
-        private <T> T getRequiredProperty(final Function<ReceivedDataBuilder, T> getter) {
+        private <T> T getRequiredProperty(final Function<ReceivedDataBuilder, T> getter, final String propertyName) {
             final T value = getter.apply(this);
             if (value == null) {
-                throw new IllegalStateException("Required data property is not defined");
+                throw new IllegalStateException(
+                        "Required property '%s' is not defined".formatted(propertyName)
+                );
             }
             return value;
-        }
-
-        @FunctionalInterface
-        public interface ComponentExtractor<DATA_SOURCE, COMPONENT> {
-            COMPONENT extract(final DATA_SOURCE source);
-        }
-
-        @FunctionalInterface
-        public interface DoubleComponentExtractor<DATA_SOURCE> {
-            double extract(final DATA_SOURCE data);
-        }
-
-        @FunctionalInterface
-        public interface IntComponentExtractor<DATA_SOURCE> {
-            int extract(final DATA_SOURCE data);
-        }
-
-        @FunctionalInterface
-        public interface ComponentAccumulator<T> {
-            void accumulate(final ReceivedDataBuilder builder, final T component);
-        }
-
-        @FunctionalInterface
-        public interface DoubleComponentAccumulator {
-            void accumulate(final ReceivedDataBuilder builder, final double component);
-        }
-
-        @FunctionalInterface
-        public interface IntComponentAccumulator {
-            void accumulate(final ReceivedDataBuilder builder, final int component);
         }
     }
 
