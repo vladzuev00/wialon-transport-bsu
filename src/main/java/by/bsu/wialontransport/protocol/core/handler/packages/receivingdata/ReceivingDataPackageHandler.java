@@ -49,14 +49,15 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURC
     @Override
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final Tracker tracker = extractTracker(context);
-        final LocalDateTime lastReceivingDateTime = findLastDataDateTime(context);
+        final LocalDateTime lastReceivingDateTime = findLastReceivingDateTime(context);
         extractSources(requestPackage)
                 .map(source -> createReceivedData(source, tracker))
                 .filter(receivedDataValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
                 .dropWhile(receivedData -> receivedData.getDateTime().isBefore(lastReceivingDateTime))
-                .map(ReceivingDataPackageHandler::mapToData)
-                .forEach(kafkaInboundDataProducer::send);
+                .map(this::mapToSentData)
+                .reduce((first, second) -> second)
+                .ifPresent(lastData -> contextAttributeManager.putLastData(context, lastData));
     }
 
     protected abstract Stream<SOURCE> extractSources(final PACKAGE requestPackage);
@@ -76,17 +77,33 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURC
         return builder.build(tracker);
     }
 
-    private LocalDateTime findLastDataDateTime(final ChannelHandlerContext context) {
+    private LocalDateTime findLastReceivingDateTime(final ChannelHandlerContext context) {
         return contextAttributeManager.findLastData(context)
                 .map(Data::getDateTime)
                 .orElse(MIN);
+    }
+
+    private Data mapToSentData(final ReceivedData receivedData) {
+        final Data data = mapToData(receivedData);
+        kafkaInboundDataProducer.send(data);
+        return data;
     }
 
     private static Data mapToData(final ReceivedData receivedData) {
         return Data.builder()
                 .dateTime(receivedData.getDateTime())
                 .coordinate(receivedData.getCoordinate())
-                .
+                .course(receivedData.getCourse())
+                .speed(receivedData.getSpeed())
+                .altitude(receivedData.getAltitude())
+                .amountOfSatellites(receivedData.getAmountOfSatellites())
+                .reductionPrecision(receivedData.getReductionPrecision())
+                .inputs(receivedData.getInputs())
+                .outputs(receivedData.getOutputs())
+                .analogInputs(receivedData.getAnalogInputs())
+                .driverKeyCode(receivedData.getDriverKeyCode())
+                .parametersByNames(receivedData.getParametersByNames())
+                .tracker(receivedData.getTracker())
                 .build();
     }
 
