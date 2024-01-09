@@ -8,7 +8,7 @@
 //import by.bsu.wialontransport.model.CoordinateRequest;
 //import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 //import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivingDataPackageHandler;
-//import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
+//import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
 //import by.bsu.wialontransport.protocol.core.service.receivingdata.fixer.DataFixer;
 //import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;

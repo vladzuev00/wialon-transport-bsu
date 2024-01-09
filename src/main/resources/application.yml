@@ -31,14 +31,6 @@ data:
     maxValidAmountSatellites: 999
     minValidDateTime: 2010-01-01 00:00:00
     deltaSecondsFromNowMaxAllowableValidDateTime: 15
-    minValidDOP: 0
-    maxValidDOP: 7
-
-data-fixing:
-  enable: false
-
-data-filtering:
-  enable: false
 
 kafka:
   topic:

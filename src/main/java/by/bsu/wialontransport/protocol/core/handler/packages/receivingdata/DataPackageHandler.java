@@ -10,7 +10,6 @@ import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -57,11 +57,6 @@ public final class DataPropertyValidator {
     }
 
     private boolean isValidDOPParameter(final Parameter parameter) {
-        if (parameter.getType() != DOUBLE) {
-            return false;
-        }
-        final double value = parseDouble(parameter.getValue());
-        return compare(value, this.validationProperty.getMinValidDOP()) >= 0
-                && compare(value, this.validationProperty.getMaxValidDOP()) <= 0;
+        return true;
     }
 }

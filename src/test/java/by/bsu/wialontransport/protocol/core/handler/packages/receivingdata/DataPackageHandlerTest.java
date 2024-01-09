@@ -10,7 +10,6 @@ import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler.ReceivedDataBuilder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Value;
 import org.junit.Before;
@@ -506,6 +505,7 @@ public final class DataPackageHandlerTest {
                 .build();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static Parameter createParameter(final Long id, final String name) {
         return Parameter.builder()
                 .id(id)

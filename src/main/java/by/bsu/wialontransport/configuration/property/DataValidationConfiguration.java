@@ -26,6 +26,4 @@ public class DataValidationConfiguration {
     private LocalDateTime minValidDateTime;
 
     private int deltaSecondsFromNowMaxAllowableValidDateTime;
-    private int minValidDOP;
-    private int maxValidDOP;
 }
