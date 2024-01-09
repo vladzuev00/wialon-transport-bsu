@@ -12,6 +12,7 @@ import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.core.service.receivingdata.filter.ReceivedDataValidator;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +25,8 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.MIN;
 import static java.util.Comparator.comparing;
-import static lombok.AccessLevel.PRIVATE;
 
-public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURCE> extends PackageHandler<PACKAGE> {
+public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extends PackageHandler<PACKAGE> {
     private static final Comparator<ReceivedData> DATE_TIME_COMPARATOR = comparing(ReceivedData::getDateTime);
 
     private final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration;
@@ -34,11 +34,11 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURC
     private final ReceivedDataValidator receivedDataValidator;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
 
-    public ReceivingDataPackageHandler(final Class<PACKAGE> handledPackageType,
-                                       final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
-                                       final ContextAttributeManager contextAttributeManager,
-                                       final ReceivedDataValidator receivedDataValidator,
-                                       final KafkaInboundDataProducer kafkaInboundDataProducer) {
+    public DataPackageHandler(final Class<PACKAGE> handledPackageType,
+                              final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+                              final ContextAttributeManager contextAttributeManager,
+                              final ReceivedDataValidator receivedDataValidator,
+                              final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(handledPackageType);
         this.dataDefaultPropertyConfiguration = dataDefaultPropertyConfiguration;
         this.contextAttributeManager = contextAttributeManager;
@@ -108,16 +108,14 @@ public abstract class ReceivingDataPackageHandler<PACKAGE extends Package, SOURC
     }
 
     @Setter
+    @Getter(AccessLevel.PACKAGE)
     protected static final class ReceivedDataBuilder {
         private static final String PROPERTY_NAME_DATE_TIME = "date time";
         private static final String PROPERTY_NAME_COORDINATE = "coordinate";
 
-        @Getter(PRIVATE)
         private LocalDateTime dateTime;
 
-        @Getter(PRIVATE)
         private Coordinate coordinate;
-
         private int course;
         private int altitude;
         private double speed;

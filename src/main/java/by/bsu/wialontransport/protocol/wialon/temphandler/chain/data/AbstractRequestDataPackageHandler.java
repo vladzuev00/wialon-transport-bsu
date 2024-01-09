@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.temphandler.chain.data;
 
-import by.bsu.wialontransport.protocol.core.service.receivingdata.ReceivingDataService;
 import by.bsu.wialontransport.protocol.wialon.temphandler.chain.PackageHandler;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
