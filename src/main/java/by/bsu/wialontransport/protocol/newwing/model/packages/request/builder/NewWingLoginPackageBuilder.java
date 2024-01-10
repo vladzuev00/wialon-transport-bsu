@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLog
 import lombok.Setter;
 
 @Setter
-public final class LoginNewWingPackageBuilder extends NewWingRequestPackageBuilder<NewWingLoginPackage> {
+public final class NewWingLoginPackageBuilder extends NewWingRequestPackageBuilder<NewWingLoginPackage> {
     private String imei;
 
     @Override

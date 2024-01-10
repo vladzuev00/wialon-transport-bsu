@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public final class LoginNewWingPackageBuilderTest {
+public final class NewWingLoginPackageBuilderTest {
 
     @Test
     public void packageShouldBeBuilt() {
-        final LoginNewWingPackageBuilder givenBuilder = new LoginNewWingPackageBuilder();
+        final NewWingLoginPackageBuilder givenBuilder = new NewWingLoginPackageBuilder();
 
         final String givenImei = "111112222233333";
         givenBuilder.setImei(givenImei);
