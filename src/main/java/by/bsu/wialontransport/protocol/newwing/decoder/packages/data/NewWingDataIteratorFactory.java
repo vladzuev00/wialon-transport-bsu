@@ -10,6 +10,6 @@ public final class NewWingDataIteratorFactory {
     private final NewWingDataDecoder dataDecoder;
 
     public NewWingDataIterator create(final ByteBuf buffer) {
-        return new NewWingDataIterator(this.dataDecoder, buffer);
+        return new NewWingDataIterator(dataDecoder, buffer);
     }
 }

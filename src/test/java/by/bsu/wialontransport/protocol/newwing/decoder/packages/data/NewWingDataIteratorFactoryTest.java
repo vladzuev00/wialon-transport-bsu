@@ -23,17 +23,17 @@ public final class NewWingDataIteratorFactoryTest {
 
     @Before
     public void initializeIteratorFactory() {
-        this.iteratorFactory = new NewWingDataIteratorFactory(this.mockedDataDecoder);
+        iteratorFactory = new NewWingDataIteratorFactory(mockedDataDecoder);
     }
 
     @Test
     public void iteratorShouldBeCreated() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final NewWingDataIterator actual = this.iteratorFactory.create(givenBuffer);
+        final NewWingDataIterator actual = iteratorFactory.create(givenBuffer);
 
         final NewWingDataDecoder actualDataDecoder = findDataDecoder(actual);
-        assertSame(this.mockedDataDecoder, actualDataDecoder);
+        assertSame(mockedDataDecoder, actualDataDecoder);
 
         final ByteBuf actualBuffer = findBuffer(actual);
         assertSame(givenBuffer, actualBuffer);
