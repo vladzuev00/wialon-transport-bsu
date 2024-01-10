@@ -17,9 +17,9 @@ public final class NewWingDataIteratorTest {
 
     @Test
     public void bufferShouldBeIterated() {
-        final NewWingDataDecoder givenDataDecoder = mock(NewWingDataDecoder.class);
+        final NewWingDataDecoder givenDecoder = mock(NewWingDataDecoder.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDataDecoder, givenBuffer);
+        final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDecoder, givenBuffer);
 
         when(givenBuffer.isReadable())
                 .thenReturn(true)
@@ -33,7 +33,7 @@ public final class NewWingDataIteratorTest {
         final NewWingData firstGivenData = createData(2, 9, 20);
         final NewWingData secondGivenData = createData(3, 10, 21);
         final NewWingData thirdGivenData = createData(4, 11, 22);
-        when(givenDataDecoder.decodeNext(same(givenBuffer)))
+        when(givenDecoder.decodeNext(same(givenBuffer)))
                 .thenReturn(firstGivenData)
                 .thenReturn(secondGivenData)
                 .thenReturn(thirdGivenData);
