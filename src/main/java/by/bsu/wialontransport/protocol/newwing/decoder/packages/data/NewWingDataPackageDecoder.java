@@ -30,16 +30,12 @@ public final class NewWingDataPackageDecoder
 
     @Override
     protected void decodeUntilChecksum(final ByteBuf buffer, final NewWingDataPackageBuilder packageBuilder) {
-        this.decodeData(buffer, packageBuilder);
+        decodeData(buffer, packageBuilder);
     }
 
     private void decodeData(final ByteBuf buffer, final NewWingDataPackageBuilder packageBuilder) {
-        final List<NewWingData> data = this.readData(buffer);
+        final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
+        final List<NewWingData> data = convertToList(iterator);
         packageBuilder.setData(data);
-    }
-
-    private List<NewWingData> readData(final ByteBuf buffer) {
-        final NewWingDataIterator iterator = this.dataIteratorFactory.create(buffer);
-        return convertToList(iterator);
     }
 }

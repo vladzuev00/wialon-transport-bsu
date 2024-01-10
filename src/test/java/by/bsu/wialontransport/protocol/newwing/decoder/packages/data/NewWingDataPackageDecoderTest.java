@@ -27,7 +27,7 @@ public final class NewWingDataPackageDecoderTest {
 
     @Before
     public void initializeDecoder() {
-        this.decoder = new NewWingDataPackageDecoder(this.mockedDataIteratorFactory);
+        decoder = new NewWingDataPackageDecoder(mockedDataIteratorFactory);
     }
 
     @Test
@@ -37,7 +37,7 @@ public final class NewWingDataPackageDecoderTest {
             final NewWingDataPackageBuilder givenPackageBuilder = mock(NewWingDataPackageBuilder.class);
 
             final NewWingDataIterator givenDataIterator = mock(NewWingDataIterator.class);
-            when(this.mockedDataIteratorFactory.create(same(givenBuffer))).thenReturn(givenDataIterator);
+            when(mockedDataIteratorFactory.create(same(givenBuffer))).thenReturn(givenDataIterator);
 
             final List<NewWingData> givenData = List.of(
                     createData(23, 11, 2),
@@ -46,7 +46,7 @@ public final class NewWingDataPackageDecoderTest {
             );
             mockedCollectionUtil.when(() -> convertToList(same(givenDataIterator))).thenReturn(givenData);
 
-            this.decoder.decodeUntilChecksum(givenBuffer, givenPackageBuilder);
+            decoder.decodeUntilChecksum(givenBuffer, givenPackageBuilder);
 
             verify(givenPackageBuilder, times(1)).setData(eq(givenData));
         }
