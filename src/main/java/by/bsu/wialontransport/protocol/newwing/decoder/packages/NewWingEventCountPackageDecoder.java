@@ -2,35 +2,35 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
 import by.bsu.wialontransport.function.ShortConsumer;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.EventCountNewWingPackageBuilder;
+import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingEventCountPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
-public final class EventCountNewWingPackageDecoder
-        extends NewWingPackageDecoder<NewWingEventCountPackage, EventCountNewWingPackageBuilder> {
+public final class NewWingEventCountPackageDecoder
+        extends NewWingPackageDecoder<NewWingEventCountPackage, NewWingEventCountPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSGI";
 
-    public EventCountNewWingPackageDecoder() {
+    public NewWingEventCountPackageDecoder() {
         super(PACKAGE_PREFIX);
     }
 
     @Override
-    protected EventCountNewWingPackageBuilder createPackageBuilder() {
-        return new EventCountNewWingPackageBuilder();
+    protected NewWingEventCountPackageBuilder createPackageBuilder() {
+        return new NewWingEventCountPackageBuilder();
     }
 
     @Override
-    protected void decodeUntilChecksum(final ByteBuf buffer, final EventCountNewWingPackageBuilder packageBuilder) {
+    protected void decodeUntilChecksum(final ByteBuf buffer, final NewWingEventCountPackageBuilder packageBuilder) {
         decodeEventCount(buffer, packageBuilder);
         decodeFrameEventCount(buffer, packageBuilder);
     }
 
     private static void decodeEventCount(final ByteBuf buffer,
-                                         final EventCountNewWingPackageBuilder packageBuilder) {
+                                         final NewWingEventCountPackageBuilder packageBuilder) {
         readAndAccumulateShortValue(buffer, packageBuilder::setEventCount);
     }
 
     private static void decodeFrameEventCount(final ByteBuf buffer,
-                                              final EventCountNewWingPackageBuilder packageBuilder) {
+                                              final NewWingEventCountPackageBuilder packageBuilder) {
         readAndAccumulateShortValue(buffer, packageBuilder::setFrameEventCount);
     }
 

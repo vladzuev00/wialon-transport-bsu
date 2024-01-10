@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public final class EventCountNewWingPackageBuilderTest {
+public final class NewWingEventCountPackageBuilderTest {
 
     @Test
     public void packageShouldBeBuilt() {
-        final EventCountNewWingPackageBuilder givenBuilder = new EventCountNewWingPackageBuilder();
+        final NewWingEventCountPackageBuilder givenBuilder = new NewWingEventCountPackageBuilder();
 
         final short givenEventCount = 20;
         givenBuilder.setEventCount(givenEventCount);
