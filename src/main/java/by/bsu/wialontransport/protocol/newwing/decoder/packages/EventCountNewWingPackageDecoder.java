@@ -10,7 +10,12 @@ public final class EventCountNewWingPackageDecoder
     private static final String PACKAGE_PREFIX = "GPRSGI";
 
     public EventCountNewWingPackageDecoder() {
-        super(PACKAGE_PREFIX, EventCountNewWingPackageBuilder::new);
+        super(PACKAGE_PREFIX);
+    }
+
+    @Override
+    protected EventCountNewWingPackageBuilder createPackageBuilder() {
+        return new EventCountNewWingPackageBuilder();
     }
 
     @Override

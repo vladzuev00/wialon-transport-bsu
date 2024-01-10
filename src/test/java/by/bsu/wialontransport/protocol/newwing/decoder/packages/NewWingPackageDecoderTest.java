@@ -27,11 +27,11 @@ public final class NewWingPackageDecoderTest {
         final int givenChecksum = 12345;
         when(givenBuffer.readIntLE()).thenReturn(givenChecksum);
 
-        final NewWingRequestPackage actual = this.decoder.decode(givenBuffer);
+        final NewWingRequestPackage actual = decoder.decode(givenBuffer);
         final TestNewWingPackage expected = new TestNewWingPackage(givenChecksum);
         assertEquals(expected, actual);
 
-        assertTrue(this.decoder.isDecodedUntilChecksum());
+        assertTrue(decoder.isDecodedUntilChecksum());
     }
 
     private static final class TestNewWingPackage extends NewWingRequestPackage {
@@ -57,12 +57,17 @@ public final class NewWingPackageDecoderTest {
         private boolean decodedUntilChecksum;
 
         public TestNewWingPackageDecoder(final String packagePrefix) {
-            super(packagePrefix, TestNewWingPackageBuilder::new);
+            super(packagePrefix);
+        }
+
+        @Override
+        protected TestNewWingPackageBuilder createPackageBuilder() {
+            return new TestNewWingPackageBuilder();
         }
 
         @Override
         protected void decodeUntilChecksum(final ByteBuf buffer, final TestNewWingPackageBuilder packageBuilder) {
-            this.decodedUntilChecksum = true;
+            decodedUntilChecksum = true;
         }
     }
 }

@@ -19,8 +19,13 @@ public final class DataNewWingPackageDecoder
     private final NewWingDataIteratorFactory dataIteratorFactory;
 
     public DataNewWingPackageDecoder(final NewWingDataIteratorFactory dataIteratorFactory) {
-        super(PACKAGE_PREFIX, DataNewWingPackageBuilder::new);
+        super(PACKAGE_PREFIX);
         this.dataIteratorFactory = dataIteratorFactory;
+    }
+
+    @Override
+    protected DataNewWingPackageBuilder createPackageBuilder() {
+        return new DataNewWingPackageBuilder();
     }
 
     @Override

@@ -12,7 +12,12 @@ public final class LoginNewWingPackageDecoder
     private static final String TEMPLATE_IMEI = "%020d";
 
     public LoginNewWingPackageDecoder() {
-        super(PACKAGE_PREFIX, LoginNewWingPackageBuilder::new);
+        super(PACKAGE_PREFIX);
+    }
+
+    @Override
+    protected LoginNewWingPackageBuilder createPackageBuilder() {
+        return new LoginNewWingPackageBuilder();
     }
 
     @Override

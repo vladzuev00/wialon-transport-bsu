@@ -5,27 +5,25 @@ import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingReq
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingRequestPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
-import java.util.function.Supplier;
-
 public abstract class NewWingPackageDecoder<
         PACKAGE extends NewWingRequestPackage,
         BUILDER extends NewWingRequestPackageBuilder<PACKAGE>
         >
         extends PackageBufferDecoder<String, PACKAGE> {
-    private final Supplier<BUILDER> packageBuilderSupplier;
 
-    public NewWingPackageDecoder(final String packagePrefix, final Supplier<BUILDER> packageBuilderSupplier) {
+    public NewWingPackageDecoder(final String packagePrefix) {
         super(packagePrefix);
-        this.packageBuilderSupplier = packageBuilderSupplier;
     }
 
     @Override
     public final PACKAGE decode(final ByteBuf buffer) {
-        final BUILDER packageBuilder = this.packageBuilderSupplier.get();
-        this.decodeUntilChecksum(buffer, packageBuilder);
-        this.decodeChecksum(buffer, packageBuilder);
+        final BUILDER packageBuilder = createPackageBuilder();
+        decodeUntilChecksum(buffer, packageBuilder);
+        decodeChecksum(buffer, packageBuilder);
         return packageBuilder.build();
     }
+
+    protected abstract BUILDER createPackageBuilder();
 
     protected abstract void decodeUntilChecksum(final ByteBuf buffer, final BUILDER packageBuilder);
 
