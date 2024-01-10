@@ -38,7 +38,7 @@ public final class NewWingDataDecoderTest {
         };
         final ByteBuf givenBuffer = wrappedBuffer(givenBytes);
 
-        final NewWingData actual = this.decoder.decodeNext(givenBuffer);
+        final NewWingData actual = decoder.decodeNext(givenBuffer);
         final NewWingData expected = NewWingData.builder()
                 .hour((byte) 18)
                 .minute((byte) 51)

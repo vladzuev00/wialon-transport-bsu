@@ -8,11 +8,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public final class DataNewWingPackageBuilderTest {
+public final class NewWingDataPackageBuilderTest {
 
     @Test
     public void packageShouldBeBuilt() {
-        final DataNewWingPackageBuilder givenBuilder = new DataNewWingPackageBuilder();
+        final NewWingDataPackageBuilder givenBuilder = new NewWingDataPackageBuilder();
 
         final List<NewWingData> givenData = List.of(
                 createData(3, 11, 23),

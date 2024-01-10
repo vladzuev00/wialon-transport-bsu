@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Setter
-public final class DataNewWingPackageBuilder extends NewWingRequestPackageBuilder<NewWingDataPackage> {
+public final class NewWingDataPackageBuilder extends NewWingRequestPackageBuilder<NewWingDataPackage> {
     private List<NewWingData> data;
 
     @Override

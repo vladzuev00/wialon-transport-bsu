@@ -11,118 +11,118 @@ import org.springframework.stereotype.Component;
 public final class NewWingDataDecoder {
 
     public NewWingData decodeNext(final ByteBuf buffer) {
-        final NewWingDataBuilder dataBuilder = NewWingData.builder();
-        decodeHour(buffer, dataBuilder);
-        decodeMinute(buffer, dataBuilder);
-        decodeSecond(buffer, dataBuilder);
-        decodeLatitudeIntegerPart(buffer, dataBuilder);
-        decodeLatitudeFractionalPart(buffer, dataBuilder);
-        decodeLongitudeIntegerPart(buffer, dataBuilder);
-        decodeLongitudeFractionalPart(buffer, dataBuilder);
-        decodeHdopIntegerPart(buffer, dataBuilder);
-        decodeHdopFractionalPart(buffer, dataBuilder);
-        decodeCourse(buffer, dataBuilder);
-        decodeSpeedIntegerPart(buffer, dataBuilder);
-        decodeSpeedFractionalPart(buffer, dataBuilder);
-        decodeDay(buffer, dataBuilder);
-        decodeMonth(buffer, dataBuilder);
-        decodeYear(buffer, dataBuilder);
-        decodeFirstAnalogInputLevel(buffer, dataBuilder);
-        decodeSecondAnalogInputLevel(buffer, dataBuilder);
-        decodeThirdAnalogInputLevel(buffer, dataBuilder);
-        decodeFourthAnalogInputLevel(buffer, dataBuilder);
-        decodeFlagByte(buffer, dataBuilder);
-        decodeDiscreteInputStateByte(buffer, dataBuilder);
-        decodeChecksum(buffer, dataBuilder);
-        return dataBuilder.build();
+        final NewWingDataBuilder builder = NewWingData.builder();
+        decodeHour(buffer, builder);
+        decodeMinute(buffer, builder);
+        decodeSecond(buffer, builder);
+        decodeLatitudeIntegerPart(buffer, builder);
+        decodeLatitudeFractionalPart(buffer, builder);
+        decodeLongitudeIntegerPart(buffer, builder);
+        decodeLongitudeFractionalPart(buffer, builder);
+        decodeHdopIntegerPart(buffer, builder);
+        decodeHdopFractionalPart(buffer, builder);
+        decodeCourse(buffer, builder);
+        decodeSpeedIntegerPart(buffer, builder);
+        decodeSpeedFractionalPart(buffer, builder);
+        decodeDay(buffer, builder);
+        decodeMonth(buffer, builder);
+        decodeYear(buffer, builder);
+        decodeFirstAnalogInputLevel(buffer, builder);
+        decodeSecondAnalogInputLevel(buffer, builder);
+        decodeThirdAnalogInputLevel(buffer, builder);
+        decodeFourthAnalogInputLevel(buffer, builder);
+        decodeFlagByte(buffer, builder);
+        decodeDiscreteInputStateByte(buffer, builder);
+        decodeChecksum(buffer, builder);
+        return builder.build();
     }
 
-    private static void decodeHour(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::hour);
+    private static void decodeHour(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::hour);
     }
 
-    private static void decodeMinute(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::minute);
+    private static void decodeMinute(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::minute);
     }
 
-    private static void decodeSecond(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::second);
+    private static void decodeSecond(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::second);
     }
 
-    private static void decodeLatitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::latitudeIntegerPart);
+    private static void decodeLatitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::latitudeIntegerPart);
     }
 
-    private static void decodeLatitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::latitudeFractionalPart);
+    private static void decodeLatitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::latitudeFractionalPart);
     }
 
-    private static void decodeLongitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::longitudeIntegerPart);
+    private static void decodeLongitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::longitudeIntegerPart);
     }
 
-    private static void decodeLongitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::longitudeFractionalPart);
+    private static void decodeLongitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::longitudeFractionalPart);
     }
 
-    private static void decodeHdopIntegerPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::hdopIntegerPart);
+    private static void decodeHdopIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::hdopIntegerPart);
     }
 
-    private static void decodeHdopFractionalPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::hdopFractionalPart);
+    private static void decodeHdopFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::hdopFractionalPart);
     }
 
-    private static void decodeCourse(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::course);
+    private static void decodeCourse(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::course);
     }
 
-    private static void decodeSpeedIntegerPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::speedIntegerPart);
+    private static void decodeSpeedIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::speedIntegerPart);
     }
 
-    private static void decodeSpeedFractionalPart(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::speedFractionalPart);
+    private static void decodeSpeedFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::speedFractionalPart);
     }
 
-    private static void decodeDay(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::day);
+    private static void decodeDay(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::day);
     }
 
-    private static void decodeMonth(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::month);
+    private static void decodeMonth(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::month);
     }
 
-    private static void decodeYear(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::year);
+    private static void decodeYear(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::year);
     }
 
-    private static void decodeFirstAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::firstAnalogInputLevel);
+    private static void decodeFirstAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::firstAnalogInputLevel);
     }
 
-    private static void decodeSecondAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::secondAnalogInputLevel);
+    private static void decodeSecondAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::secondAnalogInputLevel);
     }
 
-    private static void decodeThirdAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::thirdAnalogInputLevel);
+    private static void decodeThirdAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::thirdAnalogInputLevel);
     }
 
-    private static void decodeFourthAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::fourthAnalogInputLevel);
+    private static void decodeFourthAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::fourthAnalogInputLevel);
     }
 
-    private static void decodeFlagByte(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::flagByte);
+    private static void decodeFlagByte(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::flagByte);
     }
 
-    private static void decodeDiscreteInputStateByte(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateByteValue(buffer, dataBuilder::discreteInputStateByte);
+    private static void decodeDiscreteInputStateByte(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::discreteInputStateByte);
     }
 
-    private static void decodeChecksum(final ByteBuf buffer, final NewWingDataBuilder dataBuilder) {
-        readAndAccumulateShortValue(buffer, dataBuilder::checksum);
+    private static void decodeChecksum(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateShortValue(buffer, builder::checksum);
     }
 
     private static void readAndAccumulateShortValue(final ByteBuf buffer, final ShortConsumer accumulator) {
