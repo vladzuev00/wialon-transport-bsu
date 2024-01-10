@@ -26,7 +26,7 @@ public final class NewWingProtocolDecoderTest {
         when(givenBuffer.readCharSequence(eq(EXPECTED_PACKAGE_PREFIX_LENGTH), same(EXPECTED_PACKAGE_PREFIX_CHARSET)))
                 .thenReturn(givenPackagePrefix);
 
-        final String actual = this.decoder.extractPackagePrefix(givenBuffer);
+        final String actual = decoder.extractPackagePrefix(givenBuffer);
         assertSame(givenPackagePrefix, actual);
     }
 }
