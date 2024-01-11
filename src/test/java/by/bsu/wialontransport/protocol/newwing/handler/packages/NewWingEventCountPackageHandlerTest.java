@@ -24,11 +24,11 @@ public final class NewWingEventCountPackageHandlerTest {
         final NewWingEventCountPackage givenRequestPackage = mock(NewWingEventCountPackage.class);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        this.packageHandler.handleConcretePackage(givenRequestPackage, givenContext);
+        packageHandler.handleConcretePackage(givenRequestPackage, givenContext);
 
-        verify(givenContext, times(1)).writeAndFlush(this.responsePackageArgumentCaptor.capture());
+        verify(givenContext, times(1)).writeAndFlush(responsePackageArgumentCaptor.capture());
 
-        final NewWingSuccessResponsePackage actualResponsePackage = this.responsePackageArgumentCaptor.getValue();
+        final NewWingSuccessResponsePackage actualResponsePackage = responsePackageArgumentCaptor.getValue();
         final NewWingSuccessResponsePackage expectedResponsePackage = new NewWingSuccessResponsePackage();
         assertEquals(expectedResponsePackage, actualResponsePackage);
     }
