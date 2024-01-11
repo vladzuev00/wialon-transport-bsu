@@ -17,14 +17,14 @@ public final class NewWingLoginPackageHandlerTest {
 
     @Test
     public void noSuchImeiResponseShouldBeCreated() {
-        final Package actual = this.loginPackageHandler.createNoSuchImeiResponse();
+        final Package actual = loginPackageHandler.createNoSuchImeiResponse();
         final Package expected = new NewWingFailureResponsePackage();
         assertEquals(expected, actual);
     }
 
     @Test
     public void successResponseShouldBeCreated() {
-        final Package actual = this.loginPackageHandler.createSuccessResponse();
+        final Package actual = loginPackageHandler.createSuccessResponse();
         final Package expected = new NewWingSuccessResponsePackage();
         assertEquals(expected, actual);
     }
