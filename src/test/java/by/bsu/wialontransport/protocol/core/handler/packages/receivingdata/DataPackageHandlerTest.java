@@ -8,9 +8,10 @@ import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler.ReceivedDataBuilder;
+import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,14 +22,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyMap;
-import static java.util.Optional.empty;
-import static org.junit.Assert.*;
+import static java.util.Optional.ofNullable;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
@@ -91,7 +90,7 @@ public final class DataPackageHandlerTest {
     }
 
     @Test
-    public void packageShouldBeHandledInCaseExistingLastData() {
+    public void packageWithOnlyRequiredPropertiesShouldBeHandledInCaseExistingLastData() {
         final LocalDateTime firstGivenSourceDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
         final Coordinate firstGivenSourceCoordinate = new Coordinate(1.1, 1.2);
         final TestSource firstGivenSource = new TestSource(firstGivenSourceDateTime, firstGivenSourceCoordinate);
@@ -160,14 +159,14 @@ public final class DataPackageHandlerTest {
         verify(mockedKafkaInboundDataProducer, times(2)).send(dataArgumentCaptor.capture());
         final List<Data> actualSentData = dataArgumentCaptor.getAllValues();
         final List<Data> expectedSentData = List.of(
-                createDataWithDefaultProperties(secondGivenSourceDateTime, secondGivenSourceCoordinate, givenTracker),
-                createDataWithDefaultProperties(firstGivenSourceDateTime, firstGivenSourceCoordinate, givenTracker)
+                createDataWithOnlyRequiredProperties(secondGivenSourceDateTime, secondGivenSourceCoordinate, givenTracker),
+                createDataWithOnlyRequiredProperties(firstGivenSourceDateTime, firstGivenSourceCoordinate, givenTracker)
         );
         assertEquals(expectedSentData, actualSentData);
     }
 
     @Test
-    public void packageShouldBeHandledInCaseNotExistingLastData() {
+    public void packageWithOnlyRequiredPropertiesShouldBeHandledInCaseNotExistingLastData() {
         final LocalDateTime firstGivenSourceDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
         final Coordinate firstGivenSourceCoordinate = new Coordinate(1.1, 1.2);
         final TestSource firstGivenSource = new TestSource(firstGivenSourceDateTime, firstGivenSourceCoordinate);
@@ -197,7 +196,7 @@ public final class DataPackageHandlerTest {
         final Tracker givenTracker = createTracker(256L);
         when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.of(givenTracker));
 
-        when(mockedContextAttributeManager.findLastData(same(givenContext))).thenReturn(empty());
+        when(mockedContextAttributeManager.findLastData(same(givenContext))).thenReturn(Optional.empty());
 
         final ReceivedData firstExpectedReceivedData = createReceivedDataWithDefaultProperties(
                 firstGivenSourceDateTime,
@@ -232,15 +231,15 @@ public final class DataPackageHandlerTest {
         verify(mockedKafkaInboundDataProducer, times(3)).send(dataArgumentCaptor.capture());
         final List<Data> actualSentData = dataArgumentCaptor.getAllValues();
         final List<Data> expectedSentData = List.of(
-                createDataWithDefaultProperties(thirdGivenSourceDateTime, thirdGivenSourceCoordinate, givenTracker),
-                createDataWithDefaultProperties(secondGivenSourceDateTime, secondGivenSourceCoordinate, givenTracker),
-                createDataWithDefaultProperties(firstGivenSourceDateTime, firstGivenSourceCoordinate, givenTracker)
+                createDataWithOnlyRequiredProperties(thirdGivenSourceDateTime, thirdGivenSourceCoordinate, givenTracker),
+                createDataWithOnlyRequiredProperties(secondGivenSourceDateTime, secondGivenSourceCoordinate, givenTracker),
+                createDataWithOnlyRequiredProperties(firstGivenSourceDateTime, firstGivenSourceCoordinate, givenTracker)
         );
         assertEquals(expectedSentData, actualSentData);
     }
 
     @Test
-    public void packageWithoutValidDataShouldBeHandled() {
+    public void packageWithoutValidDataAndWithOnlyRequiredPropertiesShouldBeHandled() {
         final LocalDateTime firstGivenSourceDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
         final Coordinate firstGivenSourceCoordinate = new Coordinate(1.1, 1.2);
         final TestSource firstGivenSource = new TestSource(firstGivenSourceDateTime, firstGivenSourceCoordinate);
@@ -270,7 +269,7 @@ public final class DataPackageHandlerTest {
         final Tracker givenTracker = createTracker(256L);
         when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.of(givenTracker));
 
-        when(mockedContextAttributeManager.findLastData(same(givenContext))).thenReturn(empty());
+        when(mockedContextAttributeManager.findLastData(same(givenContext))).thenReturn(Optional.empty());
 
         final ReceivedData firstExpectedReceivedData = createReceivedDataWithDefaultProperties(
                 firstGivenSourceDateTime,
@@ -306,7 +305,7 @@ public final class DataPackageHandlerTest {
     }
 
     @Test
-    public void packageWithOldDataShouldBeHandled() {
+    public void packageWithOldDataAndWithOnlyRequiredPropertiesShouldBeHandled() {
         final LocalDateTime firstGivenSourceDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
         final Coordinate firstGivenSourceCoordinate = new Coordinate(1.1, 1.2);
         final TestSource firstGivenSource = new TestSource(firstGivenSourceDateTime, firstGivenSourceCoordinate);
@@ -375,81 +374,107 @@ public final class DataPackageHandlerTest {
         verifyNoInteractions(mockedKafkaInboundDataProducer);
     }
 
-    @Test
-    public void receivedDataBuilderShouldBeCreated() {
-        final ReceivedDataBuilder actual = new ReceivedDataBuilder(mockedDataDefaultPropertyConfiguration);
+    @Test(expected = NoTrackerInContextException.class)
+    public void packageWithOnlyRequiredPropertiesShouldNotBeHandledBecauseOfNoTrackerInContext() {
+        final List<TestSource> givenSources = List.of(
+                new TestSource(
+                        LocalDateTime.of(2023, 1, 8, 14, 15, 16),
+                        new Coordinate(1.1, 1.2)
+                ),
+                new TestSource(
+                        LocalDateTime.of(2023, 1, 8, 14, 15, 15),
+                        new Coordinate(2.1, 2.2)
+                )
+        );
+        final TestDataPackage givenRequestPackage = new TestDataPackage(givenSources);
 
-        assertNull(actual.getDateTime());
-        assertNull(actual.getCoordinate());
-        assertEquals(GIVEN_DEFAULT_COURSE, actual.getCourse());
-        assertEquals(GIVEN_DEFAULT_ALTITUDE, actual.getAltitude());
-        assertEquals(GIVEN_DEFAULT_SPEED, actual.getSpeed(), 0.);
-        assertEquals(GIVEN_DEFAULT_AMOUNT_OF_SATELLITES, actual.getAmountOfSatellites());
-        assertEquals(GIVEN_DEFAULT_REDUCTION_PRECISION, actual.getReductionPrecision(), 0.);
-        assertEquals(GIVEN_DEFAULT_INPUTS, actual.getInputs());
-        assertEquals(GIVEN_DEFAULT_OUTPUTS, actual.getOutputs());
-        assertArrayEquals(new double[]{}, actual.getAnalogInputs(), 0.);
-        assertEquals(GIVEN_DEFAULT_DRIVER_KEY_CODE, actual.getDriverKeyCode());
-        assertTrue(actual.getParametersByNames().isEmpty());
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+
+        when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.empty());
+
+        dataPackageHandler.handleConcretePackage(givenRequestPackage, givenContext);
     }
 
     @Test
-    public void parameterShouldBeAdded() {
-        final ReceivedDataBuilder givenBuilder = new ReceivedDataBuilder(mockedDataDefaultPropertyConfiguration);
-
-        final String givenParameterName = "name";
-        final Parameter givenParameter = createParameter(255L, givenParameterName);
-
-        givenBuilder.addParameter(givenParameter);
-
-        final Map<String, Parameter> actual = givenBuilder.getParametersByNames();
-        final Map<String, Parameter> expected = Map.of(givenParameterName, givenParameter);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void receivedDataShouldBeBuilt() {
-        final ReceivedDataBuilder givenBuilder = new ReceivedDataBuilder(mockedDataDefaultPropertyConfiguration);
-
+    public void packageWithAllPropertiesShouldBeHandledInCaseNotExistingLastData() {
         final LocalDateTime givenDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
-        givenBuilder.setDateTime(givenDateTime);
+        final Coordinate givenCoordinate = new Coordinate(1.1, 1.2);
+        final int givenCourse = 5;
+        final double givenSpeed = 6;
+        final int givenAltitude = 7;
+        final int givenAmountOfSatellites = 8;
+        final double givenReductionPrecision = 9;
+        final int givenInputs = 10;
+        final int givenOutputs = 11;
+        final double[] givenAnalogInputs = {12, 13, 14};
+        final String givenDriverKeyCode = "driver key code";
 
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
-        givenBuilder.setCoordinate(givenCoordinate);
+        final Parameter givenParameter = createParameter(256L, "parameter-name");
+        final Set<Parameter> givenParameters = Set.of(givenParameter);
 
-        final Tracker givenTracker = createTracker(255L);
-
-        final ReceivedData actual = givenBuilder.build(givenTracker);
-        final ReceivedData expected = createReceivedDataWithDefaultProperties(
+        final TestSource givenSource = new TestSource(
                 givenDateTime,
                 givenCoordinate,
-                givenTracker
+                givenCourse,
+                givenSpeed,
+                givenAltitude,
+                givenAmountOfSatellites,
+                givenReductionPrecision,
+                givenInputs,
+                givenOutputs,
+                givenAnalogInputs,
+                givenDriverKeyCode,
+                givenParameters
         );
-        assertEquals(expected, actual);
-    }
+        final List<TestSource> givenSources = List.of(givenSource);
+        final TestDataPackage givenRequestPackage = new TestDataPackage(givenSources);
 
-    @Test(expected = IllegalStateException.class)
-    public void receivedDataShouldNotBeBuiltBecauseOfNoDateTime() {
-        final ReceivedDataBuilder givenBuilder = new ReceivedDataBuilder(mockedDataDefaultPropertyConfiguration);
-
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
-        givenBuilder.setCoordinate(givenCoordinate);
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         final Tracker givenTracker = createTracker(255L);
+        when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.of(givenTracker));
 
-        givenBuilder.build(givenTracker);
-    }
+        when(mockedContextAttributeManager.findLastData(same(givenContext))).thenReturn(Optional.empty());
 
-    @Test(expected = IllegalStateException.class)
-    public void receivedDataShouldNotBeBuiltBecauseOfNoCoordinate() {
-        final ReceivedDataBuilder givenBuilder = new ReceivedDataBuilder(mockedDataDefaultPropertyConfiguration);
+        final ReceivedData expectedReceivedData = ReceivedData.builder()
+                .dateTime(givenDateTime)
+                .coordinate(givenCoordinate)
+                .course(givenCourse)
+                .speed(givenSpeed)
+                .altitude(givenAltitude)
+                .amountOfSatellites(givenAmountOfSatellites)
+                .reductionPrecision(givenReductionPrecision)
+                .inputs(givenInputs)
+                .outputs(givenOutputs)
+                .analogInputs(givenAnalogInputs)
+                .driverKeyCode(givenDriverKeyCode)
+                .parametersByNames(Map.of(givenParameter.getName(), givenParameter))
+                .tracker(givenTracker)
+                .build();
+        when(mockedReceivedDataValidator.isValid(eq(expectedReceivedData))).thenReturn(true);
 
-        final LocalDateTime givenDateTime = LocalDateTime.of(2023, 1, 8, 14, 15, 16);
-        givenBuilder.setDateTime(givenDateTime);
+        dataPackageHandler.handleConcretePackage(givenRequestPackage, givenContext);
 
-        final Tracker givenTracker = createTracker(255L);
-
-        givenBuilder.build(givenTracker);
+        verify(mockedKafkaInboundDataProducer, times(1)).send(dataArgumentCaptor.capture());
+        final List<Data> actualSentData = dataArgumentCaptor.getAllValues();
+        final List<Data> expectedSentData = List.of(
+                Data.builder()
+                        .dateTime(givenDateTime)
+                        .coordinate(givenCoordinate)
+                        .course(givenCourse)
+                        .speed(givenSpeed)
+                        .altitude(givenAltitude)
+                        .amountOfSatellites(givenAmountOfSatellites)
+                        .reductionPrecision(givenReductionPrecision)
+                        .inputs(givenInputs)
+                        .outputs(givenOutputs)
+                        .analogInputs(givenAnalogInputs)
+                        .driverKeyCode(givenDriverKeyCode)
+                        .parametersByNames(Map.of(givenParameter.getName(), givenParameter))
+                        .tracker(givenTracker)
+                        .build()
+        );
+        assertEquals(expectedSentData, actualSentData);
     }
 
     private static Tracker createTracker(final Long id) {
@@ -462,6 +487,14 @@ public final class DataPackageHandlerTest {
         return Data.builder()
                 .id(id)
                 .dateTime(dateTime)
+                .build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static Parameter createParameter(final Long id, final String name) {
+        return Parameter.builder()
+                .id(id)
+                .name(name)
                 .build();
     }
 
@@ -485,9 +518,9 @@ public final class DataPackageHandlerTest {
                 .build();
     }
 
-    private static Data createDataWithDefaultProperties(final LocalDateTime dateTime,
-                                                        final Coordinate coordinate,
-                                                        final Tracker tracker) {
+    private static Data createDataWithOnlyRequiredProperties(final LocalDateTime dateTime,
+                                                             final Coordinate coordinate,
+                                                             final Tracker tracker) {
         return Data.builder()
                 .dateTime(dateTime)
                 .coordinate(coordinate)
@@ -505,18 +538,36 @@ public final class DataPackageHandlerTest {
                 .build();
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private static Parameter createParameter(final Long id, final String name) {
-        return Parameter.builder()
-                .id(id)
-                .name(name)
-                .build();
-    }
-
     @Value
+    @AllArgsConstructor
     private static class TestSource {
         LocalDateTime dateTime;
         Coordinate coordinate;
+        Integer course;
+        Double speed;
+        Integer altitude;
+        Integer amountOfSatellites;
+        Double reductionPrecision;
+        Integer inputs;
+        Integer outputs;
+        double[] analogInputs;
+        String driverKeyCode;
+        Set<Parameter> parameters;
+
+        public TestSource(final LocalDateTime dateTime, final Coordinate coordinate) {
+            this.dateTime = dateTime;
+            this.coordinate = coordinate;
+            course = null;
+            speed = null;
+            altitude = null;
+            amountOfSatellites = null;
+            reductionPrecision = null;
+            inputs = null;
+            outputs = null;
+            analogInputs = null;
+            driverKeyCode = null;
+            parameters = new HashSet<>();
+        }
     }
 
     @Value
@@ -540,14 +591,70 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<TestSource> extractSources(final TestDataPackage requestPackage) {
+        protected Stream<TestSource> findSources(final TestDataPackage requestPackage) {
             return requestPackage.sources.stream();
         }
 
         @Override
-        protected void accumulateComponents(final ReceivedDataBuilder builder, final TestSource testSource) {
-            builder.setDateTime(testSource.getDateTime());
-            builder.setCoordinate(testSource.getCoordinate());
+        protected LocalDateTime getDateTime(final TestSource source) {
+            return source.getDateTime();
+        }
+
+        @Override
+        protected Coordinate getCoordinate(final TestSource source) {
+            return source.getCoordinate();
+        }
+
+        @Override
+        protected OptionalInt findCourse(final TestSource source) {
+            return source.course != null ? OptionalInt.of(source.course) : OptionalInt.empty();
+        }
+
+        @Override
+        protected OptionalDouble findSpeed(final TestSource source) {
+            return source.speed != null ? OptionalDouble.of(source.speed) : OptionalDouble.empty();
+        }
+
+        @Override
+        protected OptionalInt findAltitude(final TestSource source) {
+            return source.altitude != null ? OptionalInt.of(source.altitude) : OptionalInt.empty();
+        }
+
+        @Override
+        protected OptionalInt findAmountOfSatellites(final TestSource source) {
+            return source.amountOfSatellites != null ? OptionalInt.of(source.amountOfSatellites) : OptionalInt.empty();
+        }
+
+        @Override
+        protected OptionalDouble findReductionPrecision(final TestSource source) {
+            return source.reductionPrecision != null
+                    ? OptionalDouble.of(source.reductionPrecision)
+                    : OptionalDouble.empty();
+        }
+
+        @Override
+        protected OptionalInt findInputs(final TestSource source) {
+            return source.inputs != null ? OptionalInt.of(source.inputs) : OptionalInt.empty();
+        }
+
+        @Override
+        protected OptionalInt findOutputs(final TestSource source) {
+            return source.outputs != null ? OptionalInt.of(source.outputs) : OptionalInt.empty();
+        }
+
+        @Override
+        protected Optional<double[]> findAnalogInputs(final TestSource source) {
+            return ofNullable(source.analogInputs);
+        }
+
+        @Override
+        protected Optional<String> findDriverKeyCode(final TestSource source) {
+            return ofNullable(source.driverKeyCode);
+        }
+
+        @Override
+        protected Stream<Parameter> findParameters(final TestSource source) {
+            return source.getParameters().stream();
         }
     }
 }

@@ -11,19 +11,15 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.MIN;
 import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extends PackageHandler<PACKAGE> {
     private static final Comparator<ReceivedData> DATE_TIME_COMPARATOR = comparing(ReceivedData::getDateTime);
@@ -49,7 +45,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final Tracker tracker = extractTracker(context);
         final LocalDateTime lastReceivingDateTime = findLastReceivingDateTime(context);
-        extractSources(requestPackage)
+        findSources(requestPackage)
                 .map(source -> createReceivedData(source, tracker))
                 .filter(receivedDataValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
@@ -59,27 +55,107 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .ifPresent(lastData -> contextAttributeManager.putLastData(context, lastData));
     }
 
-    protected abstract Stream<SOURCE> extractSources(final PACKAGE requestPackage);
+    protected abstract Stream<SOURCE> findSources(final PACKAGE requestPackage);
 
-    protected abstract void accumulateComponents(final ReceivedDataBuilder builder, final SOURCE source);
+    protected abstract LocalDateTime getDateTime(final SOURCE source);
+
+    protected abstract Coordinate getCoordinate(final SOURCE source);
+
+    protected abstract OptionalInt findCourse(final SOURCE source);
+
+    protected abstract OptionalDouble findSpeed(final SOURCE source);
+
+    protected abstract OptionalInt findAltitude(final SOURCE source);
+
+    protected abstract OptionalInt findAmountOfSatellites(final SOURCE source);
+
+    protected abstract OptionalDouble findReductionPrecision(final SOURCE source);
+
+    protected abstract OptionalInt findInputs(final SOURCE source);
+
+    protected abstract OptionalInt findOutputs(final SOURCE source);
+
+    protected abstract Optional<double[]> findAnalogInputs(final SOURCE source);
+
+    protected abstract Optional<String> findDriverKeyCode(final SOURCE source);
+
+    protected abstract Stream<Parameter> findParameters(final SOURCE source);
 
     private Tracker extractTracker(final ChannelHandlerContext context) {
         return contextAttributeManager.findTracker(context)
                 .orElseThrow(
-                        () -> new ReceivingDataException("There is no tracker in context")
+                        () -> new NoTrackerInContextException("There is no tracker in context")
                 );
-    }
-
-    private ReceivedData createReceivedData(final SOURCE source, final Tracker tracker) {
-        final ReceivedDataBuilder builder = new ReceivedDataBuilder(dataDefaultPropertyConfiguration);
-        accumulateComponents(builder, source);
-        return builder.build(tracker);
     }
 
     private LocalDateTime findLastReceivingDateTime(final ChannelHandlerContext context) {
         return contextAttributeManager.findLastData(context)
                 .map(Data::getDateTime)
                 .orElse(MIN);
+    }
+
+    private ReceivedData createReceivedData(final SOURCE source, final Tracker tracker) {
+        return ReceivedData.builder()
+                .dateTime(getDateTime(source))
+                .coordinate(getCoordinate(source))
+                .course(getCourse(source))
+                .speed(getSpeed(source))
+                .altitude(getAltitude(source))
+                .amountOfSatellites(getAmountOfSatellites(source))
+                .reductionPrecision(getReductionPrecision(source))
+                .inputs(getInputs(source))
+                .outputs(getOutputs(source))
+                .analogInputs(getAnalogInputs(source))
+                .driverKeyCode(getDriverKeyCode(source))
+                .parametersByNames(getParametersByNames(source))
+                .tracker(tracker)
+                .build();
+    }
+
+    private int getCourse(final SOURCE source) {
+        return findCourse(source).orElse(dataDefaultPropertyConfiguration.getCourse());
+    }
+
+    private double getSpeed(final SOURCE source) {
+        return findSpeed(source).orElse(dataDefaultPropertyConfiguration.getSpeed());
+    }
+
+    private int getAltitude(final SOURCE source) {
+        return findAltitude(source).orElse(dataDefaultPropertyConfiguration.getAltitude());
+    }
+
+    private int getAmountOfSatellites(final SOURCE source) {
+        return findAmountOfSatellites(source).orElse(dataDefaultPropertyConfiguration.getAmountOfSatellites());
+    }
+
+    private double getReductionPrecision(final SOURCE source) {
+        return findReductionPrecision(source).orElse(dataDefaultPropertyConfiguration.getReductionPrecision());
+    }
+
+    private int getInputs(final SOURCE source) {
+        return findInputs(source).orElse(dataDefaultPropertyConfiguration.getInputs());
+    }
+
+    private int getOutputs(final SOURCE source) {
+        return findOutputs(source).orElse(dataDefaultPropertyConfiguration.getOutputs());
+    }
+
+    private double[] getAnalogInputs(final SOURCE source) {
+        return findAnalogInputs(source).orElseGet(() -> new double[]{});
+    }
+
+    private String getDriverKeyCode(final SOURCE source) {
+        return findDriverKeyCode(source).orElse(dataDefaultPropertyConfiguration.getDriverKeyCode());
+    }
+
+    private Map<String, Parameter> getParametersByNames(final SOURCE source) {
+        return findParameters(source)
+                .collect(
+                        toMap(
+                                Parameter::getName,
+                                identity()
+                        )
+                );
     }
 
     private Data mapToSentData(final ReceivedData receivedData) {
@@ -106,90 +182,24 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .build();
     }
 
-    @Setter
-    @Getter(AccessLevel.PACKAGE)
-    protected static final class ReceivedDataBuilder {
-        private static final String PROPERTY_NAME_DATE_TIME = "date time";
-        private static final String PROPERTY_NAME_COORDINATE = "coordinate";
-
-        private LocalDateTime dateTime;
-
-        private Coordinate coordinate;
-        private int course;
-        private int altitude;
-        private double speed;
-        private int amountOfSatellites;
-        private double reductionPrecision;
-        private int inputs;
-        private int outputs;
-        private double[] analogInputs;
-        private String driverKeyCode;
-        private final Map<String, Parameter> parametersByNames;
-
-        public ReceivedDataBuilder(final DataDefaultPropertyConfiguration defaultPropertyConfiguration) {
-            course = defaultPropertyConfiguration.getCourse();
-            altitude = defaultPropertyConfiguration.getAltitude();
-            speed = defaultPropertyConfiguration.getSpeed();
-            amountOfSatellites = defaultPropertyConfiguration.getAmountOfSatellites();
-            reductionPrecision = defaultPropertyConfiguration.getReductionPrecision();
-            inputs = defaultPropertyConfiguration.getInputs();
-            outputs = defaultPropertyConfiguration.getOutputs();
-            analogInputs = new double[]{};
-            driverKeyCode = defaultPropertyConfiguration.getDriverKeyCode();
-            parametersByNames = new HashMap<>();
-        }
-
-        public void addParameter(final Parameter parameter) {
-            parametersByNames.put(parameter.getName(), parameter);
-        }
-
-        ReceivedData build(final Tracker tracker) {
-            return new ReceivedData(
-                    getRequiredProperty(ReceivedDataBuilder::getDateTime, PROPERTY_NAME_DATE_TIME),
-                    getRequiredProperty(ReceivedDataBuilder::getCoordinate, PROPERTY_NAME_COORDINATE),
-                    course,
-                    speed,
-                    altitude,
-                    amountOfSatellites,
-                    reductionPrecision,
-                    inputs,
-                    outputs,
-                    analogInputs,
-                    driverKeyCode,
-                    parametersByNames,
-                    tracker
-            );
-        }
-
-        private <T> T getRequiredProperty(final Function<ReceivedDataBuilder, T> getter, final String propertyName) {
-            final T value = getter.apply(this);
-            if (value == null) {
-                throw new IllegalStateException(
-                        "Required property '%s' is not defined".formatted(propertyName)
-                );
-            }
-            return value;
-        }
-    }
-
-    private static final class ReceivingDataException extends RuntimeException {
+    static final class NoTrackerInContextException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public ReceivingDataException() {
+        public NoTrackerInContextException() {
 
         }
 
-        public ReceivingDataException(final String description) {
+        public NoTrackerInContextException(final String description) {
             super(description);
         }
 
         @SuppressWarnings("unused")
-        public ReceivingDataException(final Exception cause) {
+        public NoTrackerInContextException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public ReceivingDataException(final String description, final Exception cause) {
+        public NoTrackerInContextException(final String description, final Exception cause) {
             super(description, cause);
         }
     }
