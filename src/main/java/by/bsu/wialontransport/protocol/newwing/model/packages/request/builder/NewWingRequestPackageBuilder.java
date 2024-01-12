@@ -8,7 +8,7 @@ public abstract class NewWingRequestPackageBuilder<P extends NewWingRequestPacka
     private int checksum;
 
     public final P build() {
-        return this.build(this.checksum);
+        return build(checksum);
     }
 
     protected abstract P build(final int checksum);
