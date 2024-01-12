@@ -9,6 +9,6 @@ public final class NewWingLoginPackageBuilder extends NewWingRequestPackageBuild
 
     @Override
     protected NewWingLoginPackage build(final int checksum) {
-        return new NewWingLoginPackage(checksum, this.imei);
+        return new NewWingLoginPackage(checksum, imei);
     }
 }

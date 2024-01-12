@@ -12,6 +12,6 @@ public final class NewWingDataPackageBuilder extends NewWingRequestPackageBuilde
 
     @Override
     protected NewWingDataPackage build(final int checksum) {
-        return new NewWingDataPackage(checksum, this.data);
+        return new NewWingDataPackage(checksum, data);
     }
 }
