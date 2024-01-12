@@ -45,7 +45,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
         final Tracker tracker = extractTracker(context);
         final LocalDateTime lastReceivingDateTime = findLastReceivingDateTime(context);
-        findSources(requestPackage)
+        getSources(requestPackage)
                 .map(source -> createReceivedData(source, tracker))
                 .filter(receivedDataValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
@@ -55,7 +55,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .ifPresent(lastData -> contextAttributeManager.putLastData(context, lastData));
     }
 
-    protected abstract Stream<SOURCE> findSources(final PACKAGE requestPackage);
+    protected abstract Stream<SOURCE> getSources(final PACKAGE requestPackage);
 
     protected abstract LocalDateTime getDateTime(final SOURCE source);
 
@@ -79,7 +79,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
 
     protected abstract Optional<String> findDriverKeyCode(final SOURCE source);
 
-    protected abstract Stream<Parameter> findParameters(final SOURCE source);
+    protected abstract Stream<Parameter> getParameters(final SOURCE source);
 
     private Tracker extractTracker(final ChannelHandlerContext context) {
         return contextAttributeManager.findTracker(context)
@@ -149,7 +149,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     }
 
     private Map<String, Parameter> getParametersByNames(final SOURCE source) {
-        return findParameters(source)
+        return getParameters(source)
                 .collect(
                         toMap(
                                 Parameter::getName,

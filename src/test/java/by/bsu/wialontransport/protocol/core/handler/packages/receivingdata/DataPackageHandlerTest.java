@@ -591,7 +591,7 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<TestSource> findSources(final TestDataPackage requestPackage) {
+        protected Stream<TestSource> getSources(final TestDataPackage requestPackage) {
             return requestPackage.sources.stream();
         }
 
@@ -653,7 +653,7 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<Parameter> findParameters(final TestSource source) {
+        protected Stream<Parameter> getParameters(final TestSource source) {
             return source.getParameters().stream();
         }
     }
