@@ -12,7 +12,7 @@ public final class WialonRequestPingPackageDecoderTest {
     public void messageShouldBeDecoded() {
         final String givenMessage = "";
 
-        final WialonRequestPingPackage actual = this.decoder.decodeMessage(givenMessage);
+        final WialonRequestPingPackage actual = decoder.decodeMessage(givenMessage);
         assertNotNull(actual);
     }
 }

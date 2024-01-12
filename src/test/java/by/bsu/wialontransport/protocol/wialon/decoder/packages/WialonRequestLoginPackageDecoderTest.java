@@ -12,7 +12,7 @@ public final class WialonRequestLoginPackageDecoderTest {
     public void messageShouldBeDecoded() {
         final String givenMessage = "11111222223333344444;1111";
 
-        final WialonRequestLoginPackage actual = this.decoder.decodeMessage(givenMessage);
+        final WialonRequestLoginPackage actual = decoder.decodeMessage(givenMessage);
         final WialonRequestLoginPackage expected = new WialonRequestLoginPackage(
                 "11111222223333344444",
                 "1111"
