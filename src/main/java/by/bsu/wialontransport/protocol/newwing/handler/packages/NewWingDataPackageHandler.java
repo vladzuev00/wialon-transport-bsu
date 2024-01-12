@@ -41,7 +41,7 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
 
     @Override
     protected Stream<NewWingData> getSources(final NewWingDataPackage requestPackage) {
-        return requestPackage.getDataStream();
+        return requestPackage.getData().stream();
     }
 
     @Override
