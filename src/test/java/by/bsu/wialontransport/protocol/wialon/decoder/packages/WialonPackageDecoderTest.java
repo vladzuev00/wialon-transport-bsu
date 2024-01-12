@@ -42,8 +42,8 @@ public final class WialonPackageDecoderTest {
 
         @Override
         protected WialonPackage decodeMessage(final String message) {
-            this.capturedMessage = message;
-            return this.decodedPackage;
+            capturedMessage = message;
+            return decodedPackage;
         }
     }
 }

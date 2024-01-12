@@ -13,20 +13,15 @@ public abstract class WialonPackageDecoder<PACKAGE extends WialonPackage> extend
 
     @Override
     public final PACKAGE decode(final String source) {
-        final String message = this.extractMessage(source);
-        return this.decodeMessage(message);
+        final String message = extractMessage(source);
+        return decodeMessage(message);
     }
 
     protected abstract PACKAGE decodeMessage(final String message);
 
     private String extractMessage(final String source) {
-        final int startMessageIndex = this.findPackagePrefixLength();
-        final int endMessageNextIndex = source.length() - POSTFIX.length();
-        return source.substring(startMessageIndex, endMessageNextIndex);
-    }
-
-    private int findPackagePrefixLength() {
-        final String packagePrefix = super.getPackagePrefix();
-        return packagePrefix.length();
+        final int startIndex = getPackagePrefix().length();
+        final int nextEndIndex = source.length() - POSTFIX.length();
+        return source.substring(startIndex, nextEndIndex);
     }
 }
