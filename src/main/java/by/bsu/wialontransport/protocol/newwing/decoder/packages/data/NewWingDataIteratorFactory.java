@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public final class NewWingDataIteratorFactory {
-    private final NewWingDataDecoder dataDecoder;
+    private final NewWingDataDecoder decoder;
 
     public NewWingDataIterator create(final ByteBuf buffer) {
-        return new NewWingDataIterator(dataDecoder, buffer);
+        return new NewWingDataIterator(decoder, buffer);
     }
 }

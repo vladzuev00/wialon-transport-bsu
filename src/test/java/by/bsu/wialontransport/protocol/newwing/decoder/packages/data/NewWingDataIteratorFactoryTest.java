@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class NewWingDataIteratorFactoryTest {
-    private static final String FIELD_NAME_DATA_DECODER = "dataDecoder";
+    private static final String FIELD_NAME_DATA_DECODER = "decoder";
     private static final String FIELD_NAME_BUFFER = "buffer";
 
     @Mock
