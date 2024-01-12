@@ -16,7 +16,11 @@ public final class NewWingProtocolDecoderTest {
     private static final int EXPECTED_PACKAGE_PREFIX_LENGTH = 6;
     private static final Charset EXPECTED_PACKAGE_PREFIX_CHARSET = UTF_8;
 
-    private final NewWingProtocolDecoder decoder = new NewWingProtocolDecoder(null);
+    private final NewWingProtocolDecoder decoder = new NewWingProtocolDecoder(
+            null,
+            null,
+            null
+    );
 
     @Test
     public void packagePrefixShouldBeExtracted() {

@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.protocol.newwing.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolBufferDecoder;
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageBufferDecoder;
+import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingEventCountPackageDecoder;
+import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingLoginPackageDecoder;
+import by.bsu.wialontransport.protocol.newwing.decoder.packages.data.NewWingDataPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -13,8 +15,10 @@ public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> 
     private static final int PACKAGE_PREFIX_LENGTH = 6;
     private static final Charset PACKAGE_PREFIX_CHARSET = UTF_8;
 
-    public NewWingProtocolDecoder(final List<PackageBufferDecoder<String, ?>> packageDecoders) {
-        super(packageDecoders);
+    public NewWingProtocolDecoder(final NewWingLoginPackageDecoder loginPackageDecoder,
+                                  final NewWingEventCountPackageDecoder eventCountPackageDecoder,
+                                  final NewWingDataPackageDecoder dataPackageDecoder) {
+        super(List.of(loginPackageDecoder, eventCountPackageDecoder, dataPackageDecoder));
     }
 
     @Override
