@@ -10,6 +10,6 @@ public final class NewWingEventCountPackageBuilder extends NewWingRequestPackage
 
     @Override
     protected NewWingEventCountPackage build(final int checksum) {
-        return new NewWingEventCountPackage(checksum, this.eventCount, this.frameEventCount);
+        return new NewWingEventCountPackage(checksum, eventCount, frameEventCount);
     }
 }
