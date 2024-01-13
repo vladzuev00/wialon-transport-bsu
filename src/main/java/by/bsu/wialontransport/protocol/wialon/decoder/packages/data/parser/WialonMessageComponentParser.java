@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.GeographicCoordinate;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType;
@@ -322,6 +321,28 @@ public final class WialonMessageComponentParser {
                     .type(type)
                     .value(value)
                     .build();
+        }
+    }
+
+    static final class NotValidMessageException extends RuntimeException {
+
+        @SuppressWarnings("unused")
+        public NotValidMessageException() {
+
+        }
+
+        public NotValidMessageException(final String description) {
+            super(description);
+        }
+
+        @SuppressWarnings("unused")
+        public NotValidMessageException(final Exception cause) {
+            super(cause);
+        }
+
+        @SuppressWarnings("unused")
+        public NotValidMessageException(final String description, final Exception cause) {
+            super(description, cause);
         }
     }
 }
