@@ -3,8 +3,8 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
-import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.DataParser;
-import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 

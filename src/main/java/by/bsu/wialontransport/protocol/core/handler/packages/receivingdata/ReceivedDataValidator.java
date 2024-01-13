@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
 import by.bsu.wialontransport.configuration.property.DataValidationConfiguration;
-import by.bsu.wialontransport.model.ReceivedData;
+import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

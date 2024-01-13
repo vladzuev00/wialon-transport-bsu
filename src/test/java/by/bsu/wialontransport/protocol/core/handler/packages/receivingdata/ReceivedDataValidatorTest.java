@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.model.ReceivedData;
+import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

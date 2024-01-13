@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import org.springframework.stereotype.Component;

@@ -15,8 +15,8 @@ public class NewWingData {
     short latitudeFractionalPart;
     short longitudeIntegerPart;
     short longitudeFractionalPart;
-    byte hdopIntegerPart;
-    byte hdopFractionalPart;
+    byte reductionPrecisionIntegerPart;
+    byte reductionPrecisionFractionalPart;
     short course;
     short speedIntegerPart;
     byte speedFractionalPart;

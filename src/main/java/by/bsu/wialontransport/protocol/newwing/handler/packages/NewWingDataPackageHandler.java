@@ -17,7 +17,6 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.DataParameterUtil.createHDOP;
 import static by.bsu.wialontransport.util.NewWingCoordinateUtil.calculateLatitude;
 import static by.bsu.wialontransport.util.NewWingCoordinateUtil.calculateLongitude;
 import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
@@ -86,7 +85,11 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
 
     @Override
     protected OptionalDouble findReductionPrecision(final NewWingData data) {
-        return OptionalDouble.empty();
+        final double value = createDoubleByParts(
+                data.getReductionPrecisionIntegerPart(),
+                data.getReductionPrecisionFractionalPart()
+        );
+        return OptionalDouble.of(value);
     }
 
     @Override
@@ -118,7 +121,7 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
 
     @Override
     protected Stream<Parameter> getParameters(final NewWingData data) {
-        return Stream.of(getHdop(data));
+        return Stream.empty();
     }
 
     private static double getFirstAnalogInput(final NewWingData data) {
@@ -139,10 +142,5 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
 
     private static double getAnalogInput(final NewWingData data, final ToShortFunction<NewWingData> getter) {
         return getter.apply(data) / MILLI_VOLTS_IN_VOLT;
-    }
-
-    private static Parameter getHdop(final NewWingData data) {
-        final double value = createDoubleByParts(data.getHdopIntegerPart(), data.getHdopFractionalPart());
-        return createHDOP(value);
     }
 }

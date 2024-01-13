@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 

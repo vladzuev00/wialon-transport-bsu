@@ -1,7 +1,8 @@
-package by.bsu.wialontransport.model;
+package by.bsu.wialontransport.protocol.core.model;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.model.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;

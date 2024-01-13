@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.exception;
+package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception;
 
 public final class NotValidDataException extends RuntimeException {
     public NotValidDataException() {

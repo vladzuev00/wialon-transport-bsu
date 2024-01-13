@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.model.ReceivedData;
+import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler.NoTrackerInContextException;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;

@@ -5,12 +5,14 @@ import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingEventCoun
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingLoginPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.data.NewWingDataPackageDecoder;
 import io.netty.buffer.ByteBuf;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Component
 public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> {
     private static final int PACKAGE_PREFIX_LENGTH = 6;
     private static final Charset PACKAGE_PREFIX_CHARSET = UTF_8;

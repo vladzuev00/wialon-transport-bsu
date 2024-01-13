@@ -3,9 +3,11 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLoginPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingLoginPackageBuilder;
 import io.netty.buffer.ByteBuf;
+import org.springframework.stereotype.Component;
 
 import static java.lang.String.format;
 
+@Component
 public final class NewWingLoginPackageDecoder
         extends NewWingPackageDecoder<NewWingLoginPackage, NewWingLoginPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSGC";

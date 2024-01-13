@@ -4,7 +4,9 @@ import by.bsu.wialontransport.function.ShortConsumer;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingEventCountPackageBuilder;
 import io.netty.buffer.ByteBuf;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class NewWingEventCountPackageDecoder
         extends NewWingPackageDecoder<NewWingEventCountPackage, NewWingEventCountPackageBuilder> {
     private static final String PACKAGE_PREFIX = "GPRSGI";

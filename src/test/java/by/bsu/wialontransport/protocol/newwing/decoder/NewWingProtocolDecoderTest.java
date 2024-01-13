@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.protocol.newwing.decoder;
 
+import by.bsu.wialontransport.base.AbstractContextTest;
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.Charset;
 
@@ -12,15 +14,12 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class NewWingProtocolDecoderTest {
+public final class NewWingProtocolDecoderTest extends AbstractContextTest {
     private static final int EXPECTED_PACKAGE_PREFIX_LENGTH = 6;
     private static final Charset EXPECTED_PACKAGE_PREFIX_CHARSET = UTF_8;
 
-    private final NewWingProtocolDecoder decoder = new NewWingProtocolDecoder(
-            null,
-            null,
-            null
-    );
+    @Autowired
+    private NewWingProtocolDecoder decoder;
 
     @Test
     public void packagePrefixShouldBeExtracted() {

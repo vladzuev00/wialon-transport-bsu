@@ -1,9 +1,8 @@
-package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

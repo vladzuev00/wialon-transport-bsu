@@ -13,7 +13,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.DataParameterUtil.createHDOP;
+import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static org.junit.Assert.*;
 
 public final class NewWingDataPackageHandlerTest {
@@ -126,11 +126,17 @@ public final class NewWingDataPackageHandlerTest {
     }
 
     @Test
-    public void reductionPrecisionShouldNotBeFound() {
-        final NewWingData givenNewWingData = NewWingData.builder().build();
+    public void reductionPrecisionShouldBeFound() {
+        final NewWingData givenNewWingData = NewWingData.builder()
+                .reductionPrecisionIntegerPart((byte) 2)
+                .reductionPrecisionFractionalPart((byte) 123)
+                .build();
 
         final OptionalDouble optionalActual = handler.findReductionPrecision(givenNewWingData);
-        assertTrue(optionalActual.isEmpty());
+        assertTrue(optionalActual.isPresent());
+        final double actual = optionalActual.getAsDouble();
+        final double expected = 2.123;
+        assertEquals(expected, actual, 0.);
     }
 
     @Test
@@ -175,14 +181,9 @@ public final class NewWingDataPackageHandlerTest {
 
     @Test
     public void parametersShouldBeGot() {
-        final NewWingData givenNewWingData = NewWingData.builder()
-                .hdopIntegerPart((byte) 2)
-                .hdopFractionalPart((byte) 123)
-                .build();
+        final NewWingData givenNewWingData = NewWingData.builder().build();
 
         final Stream<Parameter> actual = handler.getParameters(givenNewWingData);
-        final List<Parameter> actualAsList = actual.toList();
-        final List<Parameter> expectedAsList = List.of(createHDOP(2.123));
-        assertEquals(expectedAsList, actualAsList);
+        assertTrue(isEmpty(actual));
     }
 }
