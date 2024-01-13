@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -22,12 +23,11 @@ import java.util.regex.Pattern;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType.NORTH;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType.EAST;
-import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptySet;
+import static java.util.Optional.empty;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
@@ -69,21 +69,10 @@ public final class WialonMessageComponentParser {
     private static final String TIME_FORMAT = "HHmmss";
     private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
 
-
     private static final String NOT_DEFINED_COMPONENT_SOURCE = "NA";
 
     private static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
     private static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
-    private static final double NOT_DEFINED_SPEED = Double.MIN_VALUE;
-    private static final int NOT_DEFINED_COURSE = Integer.MIN_VALUE;
-    private static final int NOT_DEFINED_ALTITUDE = Integer.MIN_VALUE;
-    private static final int NOT_DEFINED_AMOUNT_OF_SATELLITES = Integer.MIN_VALUE;
-    private static final double NOT_DEFINED_HDOP = Double.MIN_VALUE;
-    private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
-    private static final int NOT_DEFINED_OUTPUTS = Integer.MIN_VALUE;
-    private static final double[] NOT_DEFINED_ANALOG_INPUTS = new double[]{};
-    private static final String NOT_DEFINED_DRIVER_KEY_CODE = "not defined";
-    private static final Set<Parameter> NOT_DEFINED_PARAMETERS = emptySet();
 
     private static final String DELIMITER_ANALOG_INPUTS = ",";
     private static final String DELIMITER_PARAMETERS = ",";
@@ -117,44 +106,44 @@ public final class WialonMessageComponentParser {
         return longitudeParser.parse();
     }
 
-    public double parseSpeed() {
-        return parseDoubleComponent(GROUP_NUMBER_SPEED, NOT_DEFINED_SPEED);
+    public Optional<Double> parseSpeed() {
+        return parseComponent(GROUP_NUMBER_SPEED, Double::valueOf);
     }
 
-    public double parseCourse() {
-        return parseIntComponent(GROUP_NUMBER_COURSE, NOT_DEFINED_COURSE);
+    public Optional<Integer> parseCourse() {
+        return parseComponent(GROUP_NUMBER_COURSE, Integer::valueOf);
     }
 
-    public int parseAltitude() {
-        return parseIntComponent(GROUP_NUMBER_ALTITUDE, NOT_DEFINED_ALTITUDE);
+    public Optional<Integer> parseAltitude() {
+        return parseComponent(GROUP_NUMBER_ALTITUDE, Integer::valueOf);
     }
 
-    public int parseAmountOfSatellites() {
-        return parseIntComponent(GROUP_NUMBER_AMOUNT_OF_SATELLITES, NOT_DEFINED_AMOUNT_OF_SATELLITES);
+    public Optional<Integer> parseAmountOfSatellites() {
+        return parseComponent(GROUP_NUMBER_AMOUNT_OF_SATELLITES, Integer::valueOf);
     }
 
-    public double parseHdop() {
-        return parseDoubleComponent(GROUP_NUMBER_HDOP, NOT_DEFINED_HDOP);
+    public Optional<Double> parseHdop() {
+        return parseComponent(GROUP_NUMBER_HDOP, Double::valueOf);
     }
 
-    public int parseInputs() {
-        return parseIntComponent(GROUP_NUMBER_INPUTS, NOT_DEFINED_INPUTS);
+    public Optional<Integer> parseInputs() {
+        return parseComponent(GROUP_NUMBER_INPUTS, Integer::valueOf);
     }
 
-    public int parseOutputs() {
-        return parseIntComponent(GROUP_NUMBER_OUTPUTS, NOT_DEFINED_OUTPUTS);
+    public Optional<Integer> parseOutputs() {
+        return parseComponent(GROUP_NUMBER_OUTPUTS, Integer::valueOf);
     }
 
-    public double[] parseAnalogInputs() {
-        return parseComponent(GROUP_NUMBER_ANALOG_INPUTS, this::parseAnalogInputs, NOT_DEFINED_ANALOG_INPUTS);
+    public Optional<double[]> parseAnalogInputs() {
+        return parseComponent(GROUP_NUMBER_ANALOG_INPUTS, this::parseAnalogInputs);
     }
 
-    public String parseDriverKeyCode() {
-        return parseComponent(GROUP_NUMBER_DRIVER_KEY_CODE, identity(), NOT_DEFINED_DRIVER_KEY_CODE);
+    public Optional<String> parseDriverKeyCode() {
+        return parseComponent(GROUP_NUMBER_DRIVER_KEY_CODE, identity());
     }
 
-    public Set<Parameter> parseParameters() {
-        return parseComponent(GROUP_NUMBER_PARAMETERS, this::parseParameters, NOT_DEFINED_PARAMETERS);
+    public Optional<Set<Parameter>> parseParameters() {
+        return parseComponent(GROUP_NUMBER_PARAMETERS, this::parseParameters);
     }
 
     private void match(final String message) {
@@ -164,18 +153,12 @@ public final class WialonMessageComponentParser {
     }
 
     private <T> T parseComponent(final int groupNumber, final Function<String, T> parser, final T notDefinedValue) {
-        final String source = matcher.group(groupNumber);
-        return isNotDefinedComponentSource(source) ? parser.apply(source) : notDefinedValue;
+        return parseComponent(groupNumber, parser).orElse(notDefinedValue);
     }
 
-    private int parseIntComponent(final int groupNumber, final int notDefinedValue) {
+    private <T> Optional<T> parseComponent(final int groupNumber, final Function<String, T> parser) {
         final String source = matcher.group(groupNumber);
-        return isNotDefinedComponentSource(source) ? parseInt(source) : notDefinedValue;
-    }
-
-    private double parseDoubleComponent(final int groupNumber, final double notDefinedValue) {
-        final String source = matcher.group(groupNumber);
-        return isNotDefinedComponentSource(source) ? parseDouble(source) : notDefinedValue;
+        return isNotDefinedComponentSource(source) ? Optional.of(parser.apply(source)) : empty();
     }
 
     private static boolean isNotDefinedComponentSource(final String source) {

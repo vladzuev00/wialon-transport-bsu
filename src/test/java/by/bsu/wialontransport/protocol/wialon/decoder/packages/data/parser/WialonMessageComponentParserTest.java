@@ -46,4 +46,8 @@ public final class WialonMessageComponentParserTest {
         new WialonMessageComponentParser(givenMessage);
     }
 
+    @Test
+    public void dateShouldBeParsed() {
+
+    }
 }

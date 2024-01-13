@@ -14,7 +14,7 @@ public final class DataParser {
 //                .time(dateTime.toLocalTime())
 //                .latitude(componentsParser.parseLatitude())
 //                .longitude(componentsParser.parseLongitude())
-                .speed(componentsParser.parseSpeed())
+//                .speed(componentsParser.parseSpeed())
 //                .course(componentsParser.parseCourse())
                 .altitude(componentsParser.parseAltitude())
                 .amountOfSatellites(componentsParser.parseAmountOfSatellites())
