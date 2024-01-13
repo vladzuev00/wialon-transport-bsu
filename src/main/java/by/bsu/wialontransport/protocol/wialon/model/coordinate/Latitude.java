@@ -1,9 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.model.coordinate;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
+import static java.util.Arrays.stream;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -11,6 +10,7 @@ import lombok.ToString;
 public final class Latitude extends GeographicCoordinate {
     private final LatitudeType type;
 
+    @Builder
     public Latitude(final int degrees, final int minutes, final int minuteShare, final LatitudeType type) {
         super(degrees, minutes, minuteShare);
         this.type = type;
@@ -22,5 +22,16 @@ public final class Latitude extends GeographicCoordinate {
         NORTH('N'), SOUTH('S');
 
         private final char value;
+
+        public static LatitudeType findByValue(final char value) {
+            return stream(values())
+                    .filter(type -> type.value == value)
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IllegalArgumentException(
+                                    "There is no type with value '%s'".formatted(value)
+                            )
+                    );
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
+import static java.util.Arrays.stream;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -52,5 +53,17 @@ public class ParameterEntity extends Entity<Long> {
 
         @Getter
         private final byte value;
+
+        //TODO: test
+        public static Type findByValue(final byte value) {
+            return stream(values())
+                    .filter(type -> type.value == value)
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IllegalArgumentException(
+                                    "There is no type with value '%d'".formatted(value)
+                            )
+                    );
+        }
     }
 }

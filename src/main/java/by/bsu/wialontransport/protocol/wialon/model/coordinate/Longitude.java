@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import static java.util.Arrays.stream;
+
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -22,5 +24,16 @@ public final class Longitude extends GeographicCoordinate {
         EAST('E'), WESTERN('W');
 
         private final char value;
+
+        public static LongitudeType findByValue(final char value) {
+            return stream(values())
+                    .filter(type -> type.value == value)
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new IllegalArgumentException(
+                                    "There is no type with value '%s'".formatted(value)
+                            )
+                    );
+        }
     }
 }

@@ -3,14 +3,12 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 import by.bsu.wialontransport.crud.dto.Data;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public final class DataParser {
 
     public Data parse(final String source) {
         final WialonMessageComponentParser componentsParser = new WialonMessageComponentParser(source);
-        final LocalDateTime dateTime = componentsParser.parseDateTime();
+//        final LocalDateTime dateTime = componentsParser.parseDateTime();
         return Data.builder()
 //                .date(dateTime.toLocalDate())
 //                .time(dateTime.toLocalTime())
@@ -19,7 +17,7 @@ public final class DataParser {
                 .speed(componentsParser.parseSpeed())
                 .course(componentsParser.parseCourse())
                 .altitude(componentsParser.parseAltitude())
-                .amountOfSatellites(componentsParser.parseAmountSatellites())
+                .amountOfSatellites(componentsParser.parseAmountOfSatellites())
                 .hdop(componentsParser.parseHdop())
                 .inputs(componentsParser.parseInputs())
                 .outputs(componentsParser.parseOutputs())
