@@ -1,0 +1,26 @@
+package by.bsu.wialontransport.protocol.wialon.model.coordinate;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class Latitude extends GeographicCoordinate {
+    private final LatitudeType type;
+
+    public Latitude(final int degrees, final int minutes, final int minuteShare, final LatitudeType type) {
+        super(degrees, minutes, minuteShare);
+        this.type = type;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public enum LatitudeType {
+        NORTH('N'), SOUTH('S');
+
+        private final char value;
+    }
+}

@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 import org.junit.Before;
@@ -74,7 +74,7 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
         final Data secondGivenData = createData(2L);
         when(this.mockedDataParser.parse(eq("second"))).thenReturn(secondGivenData);
 
-        when(this.mockedDataParser.parse(eq("third"))).thenThrow(NotValidDataException.class);
+        when(this.mockedDataParser.parse(eq("third"))).thenThrow(NotValidMessageException.class);
 
         boolean exceptionArisen;
         try {

@@ -2,20 +2,19 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.Byte.parseByte;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
-import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
@@ -23,10 +22,8 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
 
-public final class DataComponentsParser {
-    private static final String MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION = "Given data '%s' isn't valid.";
-
-    private static final String REGEX_DATA
+public final class WialonMessageComponentParser {
+    private static final String MESSAGE_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
@@ -41,31 +38,34 @@ public final class DataComponentsParser {
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
-    private static final Pattern PATTERN_DATA = compile(REGEX_DATA);
+    private static final Pattern MESSAGE_PATTERN = compile(MESSAGE_REGEX);
 
-    private static final int GROUP_NUMBER_DATE_TIME = 1;
-
-    private static final int GROUP_NUMBER_LATITUDE = 6;
+    private static final int GROUP_NUMBER_DATE = 2;
+    private static final int GROUP_NUMBER_TIME = 3;
     private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
     private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
     private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
     private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
-
-    private static final int GROUP_NUMBER_LONGITUDE = 13;
     private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
     private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
     private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
     private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
-
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
-    private static final int GROUP_NUMBER_AMOUNT_SATELLITES = 26;
+    private static final int GROUP_NUMBER_AMOUNT_OF_SATELLITES = 26;
 
-    private static final String DATE_TIME_FORMAT = "ddMMyy;HHmmss";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
-    private static final String NOT_DEFINED_DATE_TIME_STRING = "NA;NA";
-    private static final LocalDateTime NOT_DEFINED_DATE_TIME = LocalDateTime.MIN;
+    private static final String DATE_FORMAT = "ddMMyy";
+    private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_FORMAT);
+    private static final String NOT_DEFINED_DATE_STRING = "NA";
+    private static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
+
+    private static final String TIME_FORMAT = "HHmmss";
+    private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
+    private static final String NOT_DEFINED_TIME_STRING = "NA";
+    private static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
+
+
 
     private static final String NOT_DEFINED_SPEED_STRING = "NA";
     private static final int NOT_DEFINED_SPEED = MIN_VALUE;
@@ -104,25 +104,27 @@ public final class DataComponentsParser {
     private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
-//    private final GeographicCoordinateParser<Latitude> latitudeParser;
-//    private final GeographicCoordinateParser<Longitude> longitudeParser;
-    private final ParameterParser parameterParser;
 
-    public DataComponentsParser(final String source) {
-        this.matcher = PATTERN_DATA.matcher(source);
-        if (!this.matcher.matches()) {
-            throw new NotValidDataException(format(MESSAGE_TEMPLATE_NOT_VALID_DATA_EXCEPTION, source));
+    public WialonMessageComponentParser(final String source) {
+        matcher = MESSAGE_PATTERN.matcher(source);
+        if (!matcher.matches()) {
+            throw new NotValidMessageException(format("Given message isn't valid: '%s'", source));
         }
-//        this.latitudeParser = new LatitudeParser();
-//        this.longitudeParser = new LongitudeParser();
-        this.parameterParser = new ParameterParser();
     }
 
-    public LocalDateTime parseDateTime() {
-        final String dateTimeGroup = this.matcher.group(GROUP_NUMBER_DATE_TIME);
-        return !dateTimeGroup.equals(NOT_DEFINED_DATE_TIME_STRING)
-                ? parse(dateTimeGroup, DATE_TIME_FORMATTER)
-                : NOT_DEFINED_DATE_TIME;
+    public LocalDate parseDate() {
+        final String date = matcher.group(GROUP_NUMBER_DATE);
+        return !date.equals(NOT_DEFINED_DATE_STRING) ? LocalDate.parse(date, DATE_FORMATTER) : NOT_DEFINED_DATE;
+    }
+
+    public LocalTime parseTime() {
+        final String time = matcher.group(GROUP_NUMBER_TIME);
+        return !time.equals(NOT_DEFINED_TIME_STRING) ? LocalTime.parse(time, TIME_FORMATTER) : NOT_DEFINED_TIME;
+    }
+
+    public int parseLatitudeDegrees() {
+        final String degrees = matcher.group(GROUP_NUMBER_LATITUDE_DEGREES);
+        return degrees != null ? parseInt(degrees) :
     }
 
 //    public Latitude parseLatitude() {
@@ -149,7 +151,7 @@ public final class DataComponentsParser {
     }
 
     public int parseAmountSatellites() {
-        final String amountSatellitesString = this.matcher.group(GROUP_NUMBER_AMOUNT_SATELLITES);
+        final String amountSatellitesString = this.matcher.group(GROUP_NUMBER_AMOUNT_OF_SATELLITES);
         return !amountSatellitesString.equals(NOT_DEFINED_AMOUNT_SATELLITE_STRING)
                 ? parseInt(amountSatellitesString)
                 : NOT_DEFINED_AMOUNT_SATELLITE;

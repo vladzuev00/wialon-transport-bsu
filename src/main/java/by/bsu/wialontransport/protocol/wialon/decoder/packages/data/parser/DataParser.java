@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public final class DataParser {
 
     public Data parse(final String source) {
-        final DataComponentsParser componentsParser = new DataComponentsParser(source);
+        final WialonMessageComponentParser componentsParser = new WialonMessageComponentParser(source);
         final LocalDateTime dateTime = componentsParser.parseDateTime();
         return Data.builder()
 //                .date(dateTime.toLocalDate())

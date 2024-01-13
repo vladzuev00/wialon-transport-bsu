@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 import org.springframework.stereotype.Component;
@@ -24,12 +24,12 @@ public final class RequestDataPackageDeserializer extends AbstractPackageDeseria
         try {
             final Data data = this.dataParser.parse(message);
             return new WialonRequestDataPackage(data);
-        } catch (final NotValidDataException cause) {
+        } catch (final NotValidMessageException cause) {
             throw createAnswerableException(cause);
         }
     }
 
-    private static AnsweredException createAnswerableException(final NotValidDataException cause) {
+    private static AnsweredException createAnswerableException(final NotValidMessageException cause) {
         final WialonResponseDataPackage answer = new WialonResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
         return new AnsweredException(answer, cause);
     }

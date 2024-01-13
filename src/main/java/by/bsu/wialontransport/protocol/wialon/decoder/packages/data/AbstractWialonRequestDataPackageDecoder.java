@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidDataException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 
@@ -47,12 +47,12 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
     private Data parseSubMessage(final String message) {
         try {
             return this.dataParser.parse(message);
-        } catch (final NotValidDataException cause) {
+        } catch (final NotValidMessageException cause) {
             return this.throwAnsweredException(cause);
         }
     }
 
-    private Data throwAnsweredException(final NotValidDataException cause) {
+    private Data throwAnsweredException(final NotValidMessageException cause) {
         final RESPONSE_PACKAGE exceptionAnswer = this.createResponseNotValidDataPackage();
         throw new AnsweredException(exceptionAnswer, cause);
     }

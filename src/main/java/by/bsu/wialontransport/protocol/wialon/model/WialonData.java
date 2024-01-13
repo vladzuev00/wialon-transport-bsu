@@ -2,8 +2,10 @@ package by.bsu.wialontransport.protocol.wialon.model;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -11,13 +13,13 @@ import java.time.LocalTime;
 import java.util.Set;
 
 @Value
+@AllArgsConstructor
+@Builder
 public class WialonData {
     LocalDate date;
     LocalTime time;
-    double latitude;
-    LatitudeType latitudeType;
-    double longitude;
-    LongitudeType longitudeType;
+    Latitude latitude;
+    Longitude longitude;
     int course;
     double speed;
     int altitude;
@@ -29,20 +31,4 @@ public class WialonData {
     String driverKeyCode;
     Set<Parameter> parameters;
     Tracker tracker;
-
-    @RequiredArgsConstructor
-    @Getter
-    public enum LatitudeType {
-        NORTH('N'), SOUTH('S');
-
-        private final char value;
-    }
-
-    @RequiredArgsConstructor
-    @Getter
-    public enum LongitudeType {
-        EAST('E'), WESTERN('W');
-
-        private final char value;
-    }
 }
