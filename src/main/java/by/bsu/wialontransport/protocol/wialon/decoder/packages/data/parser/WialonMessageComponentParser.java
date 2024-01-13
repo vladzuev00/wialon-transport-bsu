@@ -14,22 +14,23 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType.NORTH;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType.EAST;
-import static java.lang.Byte.parseByte;
 import static java.lang.Double.parseDouble;
-import static java.lang.Integer.MIN_VALUE;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 public final class WialonMessageComponentParser {
     private static final String MESSAGE_REGEX
@@ -51,35 +52,10 @@ public final class WialonMessageComponentParser {
 
     private static final int GROUP_NUMBER_DATE = 2;
     private static final int GROUP_NUMBER_TIME = 3;
-
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
     private static final int GROUP_NUMBER_AMOUNT_OF_SATELLITES = 26;
-
-    private static final String DATE_FORMAT = "ddMMyy";
-    private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_FORMAT);
-    private static final String NOT_DEFINED_DATE_SOURCE = "NA";
-    private static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
-
-    private static final String TIME_FORMAT = "HHmmss";
-    private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
-    private static final String NOT_DEFINED_TIME_SOURCE = "NA";
-    private static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
-
-
-    private static final String NOT_DEFINED_SPEED_SOURCE = "NA";
-    private static final int NOT_DEFINED_SPEED = MIN_VALUE;
-
-    private static final String NOT_DEFINED_COURSE_SOURCE = "NA";
-    private static final int NOT_DEFINED_COURSE = MIN_VALUE;
-
-    private static final String NOT_DEFINED_ALTITUDE_SOURCE = "NA";
-    private static final int NOT_DEFINED_ALTITUDE = MIN_VALUE;
-
-    private static final String NOT_DEFINED_AMOUNT_OF_SATELLITES_SOURCE = "NA";
-    private static final int NOT_DEFINED_AMOUNT_OF_SATELLITES = MIN_VALUE;
-
     private static final int GROUP_NUMBER_HDOP = 28;
     private static final int GROUP_NUMBER_INPUTS = 31;
     private static final int GROUP_NUMBER_OUTPUTS = 33;
@@ -87,42 +63,50 @@ public final class WialonMessageComponentParser {
     private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
-    private static final String NOT_DEFINED_HDOP_SOURCE = "NA";
-    private static final Double NOT_DEFINED_HDOP = Double.MIN_VALUE;
+    private static final String DATE_FORMAT = "ddMMyy";
+    private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_FORMAT);
 
-    private static final String NOT_DEFINED_INPUTS_SOURCE = "NA";
+    private static final String TIME_FORMAT = "HHmmss";
+    private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
+
+
+    private static final String NOT_DEFINED_COMPONENT_SOURCE = "NA";
+
+    private static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
+    private static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
+    private static final double NOT_DEFINED_SPEED = Double.MIN_VALUE;
+    private static final int NOT_DEFINED_COURSE = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_ALTITUDE = Integer.MIN_VALUE;
+    private static final int NOT_DEFINED_AMOUNT_OF_SATELLITES = Integer.MIN_VALUE;
+    private static final double NOT_DEFINED_HDOP = Double.MIN_VALUE;
     private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
-
-    private static final String NOT_DEFINED_OUTPUTS_SOURCE = "NA";
     private static final int NOT_DEFINED_OUTPUTS = Integer.MIN_VALUE;
-
-    private static final String NOT_DEFINED_ANALOG_INPUTS_SOURCE = "NA";
-    private static final String DELIMITER_ANALOG_INPUTS = ",";
-
-    private static final String NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING = "NA";
+    private static final double[] NOT_DEFINED_ANALOG_INPUTS = new double[]{};
     private static final String NOT_DEFINED_DRIVER_KEY_CODE = "not defined";
+    private static final Set<Parameter> NOT_DEFINED_PARAMETERS = emptySet();
 
+    private static final String DELIMITER_ANALOG_INPUTS = ",";
     private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
     private final LatitudeParser latitudeParser;
     private final LongitudeParser longitudeParser;
+    private final ParameterParser parameterParser;
 
     public WialonMessageComponentParser(final String message) {
         matcher = MESSAGE_PATTERN.matcher(message);
         match(message);
         latitudeParser = new LatitudeParser();
         longitudeParser = new LongitudeParser();
+        parameterParser = new ParameterParser();
     }
 
     public LocalDate parseDate() {
-        final String source = matcher.group(GROUP_NUMBER_DATE);
-        return !source.equals(NOT_DEFINED_DATE_SOURCE) ? LocalDate.parse(source, DATE_FORMATTER) : NOT_DEFINED_DATE;
+        return parseComponent(GROUP_NUMBER_DATE, source -> LocalDate.parse(source, DATE_FORMATTER), NOT_DEFINED_DATE);
     }
 
     public LocalTime parseTime() {
-        final String source = matcher.group(GROUP_NUMBER_TIME);
-        return !source.equals(NOT_DEFINED_TIME_SOURCE) ? LocalTime.parse(source, TIME_FORMATTER) : NOT_DEFINED_TIME;
+        return parseComponent(GROUP_NUMBER_TIME, source -> LocalTime.parse(source, TIME_FORMATTER), NOT_DEFINED_TIME);
     }
 
     public Latitude parseLatitude() {
@@ -133,68 +117,44 @@ public final class WialonMessageComponentParser {
         return longitudeParser.parse();
     }
 
-    public int parseSpeed() {
-        final String source = matcher.group(GROUP_NUMBER_SPEED);
-        return !source.equals(NOT_DEFINED_SPEED_SOURCE) ? parseInt(source) : NOT_DEFINED_SPEED;
+    public double parseSpeed() {
+        return parseDoubleComponent(GROUP_NUMBER_SPEED, NOT_DEFINED_SPEED);
     }
 
-    public int parseCourse() {
-        final String source = matcher.group(GROUP_NUMBER_COURSE);
-        return !source.equals(NOT_DEFINED_COURSE_SOURCE) ? parseInt(source) : NOT_DEFINED_COURSE;
+    public double parseCourse() {
+        return parseIntComponent(GROUP_NUMBER_COURSE, NOT_DEFINED_COURSE);
     }
 
     public int parseAltitude() {
-        final String source = matcher.group(GROUP_NUMBER_ALTITUDE);
-        return !source.equals(NOT_DEFINED_ALTITUDE_SOURCE) ? parseInt(source) : NOT_DEFINED_ALTITUDE;
+        return parseIntComponent(GROUP_NUMBER_ALTITUDE, NOT_DEFINED_ALTITUDE);
     }
 
     public int parseAmountOfSatellites() {
-        final String source = matcher.group(GROUP_NUMBER_AMOUNT_OF_SATELLITES);
-        return !source.equals(NOT_DEFINED_AMOUNT_OF_SATELLITES_SOURCE)
-                ? parseInt(source)
-                : NOT_DEFINED_AMOUNT_OF_SATELLITES;
+        return parseIntComponent(GROUP_NUMBER_AMOUNT_OF_SATELLITES, NOT_DEFINED_AMOUNT_OF_SATELLITES);
     }
 
     public double parseHdop() {
-        final String source = matcher.group(GROUP_NUMBER_HDOP);
-        return !source.equals(NOT_DEFINED_HDOP_SOURCE) ? parseDouble(source) : NOT_DEFINED_HDOP;
+        return parseDoubleComponent(GROUP_NUMBER_HDOP, NOT_DEFINED_HDOP);
     }
 
     public int parseInputs() {
-        final String source = matcher.group(GROUP_NUMBER_INPUTS);
-        return !source.equals(NOT_DEFINED_INPUTS_SOURCE) ? parseInt(source) : NOT_DEFINED_INPUTS;
+        return parseIntComponent(GROUP_NUMBER_INPUTS, NOT_DEFINED_INPUTS);
     }
 
     public int parseOutputs() {
-        final String source = matcher.group(GROUP_NUMBER_OUTPUTS);
-        return !source.equals(NOT_DEFINED_OUTPUTS_SOURCE) ? parseInt(source) : NOT_DEFINED_OUTPUTS;
+        return parseIntComponent(GROUP_NUMBER_OUTPUTS, NOT_DEFINED_OUTPUTS);
     }
 
     public double[] parseAnalogInputs() {
-        final String source = matcher.group(GROUP_NUMBER_ANALOG_INPUTS);
-        if (source.isEmpty() || source.equals(NOT_DEFINED_ANALOG_INPUTS_SOURCE)) {
-            return new double[0];
-        }
-        return stream(source.split(DELIMITER_ANALOG_INPUTS))
-                .mapToDouble(Double::parseDouble)
-                .toArray();
+        return parseComponent(GROUP_NUMBER_ANALOG_INPUTS, this::parseAnalogInputs, NOT_DEFINED_ANALOG_INPUTS);
     }
 
     public String parseDriverKeyCode() {
-        final String inboundDriverKeyCode = this.matcher.group(GROUP_NUMBER_DRIVER_KEY_CODE);
-        return !inboundDriverKeyCode.equals(NOT_DEFINED_DRIVER_KEY_CODE_INBOUND_STRING)
-                ? inboundDriverKeyCode
-                : NOT_DEFINED_DRIVER_KEY_CODE;
+        return parseComponent(GROUP_NUMBER_DRIVER_KEY_CODE, identity(), NOT_DEFINED_DRIVER_KEY_CODE);
     }
 
-    public Map<String, Parameter> parseParameters() {
-//        final String parametersString = this.matcher.group(GROUP_NUMBER_PARAMETERS);
-//        return !parametersString.isEmpty() ?
-//                stream(parametersString.split(DELIMITER_PARAMETERS))
-//                        .map(this.parameterParser::parse)
-//                        .collect(toMap(Parameter::getName, identity()))
-//                : emptyMap();
-        return null;
+    public Set<Parameter> parseParameters() {
+        return parseComponent(GROUP_NUMBER_PARAMETERS, this::parseParameters, NOT_DEFINED_PARAMETERS);
     }
 
     private void match(final String message) {
@@ -203,12 +163,43 @@ public final class WialonMessageComponentParser {
         }
     }
 
+    private <T> T parseComponent(final int groupNumber, final Function<String, T> parser, final T notDefinedValue) {
+        final String source = matcher.group(groupNumber);
+        return isNotDefinedComponentSource(source) ? parser.apply(source) : notDefinedValue;
+    }
+
+    private int parseIntComponent(final int groupNumber, final int notDefinedValue) {
+        final String source = matcher.group(groupNumber);
+        return isNotDefinedComponentSource(source) ? parseInt(source) : notDefinedValue;
+    }
+
+    private double parseDoubleComponent(final int groupNumber, final double notDefinedValue) {
+        final String source = matcher.group(groupNumber);
+        return isNotDefinedComponentSource(source) ? parseDouble(source) : notDefinedValue;
+    }
+
+    private static boolean isNotDefinedComponentSource(final String source) {
+        return source.isEmpty() || source.equals(NOT_DEFINED_COMPONENT_SOURCE);
+    }
+
+    private double[] parseAnalogInputs(final String source) {
+        return stream(source.split(DELIMITER_ANALOG_INPUTS))
+                .mapToDouble(Double::parseDouble)
+                .toArray();
+    }
+
+    private Set<Parameter> parseParameters(final String source) {
+        return stream(source.split(DELIMITER_PARAMETERS))
+                .map(parameterParser::parse)
+                .collect(toSet());
+    }
+
     @RequiredArgsConstructor
     private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
-        private static final String NOT_DEFINED_COORDINATE_STRING = "NA;NA";
-        private static final int NOT_DEFINED_DEGREES = MIN_VALUE;
-        private static final int NOT_DEFINED_MINUTES = MIN_VALUE;
-        private static final int NOT_DEFINED_MINUTE_SHARE = MIN_VALUE;
+        private static final String NOT_DEFINED_COORDINATE_SOURCE = "NA;NA";
+        private static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
+        private static final int NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
+        private static final int NOT_DEFINED_MINUTE_SHARE = Integer.MIN_VALUE;
 
         private final int groupNumber;
         private final int groupNumberDegrees;
@@ -218,7 +209,7 @@ public final class WialonMessageComponentParser {
 
         public final T parse() {
             final String source = matcher.group(groupNumber);
-            return !source.equals(NOT_DEFINED_COORDINATE_STRING)
+            return !source.equals(NOT_DEFINED_COORDINATE_SOURCE)
                     ? createDefinedCoordinate()
                     : createNotDefinedCoordinate();
         }
@@ -310,6 +301,12 @@ public final class WialonMessageComponentParser {
     }
 
     private static final class ParameterParser {
+        private static final Map<String, ParameterEntity.Type> TYPES_BY_ALIASES = Map.of(
+                "1", INTEGER,
+                "2", DOUBLE,
+                "3", STRING
+        );
+
         private static final String COMPONENTS_DELIMITER = ":";
         private static final int NAME_INDEX = 0;
         private static final int TYPE_INDEX = 1;
@@ -318,18 +315,13 @@ public final class WialonMessageComponentParser {
         public Parameter parse(final String source) {
             final String[] components = source.split(COMPONENTS_DELIMITER);
             final String name = components[NAME_INDEX];
-            final ParameterEntity.Type type = parseType(components[TYPE_INDEX]);
+            final ParameterEntity.Type type = TYPES_BY_ALIASES.get(components[TYPE_INDEX]);
             final String value = components[VALUE_INDEX];
             return Parameter.builder()
                     .name(name)
                     .type(type)
                     .value(value)
                     .build();
-        }
-
-        private static ParameterEntity.Type parseType(final String source) {
-            final byte value = parseByte(source);
-            return ParameterEntity.Type.findByValue(value);
         }
     }
 }

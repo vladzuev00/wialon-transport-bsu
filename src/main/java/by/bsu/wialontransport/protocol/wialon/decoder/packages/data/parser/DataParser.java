@@ -15,7 +15,7 @@ public final class DataParser {
 //                .latitude(componentsParser.parseLatitude())
 //                .longitude(componentsParser.parseLongitude())
                 .speed(componentsParser.parseSpeed())
-                .course(componentsParser.parseCourse())
+//                .course(componentsParser.parseCourse())
                 .altitude(componentsParser.parseAltitude())
                 .amountOfSatellites(componentsParser.parseAmountOfSatellites())
                 .hdop(componentsParser.parseHdop())
@@ -23,7 +23,7 @@ public final class DataParser {
                 .outputs(componentsParser.parseOutputs())
                 .analogInputs(componentsParser.parseAnalogInputs())
                 .driverKeyCode(componentsParser.parseDriverKeyCode())
-                .parametersByNames(componentsParser.parseParameters())
+//                .parametersByNames(componentsParser.parseParameters())
                 .build();
     }
 }
