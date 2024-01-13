@@ -158,11 +158,11 @@ public final class WialonMessageComponentParser {
 
     private <T> Optional<T> parseComponent(final int groupNumber, final Function<String, T> parser) {
         final String source = matcher.group(groupNumber);
-        return isNotDefinedComponentSource(source) ? Optional.of(parser.apply(source)) : empty();
+        return isDefinedComponentSource(source) ? Optional.of(parser.apply(source)) : empty();
     }
 
-    private static boolean isNotDefinedComponentSource(final String source) {
-        return source.isEmpty() || source.equals(NOT_DEFINED_COMPONENT_SOURCE);
+    private static boolean isDefinedComponentSource(final String source) {
+        return !source.isEmpty() && !source.equals(NOT_DEFINED_COMPONENT_SOURCE);
     }
 
     private double[] parseAnalogInputs(final String source) {
