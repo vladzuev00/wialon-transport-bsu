@@ -8,7 +8,7 @@ import lombok.Value;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
+import java.util.Set;
 
 @Value
 public class WialonData {
@@ -27,7 +27,7 @@ public class WialonData {
     int outputs;
     double[] analogInputs;
     String driverKeyCode;
-    Map<String, Parameter> parametersByNames;
+    Set<Parameter> parameters;
     Tracker tracker;
 
     @RequiredArgsConstructor
