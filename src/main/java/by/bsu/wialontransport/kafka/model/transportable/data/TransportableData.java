@@ -17,7 +17,7 @@ public abstract class TransportableData implements Transportable<Long> {
     private final double speed;
     private final int altitude;
     private final int amountOfSatellites;
-    private final double reductionPrecision;
+    private final double hdop;
     private final int inputs;
     private final int outputs;
     private final String serializedAnalogInputs;

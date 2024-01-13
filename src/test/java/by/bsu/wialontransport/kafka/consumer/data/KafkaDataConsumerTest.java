@@ -76,7 +76,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         final int givenSpeed = 60;
         final int givenAltitude = 10;
         final int givenAmountOfSatellites = 20;
-        final double givenReductionPrecision = 40.4;
+        final double givenHdop = 40.4;
         final int givenInputs = 15;
         final int givenOutputs = 16;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
@@ -107,7 +107,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -132,7 +132,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 .speed(givenSpeed)
                 .altitude(givenAltitude)
                 .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
+                .hdop(givenHdop)
                 .inputs(givenInputs)
                 .outputs(givenOutputs)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
@@ -166,7 +166,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         final int givenSpeed = 61;
         final int givenAltitude = 11;
         final int givenAmountOfSatellites = 21;
-        final double givenReductionPrecision = 40.5;
+        final double givenHdop = 40.5;
         final int givenInputs = 16;
         final int givenOutputs = 17;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.5]";
@@ -197,7 +197,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -229,7 +229,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         final int givenSpeed = 60;
         final int givenAltitude = 10;
         final int givenAmountOfSatellites = 20;
-        final double givenReductionPrecision = 40.4;
+        final double givenHdop = 40.4;
         final int givenInputs = 15;
         final int givenOutputs = 16;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
@@ -260,7 +260,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -294,7 +294,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         final int givenSpeed = 60;
         final int givenAltitude = 10;
         final int givenAmountOfSatellites = 20;
-        final double givenReductionPrecision = 40.4;
+        final double givenHdop = 40.4;
         final int givenInputs = 15;
         final int givenOutputs = 16;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
@@ -325,7 +325,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -355,7 +355,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         final int givenSpeed = 60;
         final int givenAltitude = 10;
         final int givenAmountOfSatellites = 20;
-        final double givenReductionPrecision = 40.4;
+        final double givenHdop = 40.4;
         final int givenInputs = 15;
         final int givenOutputs = 16;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
@@ -385,7 +385,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -409,7 +409,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                                                      final double speed,
                                                      final int altitude,
                                                      final int amountOfSatellites,
-                                                     final double reductionPrecision,
+                                                     final double hdop,
                                                      final int inputs,
                                                      final int outputs,
                                                      final String serializedAnalogInputs,
@@ -426,7 +426,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
         when(record.get(same(TransportableData.Fields.speed))).thenReturn(speed);
         when(record.get(same(TransportableData.Fields.altitude))).thenReturn(altitude);
         when(record.get(same(TransportableData.Fields.amountOfSatellites))).thenReturn(amountOfSatellites);
-        when(record.get(same(TransportableData.Fields.reductionPrecision))).thenReturn(reductionPrecision);
+        when(record.get(same(TransportableData.Fields.hdop))).thenReturn(hdop);
         when(record.get(same(TransportableData.Fields.inputs))).thenReturn(inputs);
         when(record.get(same(TransportableData.Fields.outputs))).thenReturn(outputs);
         when(record.get(same(TransportableData.Fields.serializedAnalogInputs))).thenReturn(serializedAnalogInputs);
@@ -500,7 +500,7 @@ public final class KafkaDataConsumerTest extends AbstractContextTest {
                     .speed(context.getSpeed())
                     .altitude(context.getAltitude())
                     .amountOfSatellites(context.getAmountOfSatellites())
-                    .reductionPrecision(context.getReductionPrecision())
+                    .hdop(context.getHdop())
                     .inputs(context.getInputs())
                     .outputs(context.getOutputs())
                     .analogInputs(context.getAnalogInputs())

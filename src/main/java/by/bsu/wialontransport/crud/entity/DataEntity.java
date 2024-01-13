@@ -51,8 +51,8 @@ public class DataEntity extends Entity<Long> {
     @Column(name = "amount_of_satellites")
     private int amountOfSatellites;
 
-    @Column(name = "reduction_precision")
-    private double reductionPrecision;
+    @Column(name = "hdop")
+    private double hdop;
 
     @Column(name = "inputs")
     private int inputs;

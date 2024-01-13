@@ -20,7 +20,7 @@ public class DataDefaultPropertyConfiguration {
     private int altitude;
     private double speed;
     private int amountOfSatellites;
-    private double reductionPrecision;
+    private double hdop;
     private int inputs;
     private int outputs;
     private String driverKeyCode;

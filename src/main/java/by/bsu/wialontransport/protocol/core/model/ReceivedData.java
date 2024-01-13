@@ -20,7 +20,7 @@ public class ReceivedData {
     double speed;
     int altitude;
     int amountOfSatellites;
-    double reductionPrecision;
+    double hdop;
     int inputs;
     int outputs;
     double[] analogInputs;

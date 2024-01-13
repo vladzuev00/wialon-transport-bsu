@@ -19,8 +19,8 @@ public final class NewWingDataDecoder {
         decodeLatitudeFractionalPart(buffer, builder);
         decodeLongitudeIntegerPart(buffer, builder);
         decodeLongitudeFractionalPart(buffer, builder);
-        decodeReductionPrecisionIntegerPart(buffer, builder);
-        decodeReductionPrecisionFractionalPart(buffer, builder);
+        decodeHdopIntegerPart(buffer, builder);
+        decodeHdopFractionalPart(buffer, builder);
         decodeCourse(buffer, builder);
         decodeSpeedIntegerPart(buffer, builder);
         decodeSpeedFractionalPart(buffer, builder);
@@ -65,12 +65,12 @@ public final class NewWingDataDecoder {
         readAndAccumulateShortValue(buffer, builder::longitudeFractionalPart);
     }
 
-    private static void decodeReductionPrecisionIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::reductionPrecisionIntegerPart);
+    private static void decodeHdopIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::hdopIntegerPart);
     }
 
-    private static void decodeReductionPrecisionFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::reductionPrecisionFractionalPart);
+    private static void decodeHdopFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
+        readAndAccumulateByteValue(buffer, builder::hdopFractionalPart);
     }
 
     private static void decodeCourse(final ByteBuf buffer, final NewWingDataBuilder builder) {

@@ -37,7 +37,7 @@ public final class DataPackageHandlerTest {
     private static final double GIVEN_DEFAULT_SPEED = 1006;
     private static final int GIVEN_DEFAULT_ALTITUDE = 1000;
     private static final int GIVEN_DEFAULT_AMOUNT_OF_SATELLITES = 1001;
-    private static final double GIVEN_DEFAULT_REDUCTION_PRECISION = 1002;
+    private static final double GIVEN_DEFAULT_HDOP = 1002;
     private static final int GIVEN_DEFAULT_INPUTS = 1003;
     private static final int GIVEN_DEFAULT_OUTPUTS = 1004;
     private static final String GIVEN_DEFAULT_DRIVER_KEY_CODE = "driver key code";
@@ -79,8 +79,8 @@ public final class DataPackageHandlerTest {
                 .thenReturn(GIVEN_DEFAULT_ALTITUDE);
         when(mockedDataDefaultPropertyConfiguration.getAmountOfSatellites())
                 .thenReturn(GIVEN_DEFAULT_AMOUNT_OF_SATELLITES);
-        when(mockedDataDefaultPropertyConfiguration.getReductionPrecision())
-                .thenReturn(GIVEN_DEFAULT_REDUCTION_PRECISION);
+        when(mockedDataDefaultPropertyConfiguration.getHdop())
+                .thenReturn(GIVEN_DEFAULT_HDOP);
         when(mockedDataDefaultPropertyConfiguration.getInputs())
                 .thenReturn(GIVEN_DEFAULT_INPUTS);
         when(mockedDataDefaultPropertyConfiguration.getOutputs())
@@ -403,7 +403,7 @@ public final class DataPackageHandlerTest {
         final double givenSpeed = 6;
         final int givenAltitude = 7;
         final int givenAmountOfSatellites = 8;
-        final double givenReductionPrecision = 9;
+        final double givenHdop = 9;
         final int givenInputs = 10;
         final int givenOutputs = 11;
         final double[] givenAnalogInputs = {12, 13, 14};
@@ -419,7 +419,7 @@ public final class DataPackageHandlerTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenAnalogInputs,
@@ -443,7 +443,7 @@ public final class DataPackageHandlerTest {
                 .speed(givenSpeed)
                 .altitude(givenAltitude)
                 .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
+                .hdop(givenHdop)
                 .inputs(givenInputs)
                 .outputs(givenOutputs)
                 .analogInputs(givenAnalogInputs)
@@ -465,7 +465,7 @@ public final class DataPackageHandlerTest {
                         .speed(givenSpeed)
                         .altitude(givenAltitude)
                         .amountOfSatellites(givenAmountOfSatellites)
-                        .reductionPrecision(givenReductionPrecision)
+                        .hdop(givenHdop)
                         .inputs(givenInputs)
                         .outputs(givenOutputs)
                         .analogInputs(givenAnalogInputs)
@@ -508,7 +508,7 @@ public final class DataPackageHandlerTest {
                 .speed(GIVEN_DEFAULT_SPEED)
                 .altitude(GIVEN_DEFAULT_ALTITUDE)
                 .amountOfSatellites(GIVEN_DEFAULT_AMOUNT_OF_SATELLITES)
-                .reductionPrecision(GIVEN_DEFAULT_REDUCTION_PRECISION)
+                .hdop(GIVEN_DEFAULT_HDOP)
                 .inputs(GIVEN_DEFAULT_INPUTS)
                 .outputs(GIVEN_DEFAULT_OUTPUTS)
                 .analogInputs(new double[]{})
@@ -528,7 +528,7 @@ public final class DataPackageHandlerTest {
                 .speed(GIVEN_DEFAULT_SPEED)
                 .altitude(GIVEN_DEFAULT_ALTITUDE)
                 .amountOfSatellites(GIVEN_DEFAULT_AMOUNT_OF_SATELLITES)
-                .reductionPrecision(GIVEN_DEFAULT_REDUCTION_PRECISION)
+                .hdop(GIVEN_DEFAULT_HDOP)
                 .inputs(GIVEN_DEFAULT_INPUTS)
                 .outputs(GIVEN_DEFAULT_OUTPUTS)
                 .analogInputs(new double[]{})
@@ -547,7 +547,7 @@ public final class DataPackageHandlerTest {
         Double speed;
         Integer altitude;
         Integer amountOfSatellites;
-        Double reductionPrecision;
+        Double hdop;
         Integer inputs;
         Integer outputs;
         double[] analogInputs;
@@ -561,7 +561,7 @@ public final class DataPackageHandlerTest {
             speed = null;
             altitude = null;
             amountOfSatellites = null;
-            reductionPrecision = null;
+            hdop = null;
             inputs = null;
             outputs = null;
             analogInputs = null;
@@ -626,9 +626,9 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected OptionalDouble findReductionPrecision(final TestSource source) {
-            return source.reductionPrecision != null
-                    ? OptionalDouble.of(source.reductionPrecision)
+        protected OptionalDouble findHdop(final TestSource source) {
+            return source.hdop != null
+                    ? OptionalDouble.of(source.hdop)
                     : OptionalDouble.empty();
         }
 

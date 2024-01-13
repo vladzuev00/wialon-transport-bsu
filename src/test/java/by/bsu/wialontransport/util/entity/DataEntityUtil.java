@@ -22,7 +22,7 @@ public final class DataEntityUtil {
         assertEquals(expected.getCourse(), actual.getCourse());
         assertEquals(expected.getAltitude(), actual.getAltitude());
         assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
-        assertEquals(expected.getReductionPrecision(), actual.getReductionPrecision(), 0.);
+        assertEquals(expected.getHdop(), actual.getHdop(), 0.);
         assertEquals(expected.getInputs(), actual.getInputs());
         assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);

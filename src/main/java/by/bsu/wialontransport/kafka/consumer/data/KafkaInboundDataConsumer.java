@@ -65,7 +65,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
                 .course(context.getCourse())
                 .altitude(context.getAltitude())
                 .amountOfSatellites(context.getAmountOfSatellites())
-                .reductionPrecision(context.getReductionPrecision())
+                .hdop(context.getHdop())
                 .inputs(context.getInputs())
                 .outputs(context.getOutputs())
                 .analogInputs(context.getAnalogInputs())

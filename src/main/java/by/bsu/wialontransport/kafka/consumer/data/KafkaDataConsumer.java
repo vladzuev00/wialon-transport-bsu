@@ -80,8 +80,8 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
             return extractValue(record, amountOfSatellites, Integer.class);
         }
 
-        public double getReductionPrecision() {
-            return extractValue(record, reductionPrecision, Double.class);
+        public double getHdop() {
+            return extractValue(record, hdop, Double.class);
         }
 
         public int getInputs() {

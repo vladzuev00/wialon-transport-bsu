@@ -27,7 +27,7 @@ public final class DataTriggerTest extends AbstractContextTest {
                 .course(9)
                 .altitude(10)
                 .amountOfSatellites(11)
-                .reductionPrecision(12.4)
+                .hdop(12.4)
                 .inputs(13)
                 .outputs(14)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})

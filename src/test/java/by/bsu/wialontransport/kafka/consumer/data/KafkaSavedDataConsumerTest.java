@@ -54,7 +54,7 @@ public final class KafkaSavedDataConsumerTest {
         final int givenCourse = 4;
         final int givenAltitude = 5;
         final int givenAmountOfSatellites = 10;
-        final double givenReductionPrecision = 4.4;
+        final double givenHdop = 4.4;
         final int givenInputs = 4;
         final int givenOutputs = 5;
         final double[] givenAnalogInputs = {3, 4.4, 5};
@@ -74,7 +74,7 @@ public final class KafkaSavedDataConsumerTest {
                 givenCourse,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenAnalogInputs,
@@ -95,7 +95,7 @@ public final class KafkaSavedDataConsumerTest {
                 .speed(givenSpeed)
                 .altitude(givenAltitude)
                 .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
+                .hdop(givenHdop)
                 .inputs(givenInputs)
                 .outputs(givenOutputs)
                 .analogInputs(givenAnalogInputs)
@@ -116,7 +116,7 @@ public final class KafkaSavedDataConsumerTest {
         final int givenCourse = 4;
         final int givenAltitude = 5;
         final int givenAmountOfSatellites = 10;
-        final double givenReductionPrecision = 4.4;
+        final double givenHdop = 4.4;
         final int givenInputs = 4;
         final int givenOutputs = 5;
         final double[] givenAnalogInputs = {3, 4.4, 5};
@@ -135,7 +135,7 @@ public final class KafkaSavedDataConsumerTest {
                 givenCourse,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenAnalogInputs,
@@ -264,7 +264,7 @@ public final class KafkaSavedDataConsumerTest {
                                                   final int course,
                                                   final int altitude,
                                                   final int amountOfSatellites,
-                                                  final double reductionPrecision,
+                                                  final double hdop,
                                                   final int inputs,
                                                   final int outputs,
                                                   final double[] analogInputs,
@@ -281,7 +281,7 @@ public final class KafkaSavedDataConsumerTest {
         when(context.getCourse()).thenReturn(course);
         when(context.getAltitude()).thenReturn(altitude);
         when(context.getAmountOfSatellites()).thenReturn(amountOfSatellites);
-        when(context.getReductionPrecision()).thenReturn(reductionPrecision);
+        when(context.getHdop()).thenReturn(hdop);
         when(context.getInputs()).thenReturn(inputs);
         when(context.getOutputs()).thenReturn(outputs);
         when(context.getAnalogInputs()).thenReturn(analogInputs);

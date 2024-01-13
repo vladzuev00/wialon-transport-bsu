@@ -51,7 +51,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})

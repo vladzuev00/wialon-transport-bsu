@@ -207,7 +207,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -236,7 +236,7 @@
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
 //                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-//                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str,\\d+:116:2:0\\.5\", "
@@ -292,7 +292,7 @@
 ////                .course(15)
 ////                .altitude(10)
 ////                .amountOfSatellites(177)
-////                .reductionPrecision(545.4554)
+////                .hdop(545.4554)
 ////                .inputs(17)
 ////                .outputs(18)
 ////                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -320,7 +320,7 @@
 ////                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 ////                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
 ////                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-////                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+////                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 ////                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 ////                + "\"driverKeyCode\": \"keydrivercode\", "
 ////                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str,\\d+:116:2:0\\.5\", "
@@ -757,7 +757,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -786,7 +786,7 @@
 //                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, "
 //                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, "
 //                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
-//                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -840,7 +840,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -873,7 +873,7 @@
 //                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -927,7 +927,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -961,7 +961,7 @@
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, "
 //                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-//                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", \"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
 //                + "\"trackerId\": 255}\\)";
@@ -1106,7 +1106,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1139,7 +1139,7 @@
 //                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1193,7 +1193,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1228,7 +1228,7 @@
 //                + "\"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, \"longitudeMinutes\": 39, "
 //                + "\"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
 //                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-//                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1282,7 +1282,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1316,7 +1316,7 @@
 //                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, "
 //                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, "
 //                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
-//                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1370,7 +1370,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1403,7 +1403,7 @@
 //                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1457,7 +1457,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1490,7 +1490,7 @@
 //                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1544,7 +1544,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1577,7 +1577,7 @@
 //                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1631,7 +1631,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1664,7 +1664,7 @@
 //                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1718,7 +1718,7 @@
 //                .course(15)
 //                .altitude(10)
 //                .amountOfSatellites(177)
-//                .reductionPrecision(545.4554)
+//                .hdop(545.4554)
 //                .inputs(17)
 //                .outputs(18)
 //                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1751,7 +1751,7 @@
 //                + "value = \\{\"id\": \\d+, \"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6025, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6834, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:5,\\d+:123:2:6,\\d+:124:2:7,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -1829,7 +1829,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1846,7 +1846,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1880,7 +1880,7 @@
 //                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,"
 //                + "\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", \"trackerId\": 255}\\) \\|\\| "
@@ -1890,7 +1890,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,"
 //                + "\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", \"trackerId\": 255}\\)";
@@ -1945,7 +1945,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -1974,7 +1974,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2030,7 +2030,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2059,7 +2059,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2115,7 +2115,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2144,7 +2144,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2200,7 +2200,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2229,7 +2229,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2285,7 +2285,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2314,7 +2314,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2370,7 +2370,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2399,7 +2399,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2455,7 +2455,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2484,7 +2484,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2540,7 +2540,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2569,7 +2569,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2625,7 +2625,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2654,7 +2654,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2710,7 +2710,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2739,7 +2739,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2795,7 +2795,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2824,7 +2824,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2880,7 +2880,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2909,7 +2909,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -2965,7 +2965,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -2994,7 +2994,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3050,7 +3050,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3079,7 +3079,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3135,7 +3135,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3164,7 +3164,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3220,7 +3220,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3249,7 +3249,7 @@
 //                + "\"epochSeconds\": 1668524205, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6027, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6836, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3305,7 +3305,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3334,7 +3334,7 @@
 //                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3390,7 +3390,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3419,7 +3419,7 @@
 //                + "\"epochSeconds\": 1668524204, \"latitudeDegrees\": 55, \"latitudeMinutes\": 44, "
 //                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, \"speed\": 100, "
-//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, "
+//                + "\"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
 //                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3475,7 +3475,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3492,7 +3492,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3527,7 +3527,7 @@
 //                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, "
 //                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-//                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3538,7 +3538,7 @@
 //                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, "
 //                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, "
 //                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
-//                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3594,7 +3594,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3611,7 +3611,7 @@
 //                        .course(15)
 //                        .altitude(10)
 //                        .amountOfSatellites(177)
-//                        .reductionPrecision(545.4554)
+//                        .hdop(545.4554)
 //                        .inputs(17)
 //                        .outputs(18)
 //                        .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
@@ -3646,7 +3646,7 @@
 //                + "\"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, \"longitudeDegrees\": 37, "
 //                + "\"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, \"longitudeTypeValue\": 69, "
 //                + "\"speed\": 100, \"course\": 15, \"altitude\": 10, \"amountOfSatellites\": 177, "
-//                + "\"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "
@@ -3657,7 +3657,7 @@
 //                + "\"latitudeMinutes\": 44, \"latitudeMinuteShare\": 6026, \"latitudeTypeValue\": 78, "
 //                + "\"longitudeDegrees\": 37, \"longitudeMinutes\": 39, \"longitudeMinuteShare\": 6835, "
 //                + "\"longitudeTypeValue\": 69, \"speed\": 100, \"course\": 15, \"altitude\": 10, "
-//                + "\"amountOfSatellites\": 177, \"reductionPrecision\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+//                + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
 //                + "\"serializedAnalogInputs\": \"5\\.5,4343\\.454544334,454\\.433,1\\.0\", "
 //                + "\"driverKeyCode\": \"keydrivercode\", "
 //                + "\"serializedParameters\": \"\\d+:122:2:4,\\d+:123:2:5,\\d+:124:2:6,\\d+:par1:3:str2,\\d+:116:2:0\\.4\", "

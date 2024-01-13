@@ -20,7 +20,7 @@ public final class DataParser {
                 .course(componentsParser.parseCourse())
                 .altitude(componentsParser.parseAltitude())
                 .amountOfSatellites(componentsParser.parseAmountSatellites())
-                .reductionPrecision(componentsParser.parseReductionPrecision())
+                .hdop(componentsParser.parseHdop())
                 .inputs(componentsParser.parseInputs())
                 .outputs(componentsParser.parseOutputs())
                 .analogInputs(componentsParser.parseAnalogInputs())

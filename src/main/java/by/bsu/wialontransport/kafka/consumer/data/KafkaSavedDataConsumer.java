@@ -49,7 +49,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
                 .speed(context.getSpeed())
                 .altitude(context.getAltitude())
                 .amountOfSatellites(context.getAmountOfSatellites())
-                .reductionPrecision(context.getReductionPrecision())
+                .hdop(context.getHdop())
                 .inputs(context.getInputs())
                 .outputs(context.getOutputs())
                 .analogInputs(context.getAnalogInputs())

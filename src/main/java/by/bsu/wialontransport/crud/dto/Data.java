@@ -19,7 +19,7 @@ public class Data implements Dto<Long> {
     double speed;
     int altitude;
     int amountOfSatellites;
-    double reductionPrecision;
+    double hdop;
     int inputs;
     int outputs;
     double[] analogInputs;

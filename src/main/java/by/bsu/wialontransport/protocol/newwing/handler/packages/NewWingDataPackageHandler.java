@@ -84,10 +84,10 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     }
 
     @Override
-    protected OptionalDouble findReductionPrecision(final NewWingData data) {
+    protected OptionalDouble findHdop(final NewWingData data) {
         final double value = createDoubleByParts(
-                data.getReductionPrecisionIntegerPart(),
-                data.getReductionPrecisionFractionalPart()
+                data.getHdopIntegerPart(),
+                data.getHdopFractionalPart()
         );
         return OptionalDouble.of(value);
     }

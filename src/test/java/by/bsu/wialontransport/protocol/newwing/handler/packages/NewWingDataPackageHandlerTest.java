@@ -126,13 +126,13 @@ public final class NewWingDataPackageHandlerTest {
     }
 
     @Test
-    public void reductionPrecisionShouldBeFound() {
+    public void hdopShouldBeFound() {
         final NewWingData givenNewWingData = NewWingData.builder()
-                .reductionPrecisionIntegerPart((byte) 2)
-                .reductionPrecisionFractionalPart((byte) 123)
+                .hdopIntegerPart((byte) 2)
+                .hdopFractionalPart((byte) 123)
                 .build();
 
-        final OptionalDouble optionalActual = handler.findReductionPrecision(givenNewWingData);
+        final OptionalDouble optionalActual = handler.findHdop(givenNewWingData);
         assertTrue(optionalActual.isPresent());
         final double actual = optionalActual.getAsDouble();
         final double expected = 2.123;

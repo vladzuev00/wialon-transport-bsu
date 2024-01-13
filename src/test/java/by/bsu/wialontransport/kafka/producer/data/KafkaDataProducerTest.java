@@ -39,7 +39,7 @@ public final class KafkaDataProducerTest {
                 .course(27)
                 .altitude(28)
                 .amountOfSatellites(29)
-                .reductionPrecision(30.5)
+                .hdop(30.5)
                 .inputs(31)
                 .outputs(32)
                 .analogInputs(new double[]{0.2, 0.3, 0.4})
@@ -62,7 +62,7 @@ public final class KafkaDataProducerTest {
                 .speed(26)
                 .altitude(28)
                 .amountOfSatellites(29)
-                .reductionPrecision(30.5)
+                .hdop(30.5)
                 .inputs(31)
                 .outputs(32)
                 .serializedAnalogInputs("[0.2,0.3,0.4]")
@@ -112,7 +112,7 @@ public final class KafkaDataProducerTest {
                                      final double speed,
                                      final int altitude,
                                      final int amountOfSatellites,
-                                     final double reductionPrecision,
+                                     final double hdop,
                                      final int inputs,
                                      final int outputs,
                                      final String serializedAnalogInputs,
@@ -127,7 +127,7 @@ public final class KafkaDataProducerTest {
                     speed,
                     altitude,
                     amountOfSatellites,
-                    reductionPrecision,
+                    hdop,
                     inputs,
                     outputs,
                     serializedAnalogInputs,
@@ -169,7 +169,7 @@ public final class KafkaDataProducerTest {
                     .speed(context.getSpeed())
                     .altitude(context.getAltitude())
                     .amountOfSatellites(context.getAmountOfSatellites())
-                    .reductionPrecision(context.getReductionPrecision())
+                    .hdop(context.getHdop())
                     .inputs(context.getInputs())
                     .outputs(context.getOutputs())
                     .serializedAnalogInputs(context.getSerializedAnalogInputs())

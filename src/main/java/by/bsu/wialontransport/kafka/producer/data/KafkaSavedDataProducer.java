@@ -32,7 +32,7 @@ public final class KafkaSavedDataProducer extends KafkaDataProducer {
                 .speed(context.getSpeed())
                 .altitude(context.getAltitude())
                 .amountOfSatellites(context.getAmountOfSatellites())
-                .reductionPrecision(context.getReductionPrecision())
+                .hdop(context.getHdop())
                 .inputs(context.getInputs())
                 .outputs(context.getOutputs())
                 .serializedAnalogInputs(context.getSerializedAnalogInputs())

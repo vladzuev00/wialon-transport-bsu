@@ -165,7 +165,7 @@ CREATE TABLE data
     course                 INTEGER      NOT NULL,
     altitude               INTEGER      NOT NULL,
     amount_of_satellites   INTEGER      NOT NULL,
-    reduction_precision    DECIMAL      NOT NULL,
+    hdop    DECIMAL      NOT NULL,
     inputs                 INTEGER      NOT NULL,
     outputs                INTEGER      NOT NULL,
     analog_inputs          DOUBLE PRECISION[] NOT NULL,

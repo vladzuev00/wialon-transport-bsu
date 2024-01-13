@@ -118,8 +118,8 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
             return data.getAmountOfSatellites();
         }
 
-        public double getReductionPrecision() {
-            return data.getReductionPrecision();
+        public double getHdop() {
+            return data.getHdop();
         }
 
         public int getInputs() {

@@ -32,7 +32,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
                 source.getSpeed(),
                 source.getAltitude(),
                 source.getAmountOfSatellites(),
-                source.getReductionPrecision(),
+                source.getHdop(),
                 source.getInputs(),
                 source.getOutputs(),
                 source.getAnalogInputs(),

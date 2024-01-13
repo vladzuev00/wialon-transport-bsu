@@ -79,15 +79,15 @@ public final class DataComponentsParser {
     private static final String NOT_DEFINED_AMOUNT_SATELLITE_STRING = "NA";
     private static final int NOT_DEFINED_AMOUNT_SATELLITE = MIN_VALUE;
 
-    private static final int GROUP_NUMBER_REDUCTION_PRECISION = 28;
+    private static final int GROUP_NUMBER_HDOP = 28;
     private static final int GROUP_NUMBER_INPUTS = 31;
     private static final int GROUP_NUMBER_OUTPUTS = 33;
     private static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
     private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
-    private static final String NOT_DEFINED_REDUCTION_PRECISION_STRING = "NA";
-    private static final Double NOT_DEFINED_REDUCTION_PRECISION = Double.MIN_VALUE;
+    private static final String NOT_DEFINED_HDOP_STRING = "NA";
+    private static final Double NOT_DEFINED_HDOP = Double.MIN_VALUE;
 
     private static final String NOT_DEFINED_INPUTS_STRING = "NA";
     private static final int NOT_DEFINED_INPUTS = Integer.MIN_VALUE;
@@ -155,11 +155,11 @@ public final class DataComponentsParser {
                 : NOT_DEFINED_AMOUNT_SATELLITE;
     }
 
-    public double parseReductionPrecision() {
-        final String reductionPrecisionString = this.matcher.group(GROUP_NUMBER_REDUCTION_PRECISION);
-        return !reductionPrecisionString.equals(NOT_DEFINED_REDUCTION_PRECISION_STRING)
-                ? parseDouble(reductionPrecisionString)
-                : NOT_DEFINED_REDUCTION_PRECISION;
+    public double parseHdop() {
+        final String hdopString = this.matcher.group(GROUP_NUMBER_HDOP);
+        return !hdopString.equals(NOT_DEFINED_HDOP_STRING)
+                ? parseDouble(hdopString)
+                : NOT_DEFINED_HDOP;
     }
 
     public int parseInputs() {

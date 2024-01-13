@@ -69,7 +69,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
 
     protected abstract OptionalInt findAmountOfSatellites(final SOURCE source);
 
-    protected abstract OptionalDouble findReductionPrecision(final SOURCE source);
+    protected abstract OptionalDouble findHdop(final SOURCE source);
 
     protected abstract OptionalInt findInputs(final SOURCE source);
 
@@ -102,7 +102,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .speed(getSpeed(source))
                 .altitude(getAltitude(source))
                 .amountOfSatellites(getAmountOfSatellites(source))
-                .reductionPrecision(getReductionPrecision(source))
+                .hdop(getHdop(source))
                 .inputs(getInputs(source))
                 .outputs(getOutputs(source))
                 .analogInputs(getAnalogInputs(source))
@@ -128,8 +128,8 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
         return findAmountOfSatellites(source).orElse(dataDefaultPropertyConfiguration.getAmountOfSatellites());
     }
 
-    private double getReductionPrecision(final SOURCE source) {
-        return findReductionPrecision(source).orElse(dataDefaultPropertyConfiguration.getReductionPrecision());
+    private double getHdop(final SOURCE source) {
+        return findHdop(source).orElse(dataDefaultPropertyConfiguration.getHdop());
     }
 
     private int getInputs(final SOURCE source) {
@@ -172,7 +172,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .speed(receivedData.getSpeed())
                 .altitude(receivedData.getAltitude())
                 .amountOfSatellites(receivedData.getAmountOfSatellites())
-                .reductionPrecision(receivedData.getReductionPrecision())
+                .hdop(receivedData.getHdop())
                 .inputs(receivedData.getInputs())
                 .outputs(receivedData.getOutputs())
                 .analogInputs(receivedData.getAnalogInputs())

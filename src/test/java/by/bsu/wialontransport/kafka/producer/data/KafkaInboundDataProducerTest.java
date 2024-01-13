@@ -29,7 +29,7 @@ public final class KafkaInboundDataProducerTest {
         final double givenSpeed = 40.4;
         final int givenAltitude = 11;
         final int givenAmountOfSatellites = 40;
-        final double givenReductionPrecision = 5.5;
+        final double givenHdop = 5.5;
         final int givenInputs = 10;
         final int givenOutputs = 20;
         final String givenSerializedAnalogInputs = "[0.2,0.3,0.4]";
@@ -58,7 +58,7 @@ public final class KafkaInboundDataProducerTest {
                 givenSpeed,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenSerializedAnalogInputs,
@@ -76,7 +76,7 @@ public final class KafkaInboundDataProducerTest {
                 .speed(givenSpeed)
                 .altitude(givenAltitude)
                 .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
+                .hdop(givenHdop)
                 .inputs(givenInputs)
                 .outputs(givenOutputs)
                 .serializedAnalogInputs(givenSerializedAnalogInputs)
@@ -107,7 +107,7 @@ public final class KafkaInboundDataProducerTest {
                                                   final double speed,
                                                   final int altitude,
                                                   final int amountOfSatellites,
-                                                  final double reductionPrecision,
+                                                  final double hdop,
                                                   final int inputs,
                                                   final int outputs,
                                                   final String serializedAnalogInputs,
@@ -122,7 +122,7 @@ public final class KafkaInboundDataProducerTest {
         when(context.getSpeed()).thenReturn(speed);
         when(context.getAltitude()).thenReturn(altitude);
         when(context.getAmountOfSatellites()).thenReturn(amountOfSatellites);
-        when(context.getReductionPrecision()).thenReturn(reductionPrecision);
+        when(context.getHdop()).thenReturn(hdop);
         when(context.getInputs()).thenReturn(inputs);
         when(context.getOutputs()).thenReturn(outputs);
         when(context.getSerializedAnalogInputs()).thenReturn(serializedAnalogInputs);

@@ -82,7 +82,7 @@ public final class KafkaInboundDataConsumerTest {
         final int givenCourse = 27;
         final int givenAltitude = 28;
         final int givenAmountOfSatellites = 29;
-        final double givenReductionPrecision = 30.5;
+        final double givenHdop = 30.5;
         final int givenInputs = 31;
         final int givenOutputs = 32;
         final double[] givenAnalogInputs = new double[]{0.2, 0.3, 0.4};
@@ -100,7 +100,7 @@ public final class KafkaInboundDataConsumerTest {
                 givenCourse,
                 givenAltitude,
                 givenAmountOfSatellites,
-                givenReductionPrecision,
+                givenHdop,
                 givenInputs,
                 givenOutputs,
                 givenAnalogInputs,
@@ -118,7 +118,7 @@ public final class KafkaInboundDataConsumerTest {
                 .course(givenCourse)
                 .altitude(givenAltitude)
                 .amountOfSatellites(givenAmountOfSatellites)
-                .reductionPrecision(givenReductionPrecision)
+                .hdop(givenHdop)
                 .inputs(givenInputs)
                 .outputs(givenOutputs)
                 .analogInputs(givenAnalogInputs)
@@ -233,7 +233,7 @@ public final class KafkaInboundDataConsumerTest {
                                                   final int course,
                                                   final int altitude,
                                                   final int amountOfSatellites,
-                                                  final double reductionPrecision,
+                                                  final double hdop,
                                                   final int inputs,
                                                   final int outputs,
                                                   final double[] analogInputs,
@@ -247,7 +247,7 @@ public final class KafkaInboundDataConsumerTest {
         when(context.getCourse()).thenReturn(course);
         when(context.getAltitude()).thenReturn(altitude);
         when(context.getAmountOfSatellites()).thenReturn(amountOfSatellites);
-        when(context.getReductionPrecision()).thenReturn(reductionPrecision);
+        when(context.getHdop()).thenReturn(hdop);
         when(context.getInputs()).thenReturn(inputs);
         when(context.getOutputs()).thenReturn(outputs);
         when(context.getAnalogInputs()).thenReturn(analogInputs);

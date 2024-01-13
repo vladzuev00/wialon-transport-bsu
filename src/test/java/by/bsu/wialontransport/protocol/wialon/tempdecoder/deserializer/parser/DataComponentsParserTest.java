@@ -260,27 +260,27 @@
 //    }
 //
 //    @Test
-//    public void reductionPrecisionShouldBeParsed() {
+//    public void hdopShouldBeParsed() {
 //        final String givenData = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
 //                + "5.5,4343.454544334,454.433,1;"
 //                + "keydrivercode;"
 //                + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
 //        final DataComponentsParser givenParser = new DataComponentsParser(givenData);
 //
-//        final double actual = givenParser.parseReductionPrecision();
+//        final double actual = givenParser.parseHdop();
 //        final double expected = 545.4554;
 //        assertEquals(expected, actual, 0.);
 //    }
 //
 //    @Test
-//    public void notDefinedReductionPrecisionShouldBeParsed() {
+//    public void notDefinedHdopShouldBeParsed() {
 //        final String givenData = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;NA;17;18;"
 //                + "5.5,4343.454544334,454.433,1;"
 //                + "keydrivercode;"
 //                + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
 //        final DataComponentsParser givenParser = new DataComponentsParser(givenData);
 //
-//        final double actual = givenParser.parseReductionPrecision();
+//        final double actual = givenParser.parseHdop();
 //        final double expected = Double.MIN_VALUE;
 //        assertEquals(expected, actual, 0.);
 //    }
