@@ -9,6 +9,7 @@ import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.Latitude
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,6 +33,7 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
 
+@Component
 public final class WialonMessageComponentParser {
     private static final String MESSAGE_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
@@ -254,7 +256,7 @@ public final class WialonMessageComponentParser {
     }
 
     private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
-        private static final int GROUP_NUMBER_LONGITUDE = 12;
+        private static final int GROUP_NUMBER_LONGITUDE = 13;
         private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
