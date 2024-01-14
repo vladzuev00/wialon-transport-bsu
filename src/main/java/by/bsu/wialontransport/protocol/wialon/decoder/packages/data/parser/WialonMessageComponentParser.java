@@ -51,7 +51,7 @@ public final class WialonMessageComponentParser {
     private static final Pattern MESSAGE_PATTERN = compile(MESSAGE_REGEX);
 
     private static final int GROUP_NUMBER_DATE = 2;
-    private static final int GROUP_NUMBER_TIME = 3;
+    private static final int GROUP_NUMBER_TIME = 4;
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
@@ -224,7 +224,7 @@ public final class WialonMessageComponentParser {
     }
 
     private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
-        private static final int GROUP_NUMBER_LATITUDE = 4;
+        private static final int GROUP_NUMBER_LATITUDE = 6;
         private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
         private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
         private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
