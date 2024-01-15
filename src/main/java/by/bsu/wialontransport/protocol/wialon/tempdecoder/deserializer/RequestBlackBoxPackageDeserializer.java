@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
@@ -30,7 +30,7 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
         try {
             final List<Data> data = this.parseData(message);
             return new WialonRequestBlackBoxPackage(data);
-        } catch (final NotValidMessageException cause) {
+        } catch (final NotValidSubMessageException cause) {
             throw createAnswerableException(cause);
         }
     }
@@ -43,7 +43,7 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
         return null;
     }
 
-    private static AnsweredException createAnswerableException(final NotValidMessageException cause) {
+    private static AnsweredException createAnswerableException(final NotValidSubMessageException cause) {
         final WialonResponseBlackBoxPackage answer = new WialonResponseBlackBoxPackage(0);
         return new AnsweredException(answer, cause);
     }

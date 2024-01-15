@@ -1,9 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public final class RequestDataPackageDeserializer extends AbstractPackageDeseria
         return null;
     }
 
-    private static AnsweredException createAnswerableException(final NotValidMessageException cause) {
+    private static AnsweredException createAnswerableException(final NotValidSubMessageException cause) {
         final WialonResponseDataPackage answer = new WialonResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
         return new AnsweredException(answer, cause);
     }

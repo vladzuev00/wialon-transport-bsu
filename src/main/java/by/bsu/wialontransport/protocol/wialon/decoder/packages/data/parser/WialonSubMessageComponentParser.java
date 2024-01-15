@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.GeographicCoordinate;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType;
@@ -32,8 +32,8 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toSet;
 
-public final class WialonMessageComponentParser {
-    private static final String MESSAGE_REGEX
+public final class WialonSubMessageComponentParser {
+    private static final String SUB_MESSAGE_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
@@ -48,7 +48,7 @@ public final class WialonMessageComponentParser {
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
-    private static final Pattern MESSAGE_PATTERN = compile(MESSAGE_REGEX);
+    private static final Pattern SUB_MESSAGE_PATTERN = compile(SUB_MESSAGE_REGEX);
 
     private static final int GROUP_NUMBER_DATE = 2;
     private static final int GROUP_NUMBER_TIME = 4;
@@ -82,9 +82,9 @@ public final class WialonMessageComponentParser {
     private final LongitudeParser longitudeParser;
     private final ParameterParser parameterParser;
 
-    public WialonMessageComponentParser(final String message) {
-        matcher = MESSAGE_PATTERN.matcher(message);
-        match(message);
+    public WialonSubMessageComponentParser(final String subMessage) {
+        matcher = SUB_MESSAGE_PATTERN.matcher(subMessage);
+        match(subMessage);
         latitudeParser = new LatitudeParser();
         longitudeParser = new LongitudeParser();
         parameterParser = new ParameterParser();
@@ -146,9 +146,9 @@ public final class WialonMessageComponentParser {
         return parseComponent(GROUP_NUMBER_PARAMETERS, this::parseParameters);
     }
 
-    private void match(final String message) {
+    private void match(final String subMessage) {
         if (!matcher.matches()) {
-            throw new NotValidMessageException(format("Given message isn't valid: '%s'", message));
+            throw new NotValidSubMessageException(format("Given sub message isn't valid: '%s'", subMessage));
         }
     }
 

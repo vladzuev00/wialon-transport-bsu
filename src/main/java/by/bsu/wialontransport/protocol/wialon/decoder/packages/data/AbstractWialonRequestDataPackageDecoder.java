@@ -4,45 +4,37 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-
 public abstract class AbstractWialonRequestDataPackageDecoder<
-        REQUEST_PACKAGE extends AbstractWialonRequestDataPackage,
-        RESPONSE_PACKAGE extends WialonPackage
+        REQUEST extends AbstractWialonRequestDataPackage,
+        RESPONSE extends WialonPackage
         >
-        extends WialonPackageDecoder<REQUEST_PACKAGE> {
-    private final WialonMessageParser wialonMessageParser;
+        extends WialonPackageDecoder<REQUEST> {
+    private final WialonMessageParser messageParser;
 
-    public AbstractWialonRequestDataPackageDecoder(final String packagePrefix, final WialonMessageParser wialonMessageParser) {
+    public AbstractWialonRequestDataPackageDecoder(final String packagePrefix, final WialonMessageParser messageParser) {
         super(packagePrefix);
-        this.wialonMessageParser = wialonMessageParser;
+        this.messageParser = messageParser;
     }
 
     @Override
-    protected final REQUEST_PACKAGE decodeMessage(final String message) {
-        return this.splitIntoSubMessages(message)
-                .map(this::parseSubMessage)
-                .collect(
-                        collectingAndThen(
-                                toList(),
-                                this::createPackage
-                        )
-                );
+    protected final REQUEST decodeMessage(final String message) {
+        final List<WialonData> data = messageParser.parse(message);
+        return createPackage(data);
     }
 
     protected abstract Stream<String> splitIntoSubMessages(final String message);
 
-    protected abstract REQUEST_PACKAGE createPackage(final List<Data> data);
+    protected abstract REQUEST createPackage(final List<WialonData> data);
 
-    protected abstract RESPONSE_PACKAGE createResponseNotValidDataPackage();
+    protected abstract RESPONSE createResponseNotValidDataPackage();
 
     private Data parseSubMessage(final String message) {
 //        try {
@@ -53,8 +45,8 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
         return null;
     }
 
-    private Data throwAnsweredException(final NotValidMessageException cause) {
-        final RESPONSE_PACKAGE exceptionAnswer = this.createResponseNotValidDataPackage();
+    private Data throwAnsweredException(final NotValidSubMessageException cause) {
+        final RESPONSE exceptionAnswer = this.createResponseNotValidDataPackage();
         throw new AnsweredException(exceptionAnswer, cause);
     }
 }

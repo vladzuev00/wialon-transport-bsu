@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
@@ -18,7 +18,7 @@ import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.L
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType.EAST;
 import static org.junit.Assert.*;
 
-public final class WialonMessageComponentParserTest {
+public final class WialonSubMessageComponentParserTest {
     private static final LocalDate EXPECTED_NOT_DEFINED_DATE = LocalDate.MIN;
     private static final LocalTime EXPECTED_NOT_DEFINED_TIME = LocalTime.MIN;
     private static final int EXPECTED_NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
@@ -29,52 +29,52 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void parserShouldBeCreated() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
 
-        new WialonMessageComponentParser(givenMessage);
+        new WialonSubMessageComponentParser(givenSubMessage);
     }
 
     @Test
-    public void parserShouldBeCreatedByMessageWithNotDefinedComponents() {
-        final String givenMessage = "NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;;;";
+    public void parserShouldBeCreatedBySubMessageWithNotDefinedComponents() {
+        final String givenSubMessage = "NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;;;";
 
-        new WialonMessageComponentParser(givenMessage);
+        new WialonSubMessageComponentParser(givenSubMessage);
     }
 
     @Test
-    public void parserShouldBeCreatedByMessageWithNotDefinedComponentsAndWithNAAsAnalogInputs() {
-        final String givenMessage = "NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;;";
+    public void parserShouldBeCreatedBySubMessageWithNotDefinedComponentsAndWithNAAsAnalogInputs() {
+        final String givenSubMessage = "NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;NA;;";
 
-        new WialonMessageComponentParser(givenMessage);
+        new WialonSubMessageComponentParser(givenSubMessage);
     }
 
-    @Test(expected = NotValidMessageException.class)
-    public void parserShouldNotBeCreatedByNotValidMessage() {
-        final String givenMessage = "not valid";
+    @Test(expected = NotValidSubMessageException.class)
+    public void parserShouldNotBeCreatedByNotValidSubMessage() {
+        final String givenSubMessage = "not valid";
 
-        new WialonMessageComponentParser(givenMessage);
+        new WialonSubMessageComponentParser(givenSubMessage);
     }
 
-    @Test(expected = NotValidMessageException.class)
+    @Test(expected = NotValidSubMessageException.class)
     public void parserShouldNotBeCreatedBecauseOfThereIsNoParametersDelimiter() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321param-name-2:2:65.4321,param-name-3:3:param-value";
 
-        new WialonMessageComponentParser(givenMessage);
+        new WialonSubMessageComponentParser(givenSubMessage);
     }
 
     @Test
     public void dateShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final LocalDate actual = givenParser.parseDate();
         final LocalDate expected = LocalDate.of(2022, 11, 15);
@@ -83,11 +83,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedDateShouldBeParsed() {
-        final String givenMessage = "NA;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "NA;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final LocalDate actual = givenParser.parseDate();
         assertSame(EXPECTED_NOT_DEFINED_DATE, actual);
@@ -95,11 +95,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void timeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final LocalTime actual = givenParser.parseTime();
         final LocalTime expected = LocalTime.of(14, 56, 43);
@@ -108,11 +108,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedTimeShouldBeParsed() {
-        final String givenMessage = "151122;NA;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;NA;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final LocalTime actual = givenParser.parseTime();
         assertSame(EXPECTED_NOT_DEFINED_TIME, actual);
@@ -120,11 +120,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void latitudeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Latitude actual = givenParser.parseLatitude();
         final Latitude expected = new Latitude(55, 44, 6025, NORTH);
@@ -133,11 +133,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedLatitudeShouldBeParsed() {
-        final String givenMessage = "151122;145643;NA;NA;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;NA;NA;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Latitude actual = givenParser.parseLatitude();
         final Latitude expected = new Latitude(
@@ -151,11 +151,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void longitudeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Longitude actual = givenParser.parseLongitude();
         final Longitude expected = new Longitude(37, 39, 6834, EAST);
@@ -164,11 +164,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedLongitudeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;NA;NA;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;NA;NA;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Longitude actual = givenParser.parseLongitude();
         final Longitude expected = new Longitude(
@@ -182,11 +182,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void speedShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Double> optionalActual = givenParser.parseSpeed();
         assertTrue(optionalActual.isPresent());
@@ -197,11 +197,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedSpeedShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;NA;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;NA;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Double> optionalActual = givenParser.parseSpeed();
         assertTrue(optionalActual.isEmpty());
@@ -209,11 +209,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void courseShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseCourse();
         assertTrue(optionalActual.isPresent());
@@ -224,11 +224,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedCourseShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;NA;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;NA;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseCourse();
         assertTrue(optionalActual.isEmpty());
@@ -236,11 +236,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void altitudeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseAltitude();
         assertTrue(optionalActual.isPresent());
@@ -251,11 +251,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void altitudeShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;NA;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;NA;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseAltitude();
         assertTrue(optionalActual.isEmpty());
@@ -263,11 +263,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void amountOfSatellitesShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseAmountOfSatellites();
         assertTrue(optionalActual.isPresent());
@@ -278,11 +278,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedAmountOfSatellitesShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;NA;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;NA;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseAmountOfSatellites();
         assertTrue(optionalActual.isEmpty());
@@ -290,11 +290,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void hdopShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Double> optionalActual = givenParser.parseHdop();
         assertTrue(optionalActual.isPresent());
@@ -305,11 +305,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedHdopShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;NA;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;NA;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Double> optionalActual = givenParser.parseHdop();
         assertTrue(optionalActual.isEmpty());
@@ -317,11 +317,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void inputsShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseInputs();
         assertTrue(optionalActual.isPresent());
@@ -332,11 +332,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedInputsShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;NA;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;NA;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseInputs();
         assertTrue(optionalActual.isEmpty());
@@ -344,11 +344,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void outputsShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseOutputs();
         assertTrue(optionalActual.isPresent());
@@ -359,11 +359,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedOutputsShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;NA;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;NA;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Integer> optionalActual = givenParser.parseOutputs();
         assertTrue(optionalActual.isEmpty());
@@ -371,11 +371,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void analogInputsShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<double[]> optionalActual = givenParser.parseAnalogInputs();
         assertTrue(optionalActual.isPresent());
@@ -386,11 +386,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedAnalogInputsShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "NA;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<double[]> optionalActual = givenParser.parseAnalogInputs();
         assertTrue(optionalActual.isEmpty());
@@ -398,11 +398,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void emptyAnalogInputsShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + ";"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<double[]> optionalActual = givenParser.parseAnalogInputs();
         assertTrue(optionalActual.isEmpty());
@@ -410,11 +410,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void driverKeyCodeShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<String> optionalActual = givenParser.parseDriverKeyCode();
         assertTrue(optionalActual.isPresent());
@@ -425,11 +425,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void notDefinedDriverKeyCodeShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "NA;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<String> optionalActual = givenParser.parseDriverKeyCode();
         assertTrue(optionalActual.isEmpty());
@@ -437,11 +437,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void emptyDriverKeyCodeShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + ";"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<String> optionalActual = givenParser.parseDriverKeyCode();
         assertTrue(optionalActual.isEmpty());
@@ -449,11 +449,11 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void parametersShouldBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Set<Parameter>> optionalActual = givenParser.parseParameters();
         assertTrue(optionalActual.isPresent());
@@ -480,10 +480,10 @@ public final class WialonMessageComponentParserTest {
 
     @Test
     public void emptyParametersShouldNotBeParsed() {
-        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+        final String givenSubMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;";
-        final WialonMessageComponentParser givenParser = new WialonMessageComponentParser(givenMessage);
+        final WialonSubMessageComponentParser givenParser = new WialonSubMessageComponentParser(givenSubMessage);
 
         final Optional<Set<Parameter>> optionalActual = givenParser.parseParameters();
         assertTrue(optionalActual.isEmpty());
