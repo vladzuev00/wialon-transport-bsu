@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.model;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
 import lombok.AllArgsConstructor;
@@ -30,5 +29,4 @@ public class WialonData {
     double[] analogInputs;
     String driverKeyCode;
     Set<Parameter> parameters;
-    Tracker tracker;
 }

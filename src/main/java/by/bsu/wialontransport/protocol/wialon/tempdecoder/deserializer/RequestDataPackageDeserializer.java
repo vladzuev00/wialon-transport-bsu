@@ -21,12 +21,13 @@ public final class RequestDataPackageDeserializer extends AbstractPackageDeseria
 
     @Override
     protected WialonRequestDataPackage deserializeByMessage(final String message) {
-        try {
-            final Data data = this.wialonMessageParser.parse(message);
-            return new WialonRequestDataPackage(data);
-        } catch (final NotValidMessageException cause) {
-            throw createAnswerableException(cause);
-        }
+//        try {
+//            final Data data = this.wialonMessageParser.parse(message);
+//            return new WialonRequestDataPackage(data);
+//        } catch (final NotValidMessageException cause) {
+//            throw createAnswerableException(cause);
+//        }
+        return null;
     }
 
     private static AnsweredException createAnswerableException(final NotValidMessageException cause) {

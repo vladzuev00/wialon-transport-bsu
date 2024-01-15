@@ -36,10 +36,11 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
     }
 
     private List<Data> parseData(final String message) {
-        final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
-        return stream(dataStrings)
-                .map(this.wialonMessageParser::parse)
-                .toList();
+//        final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
+//        return stream(dataStrings)
+//                .map(this.wialonMessageParser::parse)
+//                .toList();
+        return null;
     }
 
     private static AnsweredException createAnswerableException(final NotValidMessageException cause) {

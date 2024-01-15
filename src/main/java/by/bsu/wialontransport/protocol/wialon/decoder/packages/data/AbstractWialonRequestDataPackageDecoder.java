@@ -45,11 +45,12 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
     protected abstract RESPONSE_PACKAGE createResponseNotValidDataPackage();
 
     private Data parseSubMessage(final String message) {
-        try {
-            return this.wialonMessageParser.parse(message);
-        } catch (final NotValidMessageException cause) {
-            return this.throwAnsweredException(cause);
-        }
+//        try {
+//            return this.wialonMessageParser.parse(message);
+//        } catch (final NotValidMessageException cause) {
+//            return this.throwAnsweredException(cause);
+//        }
+        return null;
     }
 
     private Data throwAnsweredException(final NotValidMessageException cause) {
