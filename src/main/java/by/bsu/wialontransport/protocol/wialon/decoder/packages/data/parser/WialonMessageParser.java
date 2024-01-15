@@ -13,16 +13,16 @@ import static java.util.Arrays.stream;
 
 @Component
 public final class WialonMessageParser {
-    private static final String MESSAGE_DELIMITER_REGEX = "\\|";
+    private static final String SUB_MESSAGE_DELIMITER_REGEX = "\\|";
 
-    public List<WialonData> parse(final String messages) {
-        return stream(messages.split(MESSAGE_DELIMITER_REGEX))
-                .map(WialonMessageParser::parseMessage)
+    public List<WialonData> parse(final String message) {
+        return stream(message.split(SUB_MESSAGE_DELIMITER_REGEX))
+                .map(WialonMessageParser::parseSubMessage)
                 .toList();
     }
 
-    private static WialonData parseMessage(final String message) {
-        final WialonSubMessageComponentParser parser = new WialonSubMessageComponentParser(message);
+    private static WialonData parseSubMessage(final String subMessage) {
+        final WialonSubMessageComponentParser parser = new WialonSubMessageComponentParser(subMessage);
         final WialonDataBuilder builder = WialonData.builder();
         parseDate(builder, parser);
         parseTime(builder, parser);

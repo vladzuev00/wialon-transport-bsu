@@ -3,6 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 
@@ -25,11 +26,16 @@ public final class WialonRequestDataPackageDecoder
     }
 
     @Override
-    protected WialonRequestDataPackage createPackage(final List<Data> data) {
-        checkContainingOneData(data);
-        final Data firstData = data.get(0);
-        return new WialonRequestDataPackage(firstData);
+    protected WialonRequestDataPackage createPackage(List<WialonData> data) {
+        return null;
     }
+
+//    @Override
+//    protected WialonRequestDataPackage createPackage(final List<Data> data) {
+//        checkContainingOneData(data);
+//        final Data firstData = data.get(0);
+//        return new WialonRequestDataPackage(firstData);
+//    }
 
     @Override
     protected WialonResponseDataPackage createResponseNotValidDataPackage() {

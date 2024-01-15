@@ -2,6 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 
@@ -26,8 +27,8 @@ public final class WialonRequestBlackBoxPackageDecoder
     }
 
     @Override
-    protected WialonRequestBlackBoxPackage createPackage(final List<Data> data) {
-        return new WialonRequestBlackBoxPackage(data);
+    protected WialonRequestBlackBoxPackage createPackage(List<WialonData> data) {
+        return null;
     }
 
     @Override

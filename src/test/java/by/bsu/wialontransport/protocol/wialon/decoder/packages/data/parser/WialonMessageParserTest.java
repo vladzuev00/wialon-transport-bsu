@@ -21,8 +21,8 @@ public final class WialonMessageParserTest {
     private final WialonMessageParser parser = new WialonMessageParser();
 
     @Test
-    public void messagesShouldBeParsed() {
-        final String givenMessages = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
+    public void messageWithAllDefinedComponentsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"
                 + "5.5,4343.454544334,454.433,1;"
                 + "keydrivercode;"
                 + "param-name-1:1:654321,param-name-2:2:65.4321,param-name-3:3:param-value"
@@ -32,7 +32,7 @@ public final class WialonMessageParserTest {
                 + "second-code;"
                 + "param-name-4:1:654322,param-name-5:2:66.4321,param-name-6:3:param-value-2";
 
-        final List<WialonData> actual = parser.parse(givenMessages);
+        final List<WialonData> actual = parser.parse(givenMessage);
         final List<WialonData> expected = List.of(
                 WialonData.builder()
                         .date(LocalDate.of(2022, 11, 15))
@@ -77,6 +77,34 @@ public final class WialonMessageParserTest {
                                         createParameter("param-name-6", STRING, "param-value-2")
                                 )
                         )
+                        .build()
+        );
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void messageWithNotDefinedNotRequiredComponentsShouldBeParsed() {
+        final String givenMessage = "151122;145643;5544.6025;N;03739.6834;E;NA;NA;NA;NA;NA;NA;NA;"
+                + "NA;"
+                + "NA;"
+                + "|"
+                + "151123;145644;5545.6025;N;03739.6934;E;NA;NA;NA;NA;NA;NA;NA;"
+                + "NA;"
+                + "NA;";
+
+        final List<WialonData> actual = parser.parse(givenMessage);
+        final List<WialonData> expected = List.of(
+                WialonData.builder()
+                        .date(LocalDate.of(2022, 11, 15))
+                        .time(LocalTime.of(14, 56, 43))
+                        .latitude(new Latitude(55, 44, 6025, NORTH))
+                        .longitude(new Longitude(37, 39, 6834, EAST))
+                        .build(),
+                WialonData.builder()
+                        .date(LocalDate.of(2023, 11, 15))
+                        .time(LocalTime.of(14, 56, 44))
+                        .latitude(new Latitude(55, 45, 6025, NORTH))
+                        .longitude(new Longitude(37, 39, 6934, EAST))
                         .build()
         );
         assertEquals(expected, actual);
