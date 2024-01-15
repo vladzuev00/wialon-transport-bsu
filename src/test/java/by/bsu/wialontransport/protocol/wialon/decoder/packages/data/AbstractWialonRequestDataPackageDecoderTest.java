@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
@@ -27,7 +27,7 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
     };
 
     @Mock
-    private DataParser mockedDataParser;
+    private WialonMessageParser mockedWialonMessageParser;
 
     private AbstractWialonRequestDataPackageDecoder<TestWialonRequestDataPackage, WialonPackage> decoder;
 
@@ -35,7 +35,7 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
     public void initializeDecoder() {
         this.decoder = new TestWialonRequestDataPackageDecoder(
                 GIVEN_PACKAGE_PREFIX,
-                this.mockedDataParser,
+                this.mockedWialonMessageParser,
                 GIVEN_RESPONSE_NOT_VALID_DATA_PACKAGE
         );
     }
@@ -45,13 +45,13 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
         final String givenMessage = "first|second|third";
 
         final Data firstGivenData = createData(1L);
-        when(this.mockedDataParser.parse(eq("first"))).thenReturn(firstGivenData);
+        when(this.mockedWialonMessageParser.parse(eq("first"))).thenReturn(firstGivenData);
 
         final Data secondGivenData = createData(2L);
-        when(this.mockedDataParser.parse(eq("second"))).thenReturn(secondGivenData);
+        when(this.mockedWialonMessageParser.parse(eq("second"))).thenReturn(secondGivenData);
 
         final Data thirdGivenData = createData(3L);
-        when(this.mockedDataParser.parse(eq("third"))).thenReturn(thirdGivenData);
+        when(this.mockedWialonMessageParser.parse(eq("third"))).thenReturn(thirdGivenData);
 
         final TestWialonRequestDataPackage actual = this.decoder.decodeMessage(givenMessage);
         final TestWialonRequestDataPackage expected = new TestWialonRequestDataPackage(
@@ -69,12 +69,12 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
         final String givenMessage = "first|second|third";
 
         final Data firstGivenData = createData(1L);
-        when(this.mockedDataParser.parse(eq("first"))).thenReturn(firstGivenData);
+        when(this.mockedWialonMessageParser.parse(eq("first"))).thenReturn(firstGivenData);
 
         final Data secondGivenData = createData(2L);
-        when(this.mockedDataParser.parse(eq("second"))).thenReturn(secondGivenData);
+        when(this.mockedWialonMessageParser.parse(eq("second"))).thenReturn(secondGivenData);
 
-        when(this.mockedDataParser.parse(eq("third"))).thenThrow(NotValidMessageException.class);
+        when(this.mockedWialonMessageParser.parse(eq("third"))).thenThrow(NotValidMessageException.class);
 
         boolean exceptionArisen;
         try {
@@ -108,9 +108,9 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
         private final WialonPackage responseNotValidDataPackage;
 
         public TestWialonRequestDataPackageDecoder(final String packagePrefix,
-                                                   final DataParser dataParser,
+                                                   final WialonMessageParser wialonMessageParser,
                                                    final WialonPackage responseNotValidDataPackage) {
-            super(packagePrefix, dataParser);
+            super(packagePrefix, wialonMessageParser);
             this.responseNotValidDataPackage = responseNotValidDataPackage;
         }
 

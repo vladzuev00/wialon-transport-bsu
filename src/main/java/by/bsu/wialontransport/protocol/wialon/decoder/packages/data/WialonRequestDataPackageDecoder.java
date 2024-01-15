@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 
@@ -15,8 +15,8 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response
 public final class WialonRequestDataPackageDecoder
         extends AbstractWialonRequestDataPackageDecoder<WialonRequestDataPackage, WialonResponseDataPackage> {
 
-    public WialonRequestDataPackageDecoder(final DataParser dataParser) {
-        super(PREFIX, dataParser);
+    public WialonRequestDataPackageDecoder(final WialonMessageParser wialonMessageParser) {
+        super(PREFIX, wialonMessageParser);
     }
 
     @Override

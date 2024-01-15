@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
@@ -18,11 +18,11 @@ import static java.util.Arrays.stream;
 public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDeserializer {
     private static final String REGEX_DATA_DELIMITER = "\\|";
 
-    private final DataParser dataParser;
+    private final WialonMessageParser wialonMessageParser;
 
-    public RequestBlackBoxPackageDeserializer(final DataParser dataParser) {
+    public RequestBlackBoxPackageDeserializer(final WialonMessageParser wialonMessageParser) {
         super(WialonRequestBlackBoxPackage.PREFIX);
-        this.dataParser = dataParser;
+        this.wialonMessageParser = wialonMessageParser;
     }
 
     @Override
@@ -38,7 +38,7 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
     private List<Data> parseData(final String message) {
         final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
         return stream(dataStrings)
-                .map(this.dataParser::parse)
+                .map(this.wialonMessageParser::parse)
                 .toList();
     }
 

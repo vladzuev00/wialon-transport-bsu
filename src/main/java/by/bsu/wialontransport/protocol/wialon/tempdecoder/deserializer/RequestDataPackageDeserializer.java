@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
@@ -12,17 +12,17 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response
 
 @Component
 public final class RequestDataPackageDeserializer extends AbstractPackageDeserializer {
-    private final DataParser dataParser;
+    private final WialonMessageParser wialonMessageParser;
 
-    public RequestDataPackageDeserializer(final DataParser dataParser) {
+    public RequestDataPackageDeserializer(final WialonMessageParser wialonMessageParser) {
         super(WialonRequestDataPackage.PREFIX);
-        this.dataParser = dataParser;
+        this.wialonMessageParser = wialonMessageParser;
     }
 
     @Override
     protected WialonRequestDataPackage deserializeByMessage(final String message) {
         try {
-            final Data data = this.dataParser.parse(message);
+            final Data data = this.wialonMessageParser.parse(message);
             return new WialonRequestDataPackage(data);
         } catch (final NotValidMessageException cause) {
             throw createAnswerableException(cause);

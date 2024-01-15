@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 
@@ -15,8 +15,8 @@ public final class WialonRequestBlackBoxPackageDecoder
         extends AbstractWialonRequestDataPackageDecoder<WialonRequestBlackBoxPackage, WialonResponseBlackBoxPackage> {
     private static final String REGEX_SUB_MESSAGES_DELIMITER = "\\|";
 
-    public WialonRequestBlackBoxPackageDecoder(final DataParser dataParser) {
-        super(PREFIX, dataParser);
+    public WialonRequestBlackBoxPackageDecoder(final WialonMessageParser wialonMessageParser) {
+        super(PREFIX, wialonMessageParser);
     }
 
     @Override

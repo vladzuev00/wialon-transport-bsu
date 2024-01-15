@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.DataParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
@@ -19,11 +19,11 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
         RESPONSE_PACKAGE extends WialonPackage
         >
         extends WialonPackageDecoder<REQUEST_PACKAGE> {
-    private final DataParser dataParser;
+    private final WialonMessageParser wialonMessageParser;
 
-    public AbstractWialonRequestDataPackageDecoder(final String packagePrefix, final DataParser dataParser) {
+    public AbstractWialonRequestDataPackageDecoder(final String packagePrefix, final WialonMessageParser wialonMessageParser) {
         super(packagePrefix);
-        this.dataParser = dataParser;
+        this.wialonMessageParser = wialonMessageParser;
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
 
     private Data parseSubMessage(final String message) {
         try {
-            return this.dataParser.parse(message);
+            return this.wialonMessageParser.parse(message);
         } catch (final NotValidMessageException cause) {
             return this.throwAnsweredException(cause);
         }
