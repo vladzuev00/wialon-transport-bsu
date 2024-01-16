@@ -9,8 +9,10 @@ import java.util.List;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage.PREFIX;
 
-public final class WialonRequestBlackBoxPackageDecoder
-        extends AbstractWialonRequestDataPackageDecoder<WialonRequestBlackBoxPackage, WialonResponseBlackBoxPackage> {
+public final class WialonRequestBlackBoxPackageDecoder extends AbstractWialonRequestDataPackageDecoder<
+        WialonRequestBlackBoxPackage,
+        WialonResponseBlackBoxPackage
+        > {
 
     public WialonRequestBlackBoxPackageDecoder(final WialonMessageParser messageParser) {
         super(PREFIX, messageParser);

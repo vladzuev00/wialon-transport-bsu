@@ -1,49 +1,40 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage.PREFIX;
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
 
-public final class WialonRequestDataPackageDecoder
-        extends AbstractWialonRequestDataPackageDecoder<WialonRequestDataPackage, WialonResponseDataPackage> {
+public final class WialonRequestDataPackageDecoder extends AbstractWialonRequestDataPackageDecoder<
+        WialonRequestDataPackage,
+        WialonResponseDataPackage
+        > {
 
-    public WialonRequestDataPackageDecoder(final WialonMessageParser wialonMessageParser) {
-        super(PREFIX, wialonMessageParser);
+    public WialonRequestDataPackageDecoder(final WialonMessageParser messageParser) {
+        super(PREFIX, messageParser);
     }
 
     @Override
-    protected WialonRequestDataPackage createPackage(List<WialonData> data) {
-        return null;
+    protected WialonRequestDataPackage createPackage(final List<WialonData> data) {
+        checkContainingOneData(data);
+        final WialonData firstData = data.get(0);
+        return new WialonRequestDataPackage(firstData);
     }
-
-//    @Override
-//    protected WialonRequestDataPackage createPackage(final List<Data> data) {
-//        checkContainingOneData(data);
-//        final Data firstData = data.get(0);
-//        return new WialonRequestDataPackage(firstData);
-//    }
 
     @Override
     protected WialonResponseDataPackage createNotValidSubMessageResponse() {
         return new WialonResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
     }
 
-    private static void checkContainingOneData(final List<Data> data) {
-        if (!isOneData(data)) {
+    private static void checkContainingOneData(final List<WialonData> data) {
+        if (data.size() != 1) {
             throw new IllegalArgumentException("Data package should contain only one message");
         }
-    }
-
-    private static boolean isOneData(final List<Data> data) {
-        return data.size() == 1;
     }
 }
