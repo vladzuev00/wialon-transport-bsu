@@ -1,133 +1,109 @@
-//package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
-//
-//import by.bsu.wialontransport.crud.dto.Data;
-//import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
-//import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
-//import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidMessageException;
-//import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-//import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.Mock;
-//import org.mockito.junit.MockitoJUnitRunner;
-//
-//import java.util.List;
-//import java.util.stream.Stream;
-//
-//import static java.util.Arrays.stream;
-//import static org.junit.Assert.*;
-//import static org.mockito.ArgumentMatchers.eq;
-//import static org.mockito.Mockito.when;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public final class AbstractWialonRequestDataPackageDecoderTest {
-//    private static final String GIVEN_PACKAGE_PREFIX = "#TEST#";
-//    private static final WialonPackage GIVEN_RESPONSE_NOT_VALID_DATA_PACKAGE = new WialonPackage() {
-//    };
-//
-//    @Mock
-//    private WialonMessageParser mockedWialonMessageParser;
-//
-//    private AbstractWialonRequestDataPackageDecoder<TestWialonRequestDataPackage, WialonPackage> decoder;
-//
-//    @Before
-//    public void initializeDecoder() {
-//        this.decoder = new TestWialonRequestDataPackageDecoder(
-//                GIVEN_PACKAGE_PREFIX,
-//                this.mockedWialonMessageParser,
-//                GIVEN_RESPONSE_NOT_VALID_DATA_PACKAGE
-//        );
-//    }
-//
-//    @Test
-//    public void messageShouldBeDecoded() {
-//        final String givenMessage = "first|second|third";
-//
-//        final Data firstGivenData = createData(1L);
-//        when(this.mockedWialonMessageParser.parse(eq("first"))).thenReturn(firstGivenData);
-//
-//        final Data secondGivenData = createData(2L);
-//        when(this.mockedWialonMessageParser.parse(eq("second"))).thenReturn(secondGivenData);
-//
-//        final Data thirdGivenData = createData(3L);
-//        when(this.mockedWialonMessageParser.parse(eq("third"))).thenReturn(thirdGivenData);
-//
-//        final TestWialonRequestDataPackage actual = this.decoder.decodeMessage(givenMessage);
-//        final TestWialonRequestDataPackage expected = new TestWialonRequestDataPackage(
-//                List.of(
-//                        firstGivenData,
-//                        secondGivenData,
-//                        thirdGivenData
-//                )
-//        );
-//        assertEquals(expected, actual);
-//    }
-//
-//    @Test
-//    public void messageShouldNotBeDecodedBecauseOfNotValidDataException() {
-//        final String givenMessage = "first|second|third";
-//
-//        final Data firstGivenData = createData(1L);
-//        when(this.mockedWialonMessageParser.parse(eq("first"))).thenReturn(firstGivenData);
-//
-//        final Data secondGivenData = createData(2L);
-//        when(this.mockedWialonMessageParser.parse(eq("second"))).thenReturn(secondGivenData);
-//
-//        when(this.mockedWialonMessageParser.parse(eq("third"))).thenThrow(NotValidMessageException.class);
-//
-//        boolean exceptionArisen;
-//        try {
-//            this.decoder.decodeMessage(givenMessage);
-//            exceptionArisen = false;
-//        } catch (final AnsweredException exception) {
-//            assertSame(GIVEN_RESPONSE_NOT_VALID_DATA_PACKAGE, exception.getAnswer());
-//            assertNotNull(exception.getCause());
-//            exceptionArisen = true;
-//        }
-//        assertTrue(exceptionArisen);
-//    }
-//
-//    private static Data createData(final Long id) {
-//        return Data.builder()
-//                .id(id)
-//                .build();
-//    }
-//
-//    private static class TestWialonRequestDataPackage extends AbstractWialonRequestDataPackage {
-//
-//        public TestWialonRequestDataPackage(final List<Data> data) {
-//            super(data);
-//        }
-//    }
-//
-//    private static final class TestWialonRequestDataPackageDecoder
-//            extends AbstractWialonRequestDataPackageDecoder<TestWialonRequestDataPackage, WialonPackage> {
-//        private static final String REGEX_SUB_MESSAGES_DELIMITER = "\\|";
-//
-//        private final WialonPackage responseNotValidDataPackage;
-//
-//        public TestWialonRequestDataPackageDecoder(final String packagePrefix,
-//                                                   final WialonMessageParser wialonMessageParser,
-//                                                   final WialonPackage responseNotValidDataPackage) {
-//            super(packagePrefix, wialonMessageParser);
-//            this.responseNotValidDataPackage = responseNotValidDataPackage;
-//        }
-//
-//        @Override
-//        protected Stream<String> splitIntoSubMessages(final String message) {
-//            final String[] subMessages = message.split(REGEX_SUB_MESSAGES_DELIMITER);
-//            return stream(subMessages);
-//        }
-//
-//        @Override
-//        protected TestWialonRequestDataPackage createPackage(final List<Data> data) {
-//            return new TestWialonRequestDataPackage(data);
-//        }
-//
-//        @Override
-//        protected WialonPackage createResponseNotValidDataPackage() {
-//            return this.responseNotValidDataPackage;
-//        }
-//    }
-//}
+package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
+
+import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class AbstractWialonRequestDataPackageDecoderTest {
+    private static final String GIVEN_PACKAGE_PREFIX = "#TEST#";
+    private static final WialonPackage GIVEN_NOT_VALID_SUB_MESSAGE_RESPONSE = new WialonPackage() {
+    };
+
+    @Mock
+    private WialonMessageParser mockedMessageParser;
+
+    private TestWialonRequestDataPackageDecoder decoder;
+
+    @Before
+    public void initializeDecoder() {
+        decoder = new TestWialonRequestDataPackageDecoder(
+                GIVEN_PACKAGE_PREFIX,
+                mockedMessageParser,
+                GIVEN_NOT_VALID_SUB_MESSAGE_RESPONSE
+        );
+    }
+
+    @Test
+    public void messageShouldBeDecoded() {
+        final String givenMessage = "first|second|third";
+
+        final List<WialonData> givenData = List.of(
+                createData(LocalDate.of(2024, 1, 16)),
+                createData(LocalDate.of(2024, 1, 17)),
+                createData(LocalDate.of(2024, 1, 18))
+        );
+        when(mockedMessageParser.parse(same(givenMessage))).thenReturn(givenData);
+
+        final TestWialonRequestDataPackage actual = decoder.decodeMessage(givenMessage);
+        final TestWialonRequestDataPackage expected = new TestWialonRequestDataPackage(givenData);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void messageShouldNotBeDecodedBecauseOfNotValidSubMessage() {
+        final String givenMessage = "first|second|third";
+        when(mockedMessageParser.parse(same(givenMessage))).thenThrow(NotValidSubMessageException.class);
+
+        boolean exceptionArisen;
+        try {
+            decoder.decodeMessage(givenMessage);
+            exceptionArisen = false;
+        } catch (final AnsweredException exception) {
+            assertSame(GIVEN_NOT_VALID_SUB_MESSAGE_RESPONSE, exception.getAnswer());
+            assertNotNull(exception.getCause());
+            exceptionArisen = true;
+        }
+        assertTrue(exceptionArisen);
+    }
+
+    private static WialonData createData(final LocalDate date) {
+        return WialonData.builder()
+                .date(date)
+                .build();
+    }
+
+    private static class TestWialonRequestDataPackage extends AbstractWialonRequestDataPackage {
+
+        public TestWialonRequestDataPackage(final List<WialonData> data) {
+            super(data);
+        }
+    }
+
+    private static final class TestWialonRequestDataPackageDecoder
+            extends AbstractWialonRequestDataPackageDecoder<TestWialonRequestDataPackage, WialonPackage> {
+        private final WialonPackage notValidSubMessageResponse;
+
+        public TestWialonRequestDataPackageDecoder(final String packagePrefix,
+                                                   final WialonMessageParser messageParser,
+                                                   final WialonPackage notValidSubMessageResponse) {
+            super(packagePrefix, messageParser);
+            this.notValidSubMessageResponse = notValidSubMessageResponse;
+        }
+
+        @Override
+        protected TestWialonRequestDataPackage createPackage(final List<WialonData> data) {
+            return new TestWialonRequestDataPackage(data);
+        }
+
+        @Override
+        protected WialonPackage createNotValidSubMessageResponse() {
+            return notValidSubMessageResponse;
+        }
+    }
+}

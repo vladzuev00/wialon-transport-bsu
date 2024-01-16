@@ -4,6 +4,7 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
@@ -28,14 +29,14 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
     @Override
     protected WialonPackage deserializeByMessage(final String message) {
         try {
-            final List<Data> data = this.parseData(message);
+            final List<WialonData> data = this.parseData(message);
             return new WialonRequestBlackBoxPackage(data);
         } catch (final NotValidSubMessageException cause) {
             throw createAnswerableException(cause);
         }
     }
 
-    private List<Data> parseData(final String message) {
+    private List<WialonData> parseData(final String message) {
 //        final String[] dataStrings = message.split(REGEX_DATA_DELIMITER);
 //        return stream(dataStrings)
 //                .map(this.wialonMessageParser::parse)

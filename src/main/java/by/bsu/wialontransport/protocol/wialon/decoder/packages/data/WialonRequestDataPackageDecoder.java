@@ -21,11 +21,6 @@ public final class WialonRequestDataPackageDecoder
     }
 
     @Override
-    protected Stream<String> splitIntoSubMessages(final String message) {
-        return Stream.of(message);
-    }
-
-    @Override
     protected WialonRequestDataPackage createPackage(List<WialonData> data) {
         return null;
     }
@@ -38,7 +33,7 @@ public final class WialonRequestDataPackageDecoder
 //    }
 
     @Override
-    protected WialonResponseDataPackage createResponseNotValidDataPackage() {
+    protected WialonResponseDataPackage createNotValidSubMessageResponse() {
         return new WialonResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
     }
 

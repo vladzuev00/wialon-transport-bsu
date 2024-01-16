@@ -21,18 +21,12 @@ public final class WialonRequestBlackBoxPackageDecoder
     }
 
     @Override
-    protected Stream<String> splitIntoSubMessages(final String message) {
-        final String[] subMessages = message.split(REGEX_SUB_MESSAGES_DELIMITER);
-        return stream(subMessages);
-    }
-
-    @Override
     protected WialonRequestBlackBoxPackage createPackage(List<WialonData> data) {
         return null;
     }
 
     @Override
-    protected WialonResponseBlackBoxPackage createResponseNotValidDataPackage() {
+    protected WialonResponseBlackBoxPackage createNotValidSubMessageResponse() {
         return new WialonResponseBlackBoxPackage(0);
     }
 }

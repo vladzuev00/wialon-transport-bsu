@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,5 +14,5 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public abstract class AbstractWialonRequestDataPackage implements WialonPackage {
-    private final List<Data> data;
+    private final List<WialonData> data;
 }
