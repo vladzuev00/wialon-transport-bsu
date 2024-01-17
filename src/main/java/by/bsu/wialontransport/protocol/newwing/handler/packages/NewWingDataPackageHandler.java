@@ -8,8 +8,10 @@ import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -122,6 +124,12 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     @Override
     protected Stream<Parameter> getParameters(final NewWingData data) {
         return Stream.empty();
+    }
+
+    //TODO: test
+    @Override
+    protected Package createResponse(final NewWingDataPackage request) {
+        return new NewWingSuccessResponsePackage();
     }
 
     private static double getFirstAnalogInput(final NewWingData data) {
