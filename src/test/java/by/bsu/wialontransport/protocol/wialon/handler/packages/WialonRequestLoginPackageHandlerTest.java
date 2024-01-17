@@ -7,8 +7,8 @@ import org.junit.Test;
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status.*;
 import static org.junit.Assert.assertEquals;
 
-public final class WialonLoginPackageHandlerTest {
-    private final WialonLoginPackageHandler handler = new WialonLoginPackageHandler(
+public final class WialonRequestLoginPackageHandlerTest {
+    private final WialonRequestLoginPackageHandler handler = new WialonRequestLoginPackageHandler(
             null,
             null,
             null,

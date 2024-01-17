@@ -11,13 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status.*;
 
-public final class WialonLoginPackageHandler extends ProtectedLoginPackageHandler {
+public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler {
 
-    public WialonLoginPackageHandler(final ContextAttributeManager contextAttributeManager,
-                                     final TrackerService trackerService,
-                                     final ConnectionManager connectionManager,
-                                     final DataService dataService,
-                                     final BCryptPasswordEncoder passwordEncoder) {
+    public WialonRequestLoginPackageHandler(final ContextAttributeManager contextAttributeManager,
+                                            final TrackerService trackerService,
+                                            final ConnectionManager connectionManager,
+                                            final DataService dataService,
+                                            final BCryptPasswordEncoder passwordEncoder) {
         super(contextAttributeManager, trackerService, connectionManager, dataService, passwordEncoder);
     }
 
