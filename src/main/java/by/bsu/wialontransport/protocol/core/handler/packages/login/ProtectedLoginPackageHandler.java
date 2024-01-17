@@ -33,7 +33,7 @@ public abstract class ProtectedLoginPackageHandler extends LoginPackageHandler<P
 
     protected abstract Package createWrongPasswordResponse();
 
-    private boolean isPasswordCorrect(final Tracker tracker, final ProtectedLoginPackage loginPackage) {
-        return passwordEncoder.matches(loginPackage.getPassword(), tracker.getPassword());
+    private boolean isPasswordCorrect(final Tracker tracker, final ProtectedLoginPackage request) {
+        return passwordEncoder.matches(request.getPassword(), tracker.getPassword());
     }
 }

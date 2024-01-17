@@ -6,9 +6,9 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
+import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -42,10 +42,10 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     }
 
     @Override
-    protected final void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context) {
+    protected final Package handleInternal(final PACKAGE request, final ChannelHandlerContext context) {
         final Tracker tracker = extractTracker(context);
         final LocalDateTime lastReceivingDateTime = findLastReceivingDateTime(context);
-        getSources(requestPackage)
+        getSources(request)
                 .map(source -> createReceivedData(source, tracker))
                 .filter(receivedDataValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
@@ -53,6 +53,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
                 .map(this::mapToSentData)
                 .reduce((first, second) -> second)
                 .ifPresent(lastData -> contextAttributeManager.putLastData(context, lastData));
+        return createResponse(request);
     }
 
     protected abstract Stream<SOURCE> getSources(final PACKAGE requestPackage);
@@ -80,6 +81,8 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     protected abstract Optional<String> findDriverKeyCode(final SOURCE source);
 
     protected abstract Stream<Parameter> getParameters(final SOURCE source);
+
+    protected abstract Package createResponse(final PACKAGE request);
 
     private Tracker extractTracker(final ChannelHandlerContext context) {
         return contextAttributeManager.findTracker(context)
