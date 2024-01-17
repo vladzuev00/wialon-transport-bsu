@@ -26,9 +26,9 @@ public abstract class ProtectedLoginPackageHandler extends LoginPackageHandler<P
     }
 
     @Override
-    protected final Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
-                                                                         final ProtectedLoginPackage loginPackage) {
-        return isPasswordCorrect(tracker, loginPackage) ? empty() : Optional.of(createWrongPasswordResponse());
+    protected final Optional<Package> loginCreatingResponseIfFailed(final Tracker tracker,
+                                                                    final ProtectedLoginPackage request) {
+        return isPasswordCorrect(tracker, request) ? empty() : Optional.of(createWrongPasswordResponse());
     }
 
     protected abstract Package createWrongPasswordResponse();

@@ -22,8 +22,8 @@ public abstract class UnprotectedLoginPackageHandler extends LoginPackageHandler
     }
 
     @Override
-    protected final Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
-                                                                         final LoginPackage loginPackage) {
+    protected final Optional<Package> loginCreatingResponseIfFailed(final Tracker tracker,
+                                                                    final LoginPackage request) {
         return empty();
     }
 }

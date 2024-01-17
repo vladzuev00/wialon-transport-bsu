@@ -12,10 +12,11 @@ public abstract class PackageHandler<PACKAGE extends Package> {
         return handledPackageType.isInstance(requestPackage);
     }
 
-    public final void handle(final Package requestPackage, final ChannelHandlerContext context) {
-        final PACKAGE castedPackage = handledPackageType.cast(requestPackage);
-        handleConcretePackage(castedPackage, context);
+    public final void handle(final Package request, final ChannelHandlerContext context) {
+        final PACKAGE castedRequest = handledPackageType.cast(request);
+        final Package response = handleInternal(castedRequest, context);
+        context.writeAndFlush(response);
     }
 
-    protected abstract void handleConcretePackage(final PACKAGE requestPackage, final ChannelHandlerContext context);
+    protected abstract Package handleInternal(final PACKAGE request, final ChannelHandlerContext context);
 }

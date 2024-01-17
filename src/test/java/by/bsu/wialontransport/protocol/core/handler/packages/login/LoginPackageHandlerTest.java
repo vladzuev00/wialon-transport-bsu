@@ -235,8 +235,8 @@ public final class LoginPackageHandlerTest {
         }
 
         @Override
-        protected Optional<Package> checkLoginCreatingResponseIfFailed(final Tracker tracker,
-                                                                       final TestLoginPackage loginPackage) {
+        protected Optional<Package> loginCreatingResponseIfFailed(final Tracker tracker,
+                                                                  final TestLoginPackage request) {
             return ofNullable(loginFailedResponse);
         }
 

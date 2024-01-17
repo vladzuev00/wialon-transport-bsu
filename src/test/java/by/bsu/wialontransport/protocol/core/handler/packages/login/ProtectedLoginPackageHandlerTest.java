@@ -46,7 +46,7 @@ public final class ProtectedLoginPackageHandlerTest {
         when(mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
                 .thenReturn(true);
 
-        final Optional<Package> optionalActual = loginPackageHandler.checkLoginCreatingResponseIfFailed(
+        final Optional<Package> optionalActual = loginPackageHandler.loginCreatingResponseIfFailed(
                 givenTracker,
                 givenLoginPackage
         );
@@ -64,7 +64,7 @@ public final class ProtectedLoginPackageHandlerTest {
         when(mockedPasswordEncoder.matches(same(givenPackagePassword), same(givenTrackerPassword)))
                 .thenReturn(false);
 
-        final Optional<Package> optionalActual = loginPackageHandler.checkLoginCreatingResponseIfFailed(
+        final Optional<Package> optionalActual = loginPackageHandler.loginCreatingResponseIfFailed(
                 givenTracker,
                 givenLoginPackage
         );
