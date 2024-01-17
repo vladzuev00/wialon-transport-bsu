@@ -8,48 +8,48 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public final class PackageHandlerTest {
+    private static final Package GIVEN_RESPONSE = new Package() {
+    };
+
+    private final TestPackageHandler handler = new TestPackageHandler();
 
     @Test
     public void handlerShouldBeAbleToHandle() {
-        final TestPackageHandler givenHandler = new TestPackageHandler();
-        final Package givenPackage = new TestPackage();
+        final Package givenRequest = new TestPackage();
 
-        final boolean actual = givenHandler.isAbleToHandle(givenPackage);
+        final boolean actual = handler.isAbleToHandle(givenRequest);
         assertTrue(actual);
     }
 
     @Test
     public void handlerShouldNotBeAbleToHandle() {
-        final TestPackageHandler givenHandler = new TestPackageHandler();
-        final Package givenPackage = new Package() {
+        final Package givenRequest = new Package() {
         };
 
-        final boolean actual = givenHandler.isAbleToHandle(givenPackage);
+        final boolean actual = handler.isAbleToHandle(givenRequest);
         assertFalse(actual);
     }
 
     @Test
-    public void packageShouldBeHandled() {
-        final TestPackageHandler givenHandler = new TestPackageHandler();
-        final Package givenPackage = new TestPackage();
+    public void requestShouldBeHandled() {
+        final Package givenRequest = new TestPackage();
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        givenHandler.handle(givenPackage, givenContext);
+        handler.handle(givenRequest, givenContext);
 
-        assertTrue(givenHandler.isPackageHandled());
+        verify(givenContext, times(1)).writeAndFlush(same(GIVEN_RESPONSE));
     }
 
     @Test(expected = ClassCastException.class)
-    public void packageShouldNotBeHandled() {
-        final TestPackageHandler givenHandler = new TestPackageHandler();
-        final Package givenPackage = new Package() {
+    public void requestShouldNotBeHandledBecauseOfNotSuitableType() {
+        final Package givenRequest = new Package() {
         };
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        givenHandler.handle(givenPackage, givenContext);
+        handler.handle(givenRequest, givenContext);
     }
 
     private static final class TestPackage implements Package {
@@ -59,15 +59,14 @@ public final class PackageHandlerTest {
     @Setter
     @Getter
     private static final class TestPackageHandler extends PackageHandler<TestPackage> {
-        private boolean packageHandled;
 
         public TestPackageHandler() {
             super(TestPackage.class);
         }
 
         @Override
-        protected void handleConcretePackage(final TestPackage requestPackage, final ChannelHandlerContext context) {
-            packageHandled = true;
+        protected Package handleInternal(final TestPackage request, final ChannelHandlerContext context) {
+            return GIVEN_RESPONSE;
         }
     }
 }

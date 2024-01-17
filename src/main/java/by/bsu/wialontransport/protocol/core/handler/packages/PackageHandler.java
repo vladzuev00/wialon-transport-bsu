@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 public abstract class PackageHandler<PACKAGE extends Package> {
     private final Class<PACKAGE> handledPackageType;
 
-    public final boolean isAbleToHandle(final Package requestPackage) {
-        return handledPackageType.isInstance(requestPackage);
+    public final boolean isAbleToHandle(final Package request) {
+        return handledPackageType.isInstance(request);
     }
 
     public final void handle(final Package request, final ChannelHandlerContext context) {
