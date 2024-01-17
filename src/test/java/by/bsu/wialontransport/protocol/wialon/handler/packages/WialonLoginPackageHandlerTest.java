@@ -8,7 +8,7 @@ import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonR
 import static org.junit.Assert.assertEquals;
 
 public final class WialonLoginPackageHandlerTest {
-    private final WialonLoginPackageHandler loginPackageHandler = new WialonLoginPackageHandler(
+    private final WialonLoginPackageHandler handler = new WialonLoginPackageHandler(
             null,
             null,
             null,
@@ -18,21 +18,21 @@ public final class WialonLoginPackageHandlerTest {
 
     @Test
     public void noSuchImeiResponseShouldBeCreated() {
-        final Package actual = this.loginPackageHandler.createNoSuchImeiResponse();
+        final Package actual = handler.createNoSuchImeiResponse();
         final Package expected = new WialonResponseLoginPackage(CONNECTION_FAILURE);
         assertEquals(expected, actual);
     }
 
     @Test
     public void successResponseShouldBeCreated() {
-        final Package actual = this.loginPackageHandler.createSuccessResponse();
+        final Package actual = handler.createSuccessResponse();
         final Package expected = new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);
         assertEquals(expected, actual);
     }
 
     @Test
     public void wrongPasswordResponseShouldBeCreated() {
-        final Package actual = this.loginPackageHandler.createWrongPasswordResponse();
+        final Package actual = handler.createWrongPasswordResponse();
         final Package expected = new WialonResponseLoginPackage(ERROR_CHECK_PASSWORD);
         assertEquals(expected, actual);
     }
