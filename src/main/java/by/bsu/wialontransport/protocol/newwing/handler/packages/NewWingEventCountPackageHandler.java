@@ -12,9 +12,8 @@ public final class NewWingEventCountPackageHandler extends PackageHandler<NewWin
     }
 
     @Override
-    protected void handleConcretePackage(final NewWingEventCountPackage requestPackage,
-                                         final ChannelHandlerContext context) {
-        final NewWingSuccessResponsePackage responsePackage = new NewWingSuccessResponsePackage();
-        context.writeAndFlush(responsePackage);
+    protected NewWingSuccessResponsePackage handleInternal(final NewWingEventCountPackage request,
+                                                           final ChannelHandlerContext context) {
+        return new NewWingSuccessResponsePackage();
     }
 }
