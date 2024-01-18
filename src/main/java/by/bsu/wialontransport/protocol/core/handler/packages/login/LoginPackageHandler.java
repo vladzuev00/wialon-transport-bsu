@@ -11,7 +11,6 @@ import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends PackageHandler<PACKAGE> {
     private final ContextAttributeManager contextAttributeManager;
