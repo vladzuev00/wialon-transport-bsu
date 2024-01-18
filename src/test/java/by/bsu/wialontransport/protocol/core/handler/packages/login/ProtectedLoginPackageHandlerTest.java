@@ -36,7 +36,7 @@ public final class ProtectedLoginPackageHandlerTest {
     }
 
     @Test
-    public void loginShouldBeCheckedWithoutCreatingResponseBecauseOfSuccess() {
+    public void loginShouldBeSuccessful() {
         final String givenTrackerPassword = "$2a$10$8y9hC00YePN";
         final Tracker givenTracker = createTracker(255L, givenTrackerPassword);
 
@@ -54,7 +54,7 @@ public final class ProtectedLoginPackageHandlerTest {
     }
 
     @Test
-    public void loginShouldBeCheckedWithCreatingResponseBecauseOfFailure() {
+    public void loginShouldBeFailed() {
         final String givenTrackerPassword = "$2a$10$8y9hC00YeP";
         final Tracker givenTracker = createTracker(256L, givenTrackerPassword);
 
