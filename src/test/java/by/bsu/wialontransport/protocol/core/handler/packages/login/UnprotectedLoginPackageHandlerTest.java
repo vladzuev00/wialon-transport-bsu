@@ -14,7 +14,7 @@ public final class UnprotectedLoginPackageHandlerTest {
     private final UnprotectedLoginPackageHandler loginPackageHandler = new TestUnprotectedLoginPackageHandler();
 
     @Test
-    public void loginPackageShouldBeCheckedWithoutCreatingResponseBecauseOfSuccess() {
+    public void loginShouldBeSuccess() {
         final Tracker givenTracker = Tracker.builder().build();
         final LoginPackage givenLoginPackage = mock(LoginPackage.class);
 
