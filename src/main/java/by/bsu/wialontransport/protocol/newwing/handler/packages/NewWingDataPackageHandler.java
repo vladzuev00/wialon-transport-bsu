@@ -19,8 +19,8 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.NewWingCoordinateUtil.calculateLatitude;
-import static by.bsu.wialontransport.util.NewWingCoordinateUtil.calculateLongitude;
+import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLatitude;
+import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLongitude;
 import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
 
 public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingDataPackage, NewWingData> {
@@ -41,8 +41,8 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     }
 
     @Override
-    protected Stream<NewWingData> getSources(final NewWingDataPackage requestPackage) {
-        return requestPackage.getData().stream();
+    protected Stream<NewWingData> getSources(final NewWingDataPackage request) {
+        return request.getData().stream();
     }
 
     @Override

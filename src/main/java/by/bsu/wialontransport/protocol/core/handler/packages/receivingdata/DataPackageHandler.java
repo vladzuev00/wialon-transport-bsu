@@ -56,7 +56,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
         return createResponse(request);
     }
 
-    protected abstract Stream<SOURCE> getSources(final PACKAGE requestPackage);
+    protected abstract Stream<SOURCE> getSources(final PACKAGE request);
 
     protected abstract LocalDateTime getDateTime(final SOURCE source);
 

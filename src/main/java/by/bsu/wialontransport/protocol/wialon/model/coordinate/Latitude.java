@@ -8,22 +8,23 @@ import static java.util.Arrays.stream;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public final class Latitude extends GeographicCoordinate {
-    private final LatitudeType type;
+    private final LatitudeHemisphere hemisphere;
 
     @Builder
-    public Latitude(final int degrees, final int minutes, final int minuteShare, final LatitudeType type) {
+    public Latitude(final int degrees, final int minutes, final int minuteShare, final LatitudeHemisphere hemisphere) {
         super(degrees, minutes, minuteShare);
-        this.type = type;
+        this.hemisphere = hemisphere;
     }
 
     @RequiredArgsConstructor
     @Getter
-    public enum LatitudeType {
+    public enum LatitudeHemisphere {
         NORTH('N'), SOUTH('S');
 
         private final char value;
 
-        public static LatitudeType findByValue(final char value) {
+        //TODO: test
+        public static LatitudeHemisphere findByValue(final char value) {
             return stream(values())
                     .filter(type -> type.value == value)
                     .findFirst()

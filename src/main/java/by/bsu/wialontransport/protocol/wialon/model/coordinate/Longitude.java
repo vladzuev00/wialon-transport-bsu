@@ -11,21 +11,21 @@ import static java.util.Arrays.stream;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public final class Longitude extends GeographicCoordinate {
-    private final LongitudeType type;
+    private final LongitudeHemisphere hemisphere;
 
-    public Longitude(final int degrees, final int minutes, final int minuteShare, final LongitudeType type) {
+    public Longitude(final int degrees, final int minutes, final int minuteShare, final LongitudeHemisphere hemisphere) {
         super(degrees, minutes, minuteShare);
-        this.type = type;
+        this.hemisphere = hemisphere;
     }
 
     @RequiredArgsConstructor
     @Getter
-    public enum LongitudeType {
+    public enum LongitudeHemisphere {
         EAST('E'), WESTERN('W');
 
         private final char value;
 
-        public static LongitudeType findByValue(final char value) {
+        public static LongitudeHemisphere findByValue(final char value) {
             return stream(values())
                     .filter(type -> type.value == value)
                     .findFirst()

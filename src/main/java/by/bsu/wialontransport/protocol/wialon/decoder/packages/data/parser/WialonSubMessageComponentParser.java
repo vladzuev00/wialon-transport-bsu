@@ -5,9 +5,9 @@ import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.GeographicCoordinate;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -21,8 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType.NORTH;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType.EAST;
+import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;
+import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere.EAST;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -197,7 +197,7 @@ public final class WialonSubMessageComponentParser {
                     : createNotDefinedCoordinate();
         }
 
-        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char typeValue);
+        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue);
 
         @SuppressWarnings("SameParameterValue")
         protected abstract T createNotDefinedCoordinate(final int degrees, final int minutes, final int minuteShare);
@@ -206,8 +206,8 @@ public final class WialonSubMessageComponentParser {
             final int degrees = extractGroupAsInteger(groupNumberDegrees);
             final int minutes = extractGroupAsInteger(groupNumberMinutes);
             final int minuteShare = extractGroupAsInteger(groupNumberMinuteShare);
-            final char typeValue = extractGroupAsChar(groupNumberType);
-            return create(degrees, minutes, minuteShare, typeValue);
+            final char hemisphereValue = extractGroupAsChar(groupNumberType);
+            return create(degrees, minutes, minuteShare, hemisphereValue);
         }
 
         private int extractGroupAsInteger(final int groupNumber) {
@@ -229,7 +229,7 @@ public final class WialonSubMessageComponentParser {
         private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
         private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
         private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
-        private static final LatitudeType NOT_DEFINED_TYPE = NORTH;
+        private static final LatitudeHemisphere NOT_DEFINED_TYPE = NORTH;
 
         public LatitudeParser() {
             super(
@@ -242,9 +242,9 @@ public final class WialonSubMessageComponentParser {
         }
 
         @Override
-        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final LatitudeType type = LatitudeType.findByValue(typeValue);
-            return new Latitude(degrees, minutes, minuteShare, type);
+        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue) {
+            final LatitudeHemisphere hemisphere = LatitudeHemisphere.findByValue(hemisphereValue);
+            return new Latitude(degrees, minutes, minuteShare, hemisphere);
         }
 
         @Override
@@ -259,7 +259,7 @@ public final class WialonSubMessageComponentParser {
         private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
         private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
-        private static final LongitudeType NOT_DEFINED_TYPE = EAST;
+        private static final LongitudeHemisphere NOT_DEFINED_TYPE = EAST;
 
         public LongitudeParser() {
             super(
@@ -272,9 +272,9 @@ public final class WialonSubMessageComponentParser {
         }
 
         @Override
-        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char typeValue) {
-            final LongitudeType type = LongitudeType.findByValue(typeValue);
-            return new Longitude(degrees, minutes, minuteShare, type);
+        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue) {
+            final LongitudeHemisphere hemisphere = LongitudeHemisphere.findByValue(hemisphereValue);
+            return new Longitude(degrees, minutes, minuteShare, hemisphere);
         }
 
         @Override

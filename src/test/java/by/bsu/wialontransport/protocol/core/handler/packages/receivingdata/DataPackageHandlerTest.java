@@ -600,8 +600,8 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<TestSource> getSources(final TestDataPackage requestPackage) {
-            return requestPackage.sources.stream();
+        protected Stream<TestSource> getSources(final TestDataPackage request) {
+            return request.sources.stream();
         }
 
         @Override

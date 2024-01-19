@@ -3,9 +3,9 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType;
+import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -14,8 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeType.NORTH;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeType.EAST;
+import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;
+import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere.EAST;
 import static org.junit.Assert.*;
 
 public final class WialonSubMessageComponentParserTest {
@@ -24,8 +24,8 @@ public final class WialonSubMessageComponentParserTest {
     private static final int EXPECTED_NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
     private static final int EXPECTED_NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
     private static final int EXPECTED_NOT_DEFINED_MINUTE_SHARE = Integer.MIN_VALUE;
-    private static final LatitudeType EXPECTED_NOT_DEFINED_LATITUDE_TYPE = NORTH;
-    private static final LongitudeType EXPECTED_NOT_DEFINED_LONGITUDE_TYPE = EAST;
+    private static final LatitudeHemisphere EXPECTED_NOT_DEFINED_LATITUDE_TYPE = NORTH;
+    private static final LongitudeHemisphere EXPECTED_NOT_DEFINED_LONGITUDE_TYPE = EAST;
 
     @Test
     public void parserShouldBeCreated() {
