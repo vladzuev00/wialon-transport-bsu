@@ -7,17 +7,21 @@ import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.util.OptionalUtil.ofNullableDouble;
+import static by.bsu.wialontransport.util.OptionalUtil.ofNullableInt;
 import static by.bsu.wialontransport.util.coordinate.WialonCoordinateUtil.toDouble;
+import static java.util.Objects.requireNonNullElse;
+import static java.util.Optional.ofNullable;
 
 public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends AbstractWialonRequestDataPackage>
         extends DataPackageHandler<PACKAGE, WialonData> {
@@ -54,59 +58,52 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
     }
 
     @Override
-    protected OptionalInt findCourse(final WialonData source) {
-        return OptionalInt.of(source.getCourse());
+    protected final OptionalInt findCourse(final WialonData source) {
+        return ofNullableInt(source.getCourse());
     }
 
     @Override
-    protected OptionalDouble findSpeed(final WialonData source) {
-        return null;
+    protected final OptionalDouble findSpeed(final WialonData source) {
+        return ofNullableDouble(source.getSpeed());
     }
 
     @Override
-    protected OptionalInt findAltitude(WialonData wialonData) {
-        return null;
+    protected final OptionalInt findAltitude(final WialonData source) {
+        return ofNullableInt(source.getAltitude());
     }
 
     @Override
-    protected OptionalInt findAmountOfSatellites(WialonData wialonData) {
-        return null;
+    protected final OptionalInt findAmountOfSatellites(final WialonData source) {
+        return ofNullableInt(source.getAmountOfSatellites());
     }
 
     @Override
-    protected OptionalDouble findHdop(WialonData wialonData) {
-        return null;
+    protected final OptionalDouble findHdop(final WialonData source) {
+        return ofNullableDouble(source.getHdop());
     }
 
     @Override
-    protected OptionalInt findInputs(WialonData wialonData) {
-        return null;
+    protected final OptionalInt findInputs(final WialonData source) {
+        return ofNullableInt(source.getInputs());
     }
 
     @Override
-    protected OptionalInt findOutputs(WialonData wialonData) {
-        return null;
+    protected final OptionalInt findOutputs(final WialonData source) {
+        return ofNullableInt(source.getOutputs());
     }
 
     @Override
-    protected Optional<double[]> findAnalogInputs(WialonData wialonData) {
-        return Optional.empty();
+    protected final Optional<double[]> findAnalogInputs(final WialonData source) {
+        return ofNullable(source.getAnalogInputs());
     }
 
     @Override
-    protected Optional<String> findDriverKeyCode(WialonData wialonData) {
-        return Optional.empty();
+    protected final Optional<String> findDriverKeyCode(final WialonData source) {
+        return ofNullable(source.getDriverKeyCode());
     }
 
     @Override
-    protected Stream<Parameter> getParameters(WialonData wialonData) {
-        return null;
+    protected final Stream<Parameter> getParameters(final WialonData source) {
+        return requireNonNullElse(source.getParameters(), Collections.<Parameter>emptySet()).stream();
     }
-
-    @Override
-    protected Package createResponse(PACKAGE request) {
-        return null;
-    }
-
-
 }
