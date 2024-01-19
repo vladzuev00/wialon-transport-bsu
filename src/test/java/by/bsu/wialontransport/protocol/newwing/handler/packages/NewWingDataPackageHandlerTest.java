@@ -2,8 +2,10 @@ package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
+import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public final class NewWingDataPackageHandlerTest {
     private final NewWingDataPackageHandler handler = new NewWingDataPackageHandler(
@@ -185,5 +188,14 @@ public final class NewWingDataPackageHandlerTest {
 
         final Stream<Parameter> actual = handler.getParameters(givenNewWingData);
         assertTrue(isEmpty(actual));
+    }
+
+    @Test
+    public void responseShouldBeCreated() {
+        final NewWingDataPackage givenRequest = mock(NewWingDataPackage.class);
+
+        final Package actual = handler.createResponse(givenRequest);
+        final Package expected = new NewWingSuccessResponsePackage();
+        assertEquals(expected, actual);
     }
 }

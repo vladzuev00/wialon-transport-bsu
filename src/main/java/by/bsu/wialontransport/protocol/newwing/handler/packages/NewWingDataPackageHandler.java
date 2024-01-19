@@ -126,7 +126,6 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
         return Stream.empty();
     }
 
-    //TODO: test
     @Override
     protected Package createResponse(final NewWingDataPackage request) {
         return new NewWingSuccessResponsePackage();
