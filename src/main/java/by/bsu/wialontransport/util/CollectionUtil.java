@@ -20,6 +20,10 @@ public final class CollectionUtil {
         return elements.stream().allMatch(predicate);
     }
 
+    public static <T> boolean areAllNotMatch(final Collection<T> elements, final Predicate<T> predicate) {
+        return elements.stream().noneMatch(predicate);
+    }
+
     public static <S, K, V> Map<K, V> collectToTreeMap(final List<S> sources,
                                                        final Function<S, K> keyExtractor,
                                                        final Function<S, V> valueExtractor,

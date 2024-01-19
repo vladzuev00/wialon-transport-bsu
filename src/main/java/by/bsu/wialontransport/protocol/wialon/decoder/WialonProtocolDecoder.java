@@ -12,5 +12,4 @@ public final class WialonProtocolDecoder extends ProtocolStringDecoder {
         super(packageDecoders, PACKAGE_PREFIX_REGEX);
     }
 
-
 }

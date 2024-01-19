@@ -17,6 +17,8 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.util.coordinate.WialonCoordinateUtil.toDouble;
+
 public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends AbstractWialonRequestDataPackage>
         extends DataPackageHandler<PACKAGE, WialonData> {
 
@@ -46,16 +48,18 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
 
     @Override
     protected final Coordinate getCoordinate(final WialonData source) {
-        return null;
+        final double latitude = toDouble(source.getLatitude());
+        final double longitude = toDouble(source.getLongitude());
+        return new Coordinate(latitude, longitude);
     }
 
     @Override
-    protected OptionalInt findCourse(WialonData wialonData) {
-        return null;
+    protected OptionalInt findCourse(final WialonData source) {
+        return OptionalInt.of(source.getCourse());
     }
 
     @Override
-    protected OptionalDouble findSpeed(WialonData wialonData) {
+    protected OptionalDouble findSpeed(final WialonData source) {
         return null;
     }
 

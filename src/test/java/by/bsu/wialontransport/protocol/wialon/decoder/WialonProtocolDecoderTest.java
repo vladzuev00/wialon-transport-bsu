@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
+import static by.bsu.wialontransport.util.CollectionUtil.areAllNotMatch;
 import static by.bsu.wialontransport.util.ReflectionUtil.findStaticFieldValue;
 import static org.junit.Assert.assertTrue;
 
@@ -20,7 +22,7 @@ public final class WialonProtocolDecoderTest {
     public void packagePrefixesShouldMatchRegex() {
         final List<String> givenPrefixes = List.of("#L#", "#P#", "#D#", "#B#");
 
-        final boolean actual = givenPrefixes.stream().allMatch(prefix -> prefix.matches(this.packagePrefixRegex));
+        final boolean actual = areAllMatch(givenPrefixes, prefix -> prefix.matches(packagePrefixRegex));
         assertTrue(actual);
     }
 
@@ -28,7 +30,7 @@ public final class WialonProtocolDecoderTest {
     public void packagePrefixesShouldNotMatchRegex() {
         final List<String> givenPrefixes = List.of("##", "P#", "#D", "");
 
-        final boolean actual = givenPrefixes.stream().noneMatch(prefix -> prefix.matches(this.packagePrefixRegex));
+        final boolean actual = areAllNotMatch(givenPrefixes, prefix -> prefix.matches(packagePrefixRegex));
         assertTrue(actual);
     }
 }
