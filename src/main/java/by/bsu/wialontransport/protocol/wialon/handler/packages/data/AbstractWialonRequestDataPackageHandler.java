@@ -7,6 +7,7 @@ import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataPackageHandler;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 
@@ -101,4 +102,12 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
     protected final Optional<Set<Parameter>> findParameters(final WialonData source) {
         return ofNullable(source.getParameters());
     }
+
+    @Override
+    protected final Package createResponse(final PACKAGE request) {
+        final int receivedDataCount = request.getData().size();
+        return createResponse(receivedDataCount);
+    }
+
+    protected abstract Package createResponse(final int receivedDataCount);
 }
