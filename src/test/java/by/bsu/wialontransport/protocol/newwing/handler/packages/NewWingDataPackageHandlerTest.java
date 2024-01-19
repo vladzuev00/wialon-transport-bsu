@@ -9,13 +9,8 @@ import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSu
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
+import java.util.*;
 
-import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -48,9 +43,8 @@ public final class NewWingDataPackageHandlerTest {
         );
         final NewWingDataPackage givenRequestPackage = new NewWingDataPackage(0, givenSources);
 
-        final Stream<NewWingData> actual = handler.getSources(givenRequestPackage);
-        final List<NewWingData> actualAsList = actual.toList();
-        assertEquals(givenSources, actualAsList);
+        final List<NewWingData> actual = handler.getSources(givenRequestPackage);
+        assertSame(givenSources, actual);
     }
 
     @Test
@@ -186,8 +180,8 @@ public final class NewWingDataPackageHandlerTest {
     public void parametersShouldBeGot() {
         final NewWingData givenNewWingData = NewWingData.builder().build();
 
-        final Stream<Parameter> actual = handler.getParameters(givenNewWingData);
-        assertTrue(isEmpty(actual));
+        final Optional<Set<Parameter>> actual = handler.findParameters(givenNewWingData);
+        assertTrue(actual.isEmpty());
     }
 
     @Test

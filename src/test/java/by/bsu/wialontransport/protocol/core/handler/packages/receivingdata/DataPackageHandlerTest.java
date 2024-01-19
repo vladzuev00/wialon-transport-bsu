@@ -23,8 +23,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
+import static by.bsu.wialontransport.util.OptionalUtil.ofNullableDouble;
+import static by.bsu.wialontransport.util.OptionalUtil.ofNullableInt;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static org.junit.Assert.assertEquals;
@@ -600,8 +601,8 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<TestSource> getSources(final TestDataPackage request) {
-            return request.sources.stream();
+        protected List<TestSource> getSources(final TestDataPackage request) {
+            return request.sources;
         }
 
         @Override
@@ -616,37 +617,37 @@ public final class DataPackageHandlerTest {
 
         @Override
         protected OptionalInt findCourse(final TestSource source) {
-            return source.course != null ? OptionalInt.of(source.course) : OptionalInt.empty();
+            return ofNullableInt(source.course);
         }
 
         @Override
         protected OptionalDouble findSpeed(final TestSource source) {
-            return source.speed != null ? OptionalDouble.of(source.speed) : OptionalDouble.empty();
+            return ofNullableDouble(source.speed);
         }
 
         @Override
         protected OptionalInt findAltitude(final TestSource source) {
-            return source.altitude != null ? OptionalInt.of(source.altitude) : OptionalInt.empty();
+            return ofNullableInt(source.altitude);
         }
 
         @Override
         protected OptionalInt findAmountOfSatellites(final TestSource source) {
-            return source.amountOfSatellites != null ? OptionalInt.of(source.amountOfSatellites) : OptionalInt.empty();
+            return ofNullableInt(source.amountOfSatellites);
         }
 
         @Override
         protected OptionalDouble findHdop(final TestSource source) {
-            return source.hdop != null ? OptionalDouble.of(source.hdop) : OptionalDouble.empty();
+            return ofNullableDouble(source.hdop);
         }
 
         @Override
         protected OptionalInt findInputs(final TestSource source) {
-            return source.inputs != null ? OptionalInt.of(source.inputs) : OptionalInt.empty();
+            return ofNullableInt(source.inputs);
         }
 
         @Override
         protected OptionalInt findOutputs(final TestSource source) {
-            return source.outputs != null ? OptionalInt.of(source.outputs) : OptionalInt.empty();
+            return ofNullableInt(source.outputs);
         }
 
         @Override
@@ -660,8 +661,8 @@ public final class DataPackageHandlerTest {
         }
 
         @Override
-        protected Stream<Parameter> getParameters(final TestSource source) {
-            return source.getParameters().stream();
+        protected Optional<Set<Parameter>> findParameters(final TestSource source) {
+            return ofNullable(source.getParameters());
         }
 
         @Override

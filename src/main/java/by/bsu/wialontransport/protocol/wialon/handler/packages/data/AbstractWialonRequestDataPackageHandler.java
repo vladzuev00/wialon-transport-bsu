@@ -11,16 +11,11 @@ import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static by.bsu.wialontransport.util.OptionalUtil.ofNullableDouble;
 import static by.bsu.wialontransport.util.OptionalUtil.ofNullableInt;
 import static by.bsu.wialontransport.util.coordinate.WialonCoordinateUtil.toDouble;
-import static java.util.Objects.requireNonNullElse;
 import static java.util.Optional.ofNullable;
 
 public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends AbstractWialonRequestDataPackage>
@@ -41,8 +36,8 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
     }
 
     @Override
-    protected final Stream<WialonData> getSources(final PACKAGE request) {
-        return request.getData().stream();
+    protected final List<WialonData> getSources(final PACKAGE request) {
+        return request.getData();
     }
 
     @Override
@@ -103,7 +98,7 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
     }
 
     @Override
-    protected final Stream<Parameter> getParameters(final WialonData source) {
-        return requireNonNullElse(source.getParameters(), Collections.<Parameter>emptySet()).stream();
+    protected final Optional<Set<Parameter>> findParameters(final WialonData source) {
+        return ofNullable(source.getParameters());
     }
 }

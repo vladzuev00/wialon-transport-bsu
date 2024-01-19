@@ -14,9 +14,9 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.MIN;
+import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -46,6 +46,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
         final Tracker tracker = extractTracker(context);
         final LocalDateTime lastReceivingDateTime = findLastReceivingDateTime(context);
         getSources(request)
+                .stream()
                 .map(source -> createReceivedData(source, tracker))
                 .filter(receivedDataValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
@@ -56,7 +57,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
         return createResponse(request);
     }
 
-    protected abstract Stream<SOURCE> getSources(final PACKAGE request);
+    protected abstract List<SOURCE> getSources(final PACKAGE request);
 
     protected abstract LocalDateTime getDateTime(final SOURCE source);
 
@@ -80,7 +81,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
 
     protected abstract Optional<String> findDriverKeyCode(final SOURCE source);
 
-    protected abstract Stream<Parameter> getParameters(final SOURCE source);
+    protected abstract Optional<Set<Parameter>> findParameters(final SOURCE source);
 
     protected abstract Package createResponse(final PACKAGE request);
 
@@ -153,12 +154,17 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
 
     private Map<String, Parameter> getParametersByNames(final SOURCE source) {
         return getParameters(source)
+                .stream()
                 .collect(
                         toMap(
                                 Parameter::getName,
                                 identity()
                         )
                 );
+    }
+
+    private Set<Parameter> getParameters(final SOURCE source) {
+        return findParameters(source).orElse(emptySet());
     }
 
     private Data mapToSentData(final ReceivedData receivedData) {

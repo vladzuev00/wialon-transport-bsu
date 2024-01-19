@@ -14,14 +14,11 @@ import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDat
 import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
+import java.util.*;
 
+import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
 import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLatitude;
 import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLongitude;
-import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
 
 public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingDataPackage, NewWingData> {
     private static final int YEAR_MARK_POINT = 2000;
@@ -41,8 +38,8 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     }
 
     @Override
-    protected Stream<NewWingData> getSources(final NewWingDataPackage request) {
-        return request.getData().stream();
+    protected List<NewWingData> getSources(final NewWingDataPackage request) {
+        return request.getData();
     }
 
     @Override
@@ -122,8 +119,8 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     }
 
     @Override
-    protected Stream<Parameter> getParameters(final NewWingData data) {
-        return Stream.empty();
+    protected Optional<Set<Parameter>> findParameters(final NewWingData data) {
+        return Optional.empty();
     }
 
     @Override
