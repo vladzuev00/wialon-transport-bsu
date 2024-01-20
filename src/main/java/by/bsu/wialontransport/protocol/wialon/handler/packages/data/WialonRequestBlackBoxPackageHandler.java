@@ -7,7 +7,9 @@ import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.Recei
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
 
-public final class WialonRequestBlackBoxPackageHandler extends AbstractWialonRequestDataPackageHandler<WialonRequestBlackBoxPackage> {
+public final class WialonRequestBlackBoxPackageHandler extends AbstractWialonRequestDataPackageHandler<
+        WialonRequestBlackBoxPackage
+        > {
 
     public WialonRequestBlackBoxPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
                                                final ContextAttributeManager contextAttributeManager,
