@@ -16,8 +16,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class ProtocolEncoder extends MessageToByteEncoder<Package> {
-    private static final String TEMPLATE_MESSAGE_START_ENCODING = "Encoding response package: '{}'";
-
+    private static final String TEMPLATE_ENCODING_RESPONSE_MESSAGE = "Response was encoded to '{}'";
     private static final Charset ENCODED_RESPONSE_CHARSET = UTF_8;
 
     private final List<PackageEncoder<?>> packageEncoders;
@@ -25,10 +24,10 @@ public abstract class ProtocolEncoder extends MessageToByteEncoder<Package> {
 
     @Override
     protected final void encode(final ChannelHandlerContext context, final Package response, final ByteBuf outBuffer) {
-        log.info(TEMPLATE_MESSAGE_START_ENCODING, response);
         final PackageEncoder<?> packageEncoder = findPackageEncoder(response);
         final String encodedResponse = packageEncoder.encode(response);
         outBuffer.writeCharSequence(encodedResponse, ENCODED_RESPONSE_CHARSET);
+        log.info(TEMPLATE_ENCODING_RESPONSE_MESSAGE, encodedResponse);
     }
 
     private PackageEncoder<?> findPackageEncoder(final Package response) {
