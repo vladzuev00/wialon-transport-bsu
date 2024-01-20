@@ -1,9 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.model.coordinate;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import static java.util.Arrays.stream;
 
@@ -13,6 +10,7 @@ import static java.util.Arrays.stream;
 public final class Longitude extends GeographicCoordinate {
     private final LongitudeHemisphere hemisphere;
 
+    @Builder
     public Longitude(final int degrees, final int minutes, final int minuteShare, final LongitudeHemisphere hemisphere) {
         super(degrees, minutes, minuteShare);
         this.hemisphere = hemisphere;
