@@ -4,7 +4,6 @@ import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfigur
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status;
@@ -28,12 +27,8 @@ public final class WialonRequestDataPackageHandler extends AbstractWialonRequest
     }
 
     @Override
-    protected Package createResponse(final int receivedDataCount) {
-        final Status status = findResponseStatus(receivedDataCount);
+    protected WialonResponseDataPackage createResponse(final int receivedDataCount) {
+        final Status status = receivedDataCount == 1 ? PACKAGE_FIX_SUCCESS : ERROR_PACKAGE_STRUCTURE;
         return new WialonResponseDataPackage(status);
-    }
-
-    private static Status findResponseStatus(final int receivedDataCount) {
-        return receivedDataCount == 1 ? PACKAGE_FIX_SUCCESS : ERROR_PACKAGE_STRUCTURE;
     }
 }
