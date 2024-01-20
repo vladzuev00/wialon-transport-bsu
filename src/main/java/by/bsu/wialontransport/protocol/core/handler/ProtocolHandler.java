@@ -28,10 +28,10 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public final void channelRead(final ChannelHandlerContext context, final Object requestObject) {
-        final Package requestPackage = (Package) requestObject;
-        logStartHandlingPackage(requestPackage);
-        final PackageHandler<?> packageHandler = findPackageHandler(requestPackage);
-        packageHandler.handle(requestPackage, context);
+        final Package request = (Package) requestObject;
+        logStartHandlingPackage(request);
+        final PackageHandler<?> packageHandler = findPackageHandler(request);
+        packageHandler.handle(request, context);
     }
 
     @Override
@@ -55,8 +55,8 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
         removeConnectionInfoIfTrackerWasAuthorized(context);
     }
 
-    private static void logStartHandlingPackage(final Package requestPackage) {
-        log.info(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, requestPackage);
+    private static void logStartHandlingPackage(final Package request) {
+        log.info(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, request);
     }
 
     private PackageHandler<?> findPackageHandler(final Package requestPackage) {
