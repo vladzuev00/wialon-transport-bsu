@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.server.factory;
 
-import by.bsu.wialontransport.configuration.property.WialonServerConfiguration;
+import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.wialon.tempdecoder.WialonDecoder;
@@ -24,7 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Component
 @RequiredArgsConstructor
 public final class WialonServerFactory {
-    private final WialonServerConfiguration serverConfiguration;
+    private final ProtocolServerConfiguration serverConfiguration;
     private final StarterPackageDecoder starterPackageDecoder;
     private final StarterPackageEncoder starterPackageEncoder;
     private final StarterPackageHandler starterPackageHandler;
@@ -45,12 +45,12 @@ public final class WialonServerFactory {
     }
 
     private EventLoopGroup createConnectionProcessLoopGroup() {
-        final int amountThreadsToProcessConnection = this.serverConfiguration.getAmountThreadsToProcessData();
+        final int amountThreadsToProcessConnection = this.serverConfiguration.getThreadCountProcessingData();
         return new NioEventLoopGroup(amountThreadsToProcessConnection);
     }
 
     private EventLoopGroup createDataProcessLoopGroup() {
-        final int amountThreadsToProcessData = this.serverConfiguration.getAmountThreadsToProcessData();
+        final int amountThreadsToProcessData = this.serverConfiguration.getThreadCountProcessingData();
         return new NioEventLoopGroup(amountThreadsToProcessData);
     }
 
@@ -59,7 +59,7 @@ public final class WialonServerFactory {
     }
 
     private Supplier<ReadTimeoutHandler> createReadTimeoutHandlerFactory() {
-        final int aliveConnectionTimeoutSeconds = this.serverConfiguration.getAliveConnectionTimeoutSeconds();
+        final int aliveConnectionTimeoutSeconds = this.serverConfiguration.getConnectionLifeTimeoutSeconds();
         return () -> new ReadTimeoutHandler(aliveConnectionTimeoutSeconds, SECONDS);
     }
 

@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class WialonServerConfiguration {
+public abstract class ProtocolServerConfiguration {
     private String host;
     private int port;
-    private int amountThreadsToProcessConnection;
-    private int amountThreadsToProcessData;
-    private int aliveConnectionTimeoutSeconds;
+    private int threadCountProcessingConnection;
+    private int threadCountProcessingData;
+    private int connectionLifeTimeoutSeconds;
 }

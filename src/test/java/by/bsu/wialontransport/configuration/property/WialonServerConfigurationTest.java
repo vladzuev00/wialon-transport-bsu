@@ -10,16 +10,16 @@ import static org.junit.Assert.assertEquals;
 public final class WialonServerConfigurationTest extends AbstractContextTest {
 
     @Autowired
-    private WialonServerConfiguration configuration;
+    private ProtocolServerConfiguration configuration;
 
     @Test
     public void configurationShouldBeInitialized() {
-        final WialonServerConfiguration expected = WialonServerConfiguration.builder()
+        final ProtocolServerConfiguration expected = ProtocolServerConfiguration.builder()
                 .host("localhost")
                 .port(6001)
-                .amountThreadsToProcessConnection(1)
-                .amountThreadsToProcessData(10)
-                .aliveConnectionTimeoutSeconds(300)
+                .threadCountProcessingConnection(1)
+                .threadCountProcessingData(10)
+                .connectionLifeTimeoutSeconds(300)
                 .build();
         assertEquals(expected, this.configuration);
     }
