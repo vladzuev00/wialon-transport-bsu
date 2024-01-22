@@ -5,16 +5,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix = "wialon.server")
+//@Configuration
+//@EnableConfigurationProperties
+//@ConfigurationProperties(prefix = "wialon.server")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
-@Builder
+//@Builder
 public abstract class ProtocolServerConfiguration {
     private String host;
     private int port;

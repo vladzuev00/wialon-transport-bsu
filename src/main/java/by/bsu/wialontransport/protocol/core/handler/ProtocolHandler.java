@@ -35,16 +35,6 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public final void exceptionCaught(final ChannelHandlerContext context, final Throwable caughtException) {
-        final Throwable exception = unwrapIfDecoderException(caughtException);
-        if (exception instanceof final AnsweredException answeredException) {
-            sendAnswer(context, answeredException);
-        } else {
-            context.fireExceptionCaught(exception);
-        }
-    }
-
-    @Override
     public final void channelActive(final ChannelHandlerContext context) {
         log.info(MESSAGE_ACTIVE_CHANNEL);
     }
@@ -68,15 +58,6 @@ public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
                                 "No package handler for package: %s".formatted(requestPackage)
                         )
                 );
-    }
-
-    private static Throwable unwrapIfDecoderException(final Throwable exception) {
-        return (exception instanceof DecoderException) ? exception.getCause() : exception;
-    }
-
-    private static void sendAnswer(final ChannelHandlerContext context, final AnsweredException exception) {
-        final Package answer = exception.getAnswer();
-        context.writeAndFlush(answer);
     }
 
     private void logAboutInactiveChannel(final ChannelHandlerContext context) {

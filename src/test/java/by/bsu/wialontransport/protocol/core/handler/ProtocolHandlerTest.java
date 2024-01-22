@@ -3,12 +3,10 @@ package by.bsu.wialontransport.protocol.core.handler;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler.NoSuitablePackageHandlerException;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.DecoderException;
 import lombok.Value;
 import nl.altindag.log.LogCaptor;
 import org.junit.Before;
@@ -101,57 +99,6 @@ public final class ProtocolHandlerTest {
         when(thirdMockedPackageHandler.isAbleToHandle(same(givenRequestPackage))).thenReturn(false);
 
         protocolHandler.channelRead(givenContext, givenRequestPackage);
-    }
-
-    @Test
-    public void answeredExceptionWrappedByDecoderExceptionShouldBeCaught() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Package givenAnswer = mock(Package.class);
-        final AnsweredException givenAnsweredException = new AnsweredException(givenAnswer);
-        final DecoderException givenDecoderException = new DecoderException(givenAnsweredException);
-
-        protocolHandler.exceptionCaught(givenContext, givenDecoderException);
-
-        verify(givenContext, times(1)).writeAndFlush(same(givenAnswer));
-        verifyNoMoreInteractions(givenContext);
-    }
-
-    @Test
-    public void answeredExceptionShouldBeCaught() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Package givenAnswer = mock(Package.class);
-        final AnsweredException givenAnsweredException = new AnsweredException(givenAnswer);
-
-        protocolHandler.exceptionCaught(givenContext, givenAnsweredException);
-
-        verify(givenContext, times(1)).writeAndFlush(same(givenAnswer));
-        verifyNoMoreInteractions(givenContext);
-    }
-
-    @Test
-    public void exceptionWrappedByDecoderExceptionShouldBeCaught() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Exception givenException = new Exception();
-        final DecoderException givenDecoderException = new DecoderException(givenException);
-
-        protocolHandler.exceptionCaught(givenContext, givenDecoderException);
-
-        verify(givenContext, times(1)).fireExceptionCaught(same(givenException));
-        verifyNoMoreInteractions(givenContext);
-    }
-
-    @Test
-    public void exceptionShouldBeCaught() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Exception givenException = new Exception();
-
-        protocolHandler.exceptionCaught(givenContext, givenException);
-
-        verify(givenContext, times(1)).fireExceptionCaught(same(givenException));
-        verifyNoMoreInteractions(givenContext);
     }
 
     @Test
