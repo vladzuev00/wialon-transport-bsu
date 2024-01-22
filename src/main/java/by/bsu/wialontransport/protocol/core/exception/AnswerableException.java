@@ -6,22 +6,22 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public final class AnsweredException extends RuntimeException {
+public final class AnswerableException extends RuntimeException {
     private final Package answer;
 
     @SuppressWarnings("unused")
-    public AnsweredException(final Package answer, final String description) {
+    public AnswerableException(final Package answer, final String description) {
         super(description);
         this.answer = answer;
     }
 
-    public AnsweredException(final Package answer, final Exception cause) {
+    public AnswerableException(final Package answer, final Exception cause) {
         super(cause);
         this.answer = answer;
     }
 
     @SuppressWarnings("unused")
-    public AnsweredException(final Package answer, final String description, final Exception cause) {
+    public AnswerableException(final Package answer, final String description, final Exception cause) {
         super(description, cause);
         this.answer = answer;
     }

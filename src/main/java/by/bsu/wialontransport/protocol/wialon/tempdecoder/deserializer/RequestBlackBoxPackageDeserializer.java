@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 
-import by.bsu.wialontransport.crud.dto.Data;
-import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
+import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
@@ -44,8 +43,8 @@ public final class RequestBlackBoxPackageDeserializer extends AbstractPackageDes
         return null;
     }
 
-    private static AnsweredException createAnswerableException(final NotValidSubMessageException cause) {
+    private static AnswerableException createAnswerableException(final NotValidSubMessageException cause) {
         final WialonResponseBlackBoxPackage answer = new WialonResponseBlackBoxPackage(0);
-        return new AnsweredException(answer, cause);
+        return new AnswerableException(answer, cause);
     }
 }

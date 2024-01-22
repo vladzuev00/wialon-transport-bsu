@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
-import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
+import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
@@ -64,7 +64,7 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
         try {
             decoder.decodeMessage(givenMessage);
             exceptionArisen = false;
-        } catch (final AnsweredException exception) {
+        } catch (final AnswerableException exception) {
             assertSame(GIVEN_NOT_VALID_SUB_MESSAGE_RESPONSE, exception.getAnswer());
             assertNotNull(exception.getCause());
             exceptionArisen = true;

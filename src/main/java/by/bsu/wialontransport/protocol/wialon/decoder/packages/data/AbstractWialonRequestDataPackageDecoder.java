@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
-import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
+import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
@@ -29,7 +29,7 @@ public abstract class AbstractWialonRequestDataPackageDecoder<
             return createPackage(data);
         } catch (final NotValidSubMessageException cause) {
             final RESPONSE response = createNotValidSubMessageResponse();
-            throw new AnsweredException(response, cause);
+            throw new AnswerableException(response, cause);
         }
     }
 

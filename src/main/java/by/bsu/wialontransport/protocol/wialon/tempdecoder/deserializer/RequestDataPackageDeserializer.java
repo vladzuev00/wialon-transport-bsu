@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.tempdecoder.deserializer;
 
-import by.bsu.wialontransport.protocol.core.exception.AnsweredException;
+import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
@@ -29,8 +29,8 @@ public final class RequestDataPackageDeserializer extends AbstractPackageDeseria
         return null;
     }
 
-    private static AnsweredException createAnswerableException(final NotValidSubMessageException cause) {
+    private static AnswerableException createAnswerableException(final NotValidSubMessageException cause) {
         final WialonResponseDataPackage answer = new WialonResponseDataPackage(ERROR_PACKAGE_STRUCTURE);
-        return new AnsweredException(answer, cause);
+        return new AnswerableException(answer, cause);
     }
 }
