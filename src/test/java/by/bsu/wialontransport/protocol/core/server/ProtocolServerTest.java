@@ -1,10 +1,15 @@
 package by.bsu.wialontransport.protocol.core.server;
 
 import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
+import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder;
+import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
+import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
+import by.bsu.wialontransport.protocol.core.server.ProtocolServer.ProtocolHandlerCreatingContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.Before;
@@ -16,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 
 import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -23,21 +29,38 @@ import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class ProtocolServerTest {
-    private static final String FIELD_NAME_INET_SOCKET_ADDRESS = "inetSocketAddress";
-    private static final String FIELD_NAME_CONTEXT_ATTRIBUTE_MANAGER = "contextAttributeManager";
-    private static final String FIELD_NAME_LOOP_GROUP_PROCESSING_CONNECTION = "loopGroupProcessingConnection";
-    private static final String FIELD_NAME_LOOP_GROUP_PROCESSING_DATA = "loopGroupProcessingData";
-    private static final String FIELD_NAME_CONNECTION_FILE_TIMEOUT_SECONDS = "connectionLifeTimeoutSeconds";
+    private static final String FIELD_NAME_CONFIGURATION = "configuration";
+    private static final String FIELD_NAME_HANDLER_CREATING_CONTEXT = "handlerCreatingContext";
 
     private static final String GIVEN_HOST = "localhost";
     private static final int GIVEN_PORT = 4004;
     private static final int GIVEN_THREAD_COUNT_PROCESSING_CONNECTION = 5;
     private static final int GIVEN_THREAD_COUNT_PROCESSING_DATA = 10;
     private static final int GIVEN_CONNECTION_LIFE_TIMEOUT_SECONDS = 20;
-    private static final ProtocolServerConfiguration GIVEN_CONFIGURATION = createServerConfiguration();
 
     @Mock
     private ContextAttributeManager mockedContextAttributeManager;
+
+    @Mock
+    private ConnectionManager mockedConnectionManager;
+
+    @Mock
+    private PackageDecoder<?, ?, ?> firstMockedPackageDecoder;
+
+    @Mock
+    private PackageDecoder<?, ?, ?> secondMockedPackageDecoder;
+
+    @Mock
+    private PackageEncoder<?> firstMockedPackageEncoder;
+
+    @Mock
+    private PackageEncoder<?> secondMockedPackageEncoder;
+
+    @Mock
+    private PackageHandler<?> firstMockedPackageHandler;
+
+    @Mock
+    private PackageHandler<?> secondMockedPackageHandler;
 
     @Mock
     private ProtocolDecoder<?, ?> mockedProtocolDecoder;
@@ -53,8 +76,12 @@ public final class ProtocolServerTest {
     @Before
     public void initializeServer() {
         server = new TestProtocolServer(
+                createServerConfiguration(),
                 mockedContextAttributeManager,
-                GIVEN_CONFIGURATION,
+                mockedConnectionManager,
+                List.of(firstMockedPackageDecoder, secondMockedPackageDecoder),
+                List.of(firstMockedPackageEncoder, secondMockedPackageEncoder),
+                List.of(firstMockedPackageHandler, secondMockedPackageHandler),
                 mockedProtocolDecoder,
                 mockedProtocolEncoder,
                 mockedProtocolHandler
@@ -63,27 +90,56 @@ public final class ProtocolServerTest {
 
     @Test
     public void serverShouldBeCreated() {
-        final ContextAttributeManager actualContextAttributeManager = findContextAttributeManager(server);
-        assertSame(mockedContextAttributeManager, actualContextAttributeManager);
+        final ProtocolServerConfiguration actualConfiguration = findConfiguration(server);
 
-        final InetSocketAddress actualInetSocketAddress = findInetSocketAddress(server);
+        final InetSocketAddress actualInetSocketAddress = actualConfiguration.getInetSocketAddress();
         final InetSocketAddress expectedInetSocketAddress = new InetSocketAddress(GIVEN_HOST, GIVEN_PORT);
         assertEquals(expectedInetSocketAddress, actualInetSocketAddress);
 
-        final EventLoopGroup actualLoopGroupProcessingConnection = findLoopGroupProcessingConnection(server);
+        final EventLoopGroup actualLoopGroupProcessingConnection = actualConfiguration.getLoopGroupProcessingConnection();
         assertTrue(actualLoopGroupProcessingConnection instanceof NioEventLoopGroup);
         final int actualLoopGroupProcessingConnectionExecutorCount = findExecutorCount(
                 actualLoopGroupProcessingConnection
         );
         assertEquals(GIVEN_THREAD_COUNT_PROCESSING_CONNECTION, actualLoopGroupProcessingConnectionExecutorCount);
 
-        final EventLoopGroup actualLoopGroupProcessingData = findLoopGroupProcessingData(server);
+        final EventLoopGroup actualLoopGroupProcessingData = actualConfiguration.getLoopGroupProcessingData();
         assertTrue(actualLoopGroupProcessingData instanceof NioEventLoopGroup);
         final int actualLoopGroupProcessingDataExecutorCount = findExecutorCount(actualLoopGroupProcessingData);
         assertEquals(GIVEN_THREAD_COUNT_PROCESSING_DATA, actualLoopGroupProcessingDataExecutorCount);
 
-        final int actualConnectionLifeTimeoutSeconds = findConnectionLifeTimeoutSeconds(server);
+        final int actualConnectionLifeTimeoutSeconds = actualConfiguration.getConnectionLifeTimeoutSeconds();
         assertEquals(GIVEN_CONNECTION_LIFE_TIMEOUT_SECONDS, actualConnectionLifeTimeoutSeconds);
+
+        final ProtocolHandlerCreatingContext actualHandlerCreatingContext = findHandlerCreatingContext(server);
+
+        final ContextAttributeManager actualContextAttributeManager = actualHandlerCreatingContext
+                .getContextAttributeManager();
+        assertSame(mockedContextAttributeManager, actualContextAttributeManager);
+
+        final ConnectionManager actualConnectionManager = actualHandlerCreatingContext.getConnectionManager();
+        assertSame(mockedConnectionManager, actualConnectionManager);
+
+        final List<PackageDecoder<?, ?, ?>> actualPackageDecoders = actualHandlerCreatingContext.getPackageDecoders();
+        final List<PackageDecoder<?, ?, ?>> expectedPackageDecoders = List.of(
+                firstMockedPackageDecoder,
+                secondMockedPackageDecoder
+        );
+        assertEquals(expectedPackageDecoders, actualPackageDecoders);
+
+        final List<PackageEncoder<?>> actualPackageEncoders = actualHandlerCreatingContext.getPackageEncoders();
+        final List<PackageEncoder<?>> expectedPackageEncoders = List.of(
+                firstMockedPackageEncoder,
+                secondMockedPackageEncoder
+        );
+        assertEquals(expectedPackageEncoders, actualPackageEncoders);
+
+        final List<PackageHandler<?>> actualPackageHandlers = actualHandlerCreatingContext.getPackageHandlers();
+        final List<PackageHandler<?>> expectedPackageHandlers = List.of(
+                firstMockedPackageHandler,
+                secondMockedPackageHandler
+        );
+        assertEquals(expectedPackageHandlers, actualPackageHandlers);
     }
 
     @Test
@@ -127,24 +183,12 @@ public final class ProtocolServerTest {
         };
     }
 
-    private static InetSocketAddress findInetSocketAddress(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_INET_SOCKET_ADDRESS, InetSocketAddress.class);
+    private static ProtocolServerConfiguration findConfiguration(final ProtocolServer server) {
+        return findProperty(server, FIELD_NAME_CONFIGURATION, ProtocolServerConfiguration.class);
     }
 
-    private static ContextAttributeManager findContextAttributeManager(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_CONTEXT_ATTRIBUTE_MANAGER, ContextAttributeManager.class);
-    }
-
-    private static EventLoopGroup findLoopGroupProcessingConnection(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_CONNECTION, EventLoopGroup.class);
-    }
-
-    private static EventLoopGroup findLoopGroupProcessingData(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_DATA, EventLoopGroup.class);
-    }
-
-    private static Integer findConnectionLifeTimeoutSeconds(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_CONNECTION_FILE_TIMEOUT_SECONDS, Integer.class);
+    private static ProtocolHandlerCreatingContext findHandlerCreatingContext(final ProtocolServer server) {
+        return findProperty(server, FIELD_NAME_HANDLER_CREATING_CONTEXT, ProtocolHandlerCreatingContext.class);
     }
 
     private static int findExecutorCount(final EventLoopGroup eventLoopGroup) {
@@ -164,12 +208,23 @@ public final class ProtocolServerTest {
         private final ProtocolEncoder protocolEncoder;
         private final ProtocolHandler protocolHandler;
 
-        public TestProtocolServer(final ContextAttributeManager contextAttributeManager,
-                                  final ProtocolServerConfiguration configuration,
+        public TestProtocolServer(final ProtocolServerConfiguration configuration,
+                                  final ContextAttributeManager contextAttributeManager,
+                                  final ConnectionManager connectionManager,
+                                  final List<PackageDecoder<?, ?, ?>> packageDecoders,
+                                  final List<PackageEncoder<?>> packageEncoders,
+                                  final List<PackageHandler<?>> packageHandlers,
                                   final ProtocolDecoder<?, ?> protocolDecoder,
                                   final ProtocolEncoder protocolEncoder,
                                   final ProtocolHandler protocolHandler) {
-            super(contextAttributeManager, configuration);
+            super(
+                    configuration,
+                    contextAttributeManager,
+                    connectionManager,
+                    packageDecoders,
+                    packageEncoders,
+                    packageHandlers
+            );
             this.protocolDecoder = protocolDecoder;
             this.protocolEncoder = protocolEncoder;
             this.protocolHandler = protocolHandler;
@@ -186,7 +241,7 @@ public final class ProtocolServerTest {
         }
 
         @Override
-        protected ProtocolHandler createHandler() {
+        protected ProtocolHandler createHandler(final ProtocolHandlerCreatingContext context) {
             return protocolHandler;
         }
     }

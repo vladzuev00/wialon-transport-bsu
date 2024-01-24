@@ -2,15 +2,11 @@ package by.bsu.wialontransport.configuration.property;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.net.InetSocketAddress;
 
 @Getter
-@EqualsAndHashCode
-@ToString
 public abstract class ProtocolServerConfiguration {
     private final InetSocketAddress inetSocketAddress;
     private final EventLoopGroup loopGroupProcessingConnection;
