@@ -47,7 +47,7 @@ public final class ProtocolHandlerTest {
 
     @Before
     public void initializeProtocolHandler() {
-        protocolHandler = new TestProtocolHandler(
+        protocolHandler = new ProtocolHandler(
                 List.of(
                         firstMockedPackageHandler,
                         secondMockedPackageHandler,
@@ -162,15 +162,5 @@ public final class ProtocolHandlerTest {
     @Value
     private static class TestPackage implements Package {
         long id;
-    }
-
-    private static final class TestProtocolHandler extends ProtocolHandler {
-
-        public TestProtocolHandler(final List<PackageHandler<?>> packageHandlers,
-                                   final ContextAttributeManager contextAttributeManager,
-                                   final ConnectionManager connectionManager) {
-            super(packageHandlers, contextAttributeManager, connectionManager);
-        }
-
     }
 }

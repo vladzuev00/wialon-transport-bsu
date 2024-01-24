@@ -24,7 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Component
 @RequiredArgsConstructor
 public final class WialonServerFactory {
-    private final ProtocolServerConfiguration serverConfiguration;
+//    private final ProtocolServerConfiguration serverConfiguration;
     private final StarterPackageDecoder starterPackageDecoder;
     private final StarterPackageEncoder starterPackageEncoder;
     private final StarterPackageHandler starterPackageHandler;
@@ -35,7 +35,7 @@ public final class WialonServerFactory {
         return new WialonServer(
                 this.createConnectionProcessLoopGroup(),
                 this.createDataProcessLoopGroup(),
-                this.serverConfiguration.getPort(),
+                0,
                 this.createDecoderFactory(),
                 this.createReadTimeoutHandlerFactory(),
                 this.createEncoderFactory(),
@@ -45,13 +45,15 @@ public final class WialonServerFactory {
     }
 
     private EventLoopGroup createConnectionProcessLoopGroup() {
-        final int amountThreadsToProcessConnection = this.serverConfiguration.getThreadCountProcessingData();
-        return new NioEventLoopGroup(amountThreadsToProcessConnection);
+//        final int amountThreadsToProcessConnection = this.serverConfiguration.getThreadCountProcessingData();
+//        return new NioEventLoopGroup(amountThreadsToProcessConnection);
+        return null;
     }
 
     private EventLoopGroup createDataProcessLoopGroup() {
-        final int amountThreadsToProcessData = this.serverConfiguration.getThreadCountProcessingData();
-        return new NioEventLoopGroup(amountThreadsToProcessData);
+//        final int amountThreadsToProcessData = this.serverConfiguration.getThreadCountProcessingData();
+//        return new NioEventLoopGroup(amountThreadsToProcessData);
+        return null;
     }
 
     private Supplier<WialonDecoder> createDecoderFactory() {
@@ -59,8 +61,9 @@ public final class WialonServerFactory {
     }
 
     private Supplier<ReadTimeoutHandler> createReadTimeoutHandlerFactory() {
-        final int aliveConnectionTimeoutSeconds = this.serverConfiguration.getConnectionLifeTimeoutSeconds();
-        return () -> new ReadTimeoutHandler(aliveConnectionTimeoutSeconds, SECONDS);
+//        final int aliveConnectionTimeoutSeconds = this.serverConfiguration.getConnectionLifeTimeoutSeconds();
+//        return () -> new ReadTimeoutHandler(aliveConnectionTimeoutSeconds, SECONDS);
+        return null;
     }
 
     private Supplier<WialonEncoder> createEncoderFactory() {

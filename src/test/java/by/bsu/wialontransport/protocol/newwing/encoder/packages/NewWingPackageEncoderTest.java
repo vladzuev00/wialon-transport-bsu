@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertSame;
 
-public final class ResponseNewWingPackageEncoderTest {
+public final class NewWingPackageEncoderTest {
     private final TestResponseNewWingPackageEncoder encoder = new TestResponseNewWingPackageEncoder();
 
     @Test
@@ -18,7 +18,7 @@ public final class ResponseNewWingPackageEncoderTest {
         assertSame(givenValue, actual);
     }
 
-    private static final class TestResponseNewWingPackageEncoder extends ResponseNewWingPackageEncoder<ResponseNewWingPackage> {
+    private static final class TestResponseNewWingPackageEncoder extends NewWingPackageEncoder<ResponseNewWingPackage> {
 
         public TestResponseNewWingPackageEncoder() {
             super(ResponseNewWingPackage.class);

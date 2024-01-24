@@ -19,7 +19,7 @@ public abstract class ProtocolEncoder extends MessageToByteEncoder<Package> {
     private static final String TEMPLATE_ENCODING_RESPONSE_MESSAGE = "Response was encoded to '{}'";
     private static final Charset ENCODED_RESPONSE_CHARSET = UTF_8;
 
-    private final List<PackageEncoder<?>> packageEncoders;
+    private final List<? extends PackageEncoder<?>> packageEncoders;
 
 
     @Override

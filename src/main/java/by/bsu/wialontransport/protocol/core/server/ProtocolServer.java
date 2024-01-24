@@ -1,37 +1,48 @@
 package by.bsu.wialontransport.protocol.core.server;
 
 import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
+import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder;
+import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
 import by.bsu.wialontransport.protocol.core.exceptionhandler.ProtocolExceptionHandler;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
+import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.net.InetSocketAddress;
+import java.util.List;
 
+import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class ProtocolServer {
-    private final InetSocketAddress inetSocketAddress;
-    private final ContextAttributeManager contextAttributeManager;
-    private final EventLoopGroup loopGroupProcessingConnection;
-    private final EventLoopGroup loopGroupProcessingData;
-    private final int connectionLifeTimeoutSeconds;
+    private final ProtocolServerConfiguration configuration;
+    private final ProtocolHandlerCreatingContext handlerCreatingContext;
 
-    public ProtocolServer(final ContextAttributeManager contextAttributeManager,
-                          final ProtocolServerConfiguration configuration) {
-        this.contextAttributeManager = contextAttributeManager;
-        inetSocketAddress = new InetSocketAddress(configuration.getHost(), configuration.getPort());
-        loopGroupProcessingConnection = new NioEventLoopGroup(configuration.getThreadCountProcessingConnection());
-        loopGroupProcessingData = new NioEventLoopGroup(configuration.getThreadCountProcessingData());
-        connectionLifeTimeoutSeconds = configuration.getConnectionLifeTimeoutSeconds();
+    public ProtocolServer(final ProtocolServerConfiguration configuration,
+                          final ContextAttributeManager contextAttributeManager,
+                          final ConnectionManager connectionManager,
+                          final List<PackageDecoder<?, ?, ?>> packageDecoders,
+                          final List<PackageEncoder<?>> packageEncoders,
+                          final List<PackageHandler<?>> packageHandlers) {
+        this.configuration = configuration;
+        handlerCreatingContext = ProtocolHandlerCreatingContext.builder()
+                .contextAttributeManager(contextAttributeManager)
+                .connectionManager(connectionManager)
+                .packageDecoders(packageDecoders)
+                .packageEncoders(packageEncoders)
+                .packageHandlers(packageHandlers)
+                .build();
     }
 
     public final void run() {
@@ -43,30 +54,26 @@ public abstract class ProtocolServer {
                     .closeFuture()
                     .sync();
         } catch (final InterruptedException cause) {
-            throw new ServerRunningException(cause);
+            currentThread().interrupt();
         }
     }
 
     public final void stop() {
-        try {
-            loopGroupProcessingConnection.shutdownGracefully().sync();
-            loopGroupProcessingData.shutdownGracefully().sync();
-        } catch (final InterruptedException cause) {
-            throw new ServerStoppingException(cause);
-        }
+        shutdown(configuration.getLoopGroupProcessingConnection());
+        shutdown(configuration.getLoopGroupProcessingData());
     }
 
     protected abstract ProtocolDecoder<?, ?> createDecoder();
 
     protected abstract ProtocolEncoder createEncoder();
 
-    protected abstract ProtocolHandler createHandler();
+    protected abstract ProtocolHandler createHandler(final ProtocolHandlerCreatingContext context);
 
     private ServerBootstrap createServerBootstrap() {
         return new ServerBootstrap()
-                .group(loopGroupProcessingConnection, loopGroupProcessingData)
+                .group(configuration.getLoopGroupProcessingConnection(), configuration.getLoopGroupProcessingData())
                 .channel(NioServerSocketChannel.class)
-                .localAddress(inetSocketAddress)
+                .localAddress(configuration.getInetSocketAddress())
                 .childHandler(createChannelInitializer());
     }
 
@@ -80,63 +87,37 @@ public abstract class ProtocolServer {
                                 createDecoder(),
                                 createReadTimeoutHandler(),
                                 createEncoder(),
-                                createHandler(),
+                                createHandler(handlerCreatingContext),
                                 createExceptionHandler()
                         );
             }
-
         };
     }
 
     private ReadTimeoutHandler createReadTimeoutHandler() {
-        return new ReadTimeoutHandler(connectionLifeTimeoutSeconds, SECONDS);
+        return new ReadTimeoutHandler(configuration.getConnectionLifeTimeoutSeconds(), SECONDS);
     }
 
     private ProtocolExceptionHandler createExceptionHandler() {
-        return new ProtocolExceptionHandler(contextAttributeManager);
+        return new ProtocolExceptionHandler(handlerCreatingContext.contextAttributeManager);
     }
 
-    static final class ServerRunningException extends RuntimeException {
-
-        @SuppressWarnings("unused")
-        public ServerRunningException() {
-
-        }
-
-        @SuppressWarnings("unused")
-        public ServerRunningException(final String description) {
-            super(description);
-        }
-
-        public ServerRunningException(final Exception cause) {
-            super(cause);
-        }
-
-        @SuppressWarnings("unused")
-        public ServerRunningException(final String description, final Exception cause) {
-            super(description, cause);
+    private static void shutdown(final EventLoopGroup eventLoopGroup) {
+        try {
+            eventLoopGroup.shutdownGracefully().sync();
+        } catch (final InterruptedException exception) {
+            currentThread().interrupt();
         }
     }
 
-    static final class ServerStoppingException extends RuntimeException {
-
-        @SuppressWarnings("unused")
-        public ServerStoppingException() {
-
-        }
-
-        @SuppressWarnings("unused")
-        public ServerStoppingException(final String description) {
-            super(description);
-        }
-
-        public ServerStoppingException(final Exception cause) {
-            super(cause);
-        }
-
-        @SuppressWarnings("unused")
-        public ServerStoppingException(final String description, final Exception cause) {
-            super(description, cause);
-        }
+    @RequiredArgsConstructor
+    @Getter
+    @Builder
+    protected static final class ProtocolHandlerCreatingContext {
+        private final ContextAttributeManager contextAttributeManager;
+        private final ConnectionManager connectionManager;
+        private final List<PackageDecoder<?, ?, ?>> packageDecoders;
+        private final List<PackageEncoder<?>> packageEncoders;
+        private final List<PackageHandler<?>> packageHandlers;
     }
 }

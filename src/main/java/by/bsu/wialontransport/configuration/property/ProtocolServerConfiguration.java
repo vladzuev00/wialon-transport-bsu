@@ -1,24 +1,30 @@
 package by.bsu.wialontransport.configuration.property;
 
-import lombok.*;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-//@Configuration
-//@EnableConfigurationProperties
-//@ConfigurationProperties(prefix = "wialon.server")
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
+import java.net.InetSocketAddress;
+
 @Getter
 @EqualsAndHashCode
 @ToString
-//@Builder
 public abstract class ProtocolServerConfiguration {
-    private String host;
-    private int port;
-    private int threadCountProcessingConnection;
-    private int threadCountProcessingData;
-    private int connectionLifeTimeoutSeconds;
+    private final InetSocketAddress inetSocketAddress;
+    private final EventLoopGroup loopGroupProcessingConnection;
+    private final EventLoopGroup loopGroupProcessingData;
+    private final int connectionLifeTimeoutSeconds;
+
+    public ProtocolServerConfiguration(final String host,
+                                       final int port,
+                                       final int threadCountProcessingConnection,
+                                       final int threadCountProcessingData,
+                                       final int connectionLifeTimeoutSeconds) {
+        inetSocketAddress = new InetSocketAddress(host, port);
+        loopGroupProcessingConnection = new NioEventLoopGroup(threadCountProcessingConnection);
+        loopGroupProcessingData = new NioEventLoopGroup(threadCountProcessingData);
+        this.connectionLifeTimeoutSeconds = connectionLifeTimeoutSeconds;
+    }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class ProtocolHandler extends ChannelInboundHandlerAdapter {
+public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_START_HANDLING_PACKAGE = "Start handling request package: '{}'";
     private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
