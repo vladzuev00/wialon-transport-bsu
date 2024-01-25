@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;

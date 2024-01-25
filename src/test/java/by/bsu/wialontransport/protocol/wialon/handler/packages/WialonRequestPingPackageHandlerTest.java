@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages;
 
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonRequestPingPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonResponsePingPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;
 

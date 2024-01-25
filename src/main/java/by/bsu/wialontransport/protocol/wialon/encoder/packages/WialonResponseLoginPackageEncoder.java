@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.springframework.stereotype.Component;
 
 @Component

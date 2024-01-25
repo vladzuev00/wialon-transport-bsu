@@ -1,10 +1,10 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages;
 
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.junit.Test;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status.*;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 import static org.junit.Assert.assertEquals;
 
 public final class WialonRequestLoginPackageHandlerTest {

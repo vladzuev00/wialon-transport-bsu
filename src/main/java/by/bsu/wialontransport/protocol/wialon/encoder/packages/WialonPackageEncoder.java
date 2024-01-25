@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.packages;
 
 import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 
 public abstract class WialonPackageEncoder<PACKAGE extends WialonPackage> extends PackageEncoder<PACKAGE> {
 

@@ -3,13 +3,13 @@ package by.bsu.wialontransport.protocol.wialon.decoder.packages.data;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage.PREFIX;
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage.PREFIX;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
 
 public final class WialonRequestDataPackageDecoder extends AbstractWialonRequestDataPackageDecoder<
         WialonRequestDataPackage,

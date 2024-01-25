@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage.PREFIX;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage.PREFIX;
 
 public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder<WialonRequestLoginPackage> {
     private static final String REGEX_DELIMITER_IMEI_AND_PASSWORD = ";";

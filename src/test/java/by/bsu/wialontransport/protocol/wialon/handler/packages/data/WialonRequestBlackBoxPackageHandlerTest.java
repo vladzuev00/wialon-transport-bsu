@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages.data;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseBlackBoxPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseBlackBoxPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

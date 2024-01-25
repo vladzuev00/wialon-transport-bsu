@@ -6,10 +6,10 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.ProtectedLoginPackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonResponseLoginPackage.Status.*;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 
 public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler {
 

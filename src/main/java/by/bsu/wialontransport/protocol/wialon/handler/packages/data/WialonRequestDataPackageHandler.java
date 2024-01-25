@@ -4,12 +4,12 @@ import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfigur
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.WialonRequestDataPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.data.response.WialonResponseDataPackage.Status.PACKAGE_FIX_SUCCESS;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.PACKAGE_FIX_SUCCESS;
 
 public final class WialonRequestDataPackageHandler extends AbstractWialonRequestDataPackageHandler<WialonRequestDataPackage> {
 

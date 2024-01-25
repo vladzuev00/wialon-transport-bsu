@@ -9,7 +9,7 @@ import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.DataP
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.AbstractWialonRequestDataPackage;
 
 import java.time.LocalDateTime;
 import java.util.*;

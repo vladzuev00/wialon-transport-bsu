@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 import lombok.Getter;
 import org.junit.Test;
 

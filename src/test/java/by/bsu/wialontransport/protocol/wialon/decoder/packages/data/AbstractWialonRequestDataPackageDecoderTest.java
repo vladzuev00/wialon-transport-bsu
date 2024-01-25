@@ -4,8 +4,8 @@ import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonMessageParser;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.AbstractWialonRequestDataPackage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +23,11 @@ import static org.mockito.Mockito.when;
 public final class AbstractWialonRequestDataPackageDecoderTest {
     private static final String GIVEN_PACKAGE_PREFIX = "#TEST#";
     private static final WialonPackage GIVEN_NOT_VALID_SUB_MESSAGE_RESPONSE = new WialonPackage() {
+
+        @Override
+        public String findPrefix() {
+            throw new UnsupportedOperationException();
+        }
     };
 
     @Mock
@@ -78,10 +83,15 @@ public final class AbstractWialonRequestDataPackageDecoderTest {
                 .build();
     }
 
-    private static class TestWialonRequestDataPackage extends AbstractWialonRequestDataPackage {
+    private static final class TestWialonRequestDataPackage extends AbstractWialonRequestDataPackage {
 
         public TestWialonRequestDataPackage(final List<WialonData> data) {
             super(data);
+        }
+
+        @Override
+        public String findPrefix() {
+            throw new UnsupportedOperationException();
         }
     }
 

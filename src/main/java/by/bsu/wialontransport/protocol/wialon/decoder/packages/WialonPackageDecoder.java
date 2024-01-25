@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageStringDecoder;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 
-import static by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage.POSTFIX;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage.POSTFIX;
 
 public abstract class WialonPackageDecoder<PACKAGE extends WialonPackage> extends PackageStringDecoder<PACKAGE> {
 

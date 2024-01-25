@@ -10,7 +10,7 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.data.request.AbstractWialonRequestDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.AbstractWialonRequestDataPackage;
 import lombok.Value;
 import org.junit.Test;
 
@@ -324,6 +324,11 @@ public final class AbstractWialonRequestDataPackageHandlerTest {
 
         public TestWialonRequestDataPackage(final List<WialonData> data) {
             super(data);
+        }
+
+        @Override
+        public String findPrefix() {
+            throw new UnsupportedOperationException();
         }
     }
 

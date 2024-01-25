@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.wialonpackage.login.WialonRequestLoginPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
