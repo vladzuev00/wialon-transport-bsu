@@ -1,33 +1,39 @@
 package by.bsu.wialontransport.protocol.newwing.server;
 
-import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
+import by.bsu.wialontransport.configuration.property.protocolserver.NewWingProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
-import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.server.ProtocolServer;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingProtocolDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.encoder.NewWingProtocolEncoder;
 import by.bsu.wialontransport.protocol.newwing.encoder.packages.NewWingPackageEncoder;
+import by.bsu.wialontransport.protocol.newwing.handler.packages.NewWingDataPackageHandler;
+import by.bsu.wialontransport.protocol.newwing.handler.packages.NewWingEventCountPackageHandler;
+import by.bsu.wialontransport.protocol.newwing.handler.packages.NewWingLoginPackageHandler;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDecoder<?, ?>, NewWingPackageEncoder<?>> {
 
-    public NewWingProtocolServer(final ProtocolServerConfiguration configuration,
+    public NewWingProtocolServer(final NewWingProtocolServerConfiguration configuration,
                                  final ContextAttributeManager contextAttributeManager,
                                  final ConnectionManager connectionManager,
                                  final List<NewWingPackageDecoder<?, ?>> packageDecoders,
                                  final List<NewWingPackageEncoder<?>> newWingPackageEncoders,
-                                 final List<? extends PackageHandler<?>> packageHandlers) {
+                                 final NewWingLoginPackageHandler loginPackageHandler,
+                                 final NewWingEventCountPackageHandler eventCountPackageHandler,
+                                 final NewWingDataPackageHandler dataPackageHandler) {
         super(
                 configuration,
                 contextAttributeManager,
                 connectionManager,
                 packageDecoders,
                 newWingPackageEncoders,
-                packageHandlers
+                List.of(loginPackageHandler, eventCountPackageHandler, dataPackageHandler)
         );
     }
 

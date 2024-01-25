@@ -111,7 +111,7 @@ public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?
 
     @RequiredArgsConstructor
     @Getter
-    protected final class ServerRunningContext {
+    public final class ServerRunningContext {
         private final ContextAttributeManager contextAttributeManager;
         private final ConnectionManager connectionManager;
         private final List<PACKAGE_DECODER> packageDecoders;

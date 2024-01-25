@@ -25,6 +25,14 @@ data:
     minValidDateTime: 2010-01-01 00:00:00
     deltaSecondsFromNowMaxAllowableValidDateTime: 15
 
+protocol-server:
+  new-wing:
+    host: localhost
+    port: 6001
+    thread-count-processing-connection: 1
+    thread-count-processing-data: 10
+    connection-life-timeout-seconds: 300
+
 wialon:
   server:
     host: localhost

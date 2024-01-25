@@ -12,6 +12,7 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,6 +21,7 @@ import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
 import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLatitude;
 import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLongitude;
 
+@Component
 public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingDataPackage, NewWingData> {
     private static final int YEAR_MARK_POINT = 2000;
     private static final double MILLI_VOLTS_IN_VOLT = 1000;

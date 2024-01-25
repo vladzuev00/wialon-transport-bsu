@@ -8,7 +8,9 @@ import by.bsu.wialontransport.protocol.core.handler.packages.login.UnprotectedLo
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingFailureResponsePackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class NewWingLoginPackageHandler extends UnprotectedLoginPackageHandler {
 
     public NewWingLoginPackageHandler(final ContextAttributeManager contextAttributeManager,

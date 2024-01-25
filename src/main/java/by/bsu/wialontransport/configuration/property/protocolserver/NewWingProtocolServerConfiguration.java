@@ -1,6 +1,11 @@
 package by.bsu.wialontransport.configuration.property.protocolserver;
 
-public final class NewWingProtocolServerConfiguration extends ProtocolServerConfiguration {
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
+
+@ConstructorBinding
+@ConfigurationProperties(prefix = "protocol-server.new-wing")
+public class NewWingProtocolServerConfiguration extends ProtocolServerConfiguration {
 
     public NewWingProtocolServerConfiguration(final String host,
                                               final int port,
