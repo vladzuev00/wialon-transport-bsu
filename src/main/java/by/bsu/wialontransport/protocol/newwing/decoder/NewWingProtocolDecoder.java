@@ -19,7 +19,6 @@ public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> 
 
     @Override
     protected String extractPackagePrefix(final ByteBuf buffer) {
-        final CharSequence packagePrefix = buffer.readCharSequence(PACKAGE_PREFIX_LENGTH, PACKAGE_PREFIX_CHARSET);
-        return packagePrefix.toString();
+        return buffer.readCharSequence(PACKAGE_PREFIX_LENGTH, PACKAGE_PREFIX_CHARSET).toString();
     }
 }
