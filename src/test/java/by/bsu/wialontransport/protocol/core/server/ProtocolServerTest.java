@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.server;
 
-import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
+import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
@@ -9,7 +9,7 @@ import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder;
 import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-import by.bsu.wialontransport.protocol.core.server.ProtocolServer.ProtocolHandlerCreatingContext;
+import by.bsu.wialontransport.protocol.core.server.ProtocolServer.ServerRunningContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public final class ProtocolServerTest {
     private static final String FIELD_NAME_CONFIGURATION = "configuration";
-    private static final String FIELD_NAME_HANDLER_CREATING_CONTEXT = "handlerCreatingContext";
+    private static final String FIELD_NAME_RUNNING_CONTEXT = "runningContext";
 
     private static final String GIVEN_HOST = "localhost";
     private static final int GIVEN_PORT = 4004;
@@ -71,7 +71,7 @@ public final class ProtocolServerTest {
     @Mock
     private ProtocolHandler mockedProtocolHandler;
 
-    private ProtocolServer server;
+    private ProtocolServer<PackageDecoder<?, ?, ?>, PackageEncoder<?>> server;
 
     @Before
     public void initializeServer() {
@@ -111,30 +111,30 @@ public final class ProtocolServerTest {
         final int actualConnectionLifeTimeoutSeconds = actualConfiguration.getConnectionLifeTimeoutSeconds();
         assertEquals(GIVEN_CONNECTION_LIFE_TIMEOUT_SECONDS, actualConnectionLifeTimeoutSeconds);
 
-        final ProtocolHandlerCreatingContext actualHandlerCreatingContext = findHandlerCreatingContext(server);
+        final ServerRunningContext actualRunningContext = findRunningContext(server);
 
-        final ContextAttributeManager actualContextAttributeManager = actualHandlerCreatingContext
+        final ContextAttributeManager actualContextAttributeManager = actualRunningContext
                 .getContextAttributeManager();
         assertSame(mockedContextAttributeManager, actualContextAttributeManager);
 
-        final ConnectionManager actualConnectionManager = actualHandlerCreatingContext.getConnectionManager();
+        final ConnectionManager actualConnectionManager = actualRunningContext.getConnectionManager();
         assertSame(mockedConnectionManager, actualConnectionManager);
 
-        final List<PackageDecoder<?, ?, ?>> actualPackageDecoders = actualHandlerCreatingContext.getPackageDecoders();
+        final List<?> actualPackageDecoders = actualRunningContext.getPackageDecoders();
         final List<PackageDecoder<?, ?, ?>> expectedPackageDecoders = List.of(
                 firstMockedPackageDecoder,
                 secondMockedPackageDecoder
         );
         assertEquals(expectedPackageDecoders, actualPackageDecoders);
 
-        final List<PackageEncoder<?>> actualPackageEncoders = actualHandlerCreatingContext.getPackageEncoders();
+        final List<?> actualPackageEncoders = actualRunningContext.getPackageEncoders();
         final List<PackageEncoder<?>> expectedPackageEncoders = List.of(
                 firstMockedPackageEncoder,
                 secondMockedPackageEncoder
         );
         assertEquals(expectedPackageEncoders, actualPackageEncoders);
 
-        final List<PackageHandler<?>> actualPackageHandlers = actualHandlerCreatingContext.getPackageHandlers();
+        final List<?> actualPackageHandlers = actualRunningContext.getPackageHandlers();
         final List<PackageHandler<?>> expectedPackageHandlers = List.of(
                 firstMockedPackageHandler,
                 secondMockedPackageHandler
@@ -183,12 +183,12 @@ public final class ProtocolServerTest {
         };
     }
 
-    private static ProtocolServerConfiguration findConfiguration(final ProtocolServer server) {
+    private static ProtocolServerConfiguration findConfiguration(final ProtocolServer<?, ?> server) {
         return findProperty(server, FIELD_NAME_CONFIGURATION, ProtocolServerConfiguration.class);
     }
 
-    private static ProtocolHandlerCreatingContext findHandlerCreatingContext(final ProtocolServer server) {
-        return findProperty(server, FIELD_NAME_HANDLER_CREATING_CONTEXT, ProtocolHandlerCreatingContext.class);
+    private static ServerRunningContext findRunningContext(final ProtocolServer<?, ?> server) {
+        return findProperty(server, FIELD_NAME_RUNNING_CONTEXT, ServerRunningContext.class);
     }
 
     private static int findExecutorCount(final EventLoopGroup eventLoopGroup) {
@@ -203,7 +203,7 @@ public final class ProtocolServerTest {
         }
     }
 
-    private static final class TestProtocolServer extends ProtocolServer {
+    private static final class TestProtocolServer extends ProtocolServer<PackageDecoder<?, ?, ?>, PackageEncoder<?>> {
         private final ProtocolDecoder<?, ?> protocolDecoder;
         private final ProtocolEncoder protocolEncoder;
         private final ProtocolHandler protocolHandler;
@@ -231,17 +231,17 @@ public final class ProtocolServerTest {
         }
 
         @Override
-        protected ProtocolDecoder<?, ?> createDecoder() {
+        protected ProtocolDecoder<?, ?> createProtocolDecoder(final ServerRunningContext context) {
             return protocolDecoder;
         }
 
         @Override
-        protected ProtocolEncoder createEncoder() {
+        protected ProtocolEncoder createProtocolEncoder(final ServerRunningContext context) {
             return protocolEncoder;
         }
 
         @Override
-        protected ProtocolHandler createHandler(final ProtocolHandlerCreatingContext context) {
+        protected ProtocolHandler createProtocolHandler(final ServerRunningContext context) {
             return protocolHandler;
         }
     }

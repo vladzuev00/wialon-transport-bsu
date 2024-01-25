@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.server;
 
-import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
+import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
@@ -16,7 +16,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -25,24 +24,24 @@ import java.util.List;
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public abstract class ProtocolServer {
+public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?, ?>, PACKAGE_ENCODER extends PackageEncoder<?>> {
     private final ProtocolServerConfiguration configuration;
-    private final ProtocolHandlerCreatingContext handlerCreatingContext;
+    private final ServerRunningContext runningContext;
 
     public ProtocolServer(final ProtocolServerConfiguration configuration,
                           final ContextAttributeManager contextAttributeManager,
                           final ConnectionManager connectionManager,
-                          final List<PackageDecoder<?, ?, ?>> packageDecoders,
-                          final List<PackageEncoder<?>> packageEncoders,
-                          final List<PackageHandler<?>> packageHandlers) {
+                          final List<PACKAGE_DECODER> packageDecoders,
+                          final List<PACKAGE_ENCODER> packageEncoders,
+                          final List<? extends PackageHandler<?>> packageHandlers) {
         this.configuration = configuration;
-        handlerCreatingContext = ProtocolHandlerCreatingContext.builder()
-                .contextAttributeManager(contextAttributeManager)
-                .connectionManager(connectionManager)
-                .packageDecoders(packageDecoders)
-                .packageEncoders(packageEncoders)
-                .packageHandlers(packageHandlers)
-                .build();
+        runningContext = new ServerRunningContext(
+                contextAttributeManager,
+                connectionManager,
+                packageDecoders,
+                packageEncoders,
+                packageHandlers
+        );
     }
 
     public final void run() {
@@ -63,11 +62,11 @@ public abstract class ProtocolServer {
         shutdown(configuration.getLoopGroupProcessingData());
     }
 
-    protected abstract ProtocolDecoder<?, ?> createDecoder();
+    protected abstract ProtocolDecoder<?, ?> createProtocolDecoder(final ServerRunningContext context);
 
-    protected abstract ProtocolEncoder createEncoder();
+    protected abstract ProtocolEncoder createProtocolEncoder(final ServerRunningContext context);
 
-    protected abstract ProtocolHandler createHandler(final ProtocolHandlerCreatingContext context);
+    protected abstract ProtocolHandler createProtocolHandler(final ServerRunningContext context);
 
     private ServerBootstrap createServerBootstrap() {
         return new ServerBootstrap()
@@ -84,10 +83,10 @@ public abstract class ProtocolServer {
             public void initChannel(final SocketChannel channel) {
                 channel.pipeline()
                         .addLast(
-                                createDecoder(),
+                                createProtocolDecoder(runningContext),
                                 createReadTimeoutHandler(),
-                                createEncoder(),
-                                createHandler(handlerCreatingContext),
+                                createProtocolEncoder(runningContext),
+                                createProtocolHandler(runningContext),
                                 createExceptionHandler()
                         );
             }
@@ -99,7 +98,7 @@ public abstract class ProtocolServer {
     }
 
     private ProtocolExceptionHandler createExceptionHandler() {
-        return new ProtocolExceptionHandler(handlerCreatingContext.contextAttributeManager);
+        return new ProtocolExceptionHandler(runningContext.contextAttributeManager);
     }
 
     private static void shutdown(final EventLoopGroup eventLoopGroup) {
@@ -112,12 +111,11 @@ public abstract class ProtocolServer {
 
     @RequiredArgsConstructor
     @Getter
-    @Builder
-    protected static final class ProtocolHandlerCreatingContext {
+    protected final class ServerRunningContext {
         private final ContextAttributeManager contextAttributeManager;
         private final ConnectionManager connectionManager;
-        private final List<PackageDecoder<?, ?, ?>> packageDecoders;
-        private final List<PackageEncoder<?>> packageEncoders;
-        private final List<PackageHandler<?>> packageHandlers;
+        private final List<PACKAGE_DECODER> packageDecoders;
+        private final List<PACKAGE_ENCODER> packageEncoders;
+        private final List<? extends PackageHandler<?>> packageHandlers;
     }
 }

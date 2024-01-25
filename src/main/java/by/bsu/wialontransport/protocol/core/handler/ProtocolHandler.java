@@ -20,7 +20,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
     private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
-    private final List<PackageHandler<?>> packageHandlers;
+    private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
     private final ConnectionManager connectionManager;
 

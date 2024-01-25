@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.server.factory;
 
-import by.bsu.wialontransport.configuration.property.ProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.wialon.tempdecoder.WialonDecoder;
@@ -12,14 +11,11 @@ import by.bsu.wialontransport.protocol.wialon.temphandler.WialonHandler;
 import by.bsu.wialontransport.protocol.wialon.temphandler.chain.StarterPackageHandler;
 import by.bsu.wialontransport.protocol.wialon.server.WialonServer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Component
 @RequiredArgsConstructor

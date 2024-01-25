@@ -2,6 +2,7 @@ package by.bsu.wialontransport.configuration.property;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 
+import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

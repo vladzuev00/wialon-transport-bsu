@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration.property;
+package by.bsu.wialontransport.configuration.property.protocolserver;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
