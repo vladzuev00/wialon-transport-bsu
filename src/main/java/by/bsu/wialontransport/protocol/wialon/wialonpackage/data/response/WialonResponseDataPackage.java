@@ -6,11 +6,19 @@ import lombok.*;
 import static java.lang.Byte.MIN_VALUE;
 import static java.util.Arrays.stream;
 
-@Value
-public class WialonResponseDataPackage implements WialonPackage {
-    public static final String PREFIX = "#AD#";
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class WialonResponseDataPackage extends WialonPackage {
+    private static final String PREFIX = "#AD#";
 
-    Status status;
+    private final Status status;
+
+    @Override
+    public String findPrefix() {
+        return null;
+    }
 
     public enum Status {
         NOT_DEFINED(MIN_VALUE), ERROR_PACKAGE_STRUCTURE((byte) -1), INCORRECT_TIME((byte) 0),

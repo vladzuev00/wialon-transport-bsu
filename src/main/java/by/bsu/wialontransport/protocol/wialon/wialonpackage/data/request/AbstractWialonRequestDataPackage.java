@@ -11,8 +11,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
-@ToString
-public abstract class AbstractWialonRequestDataPackage implements WialonPackage {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public abstract class AbstractWialonRequestDataPackage extends WialonPackage {
     private final List<WialonData> data;
 }

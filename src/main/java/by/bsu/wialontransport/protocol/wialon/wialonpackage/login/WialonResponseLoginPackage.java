@@ -1,17 +1,28 @@
 package by.bsu.wialontransport.protocol.wialon.wialonpackage.login;
 
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
 import static java.util.Arrays.stream;
 
-@Value
-public class WialonResponseLoginPackage implements WialonPackage {
-    public static final String PREFIX = "#AL#";
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class WialonResponseLoginPackage extends WialonPackage {
+    private static final String PREFIX = "#AL#";
 
-    Status status;
+    private final Status status;
+
+    @Override
+    public String findPrefix() {
+        return PREFIX;
+    }
 
     public enum Status {
         NOT_DEFINED("not defined"),
