@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.encoder.packages;
+package by.bsu.wialontransport.protocol.wialon.encodertemp.packages;
 
 import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;

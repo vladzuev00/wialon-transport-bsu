@@ -25,7 +25,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private final ConnectionManager connectionManager;
 
     @Override
-    public final void channelRead(final ChannelHandlerContext context, final Object requestObject) {
+    public void channelRead(final ChannelHandlerContext context, final Object requestObject) {
         final Package request = (Package) requestObject;
         logStartHandlingPackage(request);
         final PackageHandler<?> packageHandler = findPackageHandler(request);
@@ -33,12 +33,12 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public final void channelActive(final ChannelHandlerContext context) {
+    public void channelActive(final ChannelHandlerContext context) {
         log.info(MESSAGE_ACTIVE_CHANNEL);
     }
 
     @Override
-    public final void channelInactive(final ChannelHandlerContext context) {
+    public void channelInactive(final ChannelHandlerContext context) {
         logAboutInactiveChannel(context);
         removeConnectionInfoIfTrackerWasAuthorized(context);
     }

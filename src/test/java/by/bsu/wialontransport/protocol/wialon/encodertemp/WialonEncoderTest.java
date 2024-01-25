@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.wialon.encoder;
+package by.bsu.wialontransport.protocol.wialon.encodertemp;
 
-import by.bsu.wialontransport.protocol.wialon.encoder.chain.StarterPackageEncoder;
+import by.bsu.wialontransport.protocol.wialon.encodertemp.chain.StarterPackageEncoder;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

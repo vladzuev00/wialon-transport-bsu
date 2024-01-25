@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.encoder.chain;
+package by.bsu.wialontransport.protocol.wialon.encodertemp.chain;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.ping.WialonResponsePingPackage;

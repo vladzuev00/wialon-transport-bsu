@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.encoder.chain.exception;
+package by.bsu.wialontransport.protocol.wialon.encodertemp.chain.exception;
 
 public final class NoSuitablePackageEncoderException extends RuntimeException {
     public NoSuitablePackageEncoderException() {

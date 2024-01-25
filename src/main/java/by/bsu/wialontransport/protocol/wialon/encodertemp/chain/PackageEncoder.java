@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.wialon.encoder.chain;
+package by.bsu.wialontransport.protocol.wialon.encodertemp.chain;
 
-import by.bsu.wialontransport.protocol.wialon.encoder.chain.exception.NoSuitablePackageEncoderException;
+import by.bsu.wialontransport.protocol.wialon.encodertemp.chain.exception.NoSuitablePackageEncoderException;
 import by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage;
 
 import static by.bsu.wialontransport.protocol.wialon.wialonpackage.WialonPackage.POSTFIX;
