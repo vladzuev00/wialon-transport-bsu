@@ -23,7 +23,6 @@ public final class Latitude extends GeographicCoordinate {
 
         private final char value;
 
-        //TODO: test
         public static LatitudeHemisphere findByValue(final char value) {
             return stream(values())
                     .filter(type -> type.value == value)
