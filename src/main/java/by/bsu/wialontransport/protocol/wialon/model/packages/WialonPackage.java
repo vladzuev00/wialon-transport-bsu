@@ -11,7 +11,6 @@ public abstract class WialonPackage implements Package {
 
     public abstract String findPrefix();
 
-    //TODO: test
     public final String findPostfix() {
         return POSTFIX;
     }
