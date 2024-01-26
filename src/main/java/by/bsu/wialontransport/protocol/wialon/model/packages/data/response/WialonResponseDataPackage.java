@@ -20,7 +20,7 @@ public final class WialonResponseDataPackage extends WialonPackage {
 
     @Override
     public String findPrefix() {
-        return null;
+        return PREFIX;
     }
 
     public enum Status {
