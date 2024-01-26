@@ -1,6 +1,5 @@
-package by.bsu.wialontransport.protocol.wialon.model.packages.data;
+package by.bsu.wialontransport.protocol.wialon.model.packages.data.request;
 
-import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestBlackBoxPackage;
 import org.junit.Test;
 
 import static java.util.Collections.emptyList;
