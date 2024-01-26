@@ -2,7 +2,8 @@ package by.bsu.wialontransport.protocol.wialon.model.packages;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage.POSTFIX;
+import static org.junit.Assert.assertSame;
 
 public final class WialonPackageTest {
 
@@ -11,8 +12,7 @@ public final class WialonPackageTest {
         final WialonPackage givenPackage = createPackage();
 
         final String actual = givenPackage.findPostfix();
-        final String expected = "\r\n";
-        assertEquals(expected, actual);
+        assertSame(POSTFIX, actual);
     }
 
     private static WialonPackage createPackage() {
