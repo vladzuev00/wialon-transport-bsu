@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class WialonResponsePingPackageEncoder extends WialonPackageEncoder<WialonResponsePingPackage> {
+    private static final String ENCODED_MESSAGE = "";
 
     public WialonResponsePingPackageEncoder() {
         super(WialonResponsePingPackage.class);
@@ -12,6 +13,6 @@ public final class WialonResponsePingPackageEncoder extends WialonPackageEncoder
 
     @Override
     protected String encodeMessage(final WialonResponsePingPackage response) {
-        return "";
+        return ENCODED_MESSAGE;
     }
 }
