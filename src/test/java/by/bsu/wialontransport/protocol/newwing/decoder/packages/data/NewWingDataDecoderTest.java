@@ -2,6 +2,7 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages.data;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import org.junit.Test;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;

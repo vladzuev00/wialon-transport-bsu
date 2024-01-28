@@ -152,6 +152,8 @@ public final class WialonProtocolIT extends AbstractContextTest {
                 .address(GIVEN_EXISTING_ADDRESS)
                 .build();
         checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        //TODO: check parameters and mileage
     }
 
     private String request(final String request)

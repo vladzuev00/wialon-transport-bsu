@@ -24,17 +24,12 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
         packagePrefixPattern = compile(packagePrefixRegex);
     }
 
-    //TODO: rewrite tests
+    //TODO: refactor and rewrite tests
     @Override
     protected final String createSource(final ByteBuf buffer) {
-        return new String(
-                getBytes(
-                        buffer,
-                        buffer.readerIndex(),
-                        buffer.writerIndex() - buffer.readerIndex()
-                ),
-                CHARSET_TO_DECODE_BUFFER
-        );
+        final byte[] bytes = getBytes(buffer, buffer.readerIndex(), buffer.writerIndex() - buffer.readerIndex());
+        buffer.skipBytes(buffer.writerIndex() - buffer.readerIndex());
+        return new String(bytes, CHARSET_TO_DECODE_BUFFER);
     }
 
     @Override
