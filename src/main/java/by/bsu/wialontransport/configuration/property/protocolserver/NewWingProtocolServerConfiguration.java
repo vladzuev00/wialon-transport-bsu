@@ -2,11 +2,13 @@ package by.bsu.wialontransport.configuration.property.protocolserver;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@ConstructorBinding
 @ConfigurationProperties(prefix = "protocol-server.new-wing")
 public class NewWingProtocolServerConfiguration extends ProtocolServerConfiguration {
 
+    @ConstructorBinding
     public NewWingProtocolServerConfiguration(final String host,
                                               final int port,
                                               final int threadCountProcessingConnection,

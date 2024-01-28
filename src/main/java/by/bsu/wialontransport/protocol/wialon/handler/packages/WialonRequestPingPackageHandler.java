@@ -5,7 +5,9 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class WialonRequestPingPackageHandler extends PackageHandler<WialonRequestPingPackage> {
 
     public WialonRequestPingPackageHandler() {

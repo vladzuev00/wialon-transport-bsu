@@ -2,12 +2,14 @@ package by.bsu.wialontransport.protocol.core.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageStringDecoder;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.string.StringDecoder;
 
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import static io.netty.buffer.ByteBufUtil.getBytes;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Pattern.compile;
 
@@ -16,14 +18,23 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
 
     private final Pattern packagePrefixPattern;
 
-    public ProtocolStringDecoder(final List<? extends PackageStringDecoder<?>> packageDecoders, final String packagePrefixRegex) {
+    public ProtocolStringDecoder(final List<? extends PackageStringDecoder<?>> packageDecoders,
+                                 final String packagePrefixRegex) {
         super(packageDecoders);
         packagePrefixPattern = compile(packagePrefixRegex);
     }
 
+    //TODO: rewrite tests
     @Override
     protected final String createSource(final ByteBuf buffer) {
-        return buffer.toString(CHARSET_TO_DECODE_BUFFER);
+        return new String(
+                getBytes(
+                        buffer,
+                        buffer.readerIndex(),
+                        buffer.writerIndex() - buffer.readerIndex()
+                ),
+                CHARSET_TO_DECODE_BUFFER
+        );
     }
 
     @Override

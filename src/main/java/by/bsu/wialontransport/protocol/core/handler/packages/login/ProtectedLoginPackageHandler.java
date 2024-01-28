@@ -13,15 +13,18 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-public abstract class ProtectedLoginPackageHandler extends LoginPackageHandler<ProtectedLoginPackage> {
+//TODO: refactor tests
+public abstract class ProtectedLoginPackageHandler<PACKAGE extends ProtectedLoginPackage>
+        extends LoginPackageHandler<PACKAGE> {
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public ProtectedLoginPackageHandler(final ContextAttributeManager contextAttributeManager,
+    public ProtectedLoginPackageHandler(final Class<PACKAGE> handledPackageType,
+                                        final ContextAttributeManager contextAttributeManager,
                                         final TrackerService trackerService,
                                         final ConnectionManager connectionManager,
                                         final DataService dataService,
                                         final BCryptPasswordEncoder passwordEncoder) {
-        super(ProtectedLoginPackage.class, contextAttributeManager, trackerService, connectionManager, dataService);
+        super(handledPackageType, contextAttributeManager, trackerService, connectionManager, dataService);
         this.passwordEncoder = passwordEncoder;
     }
 

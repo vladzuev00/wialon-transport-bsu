@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
+//TODO: do the same as ProtectedLoginPackageHandler
 public abstract class UnprotectedLoginPackageHandler extends LoginPackageHandler<LoginPackage> {
 
     public UnprotectedLoginPackageHandler(final ContextAttributeManager contextAttributeManager,

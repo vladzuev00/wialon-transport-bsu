@@ -15,7 +15,12 @@ import static org.junit.Assert.*;
 public final class DataEntityUtil {
 
     public static void checkEquals(final DataEntity expected, final DataEntity actual) {
+        checkEqualsExceptIdAndParameters(expected, actual);
         assertEquals(expected.getId(), actual.getId());
+        checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
+    }
+
+    public static void checkEqualsExceptIdAndParameters(final DataEntity expected, final DataEntity actual) {
         assertEquals(expected.getDateTime(), actual.getDateTime());
         assertEquals(expected.getCoordinate(), actual.getCoordinate());
         assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
@@ -27,7 +32,6 @@ public final class DataEntityUtil {
         assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
         assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
-        checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
         assertEquals(expected.getTracker(), actual.getTracker());
         assertEquals(expected.getAddress(), actual.getAddress());
     }

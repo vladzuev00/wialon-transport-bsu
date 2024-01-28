@@ -6,19 +6,29 @@ import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.ProtectedLoginPackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 
-public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler {
+@Component
+public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler<WialonRequestLoginPackage> {
 
     public WialonRequestLoginPackageHandler(final ContextAttributeManager contextAttributeManager,
                                             final TrackerService trackerService,
                                             final ConnectionManager connectionManager,
                                             final DataService dataService,
                                             final BCryptPasswordEncoder passwordEncoder) {
-        super(contextAttributeManager, trackerService, connectionManager, dataService, passwordEncoder);
+        super(
+                WialonRequestLoginPackage.class,
+                contextAttributeManager,
+                trackerService,
+                connectionManager,
+                dataService,
+                passwordEncoder
+        );
     }
 
     @Override

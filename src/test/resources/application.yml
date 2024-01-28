@@ -34,7 +34,7 @@ protocol-server:
     connection-life-timeout-seconds: 300
   wialon:
     host: localhost
-    port: 6001
+    port: 6002
     thread-count-processing-connection: 1
     thread-count-processing-data: 10
     connection-life-timeout-seconds: 300

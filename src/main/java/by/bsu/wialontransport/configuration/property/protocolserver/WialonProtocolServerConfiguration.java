@@ -3,10 +3,10 @@ package by.bsu.wialontransport.configuration.property.protocolserver;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "protocol-server.new-wing")
+@ConfigurationProperties(prefix = "protocol-server.wialon")
 public class WialonProtocolServerConfiguration extends ProtocolServerConfiguration {
 
+    @ConstructorBinding
     public WialonProtocolServerConfiguration(final String host,
                                              final int port,
                                              final int threadCountProcessingConnection,

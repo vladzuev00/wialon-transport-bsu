@@ -5,12 +5,14 @@ import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.Wialo
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage.PREFIX;
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
 
+@Component
 public final class WialonRequestDataPackageDecoder extends AbstractWialonRequestDataPackageDecoder<
         WialonRequestDataPackage,
         WialonResponseDataPackage

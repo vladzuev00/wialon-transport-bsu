@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.net.InetSocketAddress;
 
+//TODO: add validation
 @Getter
 public abstract class ProtocolServerConfiguration {
     private final InetSocketAddress inetSocketAddress;

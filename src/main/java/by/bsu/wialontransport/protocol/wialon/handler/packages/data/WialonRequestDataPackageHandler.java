@@ -7,10 +7,12 @@ import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.Recei
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status;
+import org.springframework.stereotype.Component;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.PACKAGE_FIX_SUCCESS;
 
+@Component
 public final class WialonRequestDataPackageHandler extends AbstractWialonRequestDataPackageHandler<WialonRequestDataPackage> {
 
     public WialonRequestDataPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,

@@ -1,9 +1,11 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.packages;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
+import org.springframework.stereotype.Component;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonRequestLoginPackage.PREFIX;
 
+@Component
 public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder<WialonRequestLoginPackage> {
     private static final String REGEX_DELIMITER_IMEI_AND_PASSWORD = ";";
     private static final int INDEX_IMEI = 0;
