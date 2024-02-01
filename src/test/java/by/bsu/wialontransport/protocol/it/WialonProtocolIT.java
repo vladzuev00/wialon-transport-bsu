@@ -7,7 +7,6 @@ import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
-import by.bsu.wialontransport.util.entity.DataEntityUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
+
 
 @Transactional(propagation = NOT_SUPPORTED)
 @Sql("classpath:sql/protocol-it/before-test.sql")
@@ -66,7 +67,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
     private static final String SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE = "#AD#1\r\n";
     private static final String FAILED_RECEIVING_DATA_PACKAGE_RESPONSE = "#AD#-1\r\n";
 
-    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 6;
+    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 7;
 
     @Autowired
     private WialonProtocolServerConfiguration serverConfiguration;
@@ -153,7 +154,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
                 .build();
         checkEqualsExceptIdAndParameters(expectedData, actualData);
 
-        //TODO: check parameters and mileage
+        //TODO: check parameters and mileage and consumer's payload
     }
 
     private String request(final String request)
@@ -224,7 +225,18 @@ public final class WialonProtocolIT extends AbstractContextTest {
 
         private byte[] receive()
                 throws IOException {
-            return socket.getInputStream().readAllBytes();
+            final List<Byte> receivedBytes = new ArrayList<>();
+            byte receivedByte;
+            do {
+                receivedByte = (byte) socket.getInputStream().read();
+                receivedBytes.add(receivedByte);
+            } while (receivedByte != '\n');
+            int[] temp = receivedBytes.stream().mapToInt(Byte::byteValue).toArray();
+            byte[] result = new byte[temp.length];
+            for (int i = 0; i < temp.length; i++) {
+                result[i] = (byte) temp[i];
+            }
+            return result;
         }
 
         @Override

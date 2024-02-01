@@ -4,28 +4,24 @@ import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.ReplayingDecoder;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ReplayingDecoder<Package> {
+public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecoder {
     private final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders;
 
-    //TODO: test releasing buffer
     @Override
     protected final void decode(final ChannelHandlerContext context,
                                 final ByteBuf buffer,
                                 final List<Object> outObjects) {
-        try {
-            final SOURCE source = createSource(buffer);
-            final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
-            final Package requestPackage = decoder.decode(source);
-            outObjects.add(requestPackage);
-        } finally {
-            buffer.release();
-        }
+        final SOURCE source = createSource(buffer);
+        final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
+        final Package requestPackage = decoder.decode(source);
+        outObjects.add(requestPackage);
     }
 
     protected abstract SOURCE createSource(final ByteBuf buffer);

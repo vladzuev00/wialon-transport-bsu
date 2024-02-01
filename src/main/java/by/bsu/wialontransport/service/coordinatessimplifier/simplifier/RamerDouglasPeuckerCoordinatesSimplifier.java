@@ -13,6 +13,7 @@ import static java.lang.Math.*;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.IntStream.rangeClosed;
 
+//TODO: add tests with line with same coordinates
 //https://habr.com/ru/articles/448618/
 @Component
 public final class RamerDouglasPeuckerCoordinatesSimplifier implements CoordinatesSimplifier {
@@ -72,7 +73,7 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
                                                       final int startIndex,
                                                       final int endIndex) {
         final Line line = new Line(coordinates.get(startIndex), coordinates.get(endIndex));
-        return rangeClosed(startIndex, endIndex)
+        return rangeClosed(startIndex + 1, endIndex)
                 .mapToObj(i -> new FurthestCoordinate(i, findDistance(line, coordinates.get(i))))
                 .max(comparingDouble(FurthestCoordinate::getDistanceFromLine))
                 .orElseThrow(() -> new IllegalArgumentException("There is no coordinates"));

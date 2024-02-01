@@ -17,8 +17,8 @@ public final class TestKafkaSavedDataConsumer {
     private static final int RESET_LATCH_COUNT = 1;
     private static final String CONSUMER_RECORDS_SEPARATOR_IN_PAYLOADS = " || ";
 
-    private CountDownLatch countDownLatch;
-    private String payload;
+    private volatile CountDownLatch countDownLatch;
+    private volatile String payload;
 
     public TestKafkaSavedDataConsumer() {
         this.reset();
