@@ -13,14 +13,19 @@ import java.util.List;
 public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ReplayingDecoder<Package> {
     private final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders;
 
+    //TODO: test releasing buffer
     @Override
     protected final void decode(final ChannelHandlerContext context,
                                 final ByteBuf buffer,
                                 final List<Object> outObjects) {
-        final SOURCE source = createSource(buffer);
-        final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
-        final Package requestPackage = decoder.decode(source);
-        outObjects.add(requestPackage);
+        try {
+            final SOURCE source = createSource(buffer);
+            final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
+            final Package requestPackage = decoder.decode(source);
+            outObjects.add(requestPackage);
+        } finally {
+            buffer.release();
+        }
     }
 
     protected abstract SOURCE createSource(final ByteBuf buffer);
