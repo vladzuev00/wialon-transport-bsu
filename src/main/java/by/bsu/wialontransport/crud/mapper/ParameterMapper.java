@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import org.modelmapper.ModelMapper;
@@ -19,17 +18,12 @@ public final class ParameterMapper extends Mapper<ParameterEntity, Parameter> {
                 source.getId(),
                 source.getName(),
                 source.getType(),
-                source.getValue(),
-                mapData(source)
+                source.getValue()
         );
     }
 
     @Override
     protected void mapSpecificFields(final Parameter source, final ParameterEntity destination) {
 
-    }
-
-    private Data mapData(final ParameterEntity source) {
-        return mapLazy(source.getData(), Data.class);
     }
 }

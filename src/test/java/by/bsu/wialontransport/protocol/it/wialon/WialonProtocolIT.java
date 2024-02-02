@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.it;
+package by.bsu.wialontransport.protocol.it.wialon;
 
 import by.bsu.wialontransport.base.AbstractContextTest;
 import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
@@ -7,10 +7,12 @@ import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
+import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +59,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
 
     private static final String SUCCESS_PING_RESPONSE = "#AP#\r\n";
 
-    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5345.1065;N;02720.2270;E;100;15;10;"
+    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5344.588228;N;02720.15216;E;100;15;10;"
             + "177;545.4554;17;18;"
             + "5.5,4343.454544334,454.433,1;"
             + "keydrivercode;"
@@ -71,6 +73,9 @@ public final class WialonProtocolIT extends AbstractContextTest {
 
     @Autowired
     private WialonProtocolServerConfiguration serverConfiguration;
+
+    @MockBean
+    private KafkaSavedDataConsumer a;
 
     @Autowired
     private TestKafkaSavedDataConsumer savedDataConsumer;
@@ -139,7 +144,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
         final DataEntity actualData = actualAllData.get(0);
         final DataEntity expectedData = DataEntity.builder()
                 .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
-                .coordinate(new Coordinate(53.75295883333333, 27.333963999999998))
+                .coordinate(new Coordinate(53.75277777777778, 27.396388888888886))
                 .speed(100)
                 .course(15)
                 .altitude(10)
@@ -155,6 +160,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
         checkEqualsExceptIdAndParameters(expectedData, actualData);
 
         //TODO: check parameters and mileage and consumer's payload
+        //TODO: mock nominatim service and verify no interactions
     }
 
     private String request(final String request)
