@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.checkEqualsExceptIdAndParameters;
 import static org.junit.Assert.assertEquals;
@@ -36,7 +35,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     private static final String SUCCESS_PING_RESPONSE = "#AP#\r\n";
 
-    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5344.588228;N;02720.15216;E;100;15;10;"
+    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5345.043440;N;02720.010240;E;100;15;10;"
             + "177;545.4554;17;18;"
             + "5.5,4343.454544334,454.433,1;"
             + "keydrivercode;"
@@ -113,7 +112,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         final DataEntity actualData = actualAllData.get(0);
         final DataEntity expectedData = DataEntity.builder()
                 .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
-                .coordinate(new Coordinate(53.75277777777778, 27.396388888888886))
+                .coordinate(new Coordinate(53.750724, 27.333504))
                 .speed(100)
                 .course(15)
                 .altitude(10)
@@ -134,7 +133,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     private void loginByExistingTracker()
             throws IOException {
-        sendRequestExpectingResponse(
+        client.requestExpectingResponse(
                 GIVEN_REQUEST_TO_LOGIN,
                 SUCCESS_LOGIN_RESPONSE,
                 "Login by existing tracker is failed"
@@ -143,20 +142,10 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     private void sendValidRequestDataPackage()
             throws IOException {
-        sendRequestExpectingResponse(
+        client.requestExpectingResponse(
                 GIVEN_VALID_REQUEST_DATA_PACKAGE,
                 SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE,
                 "Sending data package is failed"
         );
-    }
-
-    private void sendRequestExpectingResponse(final String request,
-                                              final String expectedResponse,
-                                              final String notExpectedResponseMessage)
-            throws IOException {
-        final String response = client.request(request);
-        if (!Objects.equals(expectedResponse, response)) {
-            throw new IllegalStateException(notExpectedResponseMessage);
-        }
     }
 }
