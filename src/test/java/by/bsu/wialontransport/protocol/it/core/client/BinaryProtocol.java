@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.it.core;
+package by.bsu.wialontransport.protocol.it.core.client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

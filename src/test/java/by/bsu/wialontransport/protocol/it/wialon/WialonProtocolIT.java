@@ -1,58 +1,28 @@
 package by.bsu.wialontransport.protocol.it.wialon;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
-import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.configuration.property.protocolserver.WialonProtocolServerConfiguration;
-import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
-import by.bsu.wialontransport.crud.entity.TrackerEntity;
-import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
+import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.checkEqualsExceptIdAndParameters;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
-
-@Transactional(propagation = NOT_SUPPORTED)
-@Sql("classpath:sql/protocol-it/before-test.sql")
-@Sql(value = "classpath:sql/protocol-it/after-test.sql", executionPhase = AFTER_TEST_METHOD)
-public final class WialonProtocolIT extends AbstractContextTest {
-    private static final Charset CHARSET = UTF_8;
-
-    private static final AddressEntity GIVEN_EXISTING_ADDRESS = AddressEntity.builder()
-            .id(103L)
-            .build();
-    private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
-            .id(255L)
-            .imei("11112222333344445555")
-            .password("password")
-            .build();
-    private static final String GIVEN_REQUEST_TO_LOGIN = "#L#%s;%s\r\n"
-            .formatted(
-                    GIVEN_EXISTING_TRACKER.getImei(),
-                    GIVEN_EXISTING_TRACKER.getPassword()
-            );
+public final class WialonProtocolIT extends ProtocolIT {
+    private static final String GIVEN_REQUEST_TO_LOGIN = "#L#%s;%s\r\n".formatted(
+            GIVEN_EXISTING_TRACKER.getImei(),
+            GIVEN_EXISTING_TRACKER.getPassword()
+    );
     private static final String SUCCESS_LOGIN_RESPONSE = "#AL#1\r\n";
     private static final String ERROR_CHECKING_PASSWORD_LOGIN_RESPONSE = "#AL#01\r\n";
     private static final String CONNECTION_FAILURE_LOGIN_RESPONSE = "#AL#0\r\n";
@@ -69,16 +39,8 @@ public final class WialonProtocolIT extends AbstractContextTest {
     private static final String SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE = "#AD#1\r\n";
     private static final String FAILED_RECEIVING_DATA_PACKAGE_RESPONSE = "#AD#-1\r\n";
 
-    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 7;
-
     @Autowired
     private WialonProtocolServerConfiguration serverConfiguration;
-
-    @MockBean
-    private KafkaSavedDataConsumer a;
-
-    @Autowired
-    private TestKafkaSavedDataConsumer savedDataConsumer;
 
     private WialonClient client;
 
@@ -97,7 +59,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
     @Test
     public void loginPackageShouldBeHandledWithSuccessAuthorizationStatus()
             throws Exception {
-        final String actual = request(GIVEN_REQUEST_TO_LOGIN);
+        final String actual = client.request(GIVEN_REQUEST_TO_LOGIN);
         assertEquals(SUCCESS_LOGIN_RESPONSE, actual);
     }
 
@@ -106,7 +68,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
             throws Exception {
         final String givenRequest = "#L#%s;wrong_password\r\n".formatted(GIVEN_EXISTING_TRACKER.getImei());
 
-        final String actual = request(givenRequest);
+        final String actual = client.request(givenRequest);
         assertEquals(ERROR_CHECKING_PASSWORD_LOGIN_RESPONSE, actual);
     }
 
@@ -115,7 +77,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
             throws Exception {
         final String givenRequest = "#L#00000000000000000000;password\r\n";
 
-        final String actual = request(givenRequest);
+        final String actual = client.request(givenRequest);
         assertEquals(CONNECTION_FAILURE_LOGIN_RESPONSE, actual);
     }
 
@@ -124,7 +86,7 @@ public final class WialonProtocolIT extends AbstractContextTest {
             throws Exception {
         final String givenRequest = "#P#\r\n";
 
-        final String actual = request(givenRequest);
+        final String actual = client.request(givenRequest);
         assertEquals(SUCCESS_PING_RESPONSE, actual);
     }
 
@@ -163,13 +125,6 @@ public final class WialonProtocolIT extends AbstractContextTest {
         //TODO: mock nominatim service and verify no interactions
     }
 
-    private String request(final String request)
-            throws IOException {
-        final byte[] requestBytes = request.getBytes(CHARSET);
-        final byte[] responseBytes = client.request(requestBytes);
-        return new String(responseBytes, CHARSET);
-    }
-
     private void loginByExistingTracker()
             throws IOException {
         sendRequestExpectingResponse(
@@ -192,63 +147,9 @@ public final class WialonProtocolIT extends AbstractContextTest {
                                               final String expectedResponse,
                                               final String notExpectedResponseMessage)
             throws IOException {
-        final String response = request(request);
+        final String response = client.request(request);
         if (!Objects.equals(expectedResponse, response)) {
             throw new IllegalStateException(notExpectedResponseMessage);
-        }
-    }
-
-    private boolean waitDataDeliveringAndReturnDeliveredOrNot()
-            throws InterruptedException {
-        return savedDataConsumer
-                .getCountDownLatch()
-                .await(WAIT_DATA_DELIVERING_IN_SECONDS, SECONDS);
-    }
-
-    private List<DataEntity> findAllDataOrderedById() {
-        return entityManager.createQuery("SELECT e FROM DataEntity e ORDER BY e.id", DataEntity.class)
-                .getResultList();
-    }
-
-    private static final class WialonClient implements AutoCloseable {
-        private final Socket socket;
-
-        public WialonClient(final InetSocketAddress address)
-                throws IOException {
-            socket = new Socket(address.getAddress(), address.getPort());
-        }
-
-        public byte[] request(final byte[] bytes)
-                throws IOException {
-            send(bytes);
-            return receive();
-        }
-
-        private void send(final byte[] bytes)
-                throws IOException {
-            socket.getOutputStream().write(bytes);
-        }
-
-        private byte[] receive()
-                throws IOException {
-            final List<Byte> receivedBytes = new ArrayList<>();
-            byte receivedByte;
-            do {
-                receivedByte = (byte) socket.getInputStream().read();
-                receivedBytes.add(receivedByte);
-            } while (receivedByte != '\n');
-            int[] temp = receivedBytes.stream().mapToInt(Byte::byteValue).toArray();
-            byte[] result = new byte[temp.length];
-            for (int i = 0; i < temp.length; i++) {
-                result[i] = (byte) temp[i];
-            }
-            return result;
-        }
-
-        @Override
-        public void close()
-                throws IOException {
-            socket.close();
         }
     }
 }
