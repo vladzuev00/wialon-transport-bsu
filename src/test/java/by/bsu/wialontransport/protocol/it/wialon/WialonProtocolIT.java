@@ -3,6 +3,7 @@ package by.bsu.wialontransport.protocol.it.wialon;
 import by.bsu.wialontransport.configuration.property.protocolserver.WialonProtocolServerConfiguration;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
+import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +20,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public final class WialonProtocolIT extends ProtocolIT {
+    private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
+            .id(255L)
+            .imei("11112222333344445555")
+            .password("password")
+            .build();
+
     private static final String GIVEN_REQUEST_TO_LOGIN = "#L#%s;%s\r\n".formatted(
             GIVEN_EXISTING_TRACKER.getImei(),
             GIVEN_EXISTING_TRACKER.getPassword()

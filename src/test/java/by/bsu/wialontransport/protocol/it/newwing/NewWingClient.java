@@ -1,4 +1,6 @@
-package by.bsu.wialontransport.protocol.it.core.client;
+package by.bsu.wialontransport.protocol.it.newwing;
+
+import by.bsu.wialontransport.protocol.it.core.client.BinaryProtocol;
 
 import java.io.IOException;
 import java.io.InputStream;

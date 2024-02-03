@@ -11,7 +11,7 @@ public abstract class BinaryProtocol extends Client<byte[]> {
     }
 
     @Override
-    protected final byte[] getBytes(byte[] bytes) {
-        return new byte[0];
+    protected final byte[] getBytes(final byte[] bytes) {
+        return bytes;
     }
 }

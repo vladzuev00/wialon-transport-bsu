@@ -1,6 +1,4 @@
-package by.bsu.wialontransport.protocol.it.newwing;
-
-import by.bsu.wialontransport.protocol.it.core.client.Client;
+package by.bsu.wialontransport.protocol.it.core.client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.wialon;
 
-import by.bsu.wialontransport.protocol.it.newwing.TextClient;
+import by.bsu.wialontransport.protocol.it.core.client.TextClient;
 
 import java.io.IOException;
 import java.io.InputStream;
