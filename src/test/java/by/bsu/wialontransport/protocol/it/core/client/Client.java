@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -22,6 +23,16 @@ public abstract class Client<REQUEST> implements AutoCloseable {
             throws IOException {
         send(getBytes(request));
         return receiveResponse();
+    }
+
+    public final void requestExpectingResponse(final REQUEST request,
+                                               final String expectedResponse,
+                                               final String notExpectedResponseMessage)
+            throws IOException {
+        final String response = request(request);
+        if (!Objects.equals(expectedResponse, response)) {
+            throw new IllegalStateException(notExpectedResponseMessage);
+        }
     }
 
     @Override
