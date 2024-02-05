@@ -5,7 +5,6 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.ReplayingDecoder;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,10 +17,15 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
     protected final void decode(final ChannelHandlerContext context,
                                 final ByteBuf buffer,
                                 final List<Object> outObjects) {
-        final SOURCE source = createSource(buffer);
-        final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
-        final Package requestPackage = decoder.decode(source);
-        outObjects.add(requestPackage);
+        try {
+            final SOURCE source = createSource(buffer);
+            final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
+            final Package requestPackage = decoder.decode(source);
+            outObjects.add(requestPackage);
+        } finally {
+            //TODO: testing releasing
+            buffer.release();
+        }
     }
 
     protected abstract SOURCE createSource(final ByteBuf buffer);

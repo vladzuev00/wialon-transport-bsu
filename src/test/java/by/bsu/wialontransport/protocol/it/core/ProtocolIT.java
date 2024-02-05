@@ -23,7 +23,7 @@ public abstract class ProtocolIT extends AbstractContextTest {
     private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 7;
 
     protected static final AddressEntity GIVEN_EXISTING_ADDRESS = AddressEntity.builder()
-            .id(103L)
+            .id(102L)
             .build();
 
     @MockBean

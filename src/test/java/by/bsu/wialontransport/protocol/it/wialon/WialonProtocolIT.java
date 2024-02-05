@@ -35,7 +35,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     private static final String SUCCESS_PING_RESPONSE = "#AP#\r\n";
 
-    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5345.043440;N;02720.010240;E;100;15;10;"
+    private static final String GIVEN_VALID_REQUEST_DATA_PACKAGE = "#D#151122;145643;5354.51336;N;02732.13801;E;100;15;10;"
             + "177;545.4554;17;18;"
             + "5.5,4343.454544334,454.433,1;"
             + "keydrivercode;"
@@ -112,7 +112,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         final DataEntity actualData = actualAllData.get(0);
         final DataEntity expectedData = DataEntity.builder()
                 .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
-                .coordinate(new Coordinate(53.750724, 27.333504))
+                .coordinate(new Coordinate(53.901426, 27.537167))
                 .speed(100)
                 .course(15)
                 .altitude(10)
