@@ -12,7 +12,11 @@ import static org.junit.Assert.assertEquals;
 public final class TrackerMileageEntityUtil {
 
     public static void checkEquals(final TrackerMileageEntity expected, final TrackerMileageEntity actual) {
+        checkEqualsExceptId(expected, actual);
         assertEquals(expected.getId(), actual.getId());
+    }
+
+    public static void checkEqualsExceptId(final TrackerMileageEntity expected, final TrackerMileageEntity actual) {
         assertEquals(expected.getUrban(), actual.getUrban(), 0.);
         assertEquals(expected.getCountry(), actual.getCountry(), 0.);
     }

@@ -1,10 +1,10 @@
 package by.bsu.wialontransport.protocol.it.core;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.kafka.AbstractKafkaContainerTest;
 import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
-import by.bsu.wialontransport.crud.entity.AddressEntity;
-import by.bsu.wialontransport.crud.entity.DataEntity;
+import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,8 +19,8 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 @Transactional(propagation = NOT_SUPPORTED)
 @Sql("classpath:sql/protocol-it/before-test.sql")
 @Sql(value = "classpath:sql/protocol-it/after-test.sql", executionPhase = AFTER_TEST_METHOD)
-public abstract class ProtocolIT extends AbstractContextTest {
-    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 7;
+public abstract class ProtocolIT extends AbstractKafkaContainerTest {
+    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 5;
 
     protected static final AddressEntity GIVEN_EXISTING_ADDRESS = AddressEntity.builder()
             .id(102L)
@@ -39,8 +39,44 @@ public abstract class ProtocolIT extends AbstractContextTest {
                 .await(WAIT_DATA_DELIVERING_IN_SECONDS, SECONDS);
     }
 
-    protected List<DataEntity> findAllDataOrderedById() {
-        return entityManager.createQuery("SELECT e FROM DataEntity e ORDER BY e.id", DataEntity.class)
+    protected String getKafkaSavedDataConsumerPayload() {
+        return savedDataConsumer.getPayload();
+    }
+
+    protected List<DataEntity> findDataFetchingTrackerAndAddressOrderedById() {
+        return entityManager.createQuery("SELECT e FROM DataEntity e JOIN FETCH e.tracker JOIN FETCH e.address ORDER BY e.id", DataEntity.class)
                 .getResultList();
+    }
+
+    protected boolean isMatchingParametersExist(final ParameterView view) {
+        return countMatchingParameters(view) >= 1;
+    }
+
+    protected long countParameters() {
+        return entityManager.createQuery("SELECT COUNT(e) FROM ParameterEntity e", Long.class)
+                .getSingleResult();
+    }
+
+    protected TrackerMileageEntity findTrackerMileage(final TrackerEntity tracker) {
+        return entityManager.createQuery("SELECT e.mileage FROM TrackerEntity e WHERE e.id = :trackerId", TrackerMileageEntity.class)
+                .setParameter("trackerId", tracker.getId())
+                .getSingleResult();
+    }
+
+    private long countMatchingParameters(final ParameterView view) {
+        return entityManager.createQuery("SELECT COUNT(e) FROM ParameterEntity e WHERE e.name = :name AND e.type = :type AND e.value = :value AND e.data = :data", Long.class)
+                .setParameter("name", view.name)
+                .setParameter("type", view.type)
+                .setParameter("value", view.value)
+                .setParameter("data", view.data)
+                .getSingleResult();
+    }
+
+    @Value
+    protected static class ParameterView {
+        String name;
+        ParameterEntity.Type type;
+        String value;
+        DataEntity data;
     }
 }
