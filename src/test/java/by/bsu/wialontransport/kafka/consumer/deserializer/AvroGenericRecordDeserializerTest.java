@@ -6,7 +6,9 @@ import lombok.Value;
 import lombok.experimental.FieldNameConstants;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.avro.reflect.ReflectData;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +20,7 @@ import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
 import static org.junit.Assert.*;
 
 public final class AvroGenericRecordDeserializerTest {
-    private static final String FIELD_NAME_SCHEMA = "schema";
+    private static final String FIELD_NAME_DATUM_READER = "datumReader";
 
     private static final Schema GIVEN_SCHEMA = createSourceSchema();
     private static final Map<String, ?> GIVEN_CONFIGURATION_PROPERTIES = Map.of(SCHEMA.getName(), GIVEN_SCHEMA);
@@ -33,8 +35,11 @@ public final class AvroGenericRecordDeserializerTest {
 
     @Test
     public void deserializerShouldBeConfigured() {
-        final Schema actual = findSchema(deserializer);
-        assertSame(GIVEN_SCHEMA, actual);
+        final GenericDatumReader<GenericRecord> actualDatumReader = findDatumReader(deserializer);
+        assertNotNull(actualDatumReader);
+
+        final Schema actualSchema = actualDatumReader.getSchema();
+        assertSame(GIVEN_SCHEMA, actualSchema);
     }
 
     @Test
@@ -59,8 +64,9 @@ public final class AvroGenericRecordDeserializerTest {
         return ReflectData.get().getSchema(TestSource.class);
     }
 
-    private static Schema findSchema(final AvroGenericRecordDeserializer deserializer) {
-        return findProperty(deserializer, FIELD_NAME_SCHEMA, Schema.class);
+    @SuppressWarnings("unchecked")
+    private static GenericDatumReader<GenericRecord> findDatumReader(final AvroGenericRecordDeserializer deserializer) {
+        return (GenericDatumReader<GenericRecord>) findProperty(deserializer, FIELD_NAME_DATUM_READER, DatumReader.class);
     }
 
     @SuppressWarnings("SameParameterValue")

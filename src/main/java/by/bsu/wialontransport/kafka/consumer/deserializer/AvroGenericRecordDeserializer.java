@@ -14,11 +14,12 @@ import java.util.Map;
 import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
 
 public final class AvroGenericRecordDeserializer implements Deserializer<GenericRecord> {
-    private Schema schema;
+    private final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
 
     @Override
     public void configure(final Map<String, ?> configurationProperties, final boolean isKey) {
-        schema = (Schema) configurationProperties.get(SCHEMA.getName());
+        final Schema schema = (Schema) configurationProperties.get(SCHEMA.getName());
+        datumReader.setSchema(schema);
     }
 
     @Override
@@ -27,7 +28,6 @@ public final class AvroGenericRecordDeserializer implements Deserializer<Generic
             if (bytes == null) {
                 return null;
             }
-            final DatumReader<GenericRecord> datumReader = new GenericDatumReader<>(schema);
             final Decoder decoder = createDecoder(bytes);
             return datumReader.read(null, decoder);
         } catch (final IOException cause) {
