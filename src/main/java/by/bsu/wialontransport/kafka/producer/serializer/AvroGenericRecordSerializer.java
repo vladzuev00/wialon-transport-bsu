@@ -15,11 +15,12 @@ import java.util.Map;
 import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
 
 public final class AvroGenericRecordSerializer implements Serializer<GenericRecord> {
-    private Schema schema;
+    private final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
 
     @Override
     public void configure(final Map<String, ?> configurationProperties, final boolean key) {
-        schema = (Schema) configurationProperties.get(SCHEMA.getName());
+        final Schema schema = (Schema) configurationProperties.get(SCHEMA.getName());
+        datumWriter.setSchema(schema);
     }
 
     @Override
@@ -29,7 +30,6 @@ public final class AvroGenericRecordSerializer implements Serializer<GenericReco
         }
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             final BinaryEncoder binaryEncoder = createBinaryEncoder(outputStream);
-            final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
             datumWriter.write(record, binaryEncoder);
             binaryEncoder.flush();
             return outputStream.toByteArray();

@@ -9,6 +9,7 @@ import lombok.experimental.FieldNameConstants;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.reflect.ReflectData;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,8 @@ import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
 import static org.junit.Assert.*;
 
 public final class AvroGenericRecordSerializerTest extends AbstractContextTest {
-    private static final String FIELD_NAME_SCHEMA = "schema";
+    private static final String FIELD_NAME_DATUM_WRITER = "datumWriter";
+    private static final String FIELD_NAME_SCHEMA = "root";
 
     private static final Schema GIVEN_SCHEMA = createTransportableSchema();
     private static final Map<String, ?> GIVEN_CONFIGURATION_PROPERTIES = Map.of(SCHEMA.getName(), GIVEN_SCHEMA);
@@ -35,8 +37,11 @@ public final class AvroGenericRecordSerializerTest extends AbstractContextTest {
 
     @Test
     public void serializerShouldBeConfigured() {
-        final Schema actual = findSchema(serializer);
-        assertSame(GIVEN_SCHEMA, actual);
+        final DatumWriter<GenericRecord> actualDatumWriter = findDatumWriter(serializer);
+        assertNotNull(actualDatumWriter);
+
+        final Schema actualSchema = findSchema(actualDatumWriter);
+        assertSame(GIVEN_SCHEMA, actualSchema);
     }
 
     @Test
@@ -58,8 +63,13 @@ public final class AvroGenericRecordSerializerTest extends AbstractContextTest {
         assertNull(actual);
     }
 
-    private static Schema findSchema(final AvroGenericRecordSerializer serializer) {
-        return findProperty(serializer, FIELD_NAME_SCHEMA, Schema.class);
+    @SuppressWarnings("unchecked")
+    private static DatumWriter<GenericRecord> findDatumWriter(final AvroGenericRecordSerializer serializer) {
+        return (DatumWriter<GenericRecord>) findProperty(serializer, FIELD_NAME_DATUM_WRITER, DatumWriter.class);
+    }
+
+    private static Schema findSchema(final DatumWriter<GenericRecord> datumWriter) {
+        return findProperty(datumWriter, FIELD_NAME_SCHEMA, Schema.class);
     }
 
     private static Schema createTransportableSchema() {
