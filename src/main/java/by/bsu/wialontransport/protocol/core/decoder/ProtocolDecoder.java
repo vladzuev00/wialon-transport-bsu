@@ -18,7 +18,7 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
                                 final ByteBuf buffer,
                                 final List<Object> outObjects) {
         try {
-            //TODO: testing retaining
+            //TODO: testing retaining (and think about it correcting)
             buffer.retain();
             final SOURCE source = createSource(buffer);
             final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
