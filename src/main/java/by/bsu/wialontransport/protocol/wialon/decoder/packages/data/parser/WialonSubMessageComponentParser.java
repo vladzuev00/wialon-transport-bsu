@@ -40,7 +40,7 @@ public final class WialonSubMessageComponentParser {
             + "(\\d+|(NA));"                                       //speed
             + "(\\d+|(NA));"                                       //course
             + "(\\d+|(NA));"                                       //altitude
-            + "(\\d+|(NA));"                                       //amountSatellite
+            + "(\\d+|(NA));"                                       //amountOfSatellites
             + "((\\d+\\.\\d+)|(NA));"                              //hdop
             + "(\\d+|(NA));"                                       //inputs
             + "(\\d+|(NA));"                                       //outputs

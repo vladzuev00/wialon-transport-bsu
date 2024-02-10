@@ -1,4 +1,5 @@
 UPDATE trackers_last_data SET data_id = NULL;
+UPDATE tracker_mileages SET urban = 0, country = 0;
 DELETE FROM data;
 DELETE FROM cities;
 DELETE FROM searching_cities_processes;

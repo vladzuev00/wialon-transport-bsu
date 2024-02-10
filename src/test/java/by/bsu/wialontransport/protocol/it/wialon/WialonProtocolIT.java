@@ -27,8 +27,7 @@ import java.util.Optional;
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.checkEqualsExceptIdAndParameters;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -270,6 +269,1036 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedDateShouldBeHandledButSkippedAsNotValid()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#NA;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+
+        final String actual = client.request(givenRequestDataPackage);
+        assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 0;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedTimeShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;NA;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 0, 0, 0))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668470400, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedLatitudeShouldBeHandledButSkippedAsNotValid()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;NA;NA;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+
+        final String actual = client.request(givenRequestDataPackage);
+        assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 0;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedLongitudeShouldBeHandledButSkippedAsNotValid()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;NA;NA;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+
+        final String actual = client.request(givenRequestDataPackage);
+        assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 0;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedSpeedShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;NA;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(0)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 0\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedCourseShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;NA;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(0)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 0, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedAltitudeShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;NA;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(0)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 0, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedAmountOfSatellitesShouldBeHandledButSkippedAsNotValid()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "NA;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+
+        final String actual = client.request(givenRequestDataPackage);
+        assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 0;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedHdopShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;NA;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(0)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 0\\.0, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedInputsShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;NA;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(0)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 0, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedOutputsShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;NA;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(0)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 0, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithEmptyAnalogInputsShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + ";"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedAnalogInputsShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "NA;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithNotDefinedDriverKeyCodeShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "NA;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("not defined")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 5;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"not defined\", "
+                + "\"serializedParameters\": "
+                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void dataPackageWithEmptyParametersShouldBeHandledInCaseNotExistingPreviousDataAndAddressShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 1;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualData = actualAllData.get(0);
+        final DataEntity expectedData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedData, actualData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 0;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", "
+                + "\"serializedParameters\": "
+                + "\"\\[]\", "
+                + "\"trackerId\": 255}\\)";
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+
+        verifyNoInteractions(mockedNominatimService);
+    }
+
+    @Test
+    public void twoDataPackageWithDefinedPropertiesShouldBeHandledAndAddressesShouldBeReceivedFromDatabase()
+            throws Exception {
+        final String givenFirstRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+        final String givenSecondRequestDataPackage = "#D#151122;145644;5354.177;N;02731.339;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingSuccess(givenFirstRequestDataPackage);
+        sendRequestDataPackageExpectingSuccess(givenSecondRequestDataPackage);
+
+        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final int actualAllDataSize = actualAllData.size();
+        final int expectedAllDataSize = 2;
+        assertEquals(expectedAllDataSize, actualAllDataSize);
+
+        final DataEntity actualFirstData = actualAllData.get(0);
+        final DataEntity expectedFirstData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
+                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedFirstData, actualFirstData);
+
+        final DataEntity actualSecondData = actualAllData.get(1);
+        final DataEntity expectedSecondData = DataEntity.builder()
+                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 44))
+                .coordinate(new Coordinate(53.9491666666667, 27.6108333333333))
+                .speed(100)
+                .course(15)
+                .altitude(10)
+                .amountOfSatellites(177)
+                .hdop(545.4554)
+                .inputs(17)
+                .outputs(18)
+                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
+                .driverKeyCode("keydrivercode")
+                .tracker(GIVEN_EXISTING_TRACKER)
+                .address(GIVEN_EXISTING_ADDRESS)
+                .build();
+        checkEqualsExceptIdAndParameters(expectedSecondData, actualSecondData);
+
+        final long actualParameterCount = countParameters();
+        final long expectedParameterCount = 10;
+        assertEquals(expectedParameterCount, actualParameterCount);
+
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualFirstData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualFirstData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualFirstData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualFirstData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualFirstData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualSecondData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualSecondData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualSecondData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualSecondData)));
+        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualSecondData)));
+
+        final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
+        final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .country(0)
+                .urban(0.1435181328100863)
+                .build();
+        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+
+        final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
+        final String expectedKafkaSavedDataConsumerPayload = "";
+//        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertEquals(expectedKafkaSavedDataConsumerPayload, actualKafkaSavedDataConsumerPayload);
+
+        verifyNoInteractions(mockedNominatimService);
     }
 
     private void loginByExistingTracker()

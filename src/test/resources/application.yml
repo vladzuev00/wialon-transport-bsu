@@ -93,3 +93,14 @@ track-simplifier:
 
 mileage-calculator:
   enable-accurate-calculator: false
+
+tracker-server:
+  data-default-property:
+    course: 0
+    altitude: 0
+    speed: 0
+    amount-of-satellites: 0
+    hdop: 0
+    inputs: 0
+    outputs: 0
+    driver-key-code: not defined
