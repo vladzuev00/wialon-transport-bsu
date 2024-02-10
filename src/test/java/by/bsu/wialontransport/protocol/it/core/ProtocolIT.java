@@ -5,6 +5,7 @@ import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
 import lombok.Value;
+import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -31,6 +32,11 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
 
     @Autowired
     private TestKafkaSavedDataConsumer savedDataConsumer;
+
+    @After
+    public void resetSavedDataConsumer() {
+        savedDataConsumer.reset();
+    }
 
     protected boolean waitDataDeliveringAndReturnDeliveredOrNot()
             throws InterruptedException {
