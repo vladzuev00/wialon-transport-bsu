@@ -61,7 +61,9 @@ public final class ProtocolDecoderTest {
         protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
 
         verifyNoInteractions(thirdMockedPackageDecoder);
+        verify(givenBuffer, times(1)).retain();
         verify(givenOutObjects, times(1)).add(same(givenPackage));
+        verify(givenBuffer, times(1)).release();
     }
 
     @SuppressWarnings("unchecked")
