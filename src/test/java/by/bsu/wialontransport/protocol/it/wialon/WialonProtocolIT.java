@@ -169,7 +169,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -184,7 +184,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -253,7 +253,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 1, \"epochSeconds\": 1668524203, "
@@ -268,7 +268,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
     }
 
     @Test
@@ -353,7 +353,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668470400, "
@@ -368,7 +368,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -480,7 +480,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -495,7 +495,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -557,7 +557,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -572,7 +572,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -634,7 +634,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -649,7 +649,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -736,7 +736,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -751,7 +751,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -813,7 +813,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -828,7 +828,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -890,7 +890,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -905,7 +905,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -967,7 +967,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -982,7 +982,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -1044,7 +1044,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -1059,7 +1059,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -1121,7 +1121,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -1136,7 +1136,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
@@ -1190,7 +1190,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
                 + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
@@ -1201,13 +1201,13 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"serializedParameters\": "
                 + "\"\\[]\", "
                 + "\"trackerId\": 255}\\)";
-        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
 
     @Test
-    public void twoDataPackageWithDefinedPropertiesShouldBeHandledAndAddressesShouldBeReceivedFromDatabase()
+    public void twoDataPackageWithDefinedPropertiesAndCoordinateInCityShouldBeHandledAndAddressesShouldBeReceivedFromDatabase()
             throws Exception {
         final String givenFirstRequestDataPackage = "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;"
                 + "177;545.4554;17;18;"
@@ -1294,9 +1294,37 @@ public final class WialonProtocolIT extends ProtocolIT {
         TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
-        final String expectedKafkaSavedDataConsumerPayload = "";
-//        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayload));
-        assertEquals(expectedKafkaSavedDataConsumerPayload, actualKafkaSavedDataConsumerPayload);
+        final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
+                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
+                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
+                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
+                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\[\\"
+                + "{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\) "
+                + "\\|\\| "
+                + "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, offset = \\d+, "
+                + "CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "\"addressId\": 102, \"epochSeconds\": 1668524204, \"latitude\": 53\\.94916666666666, "
+                + "\"longitude\": 27\\.610833333333332, \"course\": 15, \"speed\": 100\\.0, \"altitude\": 10, "
+                + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
+                + "\"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
+                + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\["
+                + "\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\"trackerId\": 255}\\)";
+        //TODO: sometimes only one message is consumed - correct
+        assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);
     }
