@@ -9,19 +9,22 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import static java.util.stream.Collectors.joining;
+import static java.lang.Thread.currentThread;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Component
-@Getter
 public final class TestKafkaSavedDataConsumer {
-    private static final int RESET_LATCH_COUNT = 1;
-    private static final String CONSUMER_RECORDS_SEPARATOR_IN_PAYLOADS = " || ";
+    private static final String PAYLOAD_RECORDS_SEPARATOR = " || ";
+    private static final int DEFAULT_CONSUMED_RECORDS_COUNT = 1;
+    private static final int WAIT_CONSUMING_IN_SECONDS = 5;
 
+    @Getter
     private volatile CountDownLatch countDownLatch;
-    private volatile String payload;
+
+    private volatile StringBuffer payloadBuffer;
 
     public TestKafkaSavedDataConsumer() {
-        this.reset();
+        reset();
     }
 
     @KafkaListener(
@@ -29,18 +32,37 @@ public final class TestKafkaSavedDataConsumer {
             groupId = "${kafka.topic.saved-data.consumer.group-id}",
             containerFactory = "listenerContainerFactorySavedData"
     )
-    public void consume(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
-        this.payload = convertToPayload(consumerRecords);
-        this.countDownLatch.countDown();
+    public void consume(final List<ConsumerRecord<Long, GenericRecord>> records) {
+        records.forEach(this::accumulate);
     }
 
     public void reset() {
-        this.countDownLatch = new CountDownLatch(RESET_LATCH_COUNT);
+        reset(DEFAULT_CONSUMED_RECORDS_COUNT);
     }
 
-    private static String convertToPayload(final List<ConsumerRecord<Long, GenericRecord>> consumerRecords) {
-        return consumerRecords.stream()
-                .map(ConsumerRecord::toString)
-                .collect(joining(CONSUMER_RECORDS_SEPARATOR_IN_PAYLOADS));
+    public void reset(final int consumedRecordCount) {
+        countDownLatch = new CountDownLatch(consumedRecordCount);
+        payloadBuffer = new StringBuffer();
+    }
+
+    public String getPayload() {
+        return payloadBuffer.toString();
+    }
+
+    public boolean isSuccessConsuming() {
+        try {
+            return countDownLatch.await(WAIT_CONSUMING_IN_SECONDS, SECONDS);
+        } catch (final InterruptedException exception) {
+            currentThread().interrupt();
+            return false;
+        }
+    }
+
+    private void accumulate(final ConsumerRecord<Long, GenericRecord> record) {
+        payloadBuffer.append(record.toString());
+        if (countDownLatch.getCount() > 1) {
+            payloadBuffer.append(PAYLOAD_RECORDS_SEPARATOR);
+        }
+        countDownLatch.countDown();
     }
 }

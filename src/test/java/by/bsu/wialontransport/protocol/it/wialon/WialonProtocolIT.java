@@ -126,7 +126,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -210,7 +210,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -288,7 +288,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertFalse(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -310,7 +310,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -390,7 +390,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertFalse(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -415,7 +415,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertFalse(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -437,7 +437,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -514,7 +514,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -591,7 +591,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -671,7 +671,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertFalse(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertFalse(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -693,7 +693,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -770,7 +770,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -847,7 +847,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -924,7 +924,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -1001,7 +1001,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -1078,7 +1078,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -1153,7 +1153,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         loginByExistingTracker();
         sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -1228,7 +1228,8 @@ public final class WialonProtocolIT extends ProtocolIT {
         sendRequestDataPackageExpectingSuccess(givenFirstRequestDataPackage);
         sendRequestDataPackageExpectingSuccess(givenSecondRequestDataPackage);
 
-        assertTrue(waitDataDeliveringAndReturnDeliveredOrNot());
+        resetSavedDataConsumer(2);
+        assertTrue(isSuccessDataDelivering());
 
         final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
@@ -1323,7 +1324,6 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
                 + "\"trackerId\": 255}\\)";
-        //TODO: sometimes only one message is consumed - correct
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);

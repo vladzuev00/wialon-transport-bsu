@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
@@ -21,8 +20,6 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 @Sql("classpath:sql/protocol-it/before-test.sql")
 @Sql(value = "classpath:sql/protocol-it/after-test.sql", executionPhase = AFTER_TEST_METHOD)
 public abstract class ProtocolIT extends AbstractKafkaContainerTest {
-    private static final int WAIT_DATA_DELIVERING_IN_SECONDS = 5;
-
     protected static final AddressEntity GIVEN_EXISTING_ADDRESS = AddressEntity.builder()
             .id(102L)
             .build();
@@ -38,11 +35,12 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
         savedDataConsumer.reset();
     }
 
-    protected boolean waitDataDeliveringAndReturnDeliveredOrNot()
-            throws InterruptedException {
-        return savedDataConsumer
-                .getCountDownLatch()
-                .await(WAIT_DATA_DELIVERING_IN_SECONDS, SECONDS);
+    protected void resetSavedDataConsumer(final int consumedRecordCount) {
+        savedDataConsumer.reset(consumedRecordCount);
+    }
+
+    protected boolean isSuccessDataDelivering() {
+        return savedDataConsumer.isSuccessConsuming();
     }
 
     protected String getKafkaSavedDataConsumerPayload() {
