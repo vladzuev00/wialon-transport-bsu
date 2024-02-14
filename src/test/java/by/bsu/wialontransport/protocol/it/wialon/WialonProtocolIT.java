@@ -1329,6 +1329,10 @@ public final class WialonProtocolIT extends ProtocolIT {
         verifyNoInteractions(mockedNominatimService);
     }
 
+    //TODO: test case when first coordinate is not city, second is city
+    //TODO: test case when first coordinate is city, second is not city
+    //TODO: test case when first coordinate is not city, second is not city
+
     @Test
     public void firstDataPackageShouldBeHandledAndSecondDataPackageShouldNotBeHandledBecauseOfWrongDateTimeOrder()
             throws Exception {
@@ -1413,12 +1417,35 @@ public final class WialonProtocolIT extends ProtocolIT {
         verifyNoInteractions(mockedNominatimService);
     }
 
+    @Test
+    public void notValidDataPackageShouldNotBeHandled()
+            throws Exception {
+        //not valid date
+        final String givenDataPackage = "#D#15112;145642;5354.177;N;02731.339;E;100;15;10;"
+                + "177;545.4554;17;18;"
+                + "5.5,4343.454544334,454.433,1;"
+                + "keydrivercode;"
+                + "122:1:5,123:2:6,124:2:7,"
+                + "par1:3:str,116:2:0.5"
+                + "\r\n";
+
+        loginByExistingTracker();
+        sendRequestDataPackageExpectingFail(givenDataPackage);
+
+        assertFalse(isSuccessDataDelivering());
+
+        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        assertTrue(actualAllData.isEmpty());
+    }
+
+    //TODO: test case with a lot of package
+
     private void loginByExistingTracker()
             throws IOException {
         client.requestExpectingResponse(
                 GIVEN_REQUEST_TO_LOGIN,
                 SUCCESS_LOGIN_RESPONSE,
-                "Login by existing tracker is failed"
+                "Login by existing tracker isn't success"
         );
     }
 
@@ -1427,7 +1454,16 @@ public final class WialonProtocolIT extends ProtocolIT {
         client.requestExpectingResponse(
                 request,
                 SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE,
-                "Sending data package is failed"
+                "Sending data package isn't success"
+        );
+    }
+
+    private void sendRequestDataPackageExpectingFail(final String request)
+            throws IOException {
+        client.requestExpectingResponse(
+                request,
+                FAILED_RECEIVING_DATA_PACKAGE_RESPONSE,
+                "Sending data package isn't failed"
         );
     }
 
