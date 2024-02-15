@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class NewWingDataDecoder {
 
+    //44
     public NewWingData decodeNext(final ByteBuf buffer) {
         final NewWingDataBuilder builder = NewWingData.builder();
         decodeHour(buffer, builder);

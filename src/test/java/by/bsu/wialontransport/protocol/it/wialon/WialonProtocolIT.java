@@ -32,6 +32,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+//TODO: checks in all tests data id
 public final class WialonProtocolIT extends ProtocolIT {
     private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
             .id(255L)
@@ -60,9 +61,6 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     @Autowired
     private GeoJSONWriter geoJSONWriter;
-
-    @MockBean
-    private NominatimService mockedNominatimService;
 
     private WialonClient client;
 
@@ -124,7 +122,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -208,7 +206,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         when(mockedNominatimService.reverse(eq(expectedCoordinate))).thenReturn(Optional.of(givenReverseResponse));
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -286,7 +284,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         final String actual = client.request(givenRequestDataPackage);
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertFalse(isSuccessDataDelivering());
 
@@ -308,7 +306,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -388,7 +386,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         final String actual = client.request(givenRequestDataPackage);
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertFalse(isSuccessDataDelivering());
 
@@ -413,7 +411,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         final String actual = client.request(givenRequestDataPackage);
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertFalse(isSuccessDataDelivering());
 
@@ -435,7 +433,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -512,7 +510,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -589,7 +587,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -669,7 +667,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         final String actual = client.request(givenRequestDataPackage);
         assertEquals(SUCCESS_RECEIVING_DATA_PACKAGE_RESPONSE, actual);
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertFalse(isSuccessDataDelivering());
 
@@ -691,7 +689,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -768,7 +766,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -845,7 +843,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -922,7 +920,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -999,7 +997,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -1076,7 +1074,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -1151,7 +1149,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -1225,8 +1223,8 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenFirstRequestDataPackage);
-        sendRequestDataPackageExpectingSuccess(givenSecondRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenFirstRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenSecondRequestDataPackage);
 
         resetSavedDataConsumer(2);
         assertTrue(isSuccessDataDelivering());
@@ -1331,7 +1329,8 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     //TODO: test case when first coordinate is not city, second is city
     //TODO: test case when first coordinate is city, second is not city
-    //TODO: test case when first coordinate is not city, second is not city
+    //TODO: test case when first coordinate is not city, second is not city(same address)
+    //TODO: test case when first coordinate is not city, second is not city(different addresses)
 
     @Test
     public void firstDataPackageShouldBeHandledAndSecondDataPackageShouldNotBeHandledBecauseOfWrongDateTimeOrder()
@@ -1352,8 +1351,8 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingSuccess(givenFirstRequestDataPackage);
-        sendRequestDataPackageExpectingSuccess(givenSecondRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenFirstRequestDataPackage);
+        sendDataPackageExpectingSuccess(givenSecondRequestDataPackage);
 
         assertTrue(isSuccessDataDelivering());
 
@@ -1430,7 +1429,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\r\n";
 
         loginByExistingTracker();
-        sendRequestDataPackageExpectingFail(givenDataPackage);
+        sendDataPackageExpectingFail(givenDataPackage);
 
         assertFalse(isSuccessDataDelivering());
 
@@ -1438,6 +1437,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         assertTrue(actualAllData.isEmpty());
     }
 
+    //TODO: test black box package
     //TODO: test case with a lot of package
 
     private void loginByExistingTracker()
@@ -1449,7 +1449,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         );
     }
 
-    private void sendRequestDataPackageExpectingSuccess(final String request)
+    private void sendDataPackageExpectingSuccess(final String request)
             throws IOException {
         client.requestExpectingResponse(
                 request,
@@ -1458,7 +1458,7 @@ public final class WialonProtocolIT extends ProtocolIT {
         );
     }
 
-    private void sendRequestDataPackageExpectingFail(final String request)
+    private void sendDataPackageExpectingFail(final String request)
             throws IOException {
         client.requestExpectingResponse(
                 request,

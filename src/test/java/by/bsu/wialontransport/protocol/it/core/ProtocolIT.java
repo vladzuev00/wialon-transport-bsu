@@ -4,6 +4,7 @@ import by.bsu.wialontransport.base.kafka.AbstractKafkaContainerTest;
 import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
+import by.bsu.wialontransport.service.nominatim.NominatimService;
 import lombok.Value;
 import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,10 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
 
     @MockBean
     private KafkaSavedDataConsumer mockedKafkaSavedConsumer;    //to turn off
+
+    //TODO: do private
+    @MockBean
+    protected NominatimService mockedNominatimService;
 
     @Autowired
     private TestKafkaSavedDataConsumer savedDataConsumer;

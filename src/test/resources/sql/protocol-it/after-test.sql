@@ -4,3 +4,4 @@ DELETE FROM data;
 DELETE FROM cities;
 DELETE FROM searching_cities_processes;
 DELETE FROM addresses;
+ALTER SEQUENCE data_id_seq RESTART WITH 1;
