@@ -12,7 +12,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Pattern.compile;
 
 public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, String> {
-    private static final Charset CHARSET_TO_DECODE_BUFFER = UTF_8;
+    private static final Charset SOURCE_CHARSET = UTF_8;
 
     private final Pattern packagePrefixPattern;
 
@@ -22,10 +22,9 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
         packagePrefixPattern = compile(packagePrefixRegex);
     }
 
-    //TODO: refactor tests
     @Override
     protected final String createSource(final ByteBuf buffer) {
-        return buffer.readCharSequence(buffer.readableBytes(), CHARSET_TO_DECODE_BUFFER).toString();
+        return buffer.readCharSequence(buffer.readableBytes(), SOURCE_CHARSET).toString();
     }
 
     @Override

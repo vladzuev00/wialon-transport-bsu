@@ -9,13 +9,14 @@ import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class ProtocolStringDecoderTest {
     private static final String GIVEN_PACKAGE_PREFIX_REGEX = "^#.+#";
-    private static final Charset EXPECTED_CHARSET = UTF_8;
+    private static final Charset EXPECTED_SOURCE_CHARSET = UTF_8;
 
     private final ProtocolStringDecoder decoder = new ProtocolStringDecoder(null, GIVEN_PACKAGE_PREFIX_REGEX) {
     };
@@ -24,8 +25,12 @@ public final class ProtocolStringDecoderTest {
     public void sourceShouldBeCreated() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
+        final int givenReadableBytes = 6;
+        when(givenBuffer.readableBytes()).thenReturn(givenReadableBytes);
+
         final String givenSource = "source";
-        when(givenBuffer.toString(same(EXPECTED_CHARSET))).thenReturn(givenSource);
+        when(givenBuffer.readCharSequence(eq(givenReadableBytes), same(EXPECTED_SOURCE_CHARSET)))
+                .thenReturn(givenSource);
 
         final String actual = decoder.createSource(givenBuffer);
         assertSame(givenSource, actual);
