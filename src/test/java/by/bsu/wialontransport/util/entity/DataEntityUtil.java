@@ -11,6 +11,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
 import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
 import static org.junit.Assert.*;
 
+//TODO: refactor
 @UtilityClass
 public final class DataEntityUtil {
 
@@ -20,6 +21,7 @@ public final class DataEntityUtil {
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
     }
 
+    //TODO: remove
     public static void checkEqualsExceptIdAndParameters(final DataEntity expected, final DataEntity actual) {
         assertEquals(expected.getDateTime(), actual.getDateTime());
         assertEquals(expected.getCoordinate(), actual.getCoordinate());

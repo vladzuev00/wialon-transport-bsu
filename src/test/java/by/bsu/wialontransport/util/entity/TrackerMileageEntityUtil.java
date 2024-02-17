@@ -16,6 +16,7 @@ public final class TrackerMileageEntityUtil {
         assertEquals(expected.getId(), actual.getId());
     }
 
+    //TODO: remive
     public static void checkEqualsExceptId(final TrackerMileageEntity expected, final TrackerMileageEntity actual) {
         assertEquals(expected.getUrban(), actual.getUrban(), 0.);
         assertEquals(expected.getCountry(), actual.getCountry(), 0.);

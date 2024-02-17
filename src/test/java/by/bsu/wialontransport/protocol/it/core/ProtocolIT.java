@@ -26,6 +26,7 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
             .build();
 
     @MockBean
+    @SuppressWarnings("unused")
     private KafkaSavedDataConsumer mockedKafkaSavedConsumer;    //to turn off
 
     //TODO: do private
@@ -40,6 +41,7 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
         savedDataConsumer.reset();
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void resetSavedDataConsumer(final int consumedRecordCount) {
         savedDataConsumer.reset(consumedRecordCount);
     }
@@ -52,15 +54,23 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
         return savedDataConsumer.getPayload();
     }
 
+    //TODO: delete
     protected List<DataEntity> findDataFetchingTrackerAndAddressOrderedById() {
         return entityManager.createQuery("SELECT e FROM DataEntity e JOIN FETCH e.tracker JOIN FETCH e.address ORDER BY e.id", DataEntity.class)
                 .getResultList();
     }
 
+    protected List<DataEntity> findDataFetchingParametersAndTrackerAndAddressOrderedById() {
+        return entityManager.createQuery("SELECT e FROM DataEntity e LEFT JOIN FETCH e.parameters JOIN FETCH e.tracker JOIN FETCH e.address ORDER BY e.id", DataEntity.class)
+                .getResultList();
+    }
+
+    //TODO: delete
     protected boolean isMatchingParametersExist(final ParameterView view) {
         return countMatchingParameters(view) >= 1;
     }
 
+    //TODO: delete
     protected long countParameters() {
         return entityManager.createQuery("SELECT COUNT(e) FROM ParameterEntity e", Long.class)
                 .getSingleResult();
@@ -72,6 +82,7 @@ public abstract class ProtocolIT extends AbstractKafkaContainerTest {
                 .getSingleResult();
     }
 
+    //TODO: delete
     private long countMatchingParameters(final ParameterView view) {
         return entityManager.createQuery("SELECT COUNT(e) FROM ParameterEntity e WHERE e.name = :name AND e.type = :type AND e.value = :value AND e.data = :data", Long.class)
                 .setParameter("name", view.name)

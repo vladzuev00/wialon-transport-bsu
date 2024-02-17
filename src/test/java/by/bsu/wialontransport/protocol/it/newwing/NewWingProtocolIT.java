@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
+import by.bsu.wialontransport.util.entity.DataEntityUtil;
 import by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static by.bsu.wialontransport.util.entity.DataEntityUtil.checkEquals;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -114,8 +115,8 @@ public final class NewWingProtocolIT extends ProtocolIT {
                 -73, 1,                  //FOURTH_ANALOG_INPUT_LEVEL
                 -22,                     //FLAGS_BYTE
                 127,                     //DISCRETE_INPUT_STATE
-                -35, 120                 //CHECKSUM
-                - 25, 16, -46, -91       //PACKAGE_CONTROL_SUM
+                -35, 120,                //CHECKSUM
+                -25, 16, -46, -91        //PACKAGE_CHECKSUM
         };
 
         loginByExistingTracker();
@@ -123,7 +124,7 @@ public final class NewWingProtocolIT extends ProtocolIT {
 
         assertTrue(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
         final int expectedAllDataSize = 1;
         assertEquals(expectedAllDataSize, actualAllDataSize);
@@ -131,49 +132,40 @@ public final class NewWingProtocolIT extends ProtocolIT {
         final DataEntity actualData = actualAllData.get(0);
         final DataEntity expectedData = DataEntity.builder()
                 .id(1L)
-                .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
-                .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
-                .speed(100)
-                .course(15)
-                .altitude(10)
-                .amountOfSatellites(177)
-                .hdop(545.4554)
-                .inputs(17)
-                .outputs(18)
-                .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
-                .driverKeyCode("keydrivercode")
+                .dateTime(LocalDateTime.of(2023, 10, 31, 18, 51, 43))
+                .coordinate(new Coordinate(53.9163017272949, 27.5623168945312))
+                .speed(0.1)
+                .course(182)
+                .altitude(0)
+                .amountOfSatellites(3)
+                .hdop(2.123)
+                .inputs(0)
+                .outputs(0)
+                .analogInputs(new double[]{0, 0, 0, 0.439})
+                .driverKeyCode("not defined")
+                .parameters(emptyList())
                 .tracker(GIVEN_EXISTING_TRACKER)
                 .address(GIVEN_EXISTING_ADDRESS)
                 .build();
-        checkEquals(expectedData, actualData);
-
-        final long actualParameterCount = countParameters();
-        final long expectedParameterCount = 0;
-        assertEquals(expectedParameterCount, actualParameterCount);
+        DataEntityUtil.checkEquals(expectedData, actualData);
 
         final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
         final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .id(3L)
                 .country(0)
                 .urban(0)
                 .build();
-        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+        TrackerMileageEntityUtil.checkEquals(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
         final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
-                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
-                + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
-                + "key = 255, value = \\{\"id\": 1, \"addressId\": 102, \"epochSeconds\": 1668524203, "
-                + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
-                + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
-                + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
-                + "\"driverKeyCode\": \"keydrivercode\", "
-                + "\"serializedParameters\": "
-                + "\"\\[\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
-                + "\"trackerId\": 255}\\)";
+                + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 257, value = \\{\"id\": 1, "
+                + "\"addressId\": 102, \"epochSeconds\": 1698778303, \"latitude\": 53\\.91630172729492, "
+                + "\"longitude\": 27\\.56231689453125, \"course\": 182, \"speed\": 0\\.1, \"altitude\": 0, "
+                + "\"amountOfSatellites\": 3, \"hdop\": 2\\.123, \"inputs\": 0, \"outputs\": 0, "
+                + "\"serializedAnalogInputs\": \"\\[0\\.0,0\\.0,0\\.0,0\\.439]\", \"driverKeyCode\": \"not defined\", "
+                + "\"serializedParameters\": \"\\[]\", \"trackerId\": 257}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
         verifyNoInteractions(mockedNominatimService);

@@ -18,6 +18,7 @@ public final class TestKafkaSavedDataConsumer {
     private static final int DEFAULT_CONSUMED_RECORDS_COUNT = 1;
     private static final int WAIT_CONSUMING_IN_SECONDS = 5;
 
+    //TODO: заменить на phaser
     @Getter
     private volatile CountDownLatch countDownLatch;
 

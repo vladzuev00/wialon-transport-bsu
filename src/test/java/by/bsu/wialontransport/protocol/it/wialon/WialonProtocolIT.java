@@ -7,7 +7,6 @@ import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
-import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.io.IOException;
@@ -32,7 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-//TODO: checks in all tests data id
+//TODO: checks in all tests data id, and mileages id
 public final class WialonProtocolIT extends ProtocolIT {
     private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
             .id(255L)
