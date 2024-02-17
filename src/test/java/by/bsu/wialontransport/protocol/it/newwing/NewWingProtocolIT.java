@@ -7,7 +7,6 @@ import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
 import by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil;
-import io.netty.buffer.ByteBufUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,29 +93,29 @@ public final class NewWingProtocolIT extends ProtocolIT {
             throws Exception {
         final byte[] givenRequestDataPackage = {
                 71, 80, 82, 83, 83, 73,  //GPRSSI
-                18,             //HOURS
-                51,             //MINUTES
-                43,             //SECONDS
-                -22, 20,        //LATITUDE_INTEGER_PART
-                -70, 7,         //LATITUDE_FRACTIONAL_PART
-                -83, 10,        //LONGITUDE_INTEGER_PART
-                -53, 6,         //LONGITUDE_INTEGER_PART
-                2,              //HDOP_INTEGER_PART
-                123,            //HDOP_FRACTIONAL_PART
-                -74, 0,         //COURSE
-                0, 0,           //SPEED_INTEGER_PART
-                10,             //SPEED_FRACTIONAL_PART
-                31,             //DAY
-                10,             //MONTH
-                23,             //YEAR
-                0, 0,           //FIRST_ANALOG_INPUT_LEVEL
-                0, 0,           //SECOND_ANALOG_INPUT_LEVEL
-                0, 0,           //THIRD_ANALOG_INPUT_LEVEL
-                -73, 1,         //FOURTH_ANALOG_INPUT_LEVEL
-                -22,            //FLAGS_BYTE
-                127,            //DISCRETE_INPUT_STATE
-                -35, 120        //CHECKSUM
-                -25, 16, -46, -91        //PACKAGE_CONTROL_SUM
+                18,                      //HOURS
+                51,                      //MINUTES
+                43,                      //SECONDS
+                -22, 20,                 //LATITUDE_INTEGER_PART
+                -70, 7,                  //LATITUDE_FRACTIONAL_PART
+                -83, 10,                 //LONGITUDE_INTEGER_PART
+                -53, 6,                  //LONGITUDE_INTEGER_PART
+                2,                       //HDOP_INTEGER_PART
+                123,                     //HDOP_FRACTIONAL_PART
+                -74, 0,                  //COURSE
+                0, 0,                    //SPEED_INTEGER_PART
+                10,                      //SPEED_FRACTIONAL_PART
+                31,                      //DAY
+                10,                      //MONTH
+                23,                      //YEAR
+                0, 0,                    //FIRST_ANALOG_INPUT_LEVEL
+                0, 0,                    //SECOND_ANALOG_INPUT_LEVEL
+                0, 0,                    //THIRD_ANALOG_INPUT_LEVEL
+                -73, 1,                  //FOURTH_ANALOG_INPUT_LEVEL
+                -22,                     //FLAGS_BYTE
+                127,                     //DISCRETE_INPUT_STATE
+                -35, 120                 //CHECKSUM
+                - 25, 16, -46, -91       //PACKAGE_CONTROL_SUM
         };
 
         loginByExistingTracker();

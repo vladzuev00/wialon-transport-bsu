@@ -7,14 +7,17 @@ import lombok.RequiredArgsConstructor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+//TODO: refactor tests
 @RequiredArgsConstructor
 public final class NewWingDataIterator implements Iterator<NewWingData> {
+    private static final int READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
+
     private final NewWingDataDecoder decoder;
     private final ByteBuf buffer;
 
     @Override
     public boolean hasNext() {
-        return buffer.isReadable();
+        return buffer.readableBytes() >= READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT;
     }
 
     @Override
