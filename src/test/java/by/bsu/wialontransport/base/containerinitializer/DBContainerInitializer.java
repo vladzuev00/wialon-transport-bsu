@@ -1,19 +1,16 @@
 package by.bsu.wialontransport.base.containerinitializer;
 
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.testcontainers.utility.DockerImageName.parse;
 
-public final class DBContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private static final String TEST_PROPERTY_KEY_DATASOURCE_URL = "spring.datasource.url";
-    private static final String TEST_PROPERTY_KEY_USERNAME = "spring.datasource.username";
-    private static final String TEST_PROPERTY_KEY_PASSWORD = "spring.datasource.password";
+public final class DBContainerInitializer extends ContainerInitializer {
+    private static final String PROPERTY_KEY_DATASOURCE_URL = "spring.datasource.url";
+    private static final String PROPERTY_KEY_USERNAME = "spring.datasource.username";
+    private static final String PROPERTY_KEY_PASSWORD = "spring.datasource.password";
 
     private static final String FULL_IMAGE_NAME = "mdillon/postgis:9.5";
     private static final String OTHER_IMAGE_NAME = "postgres";
@@ -35,13 +32,11 @@ public final class DBContainerInitializer implements ApplicationContextInitializ
     }
 
     @Override
-    public void initialize(final ConfigurableApplicationContext context) {
-        TestPropertyValues.of(
-                Map.of(
-                        TEST_PROPERTY_KEY_DATASOURCE_URL, POSTGRE_SQL_CONTAINER.getJdbcUrl(),
-                        TEST_PROPERTY_KEY_USERNAME, POSTGRE_SQL_CONTAINER.getUsername(),
-                        TEST_PROPERTY_KEY_PASSWORD, POSTGRE_SQL_CONTAINER.getPassword()
-                )
-        ).applyTo(context.getEnvironment());
+    protected Stream<TestProperty> getProperties() {
+        return Stream.of(
+                new TestProperty(PROPERTY_KEY_DATASOURCE_URL, POSTGRE_SQL_CONTAINER.getJdbcUrl()),
+                new TestProperty(PROPERTY_KEY_USERNAME, POSTGRE_SQL_CONTAINER.getUsername()),
+                new TestProperty(PROPERTY_KEY_PASSWORD, POSTGRE_SQL_CONTAINER.getPassword())
+        );
     }
 }
