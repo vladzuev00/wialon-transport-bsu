@@ -38,6 +38,23 @@ public final class DataEntityUtil {
         assertEquals(expected.getAddress(), actual.getAddress());
     }
 
+    public static void checkEqualsExceptParameters(final DataEntity expected, final DataEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getDateTime(), actual.getDateTime());
+        assertEquals(expected.getCoordinate(), actual.getCoordinate());
+        assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
+        assertEquals(expected.getCourse(), actual.getCourse());
+        assertEquals(expected.getAltitude(), actual.getAltitude());
+        assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
+        assertEquals(expected.getHdop(), actual.getHdop(), 0.);
+        assertEquals(expected.getInputs(), actual.getInputs());
+        assertEquals(expected.getOutputs(), actual.getOutputs());
+        assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
+        assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
+        assertEquals(expected.getTracker(), actual.getTracker());
+        assertEquals(expected.getAddress(), actual.getAddress());
+    }
+
     public static boolean areParametersFetched(final DataEntity data) {
         return isPropertyFetched(data, DataEntity::getParameters);
     }

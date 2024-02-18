@@ -1,31 +1,30 @@
 package by.bsu.wialontransport.base.kafka;
 
-import lombok.Getter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.IntStream.rangeClosed;
 
 @Component
 public final class TestKafkaSavedDataConsumer {
     private static final String PAYLOAD_RECORDS_SEPARATOR = " || ";
     private static final int DEFAULT_CONSUMED_RECORDS_COUNT = 1;
-    private static final int WAIT_CONSUMING_IN_SECONDS = 5;
+    private static final int WAIT_CONSUMING_SECONDS = 5;
 
-    //TODO: заменить на phaser
-    @Getter
-    private volatile CountDownLatch countDownLatch;
-
-    private volatile StringBuffer payloadBuffer;
+    private final Phaser phaser;
+    private final StringBuffer payloadBuffer;
 
     public TestKafkaSavedDataConsumer() {
-        reset();
+        phaser = createNotTerminatedPhaser(DEFAULT_CONSUMED_RECORDS_COUNT + 1);
+        payloadBuffer = new StringBuffer();
     }
 
     @KafkaListener(
@@ -41,9 +40,10 @@ public final class TestKafkaSavedDataConsumer {
         reset(DEFAULT_CONSUMED_RECORDS_COUNT);
     }
 
-    public void reset(final int consumedRecordCount) {
-        countDownLatch = new CountDownLatch(consumedRecordCount);
-        payloadBuffer = new StringBuffer();
+    public void reset(final int consumedRecordsCount) {
+        rangeClosed(1, phaser.getUnarrivedParties()).forEach(i -> phaser.arriveAndDeregister());
+        phaser.bulkRegister(consumedRecordsCount + 1);
+        payloadBuffer.delete(0, payloadBuffer.length());
     }
 
     public String getPayload() {
@@ -52,18 +52,32 @@ public final class TestKafkaSavedDataConsumer {
 
     public boolean isSuccessConsuming() {
         try {
-            return countDownLatch.await(WAIT_CONSUMING_IN_SECONDS, SECONDS);
+            final int phaseNumber = phaser.arriveAndDeregister();
+            phaser.awaitAdvanceInterruptibly(phaseNumber, WAIT_CONSUMING_SECONDS, SECONDS);
+            return true;
         } catch (final InterruptedException exception) {
             currentThread().interrupt();
+            return false;
+        } catch (final TimeoutException exception) {
             return false;
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
+    private static Phaser createNotTerminatedPhaser(final int parties) {
+        return new Phaser(parties) {
+            @Override
+            protected boolean onAdvance(final int phase, final int registeredParties) {
+                return false;
+            }
+        };
+    }
+
     private void accumulate(final ConsumerRecord<Long, GenericRecord> record) {
         payloadBuffer.append(record.toString());
-        if (countDownLatch.getCount() > 1) {
+        if (phaser.getUnarrivedParties() > 1) {
             payloadBuffer.append(PAYLOAD_RECORDS_SEPARATOR);
         }
-        countDownLatch.countDown();
+        phaser.arriveAndDeregister();
     }
 }

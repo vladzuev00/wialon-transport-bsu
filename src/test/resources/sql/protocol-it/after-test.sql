@@ -5,3 +5,4 @@ DELETE FROM cities;
 DELETE FROM searching_cities_processes;
 DELETE FROM addresses;
 ALTER SEQUENCE data_id_seq RESTART WITH 1;
+ALTER SEQUENCE parameters_id_seq RESTART WITH 1;

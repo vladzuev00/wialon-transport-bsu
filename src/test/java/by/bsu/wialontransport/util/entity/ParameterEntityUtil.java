@@ -3,7 +3,11 @@ package by.bsu.wialontransport.util.entity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import static by.bsu.wialontransport.util.HibernateUtil.isPropertyFetched;
+import static java.util.stream.IntStream.range;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -16,6 +20,11 @@ public final class ParameterEntityUtil {
         assertSame(expected.getType(), actual.getType());
         assertEquals(expected.getValue(), actual.getValue());
         assertEquals(expected.getData(), actual.getData());
+    }
+
+    public static void checkEquals(final List<ParameterEntity> expected, final List<ParameterEntity> actual) {
+        assertEquals(expected.size(), actual.size());
+        range(0, expected.size()).forEach(i -> checkEquals(expected.get(i), actual.get(i)));
     }
 
     public static boolean isDataFetched(final ParameterEntity entity) {

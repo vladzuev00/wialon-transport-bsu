@@ -2,11 +2,12 @@ package by.bsu.wialontransport.crud.entity;
 
 import org.hibernate.Hibernate;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static java.util.Objects.hash;
 
-public abstract class Entity<IdType> {
+public abstract class Entity<IdType> implements Serializable {
 
     public abstract void setId(final IdType id);
 

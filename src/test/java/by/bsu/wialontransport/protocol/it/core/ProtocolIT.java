@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import lombok.Value;
-import org.junit.After;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -36,7 +36,7 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
     @Autowired
     private TestKafkaSavedDataConsumer savedDataConsumer;
 
-    @After
+    @Before
     public void resetSavedDataConsumer() {
         savedDataConsumer.reset();
     }
@@ -61,7 +61,12 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
     }
 
     protected List<DataEntity> findDataFetchingParametersAndTrackerAndAddressOrderedById() {
-        return entityManager.createQuery("SELECT e FROM DataEntity e LEFT JOIN FETCH e.parameters JOIN FETCH e.tracker JOIN FETCH e.address ORDER BY e.id", DataEntity.class)
+        return entityManager.createQuery("SELECT DISTINCT e FROM DataEntity e LEFT JOIN FETCH e.parameters JOIN FETCH e.tracker JOIN FETCH e.address ORDER BY e.id", DataEntity.class)
+                .getResultList();
+    }
+
+    protected List<ParameterEntity> findParametersFetchingDataOrderedById() {
+        return entityManager.createQuery("SELECT e FROM ParameterEntity e JOIN FETCH e.data ORDER BY e.id", ParameterEntity.class)
                 .getResultList();
     }
 
@@ -92,6 +97,7 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
                 .getSingleResult();
     }
 
+    //TODO: delete
     @Value
     protected static class ParameterView {
         String name;
