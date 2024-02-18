@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import by.bsu.wialontransport.crud.entity.UserEntity;
@@ -18,7 +18,7 @@ import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
 import static org.springframework.data.domain.Pageable.ofSize;
 
-public final class TrackerRepositoryTest extends AbstractContextTest {
+public final class TrackerRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private TrackerRepository repository;

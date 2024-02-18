@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.searchingcities.model;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
 import by.bsu.wialontransport.model.CoordinateRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public final class StartSearchingCitiesRequestTest extends AbstractContextTest {
+public final class StartSearchingCitiesRequestTest extends AbstractSpringBootTest {
 
     @Autowired
     private Validator validator;

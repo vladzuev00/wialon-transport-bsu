@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.configuration.property;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 
 import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
 
-public final class WialonServerConfigurationTest extends AbstractContextTest {
+public final class WialonServerConfigurationTest extends AbstractSpringBootTest {
 
     @Autowired
     private ProtocolServerConfiguration configuration;

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.util.HibernateUtil;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mockStatic;
 
-public final class MapperTest extends AbstractContextTest {
+public final class MapperTest extends AbstractSpringBootTest {
     private final ModelMapper modelMapper = new ModelMapper();
 
     @SuppressWarnings("unused")

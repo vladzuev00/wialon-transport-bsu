@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.trigger;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
 import by.bsu.wialontransport.crud.entity.TrackerLastDataEntity;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.entity.TrackerLastDataEntityUtil.checkEquals;
 import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkEquals;
 
-public final class TrackerTriggerTest extends AbstractContextTest {
+public final class TrackerTriggerTest extends AbstractSpringBootTest {
 
     @Test
     public void initialTrackerLastDataShouldBeInserted() {

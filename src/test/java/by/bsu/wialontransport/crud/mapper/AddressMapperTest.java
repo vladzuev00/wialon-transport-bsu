@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public final class AddressMapperTest extends AbstractContextTest {
+public final class AddressMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private AddressMapper mapper;

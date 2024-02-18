@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
 
-public final class NominatimServiceTest extends AbstractContextTest {
+public final class NominatimServiceTest extends AbstractSpringBootTest {
 
     @Value("${nominatim.reverse.url.template}")
     private String reverseUrlTemplate;

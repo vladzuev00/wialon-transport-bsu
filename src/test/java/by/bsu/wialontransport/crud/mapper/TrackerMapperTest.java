@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.dto.User;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mockStatic;
 
-public final class TrackerMapperTest extends AbstractContextTest {
+public final class TrackerMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private TrackerMapper mapper;

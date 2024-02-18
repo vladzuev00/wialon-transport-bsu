@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
@@ -25,7 +25,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 
-public final class DataRepositoryTest extends AbstractContextTest {
+public final class DataRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private DataRepository repository;

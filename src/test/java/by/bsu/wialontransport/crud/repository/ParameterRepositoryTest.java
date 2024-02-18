@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import static by.bsu.wialontransport.util.entity.ParameterEntityUtil.isDataFetch
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class ParameterRepositoryTest extends AbstractContextTest {
+public final class ParameterRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private ParameterRepository repository;

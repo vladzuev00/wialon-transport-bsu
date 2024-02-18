@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -19,7 +19,7 @@ import static by.bsu.wialontransport.util.entity.AddressEntityUtil.checkEquals;
 import static by.bsu.wialontransport.util.entity.EntityUtil.mapToIdsSet;
 import static org.junit.Assert.*;
 
-public final class AddressRepositoryTest extends AbstractContextTest {
+public final class AddressRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private AddressRepository repository;

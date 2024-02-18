@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.data.domain.Pageable.ofSize;
 
-public final class SearchingCitiesProcessRepositoryTest extends AbstractContextTest {
+public final class SearchingCitiesProcessRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private SearchingCitiesProcessRepository repository;

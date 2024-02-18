@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class TrackerMileageRepositoryTest extends AbstractContextTest {
+public final class TrackerMileageRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private TrackerMileageRepository repository;

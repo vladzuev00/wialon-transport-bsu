@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.model;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class AreaCoordinateTest extends AbstractContextTest {
+public final class AreaCoordinateTest extends AbstractSpringBootTest {
 
     @Autowired
     private Validator validator;

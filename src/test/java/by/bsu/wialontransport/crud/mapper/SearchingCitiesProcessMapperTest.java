@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import static by.bsu.wialontransport.util.entity.SearchingCitiesProcessEntityUti
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public final class SearchingCitiesProcessMapperTest extends AbstractContextTest {
+public final class SearchingCitiesProcessMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private SearchingCitiesProcessMapper mapper;

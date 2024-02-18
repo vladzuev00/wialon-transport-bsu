@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
@@ -14,7 +14,7 @@ import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 
-public final class ReverseResponseMapperTest extends AbstractContextTest {
+public final class ReverseResponseMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private ReverseResponseMapper mapper;

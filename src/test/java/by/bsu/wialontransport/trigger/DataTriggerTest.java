@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.trigger;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public final class DataTriggerTest extends AbstractContextTest {
+public final class DataTriggerTest extends AbstractSpringBootTest {
 
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")

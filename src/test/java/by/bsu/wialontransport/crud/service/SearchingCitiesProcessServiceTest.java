@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class SearchingCitiesProcessServiceTest extends AbstractContextTest {
+public final class SearchingCitiesProcessServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private SearchingCitiesProcessService service;

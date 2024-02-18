@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.core;
 
-import by.bsu.wialontransport.base.kafka.AbstractKafkaContainerTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
@@ -20,7 +20,7 @@ import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORT
 @Transactional(propagation = NOT_SUPPORTED)
 @Sql("classpath:sql/protocol-it/before-test.sql")
 @Sql(value = "classpath:sql/protocol-it/after-test.sql", executionPhase = AFTER_TEST_METHOD)
-public abstract class ProtocolIT extends AbstractKafkaContainerTest {
+public abstract class ProtocolIT extends AbstractSpringBootTest {
     protected static final AddressEntity GIVEN_EXISTING_ADDRESS = AddressEntity.builder()
             .id(102L)
             .build();

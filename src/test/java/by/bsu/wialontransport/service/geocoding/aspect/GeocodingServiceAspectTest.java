@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.geocoding.aspect;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
                 GeocodingServiceAspectTest.FailedReceivingService.class
         }
 )
-public final class GeocodingServiceAspectTest extends AbstractContextTest {
+public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
 
     @Autowired
     private SuccessReceivingService successReceivingService;

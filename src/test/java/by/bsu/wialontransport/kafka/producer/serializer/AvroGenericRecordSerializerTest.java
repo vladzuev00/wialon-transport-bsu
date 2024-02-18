@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.producer.serializer;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.kafka.model.transportable.Transportable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +20,7 @@ import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
 import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
 import static org.junit.Assert.*;
 
-public final class AvroGenericRecordSerializerTest extends AbstractContextTest {
+public final class AvroGenericRecordSerializerTest extends AbstractSpringBootTest {
     private static final String FIELD_NAME_DATUM_WRITER = "datumWriter";
     private static final String FIELD_NAME_SCHEMA = "root";
 

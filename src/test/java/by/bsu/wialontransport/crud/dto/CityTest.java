@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.dto;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -11,7 +11,7 @@ import static by.bsu.wialontransport.crud.dto.City.createWithAddress;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 
-public final class CityTest extends AbstractContextTest {
+public final class CityTest extends AbstractSpringBootTest {
 
     @Autowired
     private GeometryFactory geometryFactory;

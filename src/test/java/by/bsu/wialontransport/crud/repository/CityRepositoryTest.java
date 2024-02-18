@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.CityEntity;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity;
@@ -17,7 +17,7 @@ import static by.bsu.wialontransport.util.entity.CityEntityUtil.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class CityRepositoryTest extends AbstractContextTest {
+public final class CityRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private CityRepository repository;

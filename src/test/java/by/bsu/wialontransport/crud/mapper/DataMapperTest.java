@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mockStatic;
 
-public final class DataMapperTest extends AbstractContextTest {
+public final class DataMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private DataMapper mapper;

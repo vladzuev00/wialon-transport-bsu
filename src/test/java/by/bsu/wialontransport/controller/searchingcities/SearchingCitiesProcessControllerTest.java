@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.searchingcities;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.controller.exception.CustomValidationException;
 import by.bsu.wialontransport.controller.searchingcities.mapper.SearchingCitiesProcessControllerMapper;
 import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
@@ -51,7 +51,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.util.UriComponentsBuilder.fromUriString;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public final class SearchingCitiesProcessControllerTest extends AbstractContextTest {
+public final class SearchingCitiesProcessControllerTest extends AbstractSpringBootTest {
     private static final String JSON_PROPERTY_NAME_DATE_TIME = "dateTime";
     private static final CustomComparator COMPARATOR_IGNORING_DATE_TIME = new CustomComparator(
             STRICT,

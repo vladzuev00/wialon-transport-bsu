@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.model.Coordinate;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static by.bsu.wialontransport.util.GeometryTestUtil.createLineString;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.*;
 
-public final class AddressServiceTest extends AbstractContextTest {
+public final class AddressServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private AddressService addressService;

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.exceptionhandler;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.controller.exception.CustomValidationException;
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,7 @@ import static org.springframework.core.convert.TypeDescriptor.valueOf;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-public final class RestExceptionHandlerTest extends AbstractContextTest {
+public final class RestExceptionHandlerTest extends AbstractSpringBootTest {
 
     @Autowired
     private RestExceptionHandler handler;

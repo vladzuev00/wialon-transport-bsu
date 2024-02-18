@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
 
-public final class UserServiceTest extends AbstractContextTest {
+public final class UserServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private UserService service;

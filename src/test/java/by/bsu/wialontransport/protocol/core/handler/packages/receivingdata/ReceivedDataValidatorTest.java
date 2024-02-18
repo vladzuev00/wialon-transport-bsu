@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 
-public final class ReceivedDataValidatorTest extends AbstractContextTest {
+public final class ReceivedDataValidatorTest extends AbstractSpringBootTest {
 
     @Autowired
     private ReceivedDataValidator validator;

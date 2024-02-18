@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import static by.bsu.wialontransport.util.entity.UserEntityUtil.checkEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public final class UserMapperTest extends AbstractContextTest {
+public final class UserMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private UserMapper mapper;

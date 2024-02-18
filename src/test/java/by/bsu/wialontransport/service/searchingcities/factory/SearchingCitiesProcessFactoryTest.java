@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.searchingcities.factory;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.Coordinate;
@@ -12,7 +12,7 @@ import static by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.St
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 
-public final class SearchingCitiesProcessFactoryTest extends AbstractContextTest {
+public final class SearchingCitiesProcessFactoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private SearchingCitiesProcessFactory factory;

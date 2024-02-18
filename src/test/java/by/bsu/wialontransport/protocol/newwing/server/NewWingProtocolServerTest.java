@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.server;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class NewWingProtocolServerTest extends AbstractContextTest {
+public final class NewWingProtocolServerTest extends AbstractSpringBootTest {
     private static final String FIELD_NAME_PACKAGE_DECODERS = "packageDecoders";
     private static final String FIELD_NAME_PACKAGE_ENCODERS = "packageEncoders";
     private static final String FIELD_NAME_PACKAGE_HANDLERS = "packageHandlers";

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim.model;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.Address;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import by.bsu.wialontransport.util.GeometryTestUtil;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public final class NominatimReverseResponseTest extends AbstractContextTest {
+public final class NominatimReverseResponseTest extends AbstractSpringBootTest {
 
     @Autowired
     private ObjectMapper objectMapper;

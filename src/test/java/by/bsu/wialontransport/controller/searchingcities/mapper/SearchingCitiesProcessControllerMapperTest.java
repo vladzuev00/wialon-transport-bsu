@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.controller.searchingcities.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesProcessResponse;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
@@ -21,7 +21,7 @@ import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public final class SearchingCitiesProcessControllerMapperTest extends AbstractContextTest {
+public final class SearchingCitiesProcessControllerMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private SearchingCitiesProcessControllerMapper mapper;

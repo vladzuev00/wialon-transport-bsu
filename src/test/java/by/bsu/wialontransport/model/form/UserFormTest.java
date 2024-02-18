@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.model.form;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class UserFormTest extends AbstractContextTest {
+public final class UserFormTest extends AbstractSpringBootTest {
 
     @Autowired
     private Validator validator;

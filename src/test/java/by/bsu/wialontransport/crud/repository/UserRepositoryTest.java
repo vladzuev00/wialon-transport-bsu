@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.repository;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import static by.bsu.wialontransport.util.entity.UserEntityUtil.checkEquals;
 import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.*;
 
-public final class UserRepositoryTest extends AbstractContextTest {
+public final class UserRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
     private UserRepository repository;

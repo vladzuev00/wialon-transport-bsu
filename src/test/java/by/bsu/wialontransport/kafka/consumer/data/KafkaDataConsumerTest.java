@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
@@ -41,7 +41,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public final class KafkaDataConsumerTest extends AbstractContextTest {
+public final class KafkaDataConsumerTest extends AbstractSpringBootTest {
 
     @Autowired
     private ObjectMapper objectMapper;

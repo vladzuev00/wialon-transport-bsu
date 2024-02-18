@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.model.Coordinate;
 import org.junit.Test;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -15,7 +15,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
-public final class GeometryCreatingServiceTest extends AbstractContextTest {
+public final class GeometryCreatingServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private GeometryCreatingService geometryCreatingService;

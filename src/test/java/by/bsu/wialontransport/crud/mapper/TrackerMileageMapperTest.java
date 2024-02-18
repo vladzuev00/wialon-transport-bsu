@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.entity.TrackerMileageEntity;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import static by.bsu.wialontransport.util.entity.TrackerMileageEntityUtil.checkE
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public final class TrackerMileageMapperTest extends AbstractContextTest {
+public final class TrackerMileageMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private TrackerMileageMapper mapper;

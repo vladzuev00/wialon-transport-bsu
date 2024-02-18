@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -11,7 +11,7 @@ import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class CityServiceTest extends AbstractContextTest {
+public final class CityServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private CityService cityService;

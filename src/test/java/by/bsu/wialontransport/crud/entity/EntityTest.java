@@ -1,11 +1,11 @@
 package by.bsu.wialontransport.crud.entity;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public final class EntityTest extends AbstractContextTest {
+public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void entitiesShouldBeEqual() {

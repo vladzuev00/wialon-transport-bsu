@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.model.form.mapper;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.model.form.UserForm;
 
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static org.junit.Assert.assertEquals;
 
-public final class UserFormMapperTest extends AbstractContextTest {
+public final class UserFormMapperTest extends AbstractSpringBootTest {
 
     @Autowired
     private UserFormMapper mapper;

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.searchingcities.eventlistener;
 
-import by.bsu.wialontransport.base.AbstractContextTest;
+import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
-public final class EventListenerSearchingCitiesProcessTest extends AbstractContextTest {
+public final class EventListenerSearchingCitiesProcessTest extends AbstractSpringBootTest {
 
     @MockBean
     private SearchingCitiesProcessService mockedSearchingCitiesProcessService;
