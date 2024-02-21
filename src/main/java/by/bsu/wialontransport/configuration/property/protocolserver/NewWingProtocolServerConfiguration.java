@@ -5,9 +5,11 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+//TODO: add validation
 @ConfigurationProperties(prefix = "protocol-server.new-wing")
 public class NewWingProtocolServerConfiguration extends ProtocolServerConfiguration {
 
+    //TODO: delete @ConstructorBinding
     @ConstructorBinding
     public NewWingProtocolServerConfiguration(final String host,
                                               final int port,

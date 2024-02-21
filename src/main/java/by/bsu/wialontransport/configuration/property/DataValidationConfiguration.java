@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
+//TODO: add validation
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "data.validation")

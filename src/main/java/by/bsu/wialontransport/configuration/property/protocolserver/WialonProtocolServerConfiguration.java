@@ -3,9 +3,11 @@ package by.bsu.wialontransport.configuration.property.protocolserver;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
+//TODO: add validation
 @ConfigurationProperties(prefix = "protocol-server.wialon")
 public class WialonProtocolServerConfiguration extends ProtocolServerConfiguration {
 
+    //TODO: delete @ConstructorBinding
     @ConstructorBinding
     public WialonProtocolServerConfiguration(final String host,
                                              final int port,

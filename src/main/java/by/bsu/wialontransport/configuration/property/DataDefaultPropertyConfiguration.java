@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+//TODO: add validation
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "tracker-server.data-default-property")
