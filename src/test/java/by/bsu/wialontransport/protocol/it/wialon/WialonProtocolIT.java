@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
+import static by.bsu.wialontransport.util.CollectionUtil.concat;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
-import static by.bsu.wialontransport.util.entity.DataEntityUtil.checkEqualsExceptIdAndParameters;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
@@ -1290,7 +1290,6 @@ public final class WialonProtocolIT extends ProtocolIT {
         verifyNoInteractions(mockedNominatimService);
     }
 
-    //TODO: stop refactor
     @Test
     public void twoDataPackageWithDefinedPropertiesAndCoordinateInCityShouldBeHandledAndAddressesShouldBeReceivedFromDatabase()
             throws Exception {
@@ -1342,13 +1341,22 @@ public final class WialonProtocolIT extends ProtocolIT {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
+                .parameters(expectedFirstDataParameters)
                 .tracker(GIVEN_EXISTING_TRACKER)
                 .address(GIVEN_EXISTING_ADDRESS)
                 .build();
-        checkEqualsExceptIdAndParameters(expectedFirstData, actualFirstData);
+        DataEntityUtil.checkEquals(expectedFirstData, actualFirstData);
 
         final DataEntity actualSecondData = actualAllData.get(1);
+        final List<ParameterEntity> expectedSecondDataParameters = List.of(
+                new ParameterEntity(6L, "122", INTEGER, "5", actualSecondData),
+                new ParameterEntity(7L, "123", DOUBLE, "6", actualSecondData),
+                new ParameterEntity(8L, "124", DOUBLE, "7", actualSecondData),
+                new ParameterEntity(9L, "par1", STRING, "str", actualSecondData),
+                new ParameterEntity(10L, "116", DOUBLE, "0.5", actualSecondData)
+        );
         final DataEntity expectedSecondData = DataEntity.builder()
+                .id(2L)
                 .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 44))
                 .coordinate(new Coordinate(53.9491666666667, 27.6108333333333))
                 .speed(100)
@@ -1360,62 +1368,53 @@ public final class WialonProtocolIT extends ProtocolIT {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
+                .parameters(expectedSecondDataParameters)
                 .tracker(GIVEN_EXISTING_TRACKER)
                 .address(GIVEN_EXISTING_ADDRESS)
                 .build();
-        checkEqualsExceptIdAndParameters(expectedSecondData, actualSecondData);
+        DataEntityUtil.checkEquals(expectedSecondData, actualSecondData);
 
-        final long actualParameterCount = countParameters();
-        final long expectedParameterCount = 10;
-        assertEquals(expectedParameterCount, actualParameterCount);
-
-        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualFirstData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualFirstData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualFirstData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualFirstData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualFirstData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualSecondData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualSecondData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualSecondData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualSecondData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualSecondData)));
+        final List<ParameterEntity> actualParameters = findParametersFetchingDataOrderedById();
+        final List<ParameterEntity> expectedParameters = concat(expectedFirstDataParameters, expectedSecondDataParameters);
+        ParameterEntityUtil.checkEquals(expectedParameters, actualParameters);
 
         final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
         final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .id(1L)
                 .country(0)
                 .urban(0.1435181328100863)
                 .build();
-        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+        TrackerMileageEntityUtil.checkEquals(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
         final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
-                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "key = 255, value = \\{\"id\": 1, \"addressId\": 102, \"epochSeconds\": 1668524203, "
                 + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
                 + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
                 + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
                 + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\[\\"
-                + "{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":1},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":2},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":3},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":4},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":5}]\", "
                 + "\"trackerId\": 255}\\) "
                 + "\\|\\| "
                 + "ConsumerRecord\\(topic = saved-data, partition = \\d+, leaderEpoch = \\d+, offset = \\d+, "
                 + "CreateTime = \\d+, serialized key size = 8, serialized value size = \\d+, "
-                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": \\d+, "
+                + "headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), key = 255, value = \\{\"id\": 2, "
                 + "\"addressId\": 102, \"epochSeconds\": 1668524204, \"latitude\": 53\\.94916666666666, "
                 + "\"longitude\": 27\\.610833333333332, \"course\": 15, \"speed\": 100\\.0, \"altitude\": 10, "
                 + "\"amountOfSatellites\": 177, \"hdop\": 545\\.4554, \"inputs\": 17, \"outputs\": 18, "
                 + "\"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
                 + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\["
-                + "\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "\\{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":6},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":7},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":8},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":9},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":10}]\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
@@ -1451,13 +1450,21 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         assertTrue(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
         final int expectedAllDataSize = 1;
         assertEquals(expectedAllDataSize, actualAllDataSize);
 
         final DataEntity actualData = actualAllData.get(0);
+        final List<ParameterEntity> expectedParameters = List.of(
+                new ParameterEntity(1L, "122", INTEGER, "5", actualData),
+                new ParameterEntity(2L, "123", DOUBLE, "6", actualData),
+                new ParameterEntity(3L, "124", DOUBLE, "7", actualData),
+                new ParameterEntity(4L, "par1", STRING, "str", actualData),
+                new ParameterEntity(5L, "116", DOUBLE, "0.5", actualData)
+        );
         final DataEntity expectedData = DataEntity.builder()
+                .id(1L)
                 .dateTime(LocalDateTime.of(2022, 11, 15, 14, 56, 43))
                 .coordinate(new Coordinate(53.9480555555556, 27.6097222222222))
                 .speed(100)
@@ -1469,42 +1476,37 @@ public final class WialonProtocolIT extends ProtocolIT {
                 .outputs(18)
                 .analogInputs(new double[]{5.5, 4343.454544334, 454.433, 1})
                 .driverKeyCode("keydrivercode")
+                .parameters(expectedParameters)
                 .tracker(GIVEN_EXISTING_TRACKER)
                 .address(GIVEN_EXISTING_ADDRESS)
                 .build();
-        checkEqualsExceptIdAndParameters(expectedData, actualData);
+        DataEntityUtil.checkEquals(expectedData, actualData);
 
-        final long actualParameterCount = countParameters();
-        final long expectedParameterCount = 5;
-        assertEquals(expectedParameterCount, actualParameterCount);
-
-        assertTrue(isMatchingParametersExist(new ParameterView("122", INTEGER, "5", actualData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("123", DOUBLE, "6", actualData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("124", DOUBLE, "7", actualData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("par1", STRING, "str", actualData)));
-        assertTrue(isMatchingParametersExist(new ParameterView("116", DOUBLE, "0.5", actualData)));
+        final List<ParameterEntity> actualParameters = findParametersFetchingDataOrderedById();
+        ParameterEntityUtil.checkEquals(expectedParameters, actualParameters);
 
         final TrackerMileageEntity actualMileage = findTrackerMileage(GIVEN_EXISTING_TRACKER);
         final TrackerMileageEntity expectedMileage = TrackerMileageEntity.builder()
+                .id(1L)
                 .country(0)
                 .urban(0)
                 .build();
-        TrackerMileageEntityUtil.checkEqualsExceptId(expectedMileage, actualMileage);
+        TrackerMileageEntityUtil.checkEquals(expectedMileage, actualMileage);
 
         final String actualKafkaSavedDataConsumerPayload = getKafkaSavedDataConsumerPayload();
         final String expectedKafkaSavedDataConsumerPayloadRegex = "ConsumerRecord\\(topic = saved-data, partition = \\d+, "
                 + "leaderEpoch = \\d+, offset = \\d+, CreateTime = \\d+, serialized key size = 8, "
                 + "serialized value size = \\d+, headers = RecordHeaders\\(headers = \\[], isReadOnly = false\\), "
-                + "key = 255, value = \\{\"id\": \\d+, \"addressId\": 102, \"epochSeconds\": 1668524203, "
+                + "key = 255, value = \\{\"id\": 1, \"addressId\": 102, \"epochSeconds\": 1668524203, "
                 + "\"latitude\": 53\\.948055555555555, \"longitude\": 27\\.60972222222222, \"course\": 15, "
                 + "\"speed\": 100\\.0, \"altitude\": 10, \"amountOfSatellites\": 177, \"hdop\": 545\\.4554, "
                 + "\"inputs\": 17, \"outputs\": 18, \"serializedAnalogInputs\": \"\\[5\\.5,4343\\.454544334,454\\.433,1\\.0]\", "
                 + "\"driverKeyCode\": \"keydrivercode\", \"serializedParameters\": \"\\[\\"
-                + "{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":\\d+},"
-                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":\\d+}]\", "
+                + "{\\\\\"name\\\\\":\\\\\"122\\\\\",\\\\\"type\\\\\":\\\\\"INTEGER\\\\\",\\\\\"value\\\\\":\\\\\"5\\\\\",\\\\\"id\\\\\":1},"
+                + "\\{\\\\\"name\\\\\":\\\\\"123\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"6\\\\\",\\\\\"id\\\\\":2},"
+                + "\\{\\\\\"name\\\\\":\\\\\"124\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"7\\\\\",\\\\\"id\\\\\":3},"
+                + "\\{\\\\\"name\\\\\":\\\\\"par1\\\\\",\\\\\"type\\\\\":\\\\\"STRING\\\\\",\\\\\"value\\\\\":\\\\\"str\\\\\",\\\\\"id\\\\\":4},"
+                + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":5}]\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
@@ -1528,7 +1530,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         assertFalse(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         assertTrue(actualAllData.isEmpty());
     }
 
@@ -1582,12 +1584,6 @@ public final class WialonProtocolIT extends ProtocolIT {
 
     private static AddressEntity createAddress(final Long id) {
         return AddressEntity.builder()
-                .id(id)
-                .build();
-    }
-
-    private static ParameterEntity createParameter(final Long id) {
-        return ParameterEntity.builder()
                 .id(id)
                 .build();
     }
