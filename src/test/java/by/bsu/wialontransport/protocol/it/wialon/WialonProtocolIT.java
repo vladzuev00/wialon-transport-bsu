@@ -30,7 +30,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-//TODO: checks in all tests data id, and mileages id
 public final class WialonProtocolIT extends ProtocolIT {
     private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
             .id(255L)
