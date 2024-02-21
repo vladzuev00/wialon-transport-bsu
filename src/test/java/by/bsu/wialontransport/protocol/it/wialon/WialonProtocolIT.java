@@ -27,7 +27,6 @@ import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 public final class WialonProtocolIT extends ProtocolIT {
@@ -184,7 +183,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -203,7 +202,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 60.948055555555555,
                 27.60972222222222
         );
-        when(mockedNominatimService.reverse(eq(expectedCoordinate))).thenReturn(Optional.of(givenReverseResponse));
+        when(getMockedNominatimService().reverse(eq(expectedCoordinate))).thenReturn(Optional.of(givenReverseResponse));
 
         loginByExistingTracker();
         sendDataPackageExpectingSuccess(givenRequestDataPackage);
@@ -291,7 +290,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         assertFalse(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
         final int expectedAllDataSize = 0;
         assertEquals(expectedAllDataSize, actualAllDataSize);
@@ -374,7 +373,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -396,7 +395,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         assertFalse(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
         final int expectedAllDataSize = 0;
         assertEquals(expectedAllDataSize, actualAllDataSize);
@@ -421,7 +420,7 @@ public final class WialonProtocolIT extends ProtocolIT {
 
         assertFalse(isSuccessDataDelivering());
 
-        final List<DataEntity> actualAllData = findDataFetchingTrackerAndAddressOrderedById();
+        final List<DataEntity> actualAllData = findDataFetchingParametersAndTrackerAndAddressOrderedById();
         final int actualAllDataSize = actualAllData.size();
         final int expectedAllDataSize = 0;
         assertEquals(expectedAllDataSize, actualAllDataSize);
@@ -504,7 +503,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -584,7 +583,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -664,7 +663,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -743,6 +742,8 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\\{\\\\\"name\\\\\":\\\\\"116\\\\\",\\\\\"type\\\\\":\\\\\"DOUBLE\\\\\",\\\\\"value\\\\\":\\\\\"0\\.5\\\\\",\\\\\"id\\\\\":5}]\", "
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
+
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -822,7 +823,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -902,7 +903,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -982,7 +983,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -1062,7 +1063,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
     
     @Test
@@ -1142,7 +1143,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
     
     @Test
@@ -1222,7 +1223,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -1286,7 +1287,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test
@@ -1417,7 +1418,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     //TODO: test case when first coordinate is not city, second is city
@@ -1509,7 +1510,7 @@ public final class WialonProtocolIT extends ProtocolIT {
                 + "\"trackerId\": 255}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     @Test

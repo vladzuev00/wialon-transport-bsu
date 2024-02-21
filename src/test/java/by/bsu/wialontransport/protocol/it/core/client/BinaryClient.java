@@ -3,9 +3,9 @@ package by.bsu.wialontransport.protocol.it.core.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-public abstract class BinaryProtocol extends Client<byte[]> {
+public abstract class BinaryClient extends Client<byte[]> {
 
-    public BinaryProtocol(final InetSocketAddress address)
+    public BinaryClient(final InetSocketAddress address)
             throws IOException {
         super(address);
     }

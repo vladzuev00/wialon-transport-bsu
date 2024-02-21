@@ -20,7 +20,6 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 public final class NewWingProtocolIT extends ProtocolIT {
     private static final TrackerEntity GIVEN_EXISTING_TRACKER = TrackerEntity.builder()
@@ -168,7 +167,7 @@ public final class NewWingProtocolIT extends ProtocolIT {
                 + "\"serializedParameters\": \"\\[]\", \"trackerId\": 257}\\)";
         assertTrue(actualKafkaSavedDataConsumerPayload.matches(expectedKafkaSavedDataConsumerPayloadRegex));
 
-        verifyNoInteractions(mockedNominatimService);
+        verifyNoRequestsToNominatim();
     }
 
     private void loginByExistingTracker()
