@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages.data;
 
-import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfig;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.Coordinate;
@@ -23,13 +23,13 @@ public abstract class AbstractWialonRequestDataPackageHandler<PACKAGE extends Ab
         extends DataPackageHandler<PACKAGE, WialonData> {
 
     public AbstractWialonRequestDataPackageHandler(final Class<PACKAGE> handledPackageType,
-                                                   final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+                                                   final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                                                    final ContextAttributeManager contextAttributeManager,
                                                    final ReceivedDataValidator receivedDataValidator,
                                                    final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(
                 handledPackageType,
-                dataDefaultPropertyConfiguration,
+                dataDefaultPropertyConfig,
                 contextAttributeManager,
                 receivedDataValidator,
                 kafkaInboundDataProducer

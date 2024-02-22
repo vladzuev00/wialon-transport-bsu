@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfig;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
@@ -48,7 +48,7 @@ public final class DataPackageHandlerTest {
     };
 
     @Mock
-    private DataDefaultPropertyConfiguration mockedDataDefaultPropertyConfiguration;
+    private DataDefaultPropertyConfig mockedDataDefaultPropertyConfig;
 
     @Mock
     private ContextAttributeManager mockedContextAttributeManager;
@@ -67,7 +67,7 @@ public final class DataPackageHandlerTest {
     @Before
     public void initializeDataPackageHandler() {
         dataPackageHandler = new TestDataPackageHandler(
-                mockedDataDefaultPropertyConfiguration,
+                mockedDataDefaultPropertyConfig,
                 mockedContextAttributeManager,
                 mockedReceivedDataValidator,
                 mockedKafkaInboundDataProducer
@@ -76,21 +76,21 @@ public final class DataPackageHandlerTest {
 
     @Before
     public void injectGivenDefaultDataProperties() {
-        when(mockedDataDefaultPropertyConfiguration.getCourse())
+        when(mockedDataDefaultPropertyConfig.getCourse())
                 .thenReturn(GIVEN_DEFAULT_COURSE);
-        when(mockedDataDefaultPropertyConfiguration.getSpeed())
+        when(mockedDataDefaultPropertyConfig.getSpeed())
                 .thenReturn(GIVEN_DEFAULT_SPEED);
-        when(mockedDataDefaultPropertyConfiguration.getAltitude())
+        when(mockedDataDefaultPropertyConfig.getAltitude())
                 .thenReturn(GIVEN_DEFAULT_ALTITUDE);
-        when(mockedDataDefaultPropertyConfiguration.getAmountOfSatellites())
+        when(mockedDataDefaultPropertyConfig.getAmountOfSatellites())
                 .thenReturn(GIVEN_DEFAULT_AMOUNT_OF_SATELLITES);
-        when(mockedDataDefaultPropertyConfiguration.getHdop())
+        when(mockedDataDefaultPropertyConfig.getHdop())
                 .thenReturn(GIVEN_DEFAULT_HDOP);
-        when(mockedDataDefaultPropertyConfiguration.getInputs())
+        when(mockedDataDefaultPropertyConfig.getInputs())
                 .thenReturn(GIVEN_DEFAULT_INPUTS);
-        when(mockedDataDefaultPropertyConfiguration.getOutputs())
+        when(mockedDataDefaultPropertyConfig.getOutputs())
                 .thenReturn(GIVEN_DEFAULT_OUTPUTS);
-        when(mockedDataDefaultPropertyConfiguration.getDriverKeyCode())
+        when(mockedDataDefaultPropertyConfig.getDriverKeyCode())
                 .thenReturn(GIVEN_DEFAULT_DRIVER_KEY_CODE);
     }
 
@@ -587,13 +587,13 @@ public final class DataPackageHandlerTest {
 
     private static final class TestDataPackageHandler extends DataPackageHandler<TestDataPackage, TestSource> {
 
-        public TestDataPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+        public TestDataPackageHandler(final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                                       final ContextAttributeManager contextAttributeManager,
                                       final ReceivedDataValidator receivedDataValidator,
                                       final KafkaInboundDataProducer kafkaInboundDataProducer) {
             super(
                     TestDataPackage.class,
-                    dataDefaultPropertyConfiguration,
+                    dataDefaultPropertyConfig,
                     contextAttributeManager,
                     receivedDataValidator,
                     kafkaInboundDataProducer

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfig;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
@@ -24,18 +24,18 @@ import static java.util.stream.Collectors.toMap;
 public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extends PackageHandler<PACKAGE> {
     private static final Comparator<ReceivedData> DATE_TIME_COMPARATOR = comparing(ReceivedData::getDateTime);
 
-    private final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration;
+    private final DataDefaultPropertyConfig dataDefaultPropertyConfig;
     private final ContextAttributeManager contextAttributeManager;
     private final ReceivedDataValidator receivedDataValidator;
     private final KafkaInboundDataProducer kafkaInboundDataProducer;
 
     public DataPackageHandler(final Class<PACKAGE> handledPackageType,
-                              final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+                              final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                               final ContextAttributeManager contextAttributeManager,
                               final ReceivedDataValidator receivedDataValidator,
                               final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(handledPackageType);
-        this.dataDefaultPropertyConfiguration = dataDefaultPropertyConfiguration;
+        this.dataDefaultPropertyConfig = dataDefaultPropertyConfig;
         this.contextAttributeManager = contextAttributeManager;
         this.receivedDataValidator = receivedDataValidator;
         this.kafkaInboundDataProducer = kafkaInboundDataProducer;
@@ -117,31 +117,31 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     }
 
     private int getCourse(final SOURCE source) {
-        return findCourse(source).orElse(dataDefaultPropertyConfiguration.getCourse());
+        return findCourse(source).orElse(dataDefaultPropertyConfig.getCourse());
     }
 
     private double getSpeed(final SOURCE source) {
-        return findSpeed(source).orElse(dataDefaultPropertyConfiguration.getSpeed());
+        return findSpeed(source).orElse(dataDefaultPropertyConfig.getSpeed());
     }
 
     private int getAltitude(final SOURCE source) {
-        return findAltitude(source).orElse(dataDefaultPropertyConfiguration.getAltitude());
+        return findAltitude(source).orElse(dataDefaultPropertyConfig.getAltitude());
     }
 
     private int getAmountOfSatellites(final SOURCE source) {
-        return findAmountOfSatellites(source).orElse(dataDefaultPropertyConfiguration.getAmountOfSatellites());
+        return findAmountOfSatellites(source).orElse(dataDefaultPropertyConfig.getAmountOfSatellites());
     }
 
     private double getHdop(final SOURCE source) {
-        return findHdop(source).orElse(dataDefaultPropertyConfiguration.getHdop());
+        return findHdop(source).orElse(dataDefaultPropertyConfig.getHdop());
     }
 
     private int getInputs(final SOURCE source) {
-        return findInputs(source).orElse(dataDefaultPropertyConfiguration.getInputs());
+        return findInputs(source).orElse(dataDefaultPropertyConfig.getInputs());
     }
 
     private int getOutputs(final SOURCE source) {
-        return findOutputs(source).orElse(dataDefaultPropertyConfiguration.getOutputs());
+        return findOutputs(source).orElse(dataDefaultPropertyConfig.getOutputs());
     }
 
     private double[] getAnalogInputs(final SOURCE source) {
@@ -149,7 +149,7 @@ public abstract class DataPackageHandler<PACKAGE extends Package, SOURCE> extend
     }
 
     private String getDriverKeyCode(final SOURCE source) {
-        return findDriverKeyCode(source).orElse(dataDefaultPropertyConfiguration.getDriverKeyCode());
+        return findDriverKeyCode(source).orElse(dataDefaultPropertyConfig.getDriverKeyCode());
     }
 
     private Map<String, Parameter> getParametersByNames(final SOURCE source) {

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages.data;
 
-import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfig;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
@@ -11,13 +11,13 @@ public final class WialonRequestBlackBoxPackageHandler extends AbstractWialonReq
         WialonRequestBlackBoxPackage
         > {
 
-    public WialonRequestBlackBoxPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+    public WialonRequestBlackBoxPackageHandler(final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                                                final ContextAttributeManager contextAttributeManager,
                                                final ReceivedDataValidator receivedDataValidator,
                                                final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(
                 WialonRequestBlackBoxPackage.class,
-                dataDefaultPropertyConfiguration,
+                dataDefaultPropertyConfig,
                 contextAttributeManager,
                 receivedDataValidator,
                 kafkaInboundDataProducer

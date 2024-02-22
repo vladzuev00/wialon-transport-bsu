@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
-import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfig;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.ToShortFunction;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
@@ -26,13 +26,13 @@ public final class NewWingDataPackageHandler extends DataPackageHandler<NewWingD
     private static final int YEAR_MARK_POINT = 2000;
     private static final double MILLI_VOLTS_IN_VOLT = 1000;
 
-    public NewWingDataPackageHandler(final DataDefaultPropertyConfiguration dataDefaultPropertyConfiguration,
+    public NewWingDataPackageHandler(final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                                      final ContextAttributeManager contextAttributeManager,
                                      final ReceivedDataValidator dataValidator,
                                      final KafkaInboundDataProducer kafkaInboundDataProducer) {
         super(
                 NewWingDataPackage.class,
-                dataDefaultPropertyConfiguration,
+                dataDefaultPropertyConfig,
                 contextAttributeManager,
                 dataValidator,
                 kafkaInboundDataProducer

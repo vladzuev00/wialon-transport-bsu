@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -66,59 +67,18 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMinValidAmountOfSatellitesIsLessThanMinimalAllowable() {
+    public void configShouldNotBeValidBecauseOfMinAndMaxValidAmountOfSatellitesAreNotPositive() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
                 .minValidAmountOfSatellites(0)
-                .maxValidAmountOfSatellites(999)
+                .maxValidAmountOfSatellites(0)
                 .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
                 .maxValidDateTimeDeltaSecondsFromNow(15)
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be greater than or equal to 1", findFirstMessage(violations));
-    }
-
-    @Test
-    public void configShouldNotBeValidBecauseOfMinValidAmountOfSatellitesIsGreaterThanMaximalAllowable() {
-        final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(10000)
-                .maxValidAmountOfSatellites(10000)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
-                .build();
-
-        final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be less than or equal to 9999", findFirstMessage(violations));
-    }
-
-    @Test
-    public void configShouldNotBeValidBecauseOfMaxValidAmountOfSatellitesIsLessThanMinimalAllowable() {
-        final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(1)
-                .maxValidAmountOfSatellites(1)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
-                .build();
-
-        final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be greater than or equal to 2", findFirstMessage(violations));
-    }
-
-    @Test
-    public void configShouldNotBeValidBecauseOfMaxValidAmountOfSatellitesIsGreaterThanMaximalAllowable() {
-        final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(10001)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
-                .build();
-
-        final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be less than or equal to 10000", findFirstMessage(violations));
+        final List<String> actualViolationMessages = findMessages(violations);
+        final List<String> expectedViolationMessages = List.of("must be greater than 0", "must be greater than 0");
+        assertEquals(expectedViolationMessages, actualViolationMessages);
     }
 
     @Test
@@ -130,8 +90,9 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must not be null", findFirstMessage(violations));
+        final List<String> actualViolationMessages = findMessages(violations);
+        final List<String> expectedViolationMessages = List.of("must not be null");
+        assertEquals(expectedViolationMessages, actualViolationMessages);
     }
 
     @Test
@@ -144,8 +105,9 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be a past date", findFirstMessage(violations));
+        final List<String> actualViolationMessages = findMessages(violations);
+        final List<String> expectedViolationMessages = List.of("must be a past date");
+        assertEquals(expectedViolationMessages, actualViolationMessages);
     }
 
     @Test
@@ -157,8 +119,9 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must not be null", findFirstMessage(violations));
+        final List<String> actualViolationMessages = findMessages(violations);
+        final List<String> expectedViolationMessages = List.of("must not be null");
+        assertEquals(expectedViolationMessages, actualViolationMessages);
     }
 
     @Test
@@ -171,11 +134,14 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        assertEquals(1, violations.size());
-        assertEquals("must be greater than 0", findFirstMessage(violations));
+        final List<String> actualViolationMessages = findMessages(violations);
+        final List<String> expectedViolationMessages = List.of("must be greater than 0");
+        assertEquals(expectedViolationMessages, actualViolationMessages);
     }
 
-    private static String findFirstMessage(final Set<ConstraintViolation<DataValidationConfig>> violations) {
-        return violations.iterator().next().getMessage();
+    private static List<String> findMessages(final Set<ConstraintViolation<DataValidationConfig>> violations) {
+        return violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .toList();
     }
 }

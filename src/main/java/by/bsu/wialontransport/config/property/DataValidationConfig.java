@@ -17,12 +17,10 @@ import java.time.LocalDateTime;
 @ConfigurationProperties("data.validation")
 public class DataValidationConfig {
 
-    @Min(1)
-    @Max(9999)
+    @Positive
     private final Integer minValidAmountOfSatellites;
 
-    @Min(2)
-    @Max(10000)
+    @Positive
     private final Integer maxValidAmountOfSatellites;
 
     @NotNull
