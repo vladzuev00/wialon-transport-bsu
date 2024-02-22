@@ -21,8 +21,8 @@ public class DataValidationConfig {
     @Max(9999)
     private final Integer minValidAmountOfSatellites;
 
-    @Min(1)
-    @Max(9999)
+    @Min(2)
+    @Max(10000)
     private final Integer maxValidAmountOfSatellites;
 
     @NotNull
