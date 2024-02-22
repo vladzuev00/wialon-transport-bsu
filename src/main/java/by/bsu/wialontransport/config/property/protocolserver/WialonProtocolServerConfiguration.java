@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration.property.protocolserver;
+package by.bsu.wialontransport.config.property.protocolserver;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;

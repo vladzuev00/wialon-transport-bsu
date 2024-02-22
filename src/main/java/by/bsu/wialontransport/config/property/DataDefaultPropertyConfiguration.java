@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration.property;
+package by.bsu.wialontransport.config.property;
 
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;

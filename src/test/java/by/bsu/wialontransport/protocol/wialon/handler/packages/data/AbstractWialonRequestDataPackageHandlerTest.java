@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages.data;
 
-import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.model.Coordinate;

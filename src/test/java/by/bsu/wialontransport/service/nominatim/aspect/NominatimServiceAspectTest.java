@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim.aspect;
 
-import by.bsu.wialontransport.configuration.RestTemplateConfiguration;
+import by.bsu.wialontransport.config.RestTemplateConfiguration;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import org.junit.Assert;

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.configuration.property.DataValidationConfiguration;
+import by.bsu.wialontransport.config.property.DataValidationConfig;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.model.ReceivedData;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public final class ReceivedDataValidator {
     private static final double MIN_ALLOWABLE_LONGITUDE = -180;
     private static final double MAX_ALLOWABLE_LONGITUDE = 180;
 
-    private final DataValidationConfiguration validationProperty;
+    private final DataValidationConfig validationProperty;
 
     public boolean isValid(final ReceivedData data) {
         return isValidCoordinate(data) && isValidAmountOfSatellites(data) && isValidDateTime(data);
@@ -43,7 +43,7 @@ public final class ReceivedDataValidator {
     private boolean isValidAmountOfSatellites(final ReceivedData data) {
         final int research = data.getAmountOfSatellites();
         return validationProperty.getMinValidAmountOfSatellites() <= research
-                && research <= validationProperty.getMaxValidAmountSatellites();
+                && research <= validationProperty.getMaxValidAmountOfSatellites();
     }
 
     private boolean isValidDateTime(final ReceivedData data) {
@@ -54,6 +54,6 @@ public final class ReceivedDataValidator {
     }
 
     private LocalDateTime findMaxAllowableDateTime() {
-        return now().plusSeconds(validationProperty.getDeltaSecondsFromNowMaxAllowableValidDateTime());
+        return now().plusSeconds(validationProperty.getMaxValidDateTimeDeltaSecondsFromNow());
     }
 }

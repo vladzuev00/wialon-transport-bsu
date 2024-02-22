@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

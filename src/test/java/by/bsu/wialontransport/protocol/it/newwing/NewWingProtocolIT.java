@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.newwing;
 
-import by.bsu.wialontransport.configuration.property.protocolserver.NewWingProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.NewWingProtocolServerConfiguration;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;

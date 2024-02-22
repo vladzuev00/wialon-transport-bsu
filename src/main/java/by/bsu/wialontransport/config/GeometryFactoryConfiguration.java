@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.config;
 
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;

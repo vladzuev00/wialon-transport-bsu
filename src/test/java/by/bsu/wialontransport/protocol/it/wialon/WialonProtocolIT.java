@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.wialon;
 
-import by.bsu.wialontransport.configuration.property.protocolserver.WialonProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfiguration;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;

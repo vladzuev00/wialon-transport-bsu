@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
-import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.function.ToShortFunction;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;

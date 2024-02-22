@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.handler.packages.data;
 
-import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
 import by.bsu.wialontransport.kafka.producer.data.KafkaInboundDataProducer;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration.property.protocolserver;
+package by.bsu.wialontransport.config.property.protocolserver;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -6,7 +6,6 @@ import lombok.Getter;
 
 import java.net.InetSocketAddress;
 
-//TODO: add validation
 @Getter
 public abstract class ProtocolServerConfiguration {
     private final InetSocketAddress inetSocketAddress;

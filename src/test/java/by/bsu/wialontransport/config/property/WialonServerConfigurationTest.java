@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.configuration.property;
+package by.bsu.wialontransport.config.property;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 
-import by.bsu.wialontransport.configuration.property.protocolserver.ProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfiguration;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

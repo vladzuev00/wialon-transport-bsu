@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

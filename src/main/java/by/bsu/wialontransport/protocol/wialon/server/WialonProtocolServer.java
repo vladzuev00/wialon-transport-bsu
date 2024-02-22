@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.server;
 
-import by.bsu.wialontransport.configuration.property.protocolserver.WialonProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfiguration;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;

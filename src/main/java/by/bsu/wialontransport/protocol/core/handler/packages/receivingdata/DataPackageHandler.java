@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.receivingdata;
 
-import by.bsu.wialontransport.configuration.property.DataDefaultPropertyConfiguration;
+import by.bsu.wialontransport.config.property.DataDefaultPropertyConfiguration;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;

@@ -21,9 +21,9 @@ spring:
 data:
   validation:
     minValidAmountOfSatellites: 3
-    maxValidAmountSatellites: 999
+    maxValidAmountOfSatellites: 999
     minValidDateTime: 2010-01-01 00:00:00
-    deltaSecondsFromNowMaxAllowableValidDateTime: 15
+    maxValidDateTimeDeltaSecondsFromNow: 15
 
 protocol-server:
   new-wing:

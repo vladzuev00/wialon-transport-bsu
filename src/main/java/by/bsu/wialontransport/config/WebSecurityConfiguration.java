@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.configuration;
+package by.bsu.wialontransport.config;
 
 import by.bsu.wialontransport.security.service.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
