@@ -1,6 +1,5 @@
-package by.bsu.wialontransport.security.model;
+package by.bsu.wialontransport.service.security.model;
 
-import by.bsu.wialontransport.service.security.model.SecurityUser;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 

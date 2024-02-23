@@ -1,10 +1,9 @@
-package by.bsu.wialontransport.security.service;
+package by.bsu.wialontransport.service.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
 import by.bsu.wialontransport.service.security.model.SecurityUser;
-import by.bsu.wialontransport.service.security.service.SecurityService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SecurityServiceTest {
