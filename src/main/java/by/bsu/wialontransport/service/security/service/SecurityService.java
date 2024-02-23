@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.security.service;
+package by.bsu.wialontransport.service.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
-import by.bsu.wialontransport.security.model.SecurityUser;
+import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
+import by.bsu.wialontransport.service.security.model.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +14,8 @@ public final class SecurityService {
     private final SecurityUserMapper mapper;
 
     public User findLoggedOnUser() {
-        final SecurityUser securityUser = (SecurityUser) getContext()
-                .getAuthentication()
-                .getPrincipal();
-        return this.mapper.map(securityUser);
+        final SecurityUser securityUser = (SecurityUser) getContext().getAuthentication().getPrincipal();
+        return mapper.map(securityUser);
     }
 
 }

@@ -1,8 +1,9 @@
 package by.bsu.wialontransport.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
-import by.bsu.wialontransport.security.model.SecurityUser;
+import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
+import by.bsu.wialontransport.service.security.model.SecurityUser;
+import by.bsu.wialontransport.service.security.service.SecurityService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

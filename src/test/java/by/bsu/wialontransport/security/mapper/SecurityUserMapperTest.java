@@ -2,10 +2,11 @@ package by.bsu.wialontransport.security.mapper;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity.Role;
-import by.bsu.wialontransport.security.model.SecurityUser;
-import by.bsu.wialontransport.security.model.SecurityUser.SecurityRole;
+import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
+import by.bsu.wialontransport.service.security.model.SecurityUser;
 import org.junit.Test;
 
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static org.junit.Assert.assertEquals;
 
 public final class SecurityUserMapperTest {
@@ -17,7 +18,7 @@ public final class SecurityUserMapperTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(SecurityRole.USER)
+                .role(USER)
                 .build();
 
         final User actual = this.mapper.map(givenSecurityUser);
@@ -25,7 +26,7 @@ public final class SecurityUserMapperTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(Role.USER)
+                .role(USER)
                 .build();
         assertEquals(expected, actual);
     }
@@ -36,7 +37,7 @@ public final class SecurityUserMapperTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(Role.USER)
+                .role(USER)
                 .build();
 
         final SecurityUser actual = this.mapper.map(givenUser);
@@ -44,7 +45,7 @@ public final class SecurityUserMapperTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(SecurityRole.USER)
+                .role(USER)
                 .build();
         assertEquals(expected, actual);
     }

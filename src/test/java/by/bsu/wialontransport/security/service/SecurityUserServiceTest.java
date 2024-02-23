@@ -1,11 +1,10 @@
 package by.bsu.wialontransport.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.crud.entity.UserEntity.Role;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
-import by.bsu.wialontransport.security.model.SecurityUser;
-import by.bsu.wialontransport.security.model.SecurityUser.SecurityRole;
+import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
+import by.bsu.wialontransport.service.security.model.SecurityUser;
+import by.bsu.wialontransport.service.security.service.SecurityUserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -44,7 +44,7 @@ public final class SecurityUserServiceTest {
                 .id(255L)
                 .email(givenEmail)
                 .password("password")
-                .role(Role.USER)
+                .role(USER)
                 .build();
         when(this.mockedUserService.findByEmail(givenEmail)).thenReturn(Optional.of(givenUser));
 
@@ -52,7 +52,7 @@ public final class SecurityUserServiceTest {
                 .id(255L)
                 .email(givenEmail)
                 .password("password")
-                .role(SecurityRole.USER)
+                .role(USER)
                 .build();
         when(this.mockedMapper.map(givenUser)).thenReturn(givenSecurityUser);
 

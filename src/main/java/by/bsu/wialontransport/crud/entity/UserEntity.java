@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -44,7 +45,13 @@ public class UserEntity extends EntityWithPassword<Long> {
         this.role = role;
     }
 
-    public enum Role {
-        USER, ADMIN
+    public enum Role implements GrantedAuthority {
+        USER, ADMIN;
+
+        //TODO: test
+        @Override
+        public String getAuthority() {
+            return name();
+        }
     }
 }

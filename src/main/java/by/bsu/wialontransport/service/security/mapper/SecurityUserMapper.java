@@ -1,10 +1,8 @@
-package by.bsu.wialontransport.security.mapper;
+package by.bsu.wialontransport.service.security.mapper;
 
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.security.model.SecurityUser;
+import by.bsu.wialontransport.service.security.model.SecurityUser;
 import org.springframework.stereotype.Component;
-
-import static by.bsu.wialontransport.security.model.SecurityUser.SecurityRole.findByRole;
 
 @Component
 public final class SecurityUserMapper {
@@ -14,7 +12,7 @@ public final class SecurityUserMapper {
                 securityUser.getId(),
                 securityUser.getEmail(),
                 securityUser.getPassword(),
-                securityUser.getRole().getUserRole()
+                securityUser.getRole()
         );
     }
 
@@ -23,7 +21,7 @@ public final class SecurityUserMapper {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                findByRole(user.getRole())
+                user.getRole()
         );
     }
 

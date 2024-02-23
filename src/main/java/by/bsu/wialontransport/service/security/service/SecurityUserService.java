@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.security.service;
+package by.bsu.wialontransport.service.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.security.mapper.SecurityUserMapper;
+import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
