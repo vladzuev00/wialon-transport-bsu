@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.config;
 
-import by.bsu.wialontransport.service.security.service.SecurityUserService;
+import by.bsu.wialontransport.service.security.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private SecurityUserService securityUserService;
+    private SecurityService securityService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -50,7 +50,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configureGlobal(final AuthenticationManagerBuilder authenticationManagerBuilder)
             throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(this.securityUserService)
+                .userDetailsService(this.securityService)
                 .passwordEncoder(this.passwordEncoder);
     }
 }

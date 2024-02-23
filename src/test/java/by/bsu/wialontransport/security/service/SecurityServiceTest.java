@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
+import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
 import by.bsu.wialontransport.service.security.model.SecurityUser;
 import by.bsu.wialontransport.service.security.service.SecurityService;
@@ -13,21 +14,66 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
+import static java.util.Optional.empty;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class SecurityServiceTest {
 
     @Mock
-    private SecurityUserMapper mockedMapper;
+    private UserService mockedUserService;
+
+    @Mock
+    private SecurityUserMapper mockedUserMapper;
 
     private SecurityService securityService;
 
     @Before
     public void initializeSecurityService() {
-        this.securityService = new SecurityService(this.mockedMapper);
+        securityService = new SecurityService(mockedUserService, mockedUserMapper);
+    }
+
+    @Test
+    public void userShouldBeLoadedByUsername() {
+        final String givenEmail = "vladzuev.00@mail.ru";
+
+        final User givenUser = User.builder()
+                .id(255L)
+                .email(givenEmail)
+                .password("password")
+                .role(USER)
+                .build();
+        when(mockedUserService.findByEmail(givenEmail)).thenReturn(Optional.of(givenUser));
+
+        final SecurityUser givenSecurityUser = SecurityUser.builder()
+                .id(255L)
+                .email(givenEmail)
+                .password("password")
+                .role(USER)
+                .build();
+        when(mockedUserMapper.map(givenUser)).thenReturn(givenSecurityUser);
+
+        final UserDetails actual = securityService.loadUserByUsername(givenEmail);
+        assertEquals(givenSecurityUser, actual);
+    }
+
+    @Test(expected = UsernameNotFoundException.class)
+    public void userShouldNotBeLoadedByUsername() {
+        final String givenEmail = "vladzuev.00@mail.ru";
+
+        when(mockedUserService.findByEmail(givenEmail)).thenReturn(empty());
+
+        securityService.loadUserByUsername(givenEmail);
     }
 
     @Test
@@ -43,11 +89,10 @@ public final class SecurityServiceTest {
             when(givenAuthentication.getPrincipal()).thenReturn(givenSecurityUser);
 
             final User givenUser = User.builder().build();
-            when(this.mockedMapper.map(same(givenSecurityUser))).thenReturn(givenUser);
+            when(mockedUserMapper.map(same(givenSecurityUser))).thenReturn(givenUser);
 
-            final User actual = this.securityService.findLoggedOnUser();
+            final User actual = securityService.findLoggedOnUser();
             assertSame(givenUser, actual);
         }
     }
-
 }
