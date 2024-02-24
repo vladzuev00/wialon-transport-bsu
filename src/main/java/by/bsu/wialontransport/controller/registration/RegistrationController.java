@@ -36,5 +36,4 @@ public class RegistrationController {
         final RegistrationStatus status = registrationService.checkIn(userForm, bindingResult, model);
         return status.getViewName();
     }
-
 }

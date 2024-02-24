@@ -67,5 +67,4 @@ public final class RegistrationControllerTest {
         final String expected = givenStatus.getViewName();
         assertEquals(expected, actual);
     }
-
 }
