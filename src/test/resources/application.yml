@@ -104,3 +104,6 @@ tracker-server:
     inputs: 0
     outputs: 0
     driver-key-code: not defined
+
+tracker-online:
+  last-data-second-threshold: 300
