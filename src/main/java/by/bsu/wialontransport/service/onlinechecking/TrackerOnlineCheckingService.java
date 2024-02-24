@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.service.onlinechecker;
+package by.bsu.wialontransport.service.onlinechecking;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
