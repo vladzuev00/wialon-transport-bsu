@@ -6,10 +6,10 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.handler.packages.receivingdata.ReceivedDataValidator;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestBlackBoxPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseBlackBoxPackage;
+import org.springframework.stereotype.Component;
 
-public final class WialonRequestBlackBoxPackageHandler extends AbstractWialonRequestDataPackageHandler<
-        WialonRequestBlackBoxPackage
-        > {
+@Component
+public final class WialonRequestBlackBoxPackageHandler extends AbstractWialonRequestDataPackageHandler<WialonRequestBlackBoxPackage> {
 
     public WialonRequestBlackBoxPackageHandler(final DataDefaultPropertyConfig dataDefaultPropertyConfig,
                                                final ContextAttributeManager contextAttributeManager,

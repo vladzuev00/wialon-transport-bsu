@@ -23,7 +23,7 @@ public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDe
                                  final ContextAttributeManager contextAttributeManager,
                                  final ConnectionManager connectionManager,
                                  final List<NewWingPackageDecoder<?, ?>> packageDecoders,
-                                 final List<NewWingPackageEncoder<?>> newWingPackageEncoders,
+                                 final List<NewWingPackageEncoder<?>> packageEncoders,
                                  final NewWingLoginPackageHandler loginPackageHandler,
                                  final NewWingEventCountPackageHandler eventCountPackageHandler,
                                  final NewWingDataPackageHandler dataPackageHandler) {
@@ -32,7 +32,7 @@ public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDe
                 contextAttributeManager,
                 connectionManager,
                 packageDecoders,
-                newWingPackageEncoders,
+                packageEncoders,
                 List.of(loginPackageHandler, eventCountPackageHandler, dataPackageHandler)
         );
     }

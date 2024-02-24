@@ -5,7 +5,6 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
 import org.springframework.core.convert.ConversionFailedException;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
@@ -28,13 +26,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public final class RestExceptionHandler {
-    private static final String SEPARATOR_FIELD_NAME_AND_MESSAGE_IN_ERROR = " : ";
-    private static final String MESSAGE_UNKNOWN_ERROR = "unknown error";
-
-    /**
-     * first %s - inbound param
-     * second %s - list of allowable param's values
-     */
+    private static final String DELIMITER_ERROR_FIELD_NAME_AND_MESSAGE = " : ";
+    private static final String UNKNOWN_ERROR_MESSAGE = "unknown error";
     private static final String MESSAGE_TEMPLATE_NOT_VALID_ENUM_PARAM = "'%s' should be replaced by one of: %s.";
     private static final String DELIMITER_ENUM_PARAM_ALLOWABLE_VALUE = ", ";
 
@@ -64,8 +57,7 @@ public final class RestExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<RestErrorResponse> handleException(
-            final MissingServletRequestParameterException exception) {
+    public ResponseEntity<RestErrorResponse> handleException(final MissingServletRequestParameterException exception) {
         return handleValidationException(exception.getMessage());
     }
 
@@ -85,27 +77,25 @@ public final class RestExceptionHandler {
 
     private static String findMessage(final FieldError fieldError) {
         return fieldError != null
-                ? fieldError.getField() + SEPARATOR_FIELD_NAME_AND_MESSAGE_IN_ERROR + fieldError.getDefaultMessage()
-                : MESSAGE_UNKNOWN_ERROR;
+                ? fieldError.getField() + DELIMITER_ERROR_FIELD_NAME_AND_MESSAGE + fieldError.getDefaultMessage()
+                : UNKNOWN_ERROR_MESSAGE;
     }
 
     @SuppressWarnings("unchecked")
     private static String findMessage(final ConversionFailedException exception) {
-        final TypeDescriptor targetTypeDescriptor = exception.getTargetType();
-        final Class<?> targetType = targetTypeDescriptor.getType();
+        final Class<?> targetType = exception.getTargetType().getType();
         return targetType.isEnum()
-                ? findMessageOfEnumParamConversionFailedException(
-                exception.getValue(), (Class<? extends Enum<?>>) targetType)
+                ? findEnumParamConversionFailedMessage(exception.getValue(), (Class<? extends Enum<?>>) targetType)
                 : exception.getMessage();
     }
 
-    private static String findMessageOfEnumParamConversionFailedException(Object inboundValue,
-                                                                          Class<? extends Enum<?>> enumType) {
-        return format(MESSAGE_TEMPLATE_NOT_VALID_ENUM_PARAM, inboundValue, findSeparatedAllowableValues(enumType));
+    private static String findEnumParamConversionFailedMessage(final Object receivedValue,
+                                                               final Class<? extends Enum<?>> type) {
+        return format(MESSAGE_TEMPLATE_NOT_VALID_ENUM_PARAM, receivedValue, findSeparatedAllowableEnumValues(type));
     }
 
-    private static String findSeparatedAllowableValues(Class<? extends Enum<?>> enumType) {
-        return stream(enumType.getEnumConstants())
+    private static String findSeparatedAllowableEnumValues(final Class<? extends Enum<?>> type) {
+        return stream(type.getEnumConstants())
                 .map(Enum::name)
                 .collect(joining(DELIMITER_ENUM_PARAM_ALLOWABLE_VALUE));
     }
