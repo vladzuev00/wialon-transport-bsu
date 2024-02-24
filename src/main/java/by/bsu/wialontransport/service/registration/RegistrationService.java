@@ -22,7 +22,7 @@ public final class RegistrationService {
     private static final String ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR = "Email already exists";
 
     private final UserService userService;
-    private final UserFormMapper mapper;
+    private final UserFormMapper formMapper;
 
     public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
         if (bindingResult.hasErrors()) {
@@ -51,7 +51,7 @@ public final class RegistrationService {
     }
 
     private RegistrationStatus onSuccess(final UserForm userForm) {
-        final User user = this.mapper.map(userForm);
+        final User user = this.formMapper.map(userForm);
         this.userService.save(user);
         return SUCCESS;
     }

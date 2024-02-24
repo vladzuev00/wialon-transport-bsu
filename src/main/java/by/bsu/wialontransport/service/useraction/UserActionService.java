@@ -116,7 +116,8 @@ public final class UserActionService {
 
     private TrackerForm findTrackerForm(final Long trackerId) {
         final Optional<Tracker> optionalTracker = this.trackerService.findById(trackerId);
-        final Tracker tracker = optionalTracker.orElseThrow(NoSuchEntityException::new);
+        //TODO: add message
+        final Tracker tracker = optionalTracker.orElseThrow(() -> new NoSuchEntityException(""));
         return this.trackerFormMapper.map(tracker);
     }
 
