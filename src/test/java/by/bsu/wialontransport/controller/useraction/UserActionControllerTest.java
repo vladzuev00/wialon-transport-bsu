@@ -63,7 +63,7 @@ public final class UserActionControllerTest {
         final String expected = "add_tracker";
         assertEquals(expected, actual);
 
-        verify(this.mockedUserActionService, times(1)).addAttributeOfTrackerFormToAddTracker(
+        verify(this.mockedUserActionService, times(1)).addTrackerFormAsAttribute(
                 same(givenModel), eq("added_tracker_form")
         );
     }
@@ -134,7 +134,7 @@ public final class UserActionControllerTest {
         final String expected = "update_tracker";
         assertEquals(expected, actual);
 
-        verify(this.mockedUserActionService, times(1)).addAttributeOfTrackerFormToUpdateTracker(
+        verify(this.mockedUserActionService, times(1)).addTrackerFormAsAttribute(
                 same(givenTrackerId), same(givenModel), eq("updated_tracker_form")
         );
     }
@@ -217,7 +217,7 @@ public final class UserActionControllerTest {
         assertEquals(expected, actual);
 
         verify(this.mockedUserActionService, times(1))
-                .addAttributeOfChangePasswordFormToChangePassword(
+                .addChangePasswordFormAsAttribute(
                         same(givenModel),
                         eq("change_password_form")
                 );

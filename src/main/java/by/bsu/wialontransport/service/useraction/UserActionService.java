@@ -17,6 +17,8 @@ import by.bsu.wialontransport.service.useraction.exception.TrackerImeiAlreadyExi
 import by.bsu.wialontransport.service.useraction.exception.TrackerPhoneNumberAlreadyExistsException;
 import by.bsu.wialontransport.service.useraction.exception.TrackerUniqueConstraintException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.NotImplementedException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -44,6 +46,7 @@ public final class UserActionService {
     private final ChangingUserInfoService changingUserInfoService;
     private final UserMovementReportBuildingService userMovementReportBuildingService;
 
+    //TODO: remove
     public void addAttributeOfTrackersToShowProfilePage(final int pageNumber,
                                                         final int pageSize,
                                                         final TrackerSortingKey sortingKey,
@@ -53,7 +56,16 @@ public final class UserActionService {
         model.addAttribute(attributeName, listedTrackers);
     }
 
-    public void addAttributeOfTrackerFormToAddTracker(final Model model, final String attributeName) {
+    public void addUserTrackersAsAttribute(final Pageable pageable,
+                                           final TrackerSortingKey sortingKey,
+                                           final Model model,
+                                           final String attributeName) {
+//        final List<Tracker> listedTrackers = this.findListedTrackers(pageNumber, pageSize, sortingKey);
+//        model.addAttribute(attributeName, listedTrackers);
+        throw new NotImplementedException();
+    }
+
+    public void addTrackerFormAsAttribute(final Model model, final String attributeName) {
         final TrackerForm trackerForm = new TrackerForm();
         model.addAttribute(attributeName, trackerForm);
     }
@@ -65,9 +77,9 @@ public final class UserActionService {
         this.trackerService.save(addedTracker);
     }
 
-    public void addAttributeOfTrackerFormToUpdateTracker(final Long trackerId,
-                                                         final Model model,
-                                                         final String attributeName) {
+    public void addTrackerFormAsAttribute(final Long trackerId,
+                                          final Model model,
+                                          final String attributeName) {
         final TrackerForm trackerForm = this.findTrackerForm(trackerId);
         model.addAttribute(attributeName, trackerForm);
     }
@@ -83,7 +95,7 @@ public final class UserActionService {
         this.trackerService.delete(trackerId);
     }
 
-    public void addAttributeOfChangePasswordFormToChangePassword(final Model model, final String attributeName) {
+    public void addChangePasswordFormAsAttribute(final Model model, final String attributeName) {
         final ChangePasswordForm changePasswordForm = new ChangePasswordForm();
         model.addAttribute(attributeName, changePasswordForm);
     }
