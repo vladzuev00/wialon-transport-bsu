@@ -21,6 +21,7 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.INTEGER;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
 import static by.bsu.wialontransport.util.entity.DataEntityUtil.*;
 import static java.lang.Long.MAX_VALUE;
+import static java.lang.Long.MIN_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
@@ -210,6 +211,7 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
                 0
         );
 
+        startQueryCount();
         try (
                 final Stream<DataEntity> actual = repository.findDataByUserIdFetchingTrackerAndAddress(
                         givenUserId,
@@ -217,7 +219,45 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
                         givenEndDateTime
                 )
         ) {
+            checkQueryCount(1);
             assertTrue(isEmpty(actual));
         }
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldBeFound() {
+        final Long givenTrackerId = 255L;
+
+        startQueryCount();
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(givenTrackerId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isPresent());
+        final LocalDateTime actual = optionalActual.get();
+        final LocalDateTime expected = LocalDateTime.of(2019, 10, 26, 14, 39, 53);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
+        final Long givenTrackerId = 256L;
+
+        startQueryCount();
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(givenTrackerId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoTrackerWithGivenId() {
+        startQueryCount();
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(MIN_VALUE);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
     }
 }

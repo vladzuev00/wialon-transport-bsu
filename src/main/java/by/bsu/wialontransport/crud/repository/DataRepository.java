@@ -27,4 +27,7 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
     Stream<DataEntity> findDataByUserIdFetchingTrackerAndAddress(final Long userId,
                                                                  final LocalDateTime startDateTime,
                                                                  final LocalDateTime endDateTime);
+
+    @Query("SELECT e.data.dateTime FROM TrackerLastDataEntity e WHERE e.tracker.id = :trackerId")
+    Optional<LocalDateTime> findTrackerLastDataDateTime(final Long trackerId);
 }
