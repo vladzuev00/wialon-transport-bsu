@@ -40,8 +40,7 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
                 )
         );
     }
-
-    //TODO: test
+    
     @Transactional(readOnly = true)
     public Optional<LocalDateTime> findTrackerLastDataDateTime(final Tracker tracker) {
         return execute(repository -> repository.findTrackerLastDataDateTime(tracker.getId()));
