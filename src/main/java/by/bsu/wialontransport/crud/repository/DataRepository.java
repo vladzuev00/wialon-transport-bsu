@@ -29,5 +29,11 @@ public interface DataRepository extends JpaRepository<DataEntity, Long> {
                                                                  final LocalDateTime endDateTime);
 
     @Query("SELECT e.data.dateTime FROM TrackerLastDataEntity e WHERE e.tracker.id = :trackerId")
-    Optional<LocalDateTime> findTrackerLastDataDateTime(final Long trackerId);
+    Optional<LocalDateTime> findTrackerLastDataDateTimeByTrackerId(final Long trackerId);
+
+    @Query(
+            "SELECT de FROM DataEntity de WHERE de.id = "
+                    + "(SELECT tlde.data.id FROM TrackerLastDataEntity tlde WHERE tlde.tracker.id = :trackerId)"
+    )
+    Optional<DataEntity> findTrackerLastDataByTrackerId(final Long trackerId);
 }

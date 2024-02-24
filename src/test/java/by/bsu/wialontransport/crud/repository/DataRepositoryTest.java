@@ -136,7 +136,20 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParameters() {
+    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParametersBecauseOfTrackerWithGivenIdDoesNotHaveData() {
+        final Long givenTrackerId = 256L;
+
+        startQueryCount();
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerIdFetchingParameters(
+                givenTrackerId
+        );
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundByTrackerIdFetchingParametersBecauseOfTrackerWithGivenIdDoesNotExist() {
         final Long givenTrackerId = MAX_VALUE;
 
         startQueryCount();
@@ -226,11 +239,11 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerLastDataDateTimeShouldBeFound() {
+    public void trackerLastDataDateTimeShouldBeFoundByTrackerId() {
         final Long givenTrackerId = 255L;
 
         startQueryCount();
-        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(givenTrackerId);
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTimeByTrackerId(givenTrackerId);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isPresent());
@@ -241,11 +254,11 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
+    public void trackerLastDataDateTimeShouldNotBeFoundByTrackerIdBecauseOfThereIsNoDataFromGivenTracker() {
         final Long givenTrackerId = 256L;
 
         startQueryCount();
-        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(givenTrackerId);
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTimeByTrackerId(givenTrackerId);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
@@ -253,9 +266,66 @@ public final class DataRepositoryTest extends AbstractSpringBootTest {
 
     @Test
     @Sql("classpath:sql/data/insert-data.sql")
-    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoTrackerWithGivenId() {
+    public void trackerLastDataDateTimeShouldNotBeFoundByTrackerIdBecauseOfThereIsNoTrackerWithGivenId() {
         startQueryCount();
-        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTime(MIN_VALUE);
+        final Optional<LocalDateTime> optionalActual = repository.findTrackerLastDataDateTimeByTrackerId(MIN_VALUE);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataShouldBeFoundByTrackerId() {
+        final Long givenTrackerId = 255L;
+
+        startQueryCount();
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerId(givenTrackerId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isPresent());
+        final DataEntity actual = optionalActual.get();
+        assertFalse(areParametersFetched(actual));
+        assertFalse(isTrackerFetched(actual));
+        assertFalse(isAddressFetched(actual));
+
+        final DataEntity expected = DataEntity.builder()
+                .id(257L)
+                .dateTime(LocalDateTime.of(2019, 10, 26, 14, 39, 53))
+                .coordinate(new Coordinate(53.233, 27.3434))
+                .speed(8)
+                .course(9)
+                .altitude(10)
+                .amountOfSatellites(11)
+                .hdop(12.4)
+                .inputs(13)
+                .outputs(14)
+                .analogInputs(new double[]{0.2, 0.3, 0.4})
+                .driverKeyCode("driver key code")
+                .parameters(emptyList())
+                .tracker(entityManager.getReference(TrackerEntity.class, givenTrackerId))
+                .address(entityManager.getReference(AddressEntity.class, 258L))
+                .build();
+        checkEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundByTrackerIdBecauseOfTrackerWithGivenIdDoesNotHaveData() {
+        final Long givenTrackerId = 256L;
+
+        startQueryCount();
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerId(givenTrackerId);
+        checkQueryCount(1);
+
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundByTrackerIdBecauseOfTrackerWithGivenIdDoesNotExist() {
+        final Long givenTrackerId = MAX_VALUE;
+
+        startQueryCount();
+        final Optional<DataEntity> optionalActual = repository.findTrackerLastDataByTrackerId(givenTrackerId);
         checkQueryCount(1);
 
         assertTrue(optionalActual.isEmpty());
