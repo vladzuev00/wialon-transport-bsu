@@ -33,7 +33,7 @@ public class RegistrationController {
     public String checkIn(@Valid @ModelAttribute(ATTRIBUTE_NAME_USER_FORM) final UserForm userForm,
                           final BindingResult bindingResult,
                           final Model model) {
-        final RegistrationStatus status = this.registrationService.checkIn(userForm, bindingResult, model);
+        final RegistrationStatus status = registrationService.checkIn(userForm, bindingResult, model);
         return status.getViewName();
     }
 
