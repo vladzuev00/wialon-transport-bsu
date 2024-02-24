@@ -48,8 +48,16 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void trackerLastDataShouldNotBeFoundFetchingParameters() {
+    public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsNoDataFromGivenTracker() {
         final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsSuchTracker() {
+        final Tracker givenTracker = createTracker(MIN_VALUE);
 
         final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
@@ -186,6 +194,36 @@ public final class DataServiceTest extends AbstractSpringBootTest {
         final Tracker givenTracker = createTracker(MIN_VALUE);
 
         final Optional<LocalDateTime> optionalActual = service.findTrackerLastDataDateTime(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataShouldBeFound() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        assertTrue(optionalActual.isPresent());
+        final Data actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
+        final Long expectedId = 257L;
+        assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundBecauseOfThereIsSuchTracker() {
+        final Tracker givenTracker = createTracker(MIN_VALUE);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 

@@ -46,6 +46,11 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
         return execute(repository -> repository.findTrackerLastDataDateTimeByTrackerId(tracker.getId()));
     }
 
+    @Transactional(readOnly = true)
+    public Optional<Data> findTrackerLastData(final Tracker tracker) {
+        return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(tracker.getId()));
+    }
+
     @Override
     protected void configureBeforeSave(final DataEntity entity) {
 
