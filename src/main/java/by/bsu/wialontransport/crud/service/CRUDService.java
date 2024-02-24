@@ -3,6 +3,7 @@ package by.bsu.wialontransport.crud.service;
 import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.entity.Entity;
 import by.bsu.wialontransport.crud.mapper.Mapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.CollectionUtil.mapToList;
 
 @Transactional
+@RequiredArgsConstructor
 public abstract class CRUDService<
         ID,
         ENTITY extends Entity<ID>,
@@ -29,14 +31,9 @@ public abstract class CRUDService<
     private final MAPPER mapper;
     private final REPOSITORY repository;
 
-    public CRUDService(final MAPPER mapper, final REPOSITORY repository) {
-        this.mapper = mapper;
-        this.repository = repository;
-    }
-
     @Transactional(readOnly = true)
     public Optional<DTO> findById(final ID id) {
-        return findUnique(repository -> repository.findById(id));
+        return findUniqueDto(repository -> repository.findById(id));
     }
 
     @Transactional(readOnly = true)
@@ -75,8 +72,12 @@ public abstract class CRUDService<
 
     protected abstract void configureBeforeSave(final ENTITY entity);
 
-    protected final Optional<DTO> findUnique(final Function<REPOSITORY, Optional<ENTITY>> operation) {
-        return operation.apply(repository).map(mapper::mapToDto);
+    protected final Optional<DTO> findUniqueDto(final Function<REPOSITORY, Optional<ENTITY>> operation) {
+        return execute(operation).map(mapper::mapToDto);
+    }
+
+    protected final <T> T execute(final Function<REPOSITORY, T> operation) {
+        return operation.apply(repository);
     }
 
     protected final boolean findBoolean(final Predicate<REPOSITORY> operation) {
@@ -89,17 +90,17 @@ public abstract class CRUDService<
 
     protected <D> D findEntityStreamAndCollect(final Function<REPOSITORY, Stream<ENTITY>> operation,
                                                final Collector<ENTITY, ?, D> collector) {
-        try (final Stream<ENTITY> stream = operation.apply(repository)) {
+        try (final Stream<ENTITY> stream = execute(operation)) {
             return stream.collect(collector);
         }
     }
 
     protected Stream<DTO> findDtoStream(final Function<REPOSITORY, Stream<ENTITY>> operation) {
-        return operation.apply(repository).map(mapper::mapToDto);
+        return execute(operation).map(mapper::mapToDto);
     }
 
     protected Page<DTO> findDtoPage(final Function<REPOSITORY, Page<ENTITY>> operation) {
-        return operation.apply(repository).map(mapper::mapToDto);
+        return execute(operation).map(mapper::mapToDto);
     }
 
     private void checkIdDefined(final DTO dto) {

@@ -32,7 +32,7 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByImei(final String imei) {
-        return findUnique(repository -> repository.findByImei(imei));
+        return findUniqueDto(repository -> repository.findByImei(imei));
     }
 
     @Transactional(readOnly = true)
@@ -47,16 +47,16 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByIdFetchingUser(final Long id) {
-        return findUnique(repository -> repository.findByIdFetchingUser(id));
+        return findUniqueDto(repository -> repository.findByIdFetchingUser(id));
     }
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByPhoneNumber(final String phoneNumber) {
-        return findUnique(repository -> repository.findByPhoneNumber(phoneNumber));
+        return findUniqueDto(repository -> repository.findByPhoneNumber(phoneNumber));
     }
 
     @Transactional(readOnly = true)
     public Optional<Tracker> findByIdFetchingMileage(final Long id) {
-        return findUnique(repository -> repository.findByIdFetchingMileage(id));
+        return findUniqueDto(repository -> repository.findByIdFetchingMileage(id));
     }
 }
