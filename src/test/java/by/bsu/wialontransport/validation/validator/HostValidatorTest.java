@@ -40,6 +40,7 @@ public final class HostValidatorTest {
                 Arguments.of("whatever", true),
                 Arguments.of("9999-ee.99", true),
                 Arguments.of("112.25.25", true),
+                Arguments.of("localhost", true),
                 Arguments.of("ekkej_dhh.com", false),
                 Arguments.of("email@domain.com", false),
                 Arguments.of(".jjdj.kkd", false),

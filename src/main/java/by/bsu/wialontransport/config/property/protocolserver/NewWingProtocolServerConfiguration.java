@@ -1,7 +1,9 @@
 package by.bsu.wialontransport.config.property.protocolserver;
 
+import by.bsu.wialontransport.validation.annotation.Host;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
+import org.springframework.validation.annotation.Validated;
 
 //TODO: add validation
 @ConfigurationProperties(prefix = "protocol-server.new-wing")
