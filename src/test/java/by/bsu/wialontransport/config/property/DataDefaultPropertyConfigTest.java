@@ -65,7 +65,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -82,7 +82,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -99,7 +99,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -117,7 +117,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть больше или равно 0", findFirstMessage(violations));
+        assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
@@ -134,7 +134,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -152,7 +152,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть больше 0", findFirstMessage(violations));
+        assertEquals("must be greater than 0", findFirstMessage(violations));
     }
 
     @Test
@@ -169,7 +169,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -187,7 +187,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть не меньше 1", findFirstMessage(violations));
+        assertEquals("must be greater than or equal to 1", findFirstMessage(violations));
     }
 
     @Test
@@ -205,7 +205,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть не больше 10", findFirstMessage(violations));
+        assertEquals("must be less than or equal to 10", findFirstMessage(violations));
     }
 
     @Test
@@ -222,7 +222,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -240,7 +240,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть больше или равно 0", findFirstMessage(violations));
+        assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
@@ -257,7 +257,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно равняться null", findFirstMessage(violations));
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
@@ -275,7 +275,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("должно быть больше или равно 0", findFirstMessage(violations));
+        assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
@@ -292,7 +292,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно быть пустым", findFirstMessage(violations));
+        assertEquals("must not be blank", findFirstMessage(violations));
     }
 
     @Test
@@ -310,7 +310,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("не должно быть пустым", findFirstMessage(violations));
+        assertEquals("must not be blank", findFirstMessage(violations));
     }
 
     private static String findFirstMessage(final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations) {
