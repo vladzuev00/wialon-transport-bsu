@@ -100,7 +100,7 @@ tracker-server:
     altitude: 0
     speed: 0
     amount-of-satellites: 3
-    hdop: 0
+    hdop: 5
     inputs: 0
     outputs: 0
     driver-key-code: not defined
