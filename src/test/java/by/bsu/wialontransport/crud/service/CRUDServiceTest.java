@@ -246,7 +246,7 @@ public final class CRUDServiceTest {
         final TestPersonDto givenDto = new TestPersonDto(givenId);
         when(mockedMapper.mapToDto(same(givenEntity))).thenReturn(givenDto);
 
-        final Optional<TestPersonDto> optionalActual = service.findUnique(givenOperation);
+        final Optional<TestPersonDto> optionalActual = service.findUniqueDto(givenOperation);
         assertTrue(optionalActual.isPresent());
         final TestPersonDto actual = optionalActual.get();
         assertSame(givenDto, actual);
@@ -261,10 +261,41 @@ public final class CRUDServiceTest {
 
         when(mockedRepository.findById(same(givenId))).thenReturn(empty());
 
-        final Optional<TestPersonDto> optionalActual = service.findUnique(givenOperation);
+        final Optional<TestPersonDto> optionalActual = service.findUniqueDto(givenOperation);
         assertTrue(optionalActual.isEmpty());
 
         verifyNoInteractions(mockedMapper);
+    }
+
+    @Test
+    public void personNameShouldBeFoundById() {
+        final Long givenId = 255L;
+        final Function<PersonRepository, Optional<String>> givenOperation = repository -> repository.findNameById(
+                givenId
+        );
+
+        final String expectedName = "Ivan";
+        when(mockedRepository.findNameById(same(givenId))).thenReturn(Optional.of(expectedName));
+
+        final Optional<String> optionalActual = service.execute(givenOperation);
+        assertTrue(optionalActual.isPresent());
+        final String actual = optionalActual.get();
+        assertSame(expectedName, actual);
+
+        verifyNoInteractions(mockedMapper);
+    }
+
+    @Test
+    public void personNameShouldNotBeFoundById() {
+        final Long givenId = 255L;
+        final Function<PersonRepository, Optional<String>> givenOperation = repository -> repository.findNameById(
+                givenId
+        );
+
+        when(mockedRepository.findNameById(same(givenId))).thenReturn(empty());
+
+        final Optional<String> optionalActual = service.execute(givenOperation);
+        assertTrue(optionalActual.isEmpty());
     }
 
     @Test
@@ -403,5 +434,7 @@ public final class CRUDServiceTest {
         Stream<TestPersonEntity> findByName(final String name);
 
         Page<TestPersonEntity> findBySurname(final String surname);
+
+        Optional<String> findNameById(final Long id);
     }
 }

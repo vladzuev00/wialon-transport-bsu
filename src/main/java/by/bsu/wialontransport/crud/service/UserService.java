@@ -21,7 +21,7 @@ public class UserService extends CRUDEncryptingPasswordService<Long, UserEntity,
 
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(final String email) {
-        return findUnique(repository -> repository.findByEmail(email));
+        return findUniqueDto(repository -> repository.findByEmail(email));
     }
 
     @Transactional(readOnly = true)

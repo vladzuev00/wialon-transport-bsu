@@ -1,5 +1,10 @@
 package by.bsu.wialontransport.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public enum RegistrationStatus {
     SUCCESS("redirect:/"),
     BINDING_ERROR("registration"),
@@ -7,12 +12,4 @@ public enum RegistrationStatus {
     EMAIL_ALREADY_EXISTS("registration");
 
     private final String viewName;
-
-    RegistrationStatus(final String viewName) {
-        this.viewName = viewName;
-    }
-
-    public final String getViewName() {
-        return this.viewName;
-    }
 }

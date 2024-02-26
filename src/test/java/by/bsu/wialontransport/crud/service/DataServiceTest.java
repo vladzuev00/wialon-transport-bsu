@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPoint;
 import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static by.bsu.wialontransport.util.StreamUtil.isEmpty;
+import static java.lang.Long.MIN_VALUE;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public final class DataServiceTest extends AbstractSpringBootTest {
 
     @Autowired
-    private DataService dataService;
+    private DataService service;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -37,7 +38,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldBeFoundFetchingParameters() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = dataService.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isPresent());
         final Data actual = optionalActual.get();
 
@@ -47,10 +48,18 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void trackerLastDataShouldNotBeFoundFetchingParameters() {
+    public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsNoDataFromGivenTracker() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = dataService.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsSuchTracker() {
+        final Tracker givenTracker = createTracker(MIN_VALUE);
+
+        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -64,7 +73,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
         );
 
         try (
-                final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(
+                final Stream<Data> actual = service.findDataByUserIdFetchingTrackerAndAddress(
                         givenUser,
                         givenDateInterval
                 )
@@ -149,13 +158,73 @@ public final class DataServiceTest extends AbstractSpringBootTest {
         );
 
         try (
-                final Stream<Data> actual = dataService.findDataByUserIdFetchingTrackerAndAddress(
+                final Stream<Data> actual = service.findDataByUserIdFetchingTrackerAndAddress(
                         givenUser,
                         givenDateInterval
                 )
         ) {
             assertTrue(isEmpty(actual));
         }
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldBeFound() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<LocalDateTime> optionalActual = service.findTrackerLastDataDateTime(givenTracker);
+        assertTrue(optionalActual.isPresent());
+        final LocalDateTime actual = optionalActual.get();
+        final LocalDateTime expected = LocalDateTime.of(2019, 10, 26, 14, 39, 53);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
+        final Tracker givenTracker = createTracker(256L);
+
+        final Optional<LocalDateTime> optionalActual = service.findTrackerLastDataDateTime(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataDateTimeShouldNotBeFoundBecauseOfThereIsNoTrackerWithGivenId() {
+        final Tracker givenTracker = createTracker(MIN_VALUE);
+
+        final Optional<LocalDateTime> optionalActual = service.findTrackerLastDataDateTime(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    @Sql("classpath:sql/data/insert-data.sql")
+    public void trackerLastDataShouldBeFound() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        assertTrue(optionalActual.isPresent());
+        final Data actual = optionalActual.get();
+
+        final Long actualId = actual.getId();
+        final Long expectedId = 257L;
+        assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
+        final Tracker givenTracker = createTracker(255L);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        assertTrue(optionalActual.isEmpty());
+    }
+
+    @Test
+    public void trackerLastDataShouldNotBeFoundBecauseOfThereIsSuchTracker() {
+        final Tracker givenTracker = createTracker(MIN_VALUE);
+
+        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        assertTrue(optionalActual.isEmpty());
     }
 
     @SuppressWarnings("SameParameterValue")
