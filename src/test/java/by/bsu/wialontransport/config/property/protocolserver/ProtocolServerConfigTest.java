@@ -19,7 +19,6 @@ public final class ProtocolServerConfigTest extends AbstractSpringBootTest {
                 .build();
 
         System.out.println(validator.validate(givenConfig).size());
-        throw new RuntimeException();
     }
 
     private static final class TestProtocolServerConfig extends ProtocolServerConfig {
