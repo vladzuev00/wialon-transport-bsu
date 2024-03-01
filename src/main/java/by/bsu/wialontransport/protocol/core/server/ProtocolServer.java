@@ -13,6 +13,7 @@ import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -29,16 +30,19 @@ public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?
     private final InetSocketAddress inetSocketAddress;
     private final EventLoopGroup loopGroupProcessingConnection;
     private final EventLoopGroup loopGroupProcessingData;
-
+    private final int connectionLifeTimeoutSeconds;
     private final ServerRunningContext runningContext;
 
-    public ProtocolServer(final ProtocolServerConfig configuration,
+    public ProtocolServer(final ProtocolServerConfig config,
                           final ContextAttributeManager contextAttributeManager,
                           final ConnectionManager connectionManager,
                           final List<PACKAGE_DECODER> packageDecoders,
                           final List<PACKAGE_ENCODER> packageEncoders,
                           final List<? extends PackageHandler<?>> packageHandlers) {
-        this.configuration = configuration;
+        inetSocketAddress = new InetSocketAddress(config.getHost(), config.getPort());
+        loopGroupProcessingConnection = new NioEventLoopGroup(config.getThreadCountProcessingConnection());
+        loopGroupProcessingData = new NioEventLoopGroup(config.getThreadCountProcessingData());
+        connectionLifeTimeoutSeconds = config.getConnectionLifeTimeoutSeconds();
         runningContext = new ServerRunningContext(
                 contextAttributeManager,
                 connectionManager,
@@ -62,8 +66,8 @@ public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?
     }
 
     public final void stop() {
-        shutdown(configuration.getLoopGroupProcessingConnection());
-        shutdown(configuration.getLoopGroupProcessingData());
+        shutdown(loopGroupProcessingConnection);
+        shutdown(loopGroupProcessingData);
     }
 
     protected abstract ProtocolDecoder<?, ?> createProtocolDecoder(final ServerRunningContext context);
@@ -74,9 +78,9 @@ public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?
 
     private ServerBootstrap createServerBootstrap() {
         return new ServerBootstrap()
-                .group(configuration.getLoopGroupProcessingConnection(), configuration.getLoopGroupProcessingData())
+                .group(loopGroupProcessingConnection, loopGroupProcessingData)
                 .channel(NioServerSocketChannel.class)
-                .localAddress(configuration.getInetSocketAddress())
+                .localAddress(inetSocketAddress)
                 .childHandler(createChannelInitializer());
     }
 
@@ -98,7 +102,7 @@ public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?
     }
 
     private ReadTimeoutHandler createReadTimeoutHandler() {
-        return new ReadTimeoutHandler(configuration.getConnectionLifeTimeoutSeconds(), SECONDS);
+        return new ReadTimeoutHandler(connectionLifeTimeoutSeconds, SECONDS);
     }
 
     private ProtocolExceptionHandler createExceptionHandler() {
