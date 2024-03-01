@@ -19,13 +19,17 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?, ?>, PACKAGE_ENCODER extends PackageEncoder<?>> {
-    private final ProtocolServerConfig configuration;
+    private final InetSocketAddress inetSocketAddress;
+    private final EventLoopGroup loopGroupProcessingConnection;
+    private final EventLoopGroup loopGroupProcessingData;
+
     private final ServerRunningContext runningContext;
 
     public ProtocolServer(final ProtocolServerConfig configuration,
