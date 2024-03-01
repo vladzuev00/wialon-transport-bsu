@@ -12,6 +12,6 @@ public final class PortValidator implements ConstraintValidator<Port, Integer> {
 
     @Override
     public boolean isValid(final Integer value, final ConstraintValidatorContext context) {
-        return MIN_VALID <= value && value <= MAX_VALID;
+        return value != null && MIN_VALID <= value && value <= MAX_VALID;
     }
 }
