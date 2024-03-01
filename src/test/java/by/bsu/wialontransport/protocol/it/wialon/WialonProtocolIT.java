@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,8 @@ public final class WialonProtocolIT extends ProtocolIT {
     @Before
     public void initializeClient()
             throws Exception {
-        client = new WialonClient(serverConfiguration.getInetSocketAddress());
+        //TODO: refactor
+        client = new WialonClient(new InetSocketAddress(serverConfiguration.getHost(), serverConfiguration.getPort()));
     }
 
     @After

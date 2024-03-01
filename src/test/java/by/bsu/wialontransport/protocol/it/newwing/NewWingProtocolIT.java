@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,7 +46,8 @@ public final class NewWingProtocolIT extends ProtocolIT {
     @Before
     public void initializeClient()
             throws Exception {
-        client = new NewWingClient(serverConfiguration.getInetSocketAddress());
+        //TODO: refactor
+        client = new NewWingClient(new InetSocketAddress(serverConfiguration.getHost(), serverConfiguration.getPort()));
     }
 
     @After

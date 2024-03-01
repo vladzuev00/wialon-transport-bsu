@@ -16,13 +16,13 @@ import static org.mockito.Mockito.verify;
 public final class ServerManagerTest {
 
     @Mock
-    private ProtocolServer firstMockedProtocolServer;
+    private ProtocolServer<?, ?> firstMockedProtocolServer;
 
     @Mock
-    private ProtocolServer secondMockedProtocolServer;
+    private ProtocolServer<?, ?> secondMockedProtocolServer;
 
     @Mock
-    private ProtocolServer thirdMockedProtocolServer;
+    private ProtocolServer<?, ?> thirdMockedProtocolServer;
 
     private ServerManager manager;
 

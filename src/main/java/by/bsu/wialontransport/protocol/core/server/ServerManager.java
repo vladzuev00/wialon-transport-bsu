@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public final class ServerManager {
-    private final List<ProtocolServer> servers;
+    private final List<ProtocolServer<?, ?>> servers;
 
     @PostConstruct
     public void runServers() {
