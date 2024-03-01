@@ -2,7 +2,7 @@ package by.bsu.wialontransport.config.property;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 
-import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfig;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 public final class WialonServerConfigurationTest extends AbstractSpringBootTest {
 
     @Autowired
-    private ProtocolServerConfiguration configuration;
+    private ProtocolServerConfig config;
 
     @Test
     public void configurationShouldBeInitialized() {

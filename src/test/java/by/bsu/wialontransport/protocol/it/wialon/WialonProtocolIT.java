@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.wialon;
 
-import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfig;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.protocol.it.core.ProtocolIT;
@@ -50,13 +50,7 @@ public final class WialonProtocolIT extends ProtocolIT {
     private static final String FAILED_RECEIVING_DATA_PACKAGE_RESPONSE = "#AD#-1\r\n";
 
     @Autowired
-    private WialonProtocolServerConfiguration serverConfiguration;
-
-    @Autowired
-    private GeometryFactory geometryFactory;
-
-    @Autowired
-    private GeoJSONWriter geoJSONWriter;
+    private WialonProtocolServerConfig serverConfiguration;
 
     private WialonClient client;
 
@@ -1562,29 +1556,5 @@ public final class WialonProtocolIT extends ProtocolIT {
                 FAILED_RECEIVING_DATA_PACKAGE_RESPONSE,
                 "Sending data package isn't failed"
         );
-    }
-
-    private NominatimReverseResponse createNominatimReverseResponse() {
-        return NominatimReverseResponse.builder()
-                .centerLatitude(5.5)
-                .centerLongitude(6.6)
-                .address(new NominatimReverseResponse.Address("city", "town", "country"))
-                .boundingBoxCoordinates(new double[]{4.4, 5.5, 6.6, 7.7})
-                .geometry(
-                        geoJSONWriter.write(
-                                createPolygon(
-                                        geometryFactory,
-                                        4.4, 5.5, 8.8, 5.5, 8.8, 9.9, 4.4, 9.9
-                                )
-                        )
-                )
-                .extraTags(new ExtraTags("city", "yes"))
-                .build();
-    }
-
-    private static AddressEntity createAddress(final Long id) {
-        return AddressEntity.builder()
-                .id(id)
-                .build();
     }
 }

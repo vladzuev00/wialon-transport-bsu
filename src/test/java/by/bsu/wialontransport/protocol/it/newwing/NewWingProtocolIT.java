@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.newwing;
 
-import by.bsu.wialontransport.config.property.protocolserver.NewWingProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.NewWingProtocolServerConfig;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity.Coordinate;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
@@ -38,7 +38,7 @@ public final class NewWingProtocolIT extends ProtocolIT {
     private static final String FAIL_RESPONSE = "FFFFF";
 
     @Autowired
-    private NewWingProtocolServerConfiguration serverConfiguration;
+    private NewWingProtocolServerConfig serverConfiguration;
 
     private NewWingClient client;
 

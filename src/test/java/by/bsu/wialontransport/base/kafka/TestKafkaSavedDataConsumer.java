@@ -13,6 +13,7 @@ import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.IntStream.rangeClosed;
 
+//TODO: setExpectedConsumedRecordCount instead of reset
 @Component
 public final class TestKafkaSavedDataConsumer {
     private static final String PAYLOAD_RECORDS_SEPARATOR = " || ";

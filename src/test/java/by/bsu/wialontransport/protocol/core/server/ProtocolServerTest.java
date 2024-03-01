@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.server;
 
-import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfig;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
@@ -90,7 +90,7 @@ public final class ProtocolServerTest {
 
     @Test
     public void serverShouldBeCreated() {
-        final ProtocolServerConfiguration actualConfiguration = findConfiguration(server);
+        final ProtocolServerConfig actualConfiguration = findConfiguration(server);
 
         final InetSocketAddress actualInetSocketAddress = actualConfiguration.getInetSocketAddress();
         final InetSocketAddress expectedInetSocketAddress = new InetSocketAddress(GIVEN_HOST, GIVEN_PORT);
@@ -172,8 +172,8 @@ public final class ProtocolServerTest {
         assertFalse(isServerRun());
     }
 
-    private static ProtocolServerConfiguration createServerConfiguration() {
-        return new ProtocolServerConfiguration(
+    private static ProtocolServerConfig createServerConfiguration() {
+        return new ProtocolServerConfig(
                 GIVEN_HOST,
                 GIVEN_PORT,
                 GIVEN_THREAD_COUNT_PROCESSING_CONNECTION,
@@ -183,8 +183,8 @@ public final class ProtocolServerTest {
         };
     }
 
-    private static ProtocolServerConfiguration findConfiguration(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_CONFIGURATION, ProtocolServerConfiguration.class);
+    private static ProtocolServerConfig findConfiguration(final ProtocolServer<?, ?> server) {
+        return findProperty(server, FIELD_NAME_CONFIGURATION, ProtocolServerConfig.class);
     }
 
     private static ServerRunningContext findRunningContext(final ProtocolServer<?, ?> server) {
@@ -208,7 +208,7 @@ public final class ProtocolServerTest {
         private final ProtocolEncoder protocolEncoder;
         private final ProtocolHandler protocolHandler;
 
-        public TestProtocolServer(final ProtocolServerConfiguration configuration,
+        public TestProtocolServer(final ProtocolServerConfig configuration,
                                   final ContextAttributeManager contextAttributeManager,
                                   final ConnectionManager connectionManager,
                                   final List<PackageDecoder<?, ?, ?>> packageDecoders,

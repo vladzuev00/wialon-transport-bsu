@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.server;
 
-import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.WialonProtocolServerConfig;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public final class WialonProtocolServer extends ProtocolServer<WialonPackageDecoder<?>, WialonPackageEncoder<?>> {
 
-    public WialonProtocolServer(final WialonProtocolServerConfiguration configuration,
+    public WialonProtocolServer(final WialonProtocolServerConfig configuration,
                                 final ContextAttributeManager contextAttributeManager,
                                 final ConnectionManager connectionManager,
                                 final List<WialonPackageDecoder<?>> packageDecoders,

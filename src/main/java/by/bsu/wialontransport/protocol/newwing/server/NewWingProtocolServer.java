@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.server;
 
-import by.bsu.wialontransport.config.property.protocolserver.NewWingProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.NewWingProtocolServerConfig;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDecoder<?, ?>, NewWingPackageEncoder<?>> {
 
-    public NewWingProtocolServer(final NewWingProtocolServerConfiguration configuration,
+    public NewWingProtocolServer(final NewWingProtocolServerConfig configuration,
                                  final ContextAttributeManager contextAttributeManager,
                                  final ConnectionManager connectionManager,
                                  final List<NewWingPackageDecoder<?, ?>> packageDecoders,

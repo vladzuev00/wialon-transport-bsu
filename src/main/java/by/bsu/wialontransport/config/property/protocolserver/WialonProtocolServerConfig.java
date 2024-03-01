@@ -5,15 +5,15 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 
 //TODO: add validation
 @ConfigurationProperties(prefix = "protocol-server.wialon")
-public class WialonProtocolServerConfiguration extends ProtocolServerConfiguration {
+public class WialonProtocolServerConfig extends ProtocolServerConfig {
 
     //TODO: delete @ConstructorBinding
     @ConstructorBinding
-    public WialonProtocolServerConfiguration(final String host,
-                                             final int port,
-                                             final int threadCountProcessingConnection,
-                                             final int threadCountProcessingData,
-                                             final int connectionLifeTimeoutSeconds) {
+    public WialonProtocolServerConfig(final String host,
+                                      final int port,
+                                      final int threadCountProcessingConnection,
+                                      final int threadCountProcessingData,
+                                      final int connectionLifeTimeoutSeconds) {
         super(host, port, threadCountProcessingConnection, threadCountProcessingData, connectionLifeTimeoutSeconds);
     }
 

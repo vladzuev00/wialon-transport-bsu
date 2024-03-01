@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.server;
 
-import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfiguration;
+import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfig;
 import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
@@ -25,10 +25,10 @@ import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?, ?>, PACKAGE_ENCODER extends PackageEncoder<?>> {
-    private final ProtocolServerConfiguration configuration;
+    private final ProtocolServerConfig configuration;
     private final ServerRunningContext runningContext;
 
-    public ProtocolServer(final ProtocolServerConfiguration configuration,
+    public ProtocolServer(final ProtocolServerConfig configuration,
                           final ContextAttributeManager contextAttributeManager,
                           final ConnectionManager connectionManager,
                           final List<PACKAGE_DECODER> packageDecoders,

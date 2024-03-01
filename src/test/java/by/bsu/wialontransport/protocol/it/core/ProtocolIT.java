@@ -5,15 +5,20 @@ import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
+import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
+import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse.ExtraTags;
 import lombok.Getter;
 import org.junit.Before;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import org.wololo.jts2geojson.GeoJSONWriter;
 
 import java.util.List;
 
+import static by.bsu.wialontransport.util.GeometryTestUtil.createPolygon;
 import static lombok.AccessLevel.PROTECTED;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -37,6 +42,12 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
 
     @Autowired
     private TestKafkaSavedDataConsumer savedDataConsumer;
+
+    @Autowired
+    private GeometryFactory geometryFactory;
+
+    @Autowired
+    private GeoJSONWriter geoJSONWriter;
 
     @Before
     public void resetSavedDataConsumer() {
@@ -74,5 +85,29 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
 
     protected void verifyNoRequestsToNominatim() {
         verifyNoInteractions(mockedNominatimService);
+    }
+
+    protected NominatimReverseResponse createNominatimReverseResponse() {
+        return NominatimReverseResponse.builder()
+                .centerLatitude(5.5)
+                .centerLongitude(6.6)
+                .address(new NominatimReverseResponse.Address("city", "town", "country"))
+                .boundingBoxCoordinates(new double[]{4.4, 5.5, 6.6, 7.7})
+                .geometry(
+                        geoJSONWriter.write(
+                                createPolygon(
+                                        geometryFactory,
+                                        4.4, 5.5, 8.8, 5.5, 8.8, 9.9, 4.4, 9.9
+                                )
+                        )
+                )
+                .extraTags(new ExtraTags("city", "yes"))
+                .build();
+    }
+
+    protected static AddressEntity createAddress(final Long id) {
+        return AddressEntity.builder()
+                .id(id)
+                .build();
     }
 }
