@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim.aspect;
 
-import by.bsu.wialontransport.config.RestTemplateConfiguration;
+import by.bsu.wialontransport.config.RestTemplateConfig;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RunWith(SpringRunner.class)
 @Import(
         {
-                RestTemplateConfiguration.class,
+                RestTemplateConfig.class,
                 AnnotationAwareAspectJAutoProxyCreator.class,
                 NominatimServiceAspect.class
         }
