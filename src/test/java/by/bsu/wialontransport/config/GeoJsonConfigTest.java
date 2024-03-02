@@ -8,7 +8,7 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 
 import static org.junit.Assert.assertNotNull;
 
-public final class GeoJsonConfigurationTest extends AbstractSpringBootTest {
+public final class GeoJsonConfigTest extends AbstractSpringBootTest {
 
     @Autowired
     private GeoJSONReader geoJSONReader;

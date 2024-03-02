@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GeometryFactoryConfiguration {
-    private static final int GEOMETRY_FACTORY_SRID = 4326;
+public class GeometryFactoryConfig {
+    private static final int SRID = 4326;
 
     @Bean
     public GeometryFactory geometryFactory() {
-        return new GeometryFactory(this.precisionModel(), GEOMETRY_FACTORY_SRID);
+        return new GeometryFactory(precisionModel(), SRID);
     }
 
     @Bean
