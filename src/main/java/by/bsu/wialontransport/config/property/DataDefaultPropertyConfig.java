@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
 @Builder
 @ConfigurationProperties("tracker-server.data-default-property")
 @ConstructorBinding
-public class DataDefaultPropertyConfig {
+public final class DataDefaultPropertyConfig {
 
     @NotNull
     private final Integer course;

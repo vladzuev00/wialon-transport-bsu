@@ -8,14 +8,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Getter
 @EqualsAndHashCode
 @ToString
 @ConfigurationProperties("data.validation")
-public class DataValidationConfig {
+public final class DataValidationConfig {
 
     @Positive
     private final Integer minValidAmountOfSatellites;
