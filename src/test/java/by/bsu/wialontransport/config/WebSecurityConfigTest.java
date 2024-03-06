@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.config.websecurity;
+package by.bsu.wialontransport.config;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import org.junit.Test;
@@ -11,8 +11,9 @@ import static org.junit.Assert.assertSame;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.OK;
 
+//TODO: check all controllers here
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public final class RegistrationControllerSecurityTest extends AbstractSpringBootTest {
+public final class WebSecurityConfigTest extends AbstractSpringBootTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

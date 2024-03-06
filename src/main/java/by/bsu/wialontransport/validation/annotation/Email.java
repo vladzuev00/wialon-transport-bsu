@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.validation.annotation;
 
-import by.bsu.wialontransport.validation.validator.byregex.HostValidator;
+import by.bsu.wialontransport.validation.validator.byregex.EmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,9 +13,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER, FIELD})
-@Constraint(validatedBy = HostValidator.class)
-public @interface Host {
-    String message() default "Invalid host";
+@Constraint(validatedBy = EmailValidator.class)
+public @interface Email {
+    String message() default "Invalid email";
 
     @SuppressWarnings("unused")
     Class<?>[] groups() default {};
