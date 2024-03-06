@@ -10,10 +10,7 @@ public final class PasswordValidator implements ConstraintValidator<Password, St
 
     @Override
     public boolean isValid(final String research, final ConstraintValidatorContext context) {
-        if (research == null) {
-            return false;
-        }
-        return research.matches(REGEX_VALID_PASSWORD);
+        return research != null && research.matches(REGEX_VALID_PASSWORD);
     }
 
 }

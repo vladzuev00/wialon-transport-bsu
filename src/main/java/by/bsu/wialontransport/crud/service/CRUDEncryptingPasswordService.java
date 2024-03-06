@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.entity.EntityWithPassword;
 import by.bsu.wialontransport.crud.mapper.Mapper;
 import by.bsu.wialontransport.crud.repository.EntityWithPasswordRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public abstract class CRUDEncryptingPasswordService<
         ID,
@@ -14,11 +14,11 @@ public abstract class CRUDEncryptingPasswordService<
         REPOSITORY extends EntityWithPasswordRepository<ID, ENTITY>
         >
         extends CRUDService<ID, ENTITY, DTO, MAPPER, REPOSITORY> {
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public CRUDEncryptingPasswordService(final MAPPER mapper,
                                          final REPOSITORY repository,
-                                         final BCryptPasswordEncoder passwordEncoder) {
+                                         final PasswordEncoder passwordEncoder) {
         super(mapper, repository);
         this.passwordEncoder = passwordEncoder;
     }

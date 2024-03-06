@@ -26,5 +26,4 @@ public final class PasswordValidatorTest {
         final boolean actual = this.validator.isValid("password password", null);
         assertFalse(actual);
     }
-
 }

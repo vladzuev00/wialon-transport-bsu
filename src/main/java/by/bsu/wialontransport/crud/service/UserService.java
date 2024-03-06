@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity;
 import by.bsu.wialontransport.crud.mapper.UserMapper;
 import by.bsu.wialontransport.crud.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +15,7 @@ public class UserService extends CRUDEncryptingPasswordService<Long, UserEntity,
 
     public UserService(final UserMapper mapper,
                        final UserRepository repository,
-                       final BCryptPasswordEncoder passwordEncoder) {
+                       final PasswordEncoder passwordEncoder) {
         super(mapper, repository, passwordEncoder);
     }
 
