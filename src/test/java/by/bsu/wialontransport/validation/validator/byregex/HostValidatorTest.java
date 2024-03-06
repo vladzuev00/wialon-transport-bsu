@@ -1,6 +1,5 @@
-package by.bsu.wialontransport.validation.validator;
+package by.bsu.wialontransport.validation.validator.byregex;
 
-import by.bsu.wialontransport.validation.validator.byregex.HostValidator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

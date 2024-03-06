@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.compile;
 
-//TODO: test
 public abstract class ValidatorByRegex<A extends Annotation> implements ConstraintValidator<A, String> {
     private final Pattern pattern;
 
