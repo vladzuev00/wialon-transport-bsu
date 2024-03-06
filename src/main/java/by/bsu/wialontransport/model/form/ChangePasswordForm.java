@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.model.form;
 
-import by.bsu.wialontransport.model.validation.annotation.Password;
+import by.bsu.wialontransport.validation.annotation.Password;
 import lombok.*;
 
 @NoArgsConstructor
