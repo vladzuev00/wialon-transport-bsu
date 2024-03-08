@@ -6,6 +6,7 @@ import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;
 import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ public final class RegistrationService {
     private final UserService userService;
     private final UserFormMapper formMapper;
 
-    public Re checkIn(final RegisteredUserRequest user) {
+    public RegisteredUserResponse checkIn(final RegisteredUserRequest user) {
         return null;
     }
 

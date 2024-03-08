@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.controller.registration;
 
-import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
-import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.service.registration.RegistrationService;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +21,8 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping
-    public String checkIn(@Valid @RequestBody final RegisteredUserRequest user) {
-        final User savedUser = registrationService.checkIn(user);
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<RegisteredUserResponse> checkIn(@Valid @RequestBody final RegisteredUserRequest user) {
+        final RegisteredUserResponse response = registrationService.checkIn(user);
+        return ResponseEntity.ok(response);
     }
 }
