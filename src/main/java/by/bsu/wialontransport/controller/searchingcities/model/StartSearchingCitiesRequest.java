@@ -12,7 +12,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 @Value
-@Builder
 public class StartSearchingCitiesRequest {
 
     @NotNull
@@ -24,6 +23,7 @@ public class StartSearchingCitiesRequest {
     @DecimalMax(value = "5")
     Double searchStep;
 
+    @Builder
     @JsonCreator
     public StartSearchingCitiesRequest(@JsonProperty(value = "areaCoordinate") final AreaCoordinateRequest areaCoordinate,
                                        @JsonProperty(value = "searchStep") final Double searchStep) {
