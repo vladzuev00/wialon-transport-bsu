@@ -2,6 +2,7 @@ package by.bsu.wialontransport.controller.exceptionhandler;
 
 import by.bsu.wialontransport.controller.exception.CustomValidationException;
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
+import by.bsu.wialontransport.service.registration.exception.RegistrationException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
 import org.springframework.core.convert.ConversionFailedException;
@@ -59,6 +60,12 @@ public final class RestExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<RestErrorResponse> handle(final MissingServletRequestParameterException exception) {
+        return createResponse(exception, NOT_ACCEPTABLE);
+    }
+
+    //TODO: test
+    @ExceptionHandler
+    public ResponseEntity<RestErrorResponse> handle(final RegistrationException exception) {
         return createResponse(exception, NOT_ACCEPTABLE);
     }
 
