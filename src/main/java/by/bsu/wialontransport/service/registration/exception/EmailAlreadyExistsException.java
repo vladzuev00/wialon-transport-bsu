@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.registration.exception;
 
-public final class EmailAlreadyExistsException extends RuntimeException {
+public final class EmailAlreadyExistsException extends RegistrationException {
 
     @SuppressWarnings("unused")
     public EmailAlreadyExistsException() {

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.registration.exception;
 
-public final class PasswordConfirmException extends RuntimeException {
+public final class PasswordConfirmException extends RegistrationException {
 
     @SuppressWarnings("unused")
     public PasswordConfirmException() {
