@@ -21,8 +21,8 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping
-    public ResponseEntity<RegisteredUserResponse> checkIn(@Valid @RequestBody final RegisteredUserRequest user) {
-        final RegisteredUserResponse response = registrationService.checkIn(user);
+    public ResponseEntity<RegisteredUserResponse> checkIn(@Valid @RequestBody final RegisteredUserRequest request) {
+        final RegisteredUserResponse response = registrationService.checkIn(request);
         return ResponseEntity.ok(response);
     }
 }
