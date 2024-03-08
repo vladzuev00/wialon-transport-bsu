@@ -1,20 +1,22 @@
 package by.bsu.wialontransport.service.registration;
 
+import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.model.RegistrationStatus;
-import by.bsu.wialontransport.model.form.UserForm;
-import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
+import by.bsu.wialontransport.service.registration.exception.EmailAlreadyExistsException;
+import by.bsu.wialontransport.service.registration.exception.PasswordConfirmException;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
-import static by.bsu.wialontransport.model.RegistrationStatus.*;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -23,80 +25,69 @@ public final class RegistrationServiceTest {
     @Mock
     private UserService mockedUserService;
 
-    @Mock
-    private UserFormMapper mockedMapper;
-
     private RegistrationService registrationService;
 
     @Before
     public void initializeRegistrationService() {
-        this.registrationService = new RegistrationService(this.mockedUserService, this.mockedMapper);
+        registrationService = new RegistrationService(mockedUserService);
     }
 
     @Test
-    public void registrationStatusShouldBeSuccess() {
-        final UserForm givenForm = UserForm.builder()
-                .email("vladzuev.00@mail.ru")
-                .password("password")
-                .confirmedPassword("password")
+    public void registrationShouldBeSuccess() {
+        final String givenEmail = "vladzuev.00@mail.ru";
+        final String givenPassword = "password";
+        final RegisteredUserRequest givenRequest = RegisteredUserRequest.builder()
+                .email(givenEmail)
+                .password(givenPassword)
+                .confirmedPassword(givenPassword)
                 .build();
-        final BindingResult givenBindingResult = mock(BindingResult.class);
-        final Model givenModel = mock(Model.class);
 
-        when(givenBindingResult.hasErrors()).thenReturn(false);
-        when(this.mockedUserService.isExistByEmail("vladzuev.00@mail.ru")).thenReturn(false);
+        when(mockedUserService.isExistByEmail(same(givenEmail))).thenReturn(false);
 
-        final RegistrationStatus actual = this.registrationService.checkIn(givenForm, givenBindingResult, givenModel);
-        assertSame(SUCCESS, actual);
+        final User expectedUser = User.builder()
+                .email(givenEmail)
+                .password(givenPassword)
+                .role(USER)
+                .build();
+        final Long givenSavedUserId = 255L;
+        final User givenSavedUser = User.builder()
+                .id(givenSavedUserId)
+                .email(givenEmail)
+                .password(givenPassword)
+                .role(USER)
+                .build();
+        when(mockedUserService.save(eq(expectedUser))).thenReturn(givenSavedUser);
+
+        final RegisteredUserResponse actual = registrationService.checkIn(givenRequest);
+        final RegisteredUserResponse expected = new RegisteredUserResponse(givenSavedUserId, givenEmail, USER);
+        assertEquals(expected, actual);
     }
 
-    @Test
-    public void registrationStatusShouldBeBindingError() {
-        final UserForm givenForm = UserForm.builder()
+    @Test(expected = PasswordConfirmException.class)
+    public void registrationShouldBeFailedBecauseOfWrongPasswordConfirming() {
+        final RegisteredUserRequest givenRequest = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .confirmedPassword("password")
+                .confirmedPassword("passwordd")
                 .build();
-        final BindingResult givenBindingResult = mock(BindingResult.class);
-        final Model givenModel = mock(Model.class);
 
-        when(givenBindingResult.hasErrors()).thenReturn(true);
+        registrationService.checkIn(givenRequest);
 
-        final RegistrationStatus actual = this.registrationService.checkIn(givenForm, givenBindingResult, givenModel);
-        assertSame(BINDING_ERROR, actual);
+        verifyNoInteractions(mockedUserService);
     }
 
-    @Test
-    public void registrationStatusShouldBeConfirmingPasswordError() {
-        final UserForm givenForm = UserForm.builder()
-                .email("vladzuev.00@mail.ru")
-                .password("password")
-                .confirmedPassword("password1")
+    @Test(expected = EmailAlreadyExistsException.class)
+    public void registrationShouldBeFailedBecauseOfEmailAlreadyExists() {
+        final String givenEmail = "vladzuev.00@mail.ru";
+        final String givenPassword = "password";
+        final RegisteredUserRequest givenRequest = RegisteredUserRequest.builder()
+                .email(givenEmail)
+                .password(givenPassword)
+                .confirmedPassword(givenPassword)
                 .build();
-        final BindingResult givenBindingResult = mock(BindingResult.class);
-        final Model givenModel = mock(Model.class);
 
-        when(givenBindingResult.hasErrors()).thenReturn(false);
+        when(mockedUserService.isExistByEmail(same(givenEmail))).thenReturn(true);
 
-        final RegistrationStatus actual = this.registrationService.checkIn(givenForm, givenBindingResult, givenModel);
-        assertSame(CONFIRMING_PASSWORD_ERROR, actual);
+        registrationService.checkIn(givenRequest);
     }
-
-    @Test
-    public void registrationStatusShouldBeEmailAlreadyExists() {
-        final UserForm givenForm = UserForm.builder()
-                .email("vladzuev.00@mail.ru")
-                .password("password")
-                .confirmedPassword("password")
-                .build();
-        final BindingResult givenBindingResult = mock(BindingResult.class);
-        final Model givenModel = mock(Model.class);
-
-        when(givenBindingResult.hasErrors()).thenReturn(false);
-        when(this.mockedUserService.isExistByEmail("vladzuev.00@mail.ru")).thenReturn(true);
-
-        final RegistrationStatus actual = this.registrationService.checkIn(givenForm, givenBindingResult, givenModel);
-        assertSame(EMAIL_ALREADY_EXISTS, actual);
-    }
-
 }
