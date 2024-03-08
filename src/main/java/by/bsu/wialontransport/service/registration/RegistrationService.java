@@ -1,85 +1,55 @@
 package by.bsu.wialontransport.service.registration;
 
-import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
-import by.bsu.wialontransport.model.RegistrationStatus;
-import by.bsu.wialontransport.model.form.UserForm;
-import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
+import by.bsu.wialontransport.service.registration.exception.EmailAlreadyExistsException;
+import by.bsu.wialontransport.service.registration.exception.PasswordConfirmException;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
 import by.bsu.wialontransport.service.registration.model.RegisteredUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
-import static by.bsu.wialontransport.model.RegistrationStatus.*;
+import java.util.Objects;
+
+import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 
 @Service
 @RequiredArgsConstructor
 public final class RegistrationService {
-    private static final String ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR = "confirmingPasswordError";
-    private static final String ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR = "Password isn't confirmed correctly";
-
-    private static final String ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR = "emailAlreadyExistsError";
-    private static final String ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR = "Email already exists";
-
     private final UserService userService;
-    private final UserFormMapper formMapper;
 
-    public RegisteredUserResponse checkIn(final RegisteredUserRequest user) {
-        return null;
+    public RegisteredUserResponse checkIn(final RegisteredUserRequest request) {
+        checkPasswordConfirming(request);
+        checkEmailAlreadyExisting(request);
+        final User user = createUser(request);
+        final User savedUser = userService.save(user);
+        return createResponse(savedUser);
     }
 
-    //TODO: remove
-    public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
-        if (bindingResult.hasErrors()) {
-            return onBindingError();
-        } else if (!isPasswordConfirmedCorrectly(userForm)) {
-            return onConfirmingPasswordError(model);
-        } else if (this.isEmailAlreadyExist(userForm)) {
-            return onEmailAlreadyExistsError(model);
-        } else {
-            return this.onSuccess(userForm);
+    private static void checkPasswordConfirming(final RegisteredUserRequest request) {
+        final String password = request.getPassword();
+        final String confirmedPassword = request.getConfirmedPassword();
+        if (!Objects.equals(password, confirmedPassword)) {
+            throw new PasswordConfirmException("Password and confirmed password aren't equal");
         }
     }
 
-    private static RegistrationStatus onBindingError() {
-        return BINDING_ERROR;
+    private void checkEmailAlreadyExisting(final RegisteredUserRequest request) {
+        final String email = request.getEmail();
+        if (userService.isExistByEmail(email)) {
+            throw new EmailAlreadyExistsException("Email '%s' already exists".formatted(email));
+        }
     }
 
-    private static RegistrationStatus onConfirmingPasswordError(final Model model) {
-        addErrorMessageOfConfirmingPassword(model);
-        return CONFIRMING_PASSWORD_ERROR;
+    private static User createUser(final RegisteredUserRequest request) {
+        return User.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(USER)
+                .build();
     }
 
-    private static RegistrationStatus onEmailAlreadyExistsError(final Model model) {
-        addErrorMessageOfEmailAlreadyExists(model);
-        return EMAIL_ALREADY_EXISTS;
+    private static RegisteredUserResponse createResponse(final User user) {
+        return new RegisteredUserResponse(user.getId(), user.getEmail(), user.getRole());
     }
-
-    private RegistrationStatus onSuccess(final UserForm userForm) {
-        final User user = this.formMapper.map(userForm);
-        this.userService.save(user);
-        return SUCCESS;
-    }
-
-    private static boolean isPasswordConfirmedCorrectly(final UserForm userForm) {
-        final String password = userForm.getPassword();
-        final String confirmedPassword = userForm.getConfirmedPassword();
-        return password.equals(confirmedPassword);
-    }
-
-    private static void addErrorMessageOfConfirmingPassword(final Model model) {
-        model.addAttribute(ATTRIBUTE_NAME_CONFIRMING_PASSWORD_ERROR, ATTRIBUTE_VALUE_CONFIRMING_PASSWORD_ERROR);
-    }
-
-    private static void addErrorMessageOfEmailAlreadyExists(final Model model) {
-        model.addAttribute(ATTRIBUTE_NAME_EMAIL_ALREADY_EXISTS_ERROR, ATTRIBUTE_VALUE_EMAIL_ALREADY_EXISTS_ERROR);
-    }
-
-    private boolean isEmailAlreadyExist(final UserForm userForm) {
-        final String inputtedEmail = userForm.getEmail();
-        return this.userService.isExistByEmail(inputtedEmail);
-    }
-
 }
