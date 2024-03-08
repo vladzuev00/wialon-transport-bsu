@@ -23,10 +23,10 @@ import javax.validation.constraints.Min;
 import static java.lang.String.format;
 import static org.springframework.http.ResponseEntity.ok;
 
+@Validated
 @RestController
 @RequestMapping("/searchCities")
 @RequiredArgsConstructor
-@Validated
 public class SearchingCitiesProcessController {
     private final StartSearchingCitiesRequestValidator requestValidator;
     private final SearchingCitiesProcessService processService;

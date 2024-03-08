@@ -1,9 +1,10 @@
 package by.bsu.wialontransport.service.registration;
 
-import by.bsu.wialontransport.model.form.UserForm;
+import by.bsu.wialontransport.service.registration.model.RegisteredUserRequest;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
 import by.bsu.wialontransport.model.RegistrationStatus;
+import by.bsu.wialontransport.model.form.UserForm;
 import by.bsu.wialontransport.model.form.mapper.UserFormMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public final class RegistrationService {
     private final UserService userService;
     private final UserFormMapper formMapper;
 
+    public Re checkIn(final RegisteredUserRequest user) {
+        return null;
+    }
+
+    //TODO: remove
     public RegistrationStatus checkIn(final UserForm userForm, final BindingResult bindingResult, final Model model) {
         if (bindingResult.hasErrors()) {
             return onBindingError();

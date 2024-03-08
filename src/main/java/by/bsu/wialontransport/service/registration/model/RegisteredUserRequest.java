@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.controller.registration.model;
+package by.bsu.wialontransport.service.registration.model;
 
 import by.bsu.wialontransport.validation.annotation.Email;
 import by.bsu.wialontransport.validation.annotation.Password;
@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-public class RegisteredUser {
+public class RegisteredUserRequest {
 
     @Email
     String email;
@@ -21,9 +21,9 @@ public class RegisteredUser {
 
     @Builder
     @JsonCreator
-    public RegisteredUser(@JsonProperty("email") final String email,
-                          @JsonProperty("password") final String password,
-                          @JsonProperty("confirmedPassword") final String confirmedPassword) {
+    public RegisteredUserRequest(@JsonProperty("email") final String email,
+                                 @JsonProperty("password") final String password,
+                                 @JsonProperty("confirmedPassword") final String confirmedPassword) {
         this.email = email;
         this.password = password;
         this.confirmedPassword = confirmedPassword;

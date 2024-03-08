@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.controller.registration.model;
+package by.bsu.wialontransport.service.registration.model;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class RegisteredUserTest extends AbstractSpringBootTest {
+public final class RegisteredUserRequestTest extends AbstractSpringBootTest {
 
     @Autowired
     private Validator validator;
@@ -24,87 +24,87 @@ public final class RegisteredUserTest extends AbstractSpringBootTest {
 
     @Test
     public void registeredUserShouldBeValid() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
                 .confirmedPassword("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfEmailIsNull() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .password("password")
                 .confirmedPassword("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid email", findFirstMessage(violations));
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfEmailIsNotValid() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00mail.ru")
                 .password("password")
                 .confirmedPassword("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid email", findFirstMessage(violations));
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfPasswordIsNull() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .confirmedPassword("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid password", findFirstMessage(violations));
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfPasswordIsNotValid() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("11")
                 .confirmedPassword("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid password", findFirstMessage(violations));
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfConfirmedPasswordIsNull() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid password", findFirstMessage(violations));
     }
 
     @Test
     public void registeredUserShouldNotBeValidBecauseOfConfirmedPasswordIsNotValid() {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
                 .confirmedPassword("11")
                 .build();
 
-        final Set<ConstraintViolation<RegisteredUser>> violations = validator.validate(givenUser);
+        final Set<ConstraintViolation<RegisteredUserRequest>> violations = validator.validate(givenUser);
         assertEquals(1, violations.size());
         assertEquals("Invalid password", findFirstMessage(violations));
     }
@@ -112,7 +112,7 @@ public final class RegisteredUserTest extends AbstractSpringBootTest {
     @Test
     public void registeredUserShouldBeMappedToJson()
             throws Exception {
-        final RegisteredUser givenUser = RegisteredUser.builder()
+        final RegisteredUserRequest givenUser = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
                 .confirmedPassword("password")
@@ -138,8 +138,8 @@ public final class RegisteredUserTest extends AbstractSpringBootTest {
                   "confirmedPassword": "password"
                 }""";
 
-        final RegisteredUser actual = objectMapper.readValue(givenJson, RegisteredUser.class);
-        final RegisteredUser expected = RegisteredUser.builder()
+        final RegisteredUserRequest actual = objectMapper.readValue(givenJson, RegisteredUserRequest.class);
+        final RegisteredUserRequest expected = RegisteredUserRequest.builder()
                 .email("vladzuev.00@mail.ru")
                 .password("password")
                 .confirmedPassword("password")
@@ -147,7 +147,7 @@ public final class RegisteredUserTest extends AbstractSpringBootTest {
         Assert.assertEquals(expected, actual);
     }
 
-    private static String findFirstMessage(final Set<ConstraintViolation<RegisteredUser>> violations) {
+    private static String findFirstMessage(final Set<ConstraintViolation<RegisteredUserRequest>> violations) {
         return violations.iterator().next().getMessage();
     }
 }
