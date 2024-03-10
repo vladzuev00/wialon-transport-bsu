@@ -15,13 +15,13 @@ import static java.util.Optional.ofNullable;
 @Value
 @AllArgsConstructor
 @Builder
-public class TrackerOnlineInfo {
+public class TrackerOnline {
     Tracker tracker;
     LastData lastData;
     OnlineStatus status;
 
-    public static TrackerOnlineInfo createNoDataInfo(final Tracker tracker) {
-        return TrackerOnlineInfo.builder()
+    public static TrackerOnline createNoDataInfo(final Tracker tracker) {
+        return TrackerOnline.builder()
                 .tracker(tracker)
                 .status(OFFLINE)
                 .build();

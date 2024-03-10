@@ -2,24 +2,24 @@ package by.bsu.wialontransport.model.online;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.model.online.TrackerOnlineInfo.LastData;
+import by.bsu.wialontransport.model.online.TrackerOnline.LastData;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static by.bsu.wialontransport.model.online.OnlineStatus.OFFLINE;
-import static by.bsu.wialontransport.model.online.TrackerOnlineInfo.createNoDataInfo;
+import static by.bsu.wialontransport.model.online.TrackerOnline.createNoDataInfo;
 import static java.time.LocalDateTime.now;
 import static org.junit.Assert.*;
 
-public final class TrackerOnlineInfoTest {
+public final class TrackerOnlineTest {
 
     @Test
     public void noDataInfoShouldBeCreated() {
         final Tracker givenTracker = createTracker(255L);
 
-        final TrackerOnlineInfo actual = createNoDataInfo(givenTracker);
-        final TrackerOnlineInfo expected = TrackerOnlineInfo.builder()
+        final TrackerOnline actual = createNoDataInfo(givenTracker);
+        final TrackerOnline expected = TrackerOnline.builder()
                 .tracker(givenTracker)
                 .status(OFFLINE)
                 .build();
@@ -29,7 +29,7 @@ public final class TrackerOnlineInfoTest {
     @Test
     public void lastDataShouldBeGot() {
         final LastData givenLastData = new LastData(now(), new Coordinate(1, 2));
-        final TrackerOnlineInfo givenInfo = TrackerOnlineInfo.builder()
+        final TrackerOnline givenInfo = TrackerOnline.builder()
                 .lastData(givenLastData)
                 .build();
 
@@ -41,7 +41,7 @@ public final class TrackerOnlineInfoTest {
 
     @Test
     public void lastDataShouldNotBeGot() {
-        final TrackerOnlineInfo givenInfo = TrackerOnlineInfo.builder().build();
+        final TrackerOnline givenInfo = TrackerOnline.builder().build();
 
         final Optional<LastData> optionalActual = givenInfo.getLastData();
         assertTrue(optionalActual.isEmpty());

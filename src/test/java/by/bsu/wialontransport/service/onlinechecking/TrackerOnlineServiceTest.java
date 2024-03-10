@@ -5,8 +5,8 @@ import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.model.Coordinate;
-import by.bsu.wialontransport.model.online.TrackerOnlineInfo;
-import by.bsu.wialontransport.model.online.TrackerOnlineInfo.LastData;
+import by.bsu.wialontransport.model.online.TrackerOnline;
+import by.bsu.wialontransport.model.online.TrackerOnline.LastData;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,13 +22,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;
 
-public final class TrackerOnlineCheckingServiceTest extends AbstractSpringBootTest {
+public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
 
     @MockBean
     private DataService mockedDataService;
 
     @Autowired
-    private TrackerOnlineCheckingService service;
+    private TrackerOnlineService service;
 
     @Test
     public void trackerShouldBeOnline() {
@@ -39,8 +39,8 @@ public final class TrackerOnlineCheckingServiceTest extends AbstractSpringBootTe
         final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(Optional.of(givenLastData));
 
-        final TrackerOnlineInfo actual = service.check(givenTracker);
-        final TrackerOnlineInfo expected = TrackerOnlineInfo.builder()
+        final TrackerOnline actual = service.check(givenTracker);
+        final TrackerOnline expected = TrackerOnline.builder()
                 .tracker(givenTracker)
                 .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
                 .status(ONLINE)
@@ -57,8 +57,8 @@ public final class TrackerOnlineCheckingServiceTest extends AbstractSpringBootTe
         final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(Optional.of(givenLastData));
 
-        final TrackerOnlineInfo actual = service.check(givenTracker);
-        final TrackerOnlineInfo expected = TrackerOnlineInfo.builder()
+        final TrackerOnline actual = service.check(givenTracker);
+        final TrackerOnline expected = TrackerOnline.builder()
                 .tracker(givenTracker)
                 .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
                 .status(OFFLINE)
@@ -72,8 +72,8 @@ public final class TrackerOnlineCheckingServiceTest extends AbstractSpringBootTe
 
         when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(empty());
 
-        final TrackerOnlineInfo actual = service.check(givenTracker);
-        final TrackerOnlineInfo expected = TrackerOnlineInfo.builder()
+        final TrackerOnline actual = service.check(givenTracker);
+        final TrackerOnline expected = TrackerOnline.builder()
                 .tracker(givenTracker)
                 .status(OFFLINE)
                 .build();

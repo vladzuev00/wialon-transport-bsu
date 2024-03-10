@@ -48,7 +48,13 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
 
     @Transactional(readOnly = true)
     public Optional<Data> findTrackerLastData(final Tracker tracker) {
-        return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(tracker.getId()));
+        return findTrackerLastData(tracker.getId());
+    }
+
+    //TODO: test
+    @Transactional(readOnly = true)
+    public Optional<Data> findTrackerLastData(final Long trackerId) {
+        return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
     }
 
     @Override
