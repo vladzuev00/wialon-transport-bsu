@@ -15,7 +15,6 @@ import static java.time.Duration.between;
 import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-//TODO: refactor tests
 @Service
 public final class TrackerOnlineService {
     private final DataService dataService;

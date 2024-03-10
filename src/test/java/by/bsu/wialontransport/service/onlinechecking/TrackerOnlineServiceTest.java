@@ -31,17 +31,70 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
     private TrackerOnlineService service;
 
     @Test
-    public void trackerShouldBeOnline() {
-        final Tracker givenTracker = createTracker(255L);
+    public void trackerWithGivenIdShouldBeOnline() {
+        final Long givenTrackerId = 255L;
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(295);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
         final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
-        when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(Optional.of(givenLastData));
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
+
+        final TrackerOnline actual = service.check(givenTrackerId);
+        final TrackerOnline expected = TrackerOnline.builder()
+                .trackerId(givenTrackerId)
+                .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
+                .status(ONLINE)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerWithGivenIdShouldBeOfflineBecauseOfThresholdExceeded() {
+        final Long givenTrackerId = 255L;
+
+        final LocalDateTime givenLastDataDateTime = now().minusSeconds(305);
+        final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
+
+        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
+
+        final TrackerOnline actual = service.check(givenTrackerId);
+        final TrackerOnline expected = TrackerOnline.builder()
+                .trackerId(givenTrackerId)
+                .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
+                .status(OFFLINE)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerWithGivenIdShouldBeOfflineBecauseOfThereIsNoDataFromGivenTracker() {
+        final Long givenTrackerId = 255L;
+
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(empty());
+
+        final TrackerOnline actual = service.check(givenTrackerId);
+        final TrackerOnline expected = TrackerOnline.builder()
+                .trackerId(givenTrackerId)
+                .status(OFFLINE)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void trackerShouldBeOnline() {
+        final Long givenTrackerId = 255L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
+
+        final LocalDateTime givenLastDataDateTime = now().minusSeconds(295);
+        final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
+
+        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTracker);
         final TrackerOnline expected = TrackerOnline.builder()
-                .tracker(givenTracker)
+                .trackerId(givenTrackerId)
                 .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
                 .status(ONLINE)
                 .build();
@@ -50,16 +103,18 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
 
     @Test
     public void trackerShouldBeOfflineBecauseOfThresholdExceeded() {
-        final Tracker givenTracker = createTracker(255L);
+        final Long givenTrackerId = 255L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
+
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(305);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
         final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
-        when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(Optional.of(givenLastData));
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTracker);
         final TrackerOnline expected = TrackerOnline.builder()
-                .tracker(givenTracker)
+                .trackerId(givenTrackerId)
                 .lastData(new LastData(givenLastDataDateTime, givenLastDataCoordinate))
                 .status(OFFLINE)
                 .build();
@@ -67,14 +122,15 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void trackerShouldBeOfflineBecauseOfThereIsNotDataFromGivenTracker() {
-        final Tracker givenTracker = createTracker(255L);
+    public void trackerShouldBeOfflineBecauseOfThereIsNoDataFromGivenTracker() {
+        final Long givenTrackerId = 255L;
+        final Tracker givenTracker = createTracker(givenTrackerId);
 
-        when(mockedDataService.findTrackerLastData(same(givenTracker))).thenReturn(empty());
+        when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(empty());
 
         final TrackerOnline actual = service.check(givenTracker);
         final TrackerOnline expected = TrackerOnline.builder()
-                .tracker(givenTracker)
+                .trackerId(givenTrackerId)
                 .status(OFFLINE)
                 .build();
         assertEquals(expected, actual);
