@@ -17,7 +17,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class UserController {
     private final SecurityService securityService;
 
-    @GetMapping("/authorizedUser")
+    @GetMapping("/authorized")
     public ResponseEntity<UserView> getAuthorizedUser() {
         final User user = securityService.findLoggedOnUser();
         final UserView view = new UserView(user);

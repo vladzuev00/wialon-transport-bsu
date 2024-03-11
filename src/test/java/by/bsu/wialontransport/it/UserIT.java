@@ -1,30 +1,23 @@
-package by.bsu.wialontransport.controller.user;
+package by.bsu.wialontransport.it;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.service.security.service.SecurityService;
+import by.bsu.wialontransport.service.security.exception.NoAuthorizedUserException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static by.bsu.wialontransport.crud.entity.UserEntity.Role.USER;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.when;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public final class UserControllerTest extends AbstractSpringBootTest {
-    private static final String CONTROLLER_URL = "/user";
+public final class UserIT extends AbstractSpringBootTest {
+    private static final String CONTROLLER_URL = "/registration";
     private static final String URL_TO_GET_AUTHORIZED_USER = CONTROLLER_URL + "/authorized";
-
-    @MockBean
-    private SecurityService mockedSecurityService;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -32,10 +25,9 @@ public final class UserControllerTest extends AbstractSpringBootTest {
     @Test
     public void authorizedUserShouldBeGot()
             throws Exception {
-        final User givenUser = new User(255L, "vladzuev.00@mail.ru", "password", USER);
-        when(mockedSecurityService.findLoggedOnUser()).thenReturn(givenUser);
-
-        final ResponseEntity<String> actual = restTemplate.getForEntity(URL_TO_GET_AUTHORIZED_USER, String.class);
+        final ResponseEntity<String> actual = restTemplate
+                .withBasicAuth("vladzuev.00@mail.ru", "password")
+                .getForEntity(URL_TO_GET_AUTHORIZED_USER, String.class);
 
         final HttpStatus actualStatus = actual.getStatusCode();
         assertSame(OK, actualStatus);
@@ -48,5 +40,10 @@ public final class UserControllerTest extends AbstractSpringBootTest {
                   "role": "USER"
                 }""";
         assertEquals(expectedBody, actualBody, true);
+    }
+
+    @Test(expected = NoAuthorizedUserException.class)
+    public void authorizedUserShouldNotBeGot() {
+
     }
 }
