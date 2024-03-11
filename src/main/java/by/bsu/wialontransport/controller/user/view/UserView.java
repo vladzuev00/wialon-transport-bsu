@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.controller.model.user;
+package by.bsu.wialontransport.controller.user.view;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.UserEntity.Role;
