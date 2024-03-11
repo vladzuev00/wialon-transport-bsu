@@ -28,7 +28,6 @@ public final class SecurityService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with email '%s' doesn't exist".formatted(email)));
     }
 
-    //TODO: refactor tests
     public User findLoggedOnUser() {
         return ofNullable(getContext().getAuthentication())
                 .map(authentication -> (SecurityUser) authentication.getPrincipal())

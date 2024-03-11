@@ -2,6 +2,7 @@ package by.bsu.wialontransport.service.security.service;
 
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.UserService;
+import by.bsu.wialontransport.service.security.exception.NoAuthorizedUserException;
 import by.bsu.wialontransport.service.security.mapper.SecurityUserMapper;
 import by.bsu.wialontransport.service.security.model.SecurityUser;
 import org.junit.Before;
@@ -91,6 +92,18 @@ public final class SecurityServiceTest {
 
             final User actual = securityService.findLoggedOnUser();
             assertSame(givenUser, actual);
+        }
+    }
+
+    @Test(expected = NoAuthorizedUserException.class)
+    public void loggedOnUserShouldNotBeFound() {
+        try (final MockedStatic<SecurityContextHolder> mockedStatic = mockStatic(SecurityContextHolder.class)) {
+            final SecurityContext givenContext = mock(SecurityContext.class);
+            mockedStatic.when(SecurityContextHolder::getContext).thenReturn(givenContext);
+
+            when(givenContext.getAuthentication()).thenReturn(null);
+
+            securityService.findLoggedOnUser();
         }
     }
 }
