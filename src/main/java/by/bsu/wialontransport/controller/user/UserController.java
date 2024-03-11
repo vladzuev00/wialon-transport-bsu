@@ -17,7 +17,6 @@ import static org.springframework.http.ResponseEntity.ok;
 public class UserController {
     private final SecurityService securityService;
 
-    //TODO: test and add it
     @GetMapping("/authorizedUser")
     public ResponseEntity<UserView> getAuthorizedUser() {
         final User user = securityService.findLoggedOnUser();

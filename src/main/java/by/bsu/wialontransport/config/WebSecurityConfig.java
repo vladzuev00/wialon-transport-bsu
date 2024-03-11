@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**").permitAll()
+                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**", "/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
