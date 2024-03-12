@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public final class UserIT extends AbstractSpringBootTest {
-    private static final String CONTROLLER_URL = "/registration";
+    private static final String CONTROLLER_URL = "/user";
     private static final String URL_TO_GET_AUTHORIZED_USER = CONTROLLER_URL + "/authorized";
 
     @Autowired
@@ -42,8 +42,8 @@ public final class UserIT extends AbstractSpringBootTest {
         assertEquals(expectedBody, actualBody, true);
     }
 
-    @Test(expected = NoAuthorizedUserException.class)
+    @Test
     public void authorizedUserShouldNotBeGot() {
-
+        throw new RuntimeException();
     }
 }

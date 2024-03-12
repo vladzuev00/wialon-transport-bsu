@@ -1,10 +1,12 @@
 package by.bsu.wialontransport.config;
 
+import by.bsu.wialontransport.service.security.service.SecurityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
     @Bean
@@ -30,13 +31,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authManager(final HttpSecurity httpSecurity,
-                                             final PasswordEncoder passwordEncoder,
-                                             final UserDetailsService userDetailService)
+    public AuthenticationManager authManager(final HttpSecurity httpSecurity, final SecurityService securityService)
             throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .passwordEncoder(passwordEncoder)
+                .userDetailsService(securityService)
+                .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
     }
@@ -44,12 +43,16 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity httpSecurity)
             throws Exception {
-        httpSecurity.csrf()
+        httpSecurity
+                .csrf()
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**", "/user/**").permitAll()
+                .antMatchers("/user/**").hasRole("USER")
+
+                //TODO: /trackerOnline/** only for USER
+                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
