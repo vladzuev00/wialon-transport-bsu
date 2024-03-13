@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-public class AddedTrackerView {
+public class SavedTrackerView {
 
     @Imei
     String imei;
@@ -22,7 +22,7 @@ public class AddedTrackerView {
 
     @Builder
     @JsonCreator
-    public AddedTrackerView(@JsonProperty("imei") final String imei,
+    public SavedTrackerView(@JsonProperty("imei") final String imei,
                             @JsonProperty("password") final String password,
                             @JsonProperty("phoneNumber") final String phoneNumber) {
         this.imei = imei;

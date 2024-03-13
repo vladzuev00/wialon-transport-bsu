@@ -1,23 +1,18 @@
 package by.bsu.wialontransport.controller.tracker;
 
+import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
+import by.bsu.wialontransport.controller.tracker.view.SavedTrackerView;
+import by.bsu.wialontransport.controller.tracker.view.TrackerView;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.dto.TrackerMileage;
 import by.bsu.wialontransport.crud.service.TrackerService;
-import by.bsu.wialontransport.model.sortingkey.TrackerSortingKey;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
+
+import static java.lang.String.format;
 
 //TODO
 @Validated
@@ -27,6 +22,20 @@ import java.util.List;
 public class TrackerController {
     private final TrackerService trackerService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TrackerView> findById(@PathVariable final Long id) {
+        return trackerService.findById(id)
+                .map(TrackerView::new)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new NoSuchEntityException(format("Tracker with id '%d' doesn't exist.", id)));
+    }
+
+    @PostMapping
+    public ResponseEntity<TrackerView> save(@Valid @RequestBody final SavedTrackerView view) {
+//        final Tracker savedTracker
+        return null;
+    }
+
 //    @GetMapping("/user-trackers")
 //    public ResponseEntity<List<Tracker>> findTrackersByUser(
 //            @RequestParam(name = "pageNumber", defaultValue = "0") final int pageNumber,
@@ -35,21 +44,4 @@ public class TrackerController {
 //    ) {
 //
 //    }
-
-    @Value
-    @AllArgsConstructor
-    @Getter
-    private static class TrackerView {
-        Long id;
-        String imei;
-        String phoneNumber;
-        TrackerMileage mileage;
-
-        public TrackerView(final Tracker tracker) {
-            id = tracker.getId();
-            imei = tracker.getImei();
-            phoneNumber = tracker.getPhoneNumber();
-            mileage = tracker.getMileage();
-        }
-    }
 }
