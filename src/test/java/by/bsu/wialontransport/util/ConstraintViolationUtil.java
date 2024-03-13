@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 
+//TODO: use everywhere
 @UtilityClass
 public final class ConstraintViolationUtil {
 
