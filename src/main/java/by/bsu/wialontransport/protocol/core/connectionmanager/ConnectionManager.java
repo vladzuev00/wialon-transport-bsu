@@ -3,6 +3,7 @@ package by.bsu.wialontransport.protocol.core.connectionmanager;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -12,14 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.Optional.ofNullable;
 
 @Component
+@RequiredArgsConstructor
 public final class ConnectionManager {
     private final ContextAttributeManager contextAttributeManager;
-    private final Map<Long, ChannelHandlerContext> contextsByTrackerIds;
-
-    public ConnectionManager(final ContextAttributeManager contextAttributeManager) {
-        this.contextAttributeManager = contextAttributeManager;
-        contextsByTrackerIds = new ConcurrentHashMap<>();
-    }
+    private final Map<Long, ChannelHandlerContext> contextsByTrackerIds = new ConcurrentHashMap<>();
 
     public void add(final ChannelHandlerContext context) {
         contextsByTrackerIds.merge(

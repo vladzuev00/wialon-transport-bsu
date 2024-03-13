@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
+//TODO: rename to view and put next to RegistrationService
 @Value
 public class RegisteredUserRequest {
 

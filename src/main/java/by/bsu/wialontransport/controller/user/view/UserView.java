@@ -10,6 +10,7 @@ public class UserView {
     String email;
     Role role;
 
+    //TODO: test
     public UserView(final User user) {
         id = user.getId();
         email = user.getEmail();
