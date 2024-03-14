@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RequiredArgsConstructor
@@ -25,18 +29,12 @@ public abstract class CRUDController<
 
     @GetMapping("/{id}")
     public ResponseEntity<RESPONSE_VIEW> findById(@PathVariable final ID id) {
-        return service.findById(id)
-                .map(this::createResponseView)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NoSuchEntityException("Entity wasn't found"));
+        return findUnique(service -> service.findById(id));
     }
 
     @PostMapping
     public ResponseEntity<RESPONSE_VIEW> save(@Valid @RequestBody final SAVED_VIEW view) {
-        final DTO dto = view.createDto();
-        final DTO savedDto = service.save(dto);
-        final RESPONSE_VIEW responseView = createResponseView(savedDto);
-        return ok(responseView);
+        return execute(view, (service, dto) -> service.save(dto));
     }
 
     @PostMapping
@@ -49,10 +47,31 @@ public abstract class CRUDController<
 
     @PutMapping
     public ResponseEntity<RESPONSE_VIEW> update(@Valid @RequestBody final UPDATE_VIEW view) {
-        final
+        return execute(view, (service, dto) -> service.update(dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable final ID id) {
+        service.delete(id);
+        return noContent().build();
     }
 
     protected abstract RESPONSE_VIEW createResponseView(final DTO dto);
+
+    protected final ResponseEntity<RESPONSE_VIEW> findUnique(final Function<SERVICE, Optional<DTO>> operation) {
+        return operation.apply(service)
+                .map(this::createResponseView)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new NoSuchEntityException("Entity wasn't found"));
+    }
+
+    private ResponseEntity<RESPONSE_VIEW> execute(final RequestView<ID, DTO> view,
+                                                  final BiFunction<SERVICE, DTO, DTO> operation) {
+        final DTO dto = view.createDto();
+        final DTO resultDto = operation.apply(service, dto);
+        final RESPONSE_VIEW responseView = createResponseView(resultDto);
+        return ok(responseView);
+    }
 
     private List<DTO> mapToDtos(final List<SAVED_VIEW> views) {
         return views.stream()
