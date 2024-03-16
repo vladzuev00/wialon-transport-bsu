@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -70,10 +71,7 @@ public final class CRUDControllerTest {
         final String givenPassword = "password";
         final TestSaveView givenView = new TestSaveView(givenName, givenPassword);
 
-        final TestDto expectedDto = TestDto.builder()
-                .name(givenName)
-                .password(givenPassword)
-                .build();
+        final TestDto expectedDto = createDto(givenName, givenPassword);
 
         final Long givenId = 255L;
         final TestDto givenSavedDto = new TestDto(givenId, givenName, givenPassword);
@@ -88,6 +86,74 @@ public final class CRUDControllerTest {
         final TestResponseView actualBody = actual.getBody();
         final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
         assertEquals(expectedBody, actualBody);
+    }
+
+    @Test
+    public void entitiesShouldBeSavedAll() {
+        final String givenFirstName = "first-name";
+        final String givenFirstPassword = "first-password";
+
+        final String givenSecondName = "second-name";
+        final String givenSecondPassword = "second-password";
+
+        final List<TestSaveView> givenViews = List.of(
+                new TestSaveView(givenFirstName, givenFirstPassword),
+                new TestSaveView(givenSecondName, givenSecondPassword)
+        );
+
+        final List<TestDto> expectedDtos = List.of(
+                createDto(givenFirstName, givenFirstPassword),
+                createDto(givenSecondName, givenSecondPassword)
+        );
+
+        final Long givenFirstId = 255L;
+        final Long givenSecondId = 256L;
+        final List<TestDto> givenSavedDtos = List.of(
+                new TestDto(givenFirstId, givenFirstName, givenFirstPassword),
+                new TestDto(givenSecondId, givenSecondName, givenSecondPassword)
+        );
+
+        when(mockedService.saveAll(eq(expectedDtos))).thenReturn(givenSavedDtos);
+
+        final ResponseEntity<List<TestResponseView>> actual = controller.saveAll(givenViews);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(OK, actualStatus);
+
+        final List<TestResponseView> actualBody = actual.getBody();
+        final List<TestResponseView> expectedBody = List.of(
+                new TestResponseView(givenFirstId, givenFirstName),
+                new TestResponseView(givenSecondId, givenSecondName)
+        );
+        assertEquals(expectedBody, actualBody);
+    }
+
+    @Test
+    public void entityShouldBeUpdated() {
+        final Long givenId = 255L;
+        final String givenName = "name";
+        final String givenPassword = "password";
+        final TestUpdateView givenView = new TestUpdateView(givenId, givenName, givenPassword);
+
+        final TestDto expectedDto = new TestDto(givenId, givenName, givenPassword);
+        final TestDto givenUpdatedDto = new TestDto(givenId, givenName, givenPassword);
+        when(mockedService.update(eq(expectedDto))).thenReturn(givenUpdatedDto);
+
+        final ResponseEntity<TestResponseView> actual = controller.update(givenView);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(OK, actualStatus);
+
+        final TestResponseView actualBody = actual.getBody();
+        final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
+        assertEquals(expectedBody, actualBody);
+    }
+
+    private static TestDto createDto(final String name, final String password) {
+        return TestDto.builder()
+                .name(name)
+                .password(password)
+                .build();
     }
 
     private static final class TestCRUDController extends CRUDController<
