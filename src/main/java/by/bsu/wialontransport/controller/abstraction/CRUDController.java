@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.controller;
+package by.bsu.wialontransport.controller.abstraction;
 
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Dto;
@@ -22,8 +22,8 @@ public abstract class CRUDController<
         DTO extends Dto<ID>,
         SERVICE extends CRUDService<ID, ?, DTO, ?, ?>,
         RESPONSE_VIEW,
-        SAVED_VIEW extends RequestView<ID, DTO>,
-        UPDATE_VIEW extends RequestView<ID, DTO>
+        SAVE_VIEW extends DtoRequestView<DTO>,
+        UPDATE_VIEW extends DtoRequestView<DTO>
         > {
     private final SERVICE service;
 
@@ -33,12 +33,12 @@ public abstract class CRUDController<
     }
 
     @PostMapping
-    public ResponseEntity<RESPONSE_VIEW> save(@Valid @RequestBody final SAVED_VIEW view) {
+    public ResponseEntity<RESPONSE_VIEW> save(@Valid @RequestBody final SAVE_VIEW view) {
         return execute(view, (service, dto) -> service.save(dto));
     }
 
     @PostMapping
-    public ResponseEntity<List<RESPONSE_VIEW>> saveAll(@RequestBody final List<@Valid SAVED_VIEW> views) {
+    public ResponseEntity<List<RESPONSE_VIEW>> saveAll(@RequestBody final List<@Valid SAVE_VIEW> views) {
         final List<DTO> dtos = mapToDtos(views);
         final List<DTO> savedDtos = service.saveAll(dtos);
         final List<RESPONSE_VIEW> responseViews = createResponseViews(savedDtos);
@@ -65,7 +65,7 @@ public abstract class CRUDController<
                 .orElseThrow(() -> new NoSuchEntityException("Entity wasn't found"));
     }
 
-    private ResponseEntity<RESPONSE_VIEW> execute(final RequestView<ID, DTO> view,
+    private ResponseEntity<RESPONSE_VIEW> execute(final DtoRequestView<DTO> view,
                                                   final BiFunction<SERVICE, DTO, DTO> operation) {
         final DTO dto = view.createDto();
         final DTO resultDto = operation.apply(service, dto);
@@ -73,9 +73,9 @@ public abstract class CRUDController<
         return ok(responseView);
     }
 
-    private List<DTO> mapToDtos(final List<SAVED_VIEW> views) {
+    private List<DTO> mapToDtos(final List<SAVE_VIEW> views) {
         return views.stream()
-                .map(RequestView::createDto)
+                .map(DtoRequestView::createDto)
                 .toList();
     }
 
