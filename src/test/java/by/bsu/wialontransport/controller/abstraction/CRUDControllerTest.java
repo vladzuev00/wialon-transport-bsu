@@ -22,7 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -147,6 +148,18 @@ public final class CRUDControllerTest {
         final TestResponseView actualBody = actual.getBody();
         final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
         assertEquals(expectedBody, actualBody);
+    }
+
+    @Test
+    public void entityShouldBeDeletedById() {
+        final Long givenId = 255L;
+
+        final ResponseEntity<?> actual = controller.delete(givenId);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NO_CONTENT, actualStatus);
+
+        verify(mockedService, times(1)).delete(same(givenId));
     }
 
     private static TestDto createDto(final String name, final String password) {
