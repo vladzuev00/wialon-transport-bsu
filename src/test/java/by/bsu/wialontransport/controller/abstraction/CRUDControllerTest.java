@@ -19,6 +19,7 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.OK;
@@ -44,13 +45,13 @@ public final class CRUDControllerTest {
         final TestDto givenDto = new TestDto(givenId, givenName, "password");
         when(mockedService.findById(same(givenId))).thenReturn(Optional.of(givenDto));
 
-        final ResponseEntity<TestDtoResponseView> actual = controller.findById(givenId);
+        final ResponseEntity<TestResponseView> actual = controller.findById(givenId);
 
         final HttpStatus actualStatus = actual.getStatusCode();
         assertSame(OK, actualStatus);
 
-        final TestDtoResponseView actualBody = actual.getBody();
-        final TestDtoResponseView expectedBody = new TestDtoResponseView(givenId, givenName);
+        final TestResponseView actualBody = actual.getBody();
+        final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
         assertEquals(expectedBody, actualBody);
     }
 
@@ -63,11 +64,37 @@ public final class CRUDControllerTest {
         controller.findById(givenId);
     }
 
+    @Test
+    public void entityShouldBeSaved() {
+        final String givenName = "name";
+        final String givenPassword = "password";
+        final TestSaveView givenView = new TestSaveView(givenName, givenPassword);
+
+        final TestDto expectedDto = TestDto.builder()
+                .name(givenName)
+                .password(givenPassword)
+                .build();
+
+        final Long givenId = 255L;
+        final TestDto givenSavedDto = new TestDto(givenId, givenName, givenPassword);
+
+        when(mockedService.save(eq(expectedDto))).thenReturn(givenSavedDto);
+
+        final ResponseEntity<TestResponseView> actual = controller.save(givenView);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(OK, actualStatus);
+
+        final TestResponseView actualBody = actual.getBody();
+        final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
+        assertEquals(expectedBody, actualBody);
+    }
+
     private static final class TestCRUDController extends CRUDController<
             Long,
             TestDto,
             CRUDService<Long, ?, TestDto, ?, ?>,
-            TestDtoResponseView,
+            TestResponseView,
             TestSaveView,
             TestUpdateView
             > {
@@ -77,8 +104,8 @@ public final class CRUDControllerTest {
         }
 
         @Override
-        protected TestDtoResponseView createResponseView(final TestDto dto) {
-            return new TestDtoResponseView(dto.id, dto.name);
+        protected TestResponseView createResponseView(final TestDto dto) {
+            return new TestResponseView(dto.id, dto.name);
         }
     }
 
@@ -92,7 +119,7 @@ public final class CRUDControllerTest {
     }
 
     @Value
-    private static class TestDtoResponseView {
+    private static class TestResponseView {
         Long id;
         String name;
     }
