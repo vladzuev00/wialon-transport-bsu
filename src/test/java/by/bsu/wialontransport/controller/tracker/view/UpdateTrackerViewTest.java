@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -171,28 +170,5 @@ public final class UpdateTrackerViewTest extends AbstractSpringBootTest {
         final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid phone number", findFirstMessage(constraintViolations));
-    }
-
-    @Test
-    public void dtoShouldBeCreated() {
-        final Long givenId = 255L;
-        final String givenImei = "11112222333344445555";
-        final String givenPassword = "password";
-        final String givenPhoneNumber = "44733693";
-        final UpdateTrackerView givenView = UpdateTrackerView.builder()
-                .id(givenId)
-                .imei(givenImei)
-                .password(givenPassword)
-                .phoneNumber(givenPhoneNumber)
-                .build();
-
-        final Tracker actual = givenView.createDto();
-        final Tracker expected = Tracker.builder()
-                .id(givenId)
-                .imei(givenImei)
-                .password(givenPassword)
-                .phoneNumber(givenPhoneNumber)
-                .build();
-        assertEquals(expected, actual);
     }
 }

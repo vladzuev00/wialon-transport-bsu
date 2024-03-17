@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public final class TrackerControllerTest {
-    private final TrackerController controller = new TrackerController(null);
+    private final TrackerController controller = new TrackerController(null, null);
 
     @Test
     public void responseViewShouldBeCreated() {

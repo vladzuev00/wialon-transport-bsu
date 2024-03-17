@@ -1,7 +1,5 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
-import by.bsu.wialontransport.controller.abstraction.DtoRequestView;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.validation.annotation.Imei;
 import by.bsu.wialontransport.validation.annotation.Password;
 import by.bsu.wialontransport.validation.annotation.PhoneNumber;
@@ -13,7 +11,7 @@ import lombok.Value;
 import javax.validation.constraints.NotNull;
 
 @Value
-public class UpdateTrackerView implements DtoRequestView<Tracker> {
+public class UpdateTrackerView {
 
     @NotNull
     Long id;
@@ -37,15 +35,5 @@ public class UpdateTrackerView implements DtoRequestView<Tracker> {
         this.imei = imei;
         this.password = password;
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public Tracker createDto() {
-        return Tracker.builder()
-                .id(id)
-                .imei(imei)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .build();
     }
 }
