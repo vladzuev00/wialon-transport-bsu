@@ -28,17 +28,17 @@ public abstract class CRUDController<
     private final SERVICE service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<RESPONSE_VIEW> findById(@PathVariable final ID id) {
+    public final ResponseEntity<RESPONSE_VIEW> findById(@PathVariable final ID id) {
         return findUnique(service -> service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<RESPONSE_VIEW> save(@Valid @RequestBody final SAVE_VIEW view) {
+    public final ResponseEntity<RESPONSE_VIEW> save(@Valid @RequestBody final SAVE_VIEW view) {
         return execute(view, (service, dto) -> service.save(dto));
     }
 
     @PostMapping
-    public ResponseEntity<List<RESPONSE_VIEW>> saveAll(@RequestBody final List<@Valid SAVE_VIEW> views) {
+    public final ResponseEntity<List<RESPONSE_VIEW>> saveAll(@RequestBody final List<@Valid SAVE_VIEW> views) {
         final List<DTO> dtos = mapToDtos(views);
         final List<DTO> savedDtos = service.saveAll(dtos);
         final List<RESPONSE_VIEW> responseViews = createResponseViews(savedDtos);
@@ -46,12 +46,12 @@ public abstract class CRUDController<
     }
 
     @PutMapping
-    public ResponseEntity<RESPONSE_VIEW> update(@Valid @RequestBody final UPDATE_VIEW view) {
+    public final ResponseEntity<RESPONSE_VIEW> update(@Valid @RequestBody final UPDATE_VIEW view) {
         return execute(view, (service, dto) -> service.update(dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable final ID id) {
+    public final ResponseEntity<?> delete(@PathVariable final ID id) {
         service.delete(id);
         return noContent().build();
     }
