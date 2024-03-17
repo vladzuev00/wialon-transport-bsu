@@ -1,9 +1,8 @@
 package by.bsu.wialontransport.controller.tracker;
 
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
-import by.bsu.wialontransport.controller.tracker.view.SavedTrackerView;
+import by.bsu.wialontransport.controller.tracker.view.SaveTrackerView;
 import by.bsu.wialontransport.controller.tracker.view.TrackerView;
-import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +23,15 @@ public class TrackerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TrackerView> findById(@PathVariable final Long id) {
-        return trackerService.findById(id)
-                .map(TrackerView::new)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NoSuchEntityException(format("Tracker with id '%d' doesn't exist.", id)));
+//        return trackerService.findById(id)
+//                .map(TrackerView::new)
+//                .map(ResponseEntity::ok)
+//                .orElseThrow(() -> new NoSuchEntityException(format("Tracker with id '%d' doesn't exist.", id)));
+        return null;
     }
 
     @PostMapping
-    public ResponseEntity<TrackerView> save(@Valid @RequestBody final SavedTrackerView view) {
+    public ResponseEntity<TrackerView> save(@Valid @RequestBody final SaveTrackerView view) {
 //        final Tracker savedTracker
         return null;
     }
