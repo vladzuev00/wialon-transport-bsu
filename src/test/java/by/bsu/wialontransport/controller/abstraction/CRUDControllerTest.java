@@ -2,6 +2,8 @@ package by.bsu.wialontransport.controller.abstraction;
 
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.crud.dto.Dto;
+import by.bsu.wialontransport.crud.entity.Entity;
+import by.bsu.wialontransport.crud.mapper.Mapper;
 import by.bsu.wialontransport.crud.service.CRUDService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,7 +33,7 @@ import static org.springframework.http.HttpStatus.OK;
 public final class CRUDControllerTest {
 
     @Mock
-    private CRUDService<Long, ?, TestDto, ?, ?> mockedService;
+    private TestCRUDService mockedService;
 
     private TestCRUDController controller;
 
@@ -162,6 +165,33 @@ public final class CRUDControllerTest {
         verify(mockedService, times(1)).delete(same(givenId));
     }
 
+    @Test
+    public void entityShouldBeFoundByName() {
+        final Long givenId = 255L;
+        final String givenName = "name";
+
+        final TestDto givenDto = new TestDto(givenId, givenName, "password");
+        when(mockedService.findByName(same(givenName))).thenReturn(Optional.of(givenDto));
+
+        final ResponseEntity<TestResponseView> actual = controller.findUnique(service -> service.findByName(givenName));
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(OK, actualStatus);
+
+        final TestResponseView actualBody = actual.getBody();
+        final TestResponseView expectedBody = new TestResponseView(givenId, givenName);
+        assertEquals(expectedBody, actualBody);
+    }
+
+    @Test(expected = NoSuchEntityException.class)
+    public void entityShouldNotBeFoundByName() {
+        final String givenName = "name";
+
+        when(mockedService.findByName(same(givenName))).thenReturn(empty());
+
+        controller.findUnique(service -> service.findByName(givenName));
+    }
+
     private static TestDto createDto(final String name, final String password) {
         return TestDto.builder()
                 .name(name)
@@ -172,19 +202,41 @@ public final class CRUDControllerTest {
     private static final class TestCRUDController extends CRUDController<
             Long,
             TestDto,
-            CRUDService<Long, ?, TestDto, ?, ?>,
+            TestCRUDService,
             TestResponseView,
             TestSaveView,
             TestUpdateView
             > {
 
-        public TestCRUDController(final CRUDService<Long, ?, TestDto, ?, ?> service) {
+        public TestCRUDController(final TestCRUDService service) {
             super(service);
         }
 
         @Override
         protected TestResponseView createResponseView(final TestDto dto) {
             return new TestResponseView(dto.id, dto.name);
+        }
+    }
+
+    private static final class TestCRUDService extends CRUDService<
+            Long,
+            Entity<Long>,
+            TestDto,
+            Mapper<Entity<Long>, TestDto>,
+            JpaRepository<Entity<Long>, Long>
+            > {
+
+        public TestCRUDService() {
+            super(null, null);
+        }
+
+        public Optional<TestDto> findByName(final String ignored) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected void configureBeforeSave(final Entity<Long> entity) {
+            throw new UnsupportedOperationException();
         }
     }
 
