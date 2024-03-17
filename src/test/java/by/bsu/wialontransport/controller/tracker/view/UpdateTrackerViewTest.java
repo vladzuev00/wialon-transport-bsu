@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
+import by.bsu.wialontransport.crud.dto.Tracker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessa
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class UpdatedTrackerViewTest extends AbstractSpringBootTest {
+public final class UpdateTrackerViewTest extends AbstractSpringBootTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -26,7 +27,7 @@ public final class UpdatedTrackerViewTest extends AbstractSpringBootTest {
     @Test
     public void viewShouldBeMappedToJson()
             throws Exception {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
@@ -55,8 +56,8 @@ public final class UpdatedTrackerViewTest extends AbstractSpringBootTest {
                    "phoneNumber": "447336934"
                 }""";
 
-        final UpdatedTrackerView actual = objectMapper.readValue(givenJson, UpdatedTrackerView.class);
-        final UpdatedTrackerView expected = UpdatedTrackerView.builder()
+        final UpdateTrackerView actual = objectMapper.readValue(givenJson, UpdateTrackerView.class);
+        final UpdateTrackerView expected = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
@@ -67,108 +68,131 @@ public final class UpdatedTrackerViewTest extends AbstractSpringBootTest {
 
     @Test
     public void viewShouldBeValid() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertTrue(constraintViolations.isEmpty());
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfIdIsNull() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .imei("11112222333344445555")
                 .password("password")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
-        assertEquals("не должно равняться null", findFirstMessage(constraintViolations));
+        assertEquals("must not be null", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfImeiIsNull() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .password("password")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid imei", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfImeiIsNotValid() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("1111222233334444555")
                 .password("password")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid imei", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfPasswordIsNull() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid password", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfPasswordIsNotValid() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("pa")
                 .phoneNumber("447336934")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid password", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfPhoneNumberIsNull() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid phone number", findFirstMessage(constraintViolations));
     }
 
     @Test
     public void viewShouldNotBeValidBecauseOfPhoneNumberIsNotValid() {
-        final UpdatedTrackerView givenView = UpdatedTrackerView.builder()
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
                 .id(255L)
                 .imei("11112222333344445555")
                 .password("password")
                 .phoneNumber("44733693")
                 .build();
 
-        final Set<ConstraintViolation<UpdatedTrackerView>> constraintViolations = validator.validate(givenView);
+        final Set<ConstraintViolation<UpdateTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("Invalid phone number", findFirstMessage(constraintViolations));
+    }
+
+    @Test
+    public void dtoShouldBeCreated() {
+        final Long givenId = 255L;
+        final String givenImei = "11112222333344445555";
+        final String givenPassword = "password";
+        final String givenPhoneNumber = "44733693";
+        final UpdateTrackerView givenView = UpdateTrackerView.builder()
+                .id(givenId)
+                .imei(givenImei)
+                .password(givenPassword)
+                .phoneNumber(givenPhoneNumber)
+                .build();
+
+        final Tracker actual = givenView.createDto();
+        final Tracker expected = Tracker.builder()
+                .id(givenId)
+                .imei(givenImei)
+                .password(givenPassword)
+                .phoneNumber(givenPhoneNumber)
+                .build();
+        assertEquals(expected, actual);
     }
 }
