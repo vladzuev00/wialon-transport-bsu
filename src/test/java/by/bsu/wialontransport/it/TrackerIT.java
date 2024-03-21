@@ -231,8 +231,35 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 {
                    "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "userId : must not be null",
-                   "dateTime": "2024-03-17 20-57-34"
+                   "message": "imei : Imei should be unique",
+                   "dateTime": "2024-03-21 08-18-25"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfPhoneNumberAlreadyExist()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99887766554433221100")
+                .password("password")
+                .phoneNumber("447336934")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "phoneNumber : Phone number should be unique",
+                   "dateTime": "2024-03-21 08-22-26"
                 }""";
         assertNotNull(actualBody);
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);

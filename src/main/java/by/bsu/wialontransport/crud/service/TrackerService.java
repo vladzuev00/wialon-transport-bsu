@@ -63,12 +63,12 @@ public class TrackerService extends CRUDEncryptingPasswordService<
     //TODO: test
     @Transactional(readOnly = true)
     public boolean isExistByImei(final String imei) {
-        return findBoolean(repository -> repository.isExistByImei(imei));
+        return findBoolean(repository -> repository.existsByImei(imei));
     }
 
     //TODO: test
     @Transactional(readOnly = true)
     public boolean isExistByPhoneNumber(final String phoneNumber) {
-        return findBoolean(repository -> repository.isExistByPhoneNumber(phoneNumber));
+        return findBoolean(repository -> repository.existsByPhoneNumber(phoneNumber));
     }
 }

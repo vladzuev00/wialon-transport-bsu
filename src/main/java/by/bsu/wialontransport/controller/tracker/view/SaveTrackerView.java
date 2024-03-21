@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
-import by.bsu.wialontransport.validation.annotation.Imei;
-import by.bsu.wialontransport.validation.annotation.Password;
-import by.bsu.wialontransport.validation.annotation.PhoneNumber;
+import by.bsu.wialontransport.validation.annotation.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -10,16 +8,19 @@ import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 
+//TODO: test unique constraint
 @Value
 public class SaveTrackerView {
 
     @Imei
+    @UniqueTrackerImei
     String imei;
 
     @Password
     String password;
 
     @PhoneNumber
+    @UniqueTrackerPhoneNumber
     String phoneNumber;
 
     @NotNull
