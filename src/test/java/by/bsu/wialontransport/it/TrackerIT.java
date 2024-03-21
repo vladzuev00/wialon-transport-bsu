@@ -307,6 +307,8 @@ public class TrackerIT extends AbstractSpringBootTest {
         JSONAssert.assertEquals(expectedBody, actualBody, true);
     }
 
+    //TODO: continue test
+
     private static String createUrlToFindTrackerById(final Long id) {
         return URL + "/" + id;
     }
