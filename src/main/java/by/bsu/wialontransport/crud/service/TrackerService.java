@@ -59,4 +59,10 @@ public class TrackerService extends CRUDEncryptingPasswordService<
     public Optional<Tracker> findByIdFetchingMileage(final Long id) {
         return findUniqueDto(repository -> repository.findByIdFetchingMileage(id));
     }
+
+    //TODO: test
+    @Transactional(readOnly = true)
+    public boolean isExistByImei(final String imei) {
+        return findBoolean(repository -> repository.isExistByImei(imei));
+    }
 }

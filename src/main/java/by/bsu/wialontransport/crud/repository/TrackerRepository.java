@@ -28,4 +28,8 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
 
     @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.mileage WHERE e.id = :id")
     Optional<TrackerEntity> findByIdFetchingMileage(final Long id);
+
+    //TODO: test
+    @Query("EXISTS (SELECT e FROM TrackerEntity e WHERE e.imei = :imei)")
+    boolean isExistByImei(final String imei);
 }

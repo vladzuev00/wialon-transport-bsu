@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.validation.annotation;
 
+import by.bsu.wialontransport.validation.validator.unique.UniqueTrackerImeiValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Retention;
@@ -11,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER, FIELD})
-@Constraint(validatedBy = )
+@Constraint(validatedBy = UniqueTrackerImeiValidator.class)
 public @interface UniqueTrackerImei {
     String message() default "Imei should be unique";
 
