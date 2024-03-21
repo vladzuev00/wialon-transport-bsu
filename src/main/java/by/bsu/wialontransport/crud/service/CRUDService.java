@@ -54,7 +54,7 @@ public abstract class CRUDService<
     }
 
     public void delete(final ID id) {
-        checkIdDefined(id);
+        checkDefined(id);
         repository.deleteById(id);
     }
 
@@ -104,10 +104,10 @@ public abstract class CRUDService<
     }
 
     private void checkIdDefined(final DTO dto) {
-        checkIdDefined(dto.getId());
+        checkDefined(dto.getId());
     }
 
-    private void checkIdDefined(final ID id) {
+    private void checkDefined(final ID id) {
         if (isIdNotDefined(id)) {
             throw new IllegalArgumentException("Entity should have defined id");
         }

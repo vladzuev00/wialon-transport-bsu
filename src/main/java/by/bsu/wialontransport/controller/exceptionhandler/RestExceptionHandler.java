@@ -5,6 +5,7 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.service.registration.exception.RegistrationException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
+import org.postgresql.util.PSQLException;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

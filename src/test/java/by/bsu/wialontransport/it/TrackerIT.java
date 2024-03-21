@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static by.bsu.wialontransport.util.HttpUtil.JSON_COMPARATOR_IGNORING_DATE_TIME;
 import static by.bsu.wialontransport.util.HttpUtil.createHttpEntity;
 import static java.lang.Long.MAX_VALUE;
@@ -209,7 +211,80 @@ public class TrackerIT extends AbstractSpringBootTest {
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
     }
 
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfImeiAlreadyExist()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("11112222333344445555")
+                .password("password")
+                .phoneNumber("448535523")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "userId : must not be null",
+                   "dateTime": "2024-03-17 20-57-34"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackersShouldBeSaved()
+            throws Exception {
+        final List<SaveTrackerView> givenViews = List.of(
+                SaveTrackerView.builder()
+                        .imei("99887766554433221100")
+                        .password("password")
+                        .phoneNumber("448535523")
+                        .userId(255L)
+                        .build(),
+                SaveTrackerView.builder()
+                        .imei("99887766554433221101")
+                        .password("password1")
+                        .phoneNumber("448535524")
+                        .userId(255L)
+                        .build()
+        );
+        final HttpEntity<List<SaveTrackerView>> givenHttpEntity = createHttpEntity(givenViews);
+
+        final String url = createUrlToSaveAll();
+        final ResponseEntity<String> actual = restTemplate.postForEntity(url, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(OK, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                [
+                   {
+                     "id": 1,
+                     "imei": "99887766554433221100",
+                     "phoneNumber": "448535523"
+                   },
+                   {
+                     "id": 2,
+                     "imei": "99887766554433221101",
+                     "phoneNumber": "448535524"
+                   }
+                ]""";
+        JSONAssert.assertEquals(expectedBody, actualBody, true);
+    }
+
     private static String createUrlToFindTrackerById(final Long id) {
         return URL + "/" + id;
+    }
+
+    private static String createUrlToSaveAll() {
+        return URL + "/batch";
     }
 }
