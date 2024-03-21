@@ -12,7 +12,7 @@ public final class UniqueTrackerImeiValidator extends UniquePropertyValidator<Un
     }
 
     @Override
-    protected boolean isUnique(final TrackerService service, final String value) {
+    protected boolean isExist(final TrackerService service, final String value) {
         return service.isExistByImei(value);
     }
 }

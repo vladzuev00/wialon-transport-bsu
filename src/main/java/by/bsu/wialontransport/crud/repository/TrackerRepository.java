@@ -32,4 +32,8 @@ public interface TrackerRepository extends EntityWithPasswordRepository<Long, Tr
     //TODO: test
     @Query("EXISTS (SELECT e FROM TrackerEntity e WHERE e.imei = :imei)")
     boolean isExistByImei(final String imei);
+
+    //TODO: test
+    @Query("EXISTS (SELECT e FROM TrackerEntity e WHERE e.phoneNumber = :phoneNumber)")
+    boolean isExistByPhoneNumber(final String phoneNumber);
 }

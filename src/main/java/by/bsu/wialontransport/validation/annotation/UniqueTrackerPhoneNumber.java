@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.validation.annotation;
 
+import by.bsu.wialontransport.validation.validator.unique.UniqueTrackerPhoneNumberValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Retention;
@@ -11,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER, FIELD})
-@Constraint(validatedBy = )
+@Constraint(validatedBy = UniqueTrackerPhoneNumberValidator.class)
 public @interface UniqueTrackerPhoneNumber {
     String message() default "Phone number should be unique";
 

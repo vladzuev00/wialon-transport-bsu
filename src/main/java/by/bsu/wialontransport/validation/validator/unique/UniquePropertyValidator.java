@@ -14,8 +14,8 @@ public abstract class UniquePropertyValidator<A extends Annotation, V, S extends
 
     @Override
     public final boolean isValid(final V value, final ConstraintValidatorContext context) {
-        return isUnique(service, value);
+        return !isExist(service, value);
     }
 
-    protected abstract boolean isUnique(final S service, final V value);
+    protected abstract boolean isExist(final S service, final V value);
 }
