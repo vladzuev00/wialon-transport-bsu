@@ -1,21 +1,47 @@
 package by.bsu.wialontransport.validation.validator.unique;
 
+import by.bsu.wialontransport.controller.abstraction.View;
+import by.bsu.wialontransport.crud.dto.Dto;
 import by.bsu.wialontransport.crud.service.CRUDService;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.lang.annotation.Annotation;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
-public abstract class UniquePropertyValidator<A extends Annotation, V, S extends CRUDService<?, ?, ?, ?, ?>>
-        implements ConstraintValidator<A, V> {
-    private final S service;
+public abstract class UniquePropertyValidator<
+        ANNOTATION extends Annotation,
+        ID,
+        DTO extends Dto<ID>,
+        VIEW extends View<ID>,
+        PROPERTY,
+        SERVICE extends CRUDService<ID, ?, DTO, ?, ?>
+        >
+        implements ConstraintValidator<ANNOTATION, VIEW> {
+    private final SERVICE service;
 
     @Override
-    public final boolean isValid(final V value, final ConstraintValidatorContext context) {
-        return !isExist(service, value);
+    public final boolean isValid(final VIEW view, final ConstraintValidatorContext context) {
+        return findByProperty(view)
+                .filter(dto -> isViewDuplicateDto(view, dto))
+                .isEmpty();
     }
 
-    protected abstract boolean isExist(final S service, final V value);
+    protected abstract PROPERTY getProperty(final VIEW view);
+
+    protected abstract Optional<DTO> findByProperty(final PROPERTY property, final SERVICE service);
+
+    private Optional<DTO> findByProperty(final VIEW view) {
+        final PROPERTY property = getProperty(view);
+        return findByProperty(property, service);
+    }
+
+    private boolean isViewDuplicateDto(final VIEW view, final DTO dto) {
+        return view.findId()
+                .filter(viewId -> Objects.equals(viewId, dto.getId()))
+                .isPresent();
+    }
 }
