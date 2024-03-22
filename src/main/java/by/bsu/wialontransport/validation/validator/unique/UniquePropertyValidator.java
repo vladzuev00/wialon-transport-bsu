@@ -14,11 +14,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public abstract class UniquePropertyValidator<
         ANNOTATION extends Annotation,
-        ID,
-        DTO extends Dto<ID>,
-        VIEW extends View<ID>,
+        DTO extends Dto<?>,
+        VIEW extends View<?>,
         PROPERTY,
-        SERVICE extends CRUDService<ID, ?, DTO, ?, ?>
+        SERVICE extends CRUDService<?, ?, DTO, ?, ?>
         >
         implements ConstraintValidator<ANNOTATION, VIEW> {
     private final SERVICE service;

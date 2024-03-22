@@ -5,14 +5,9 @@ import by.bsu.wialontransport.validation.annotation.UniqueTrackerImei;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class UniqueTrackerImeiValidator extends UniquePropertyValidator<UniqueTrackerImei, String, TrackerService> {
+public final class UniqueTrackerImeiValidator extends UniquePropertyValidator<UniqueTrackerImei, Long,  String, TrackerService> {
 
     public UniqueTrackerImeiValidator(final TrackerService service) {
         super(service);
-    }
-
-    @Override
-    protected boolean isExist(final TrackerService service, final String value) {
-        return service.isExistByImei(value);
     }
 }
