@@ -2,7 +2,7 @@ package by.bsu.wialontransport.controller.tracker;
 
 import by.bsu.wialontransport.controller.abstraction.CRUDController;
 import by.bsu.wialontransport.controller.tracker.view.SaveTrackerView;
-import by.bsu.wialontransport.controller.tracker.view.TrackerView;
+import by.bsu.wialontransport.controller.tracker.view.ResponseTrackerView;
 import by.bsu.wialontransport.controller.tracker.view.UpdateTrackerView;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping("/tracker")
-public class TrackerController extends CRUDController<Long, Tracker, TrackerService, TrackerView, SaveTrackerView, UpdateTrackerView> {
+public class TrackerController extends CRUDController<Long, Tracker, TrackerService, ResponseTrackerView, SaveTrackerView, UpdateTrackerView> {
     private final UserService userService;
 
     public TrackerController(final TrackerService service, final UserService userService) {
@@ -44,8 +44,8 @@ public class TrackerController extends CRUDController<Long, Tracker, TrackerServ
     }
 
     @Override
-    protected TrackerView createResponseView(final Tracker dto) {
-        return new TrackerView(dto.getId(), dto.getImei(), dto.getPhoneNumber());
+    protected ResponseTrackerView createResponseView(final Tracker dto) {
+        return new ResponseTrackerView(dto.getId(), dto.getImei(), dto.getPhoneNumber());
     }
 
     private User findUser(final SaveTrackerView view) {

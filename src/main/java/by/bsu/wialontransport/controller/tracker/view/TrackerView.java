@@ -1,12 +1,26 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import by.bsu.wialontransport.controller.abstraction.View;
+import by.bsu.wialontransport.validation.annotation.Imei;
+import by.bsu.wialontransport.validation.annotation.PhoneNumber;
+import by.bsu.wialontransport.validation.annotation.UniqueTrackerImei;
+import by.bsu.wialontransport.validation.annotation.UniqueTrackerPhoneNumber;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@Value
-@AllArgsConstructor
-public class TrackerView {
-    Long id;
-    String imei;
-    String phoneNumber;
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
+public abstract class TrackerView implements View<Long> {
+
+    @Imei
+    @UniqueTrackerImei
+    private final String imei;
+
+    @PhoneNumber
+    @UniqueTrackerPhoneNumber
+    private final String phoneNumber;
 }

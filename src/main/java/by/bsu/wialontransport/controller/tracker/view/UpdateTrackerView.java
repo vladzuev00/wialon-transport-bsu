@@ -1,39 +1,40 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
-import by.bsu.wialontransport.validation.annotation.Imei;
 import by.bsu.wialontransport.validation.annotation.Password;
-import by.bsu.wialontransport.validation.annotation.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
-@Value
-public class UpdateTrackerView {
+@Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class UpdateTrackerView extends TrackerView {
 
     @NotNull
-    Long id;
-
-    @Imei
-    String imei;
+    private final Long id;
 
     @Password
-    String password;
-
-    @PhoneNumber
-    String phoneNumber;
+    private final String password;
 
     @Builder
     @JsonCreator
-    public UpdateTrackerView(@JsonProperty("id") final Long id,
-                             @JsonProperty("imei") final String imei,
-                             @JsonProperty("password") final String password,
-                             @JsonProperty("phoneNumber") final String phoneNumber) {
+    public UpdateTrackerView(@JsonProperty("imei") final String imei,
+                             @JsonProperty("phoneNumber") final String phoneNumber,
+                             @JsonProperty("id") final Long id,
+                             @JsonProperty("password") final String password) {
+        super(imei, phoneNumber);
         this.id = id;
-        this.imei = imei;
         this.password = password;
-        this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public Optional<Long> findId() {
+        return Optional.of(id);
     }
 }

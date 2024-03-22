@@ -2,7 +2,7 @@ package by.bsu.wialontransport.controller.tracker;
 
 import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.controller.tracker.view.SaveTrackerView;
-import by.bsu.wialontransport.controller.tracker.view.TrackerView;
+import by.bsu.wialontransport.controller.tracker.view.ResponseTrackerView;
 import by.bsu.wialontransport.controller.tracker.view.UpdateTrackerView;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
@@ -103,8 +103,8 @@ public final class TrackerControllerTest {
                 .phoneNumber(givenPhoneNumber)
                 .build();
 
-        final TrackerView actual = controller.createResponseView(givenTracker);
-        final TrackerView expected = new TrackerView(givenId, givenImei, givenPhoneNumber);
+        final ResponseTrackerView actual = controller.createResponseView(givenTracker);
+        final ResponseTrackerView expected = new ResponseTrackerView(givenId, givenImei, givenPhoneNumber);
         assertEquals(expected, actual);
     }
 

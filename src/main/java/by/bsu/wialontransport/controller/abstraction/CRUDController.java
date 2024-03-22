@@ -22,9 +22,9 @@ public abstract class CRUDController<
         ID,
         DTO extends Dto<ID>,
         SERVICE extends CRUDService<ID, ?, DTO, ?, ?>,
-        RESPONSE_VIEW,
-        SAVE_VIEW,
-        UPDATE_VIEW
+        RESPONSE_VIEW extends View<ID>,
+        SAVE_VIEW extends View<ID>,
+        UPDATE_VIEW extends View<ID>
         > {
     private final SERVICE service;
 

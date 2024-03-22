@@ -1,40 +1,42 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
-import by.bsu.wialontransport.validation.annotation.*;
+import by.bsu.wialontransport.validation.annotation.Password;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
-//TODO: test unique constraint
-@Value
-public class SaveTrackerView {
+import static java.util.Optional.empty;
 
-    @Imei
-    @UniqueTrackerImei
-    String imei;
+@Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public final class SaveTrackerView extends TrackerView {
 
     @Password
-    String password;
-
-    @PhoneNumber
-    @UniqueTrackerPhoneNumber
-    String phoneNumber;
+    private final String password;
 
     @NotNull
-    Long userId;
+    private final Long userId;
 
     @Builder
     @JsonCreator
     public SaveTrackerView(@JsonProperty("imei") final String imei,
-                           @JsonProperty("password") final String password,
                            @JsonProperty("phoneNumber") final String phoneNumber,
+                           @JsonProperty("password") final String password,
                            @JsonProperty("userId") final Long userId) {
-        this.imei = imei;
+        super(imei, phoneNumber);
         this.password = password;
-        this.phoneNumber = phoneNumber;
         this.userId = userId;
+    }
+
+    @Override
+    public Optional<Long> findId() {
+        return empty();
     }
 }
