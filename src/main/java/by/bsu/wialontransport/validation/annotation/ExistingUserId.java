@@ -3,6 +3,7 @@ package by.bsu.wialontransport.validation.annotation;
 import by.bsu.wialontransport.validation.validator.existingid.ExistingUserIdValidator;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -14,5 +15,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({PARAMETER, FIELD})
 @Constraint(validatedBy = ExistingUserIdValidator.class)
 public @interface ExistingUserId {
+    String message() default "User with given id doesn't exist";
 
+    @SuppressWarnings("unused")
+    Class<?>[] groups() default {};
+
+    @SuppressWarnings("unused")
+    Class<? extends Payload>[] payload() default {};
 }

@@ -12,6 +12,7 @@ import javax.validation.Validator;
 import java.util.Set;
 
 import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessage;
+import static java.lang.Long.MIN_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,8 +28,8 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
     public void viewShouldBeMappedToJson()
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .password("password")
                 .userId(255L)
                 .build();
@@ -36,8 +37,8 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
         final String actual = objectMapper.writeValueAsString(givenView);
         final String expected = """
                 {
-                   "imei": "11112222333344445555",
-                   "phoneNumber": "447336934",
+                   "imei": "99994444333366665456",
+                   "phoneNumber": "448664385",
                    "password": "password",
                    "userId": 255
                 }""";
@@ -49,16 +50,16 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
             throws Exception {
         final String givenJson = """
                 {
-                   "imei": "11112222333344445555",
-                   "phoneNumber": "447336934",
+                   "imei": "99994444333366665456",
+                   "phoneNumber": "448664385",
                    "password": "password",
                    "userId": 255
                 }""";
 
         final SaveTrackerView actual = objectMapper.readValue(givenJson, SaveTrackerView.class);
         final SaveTrackerView expected = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .password("password")
                 .userId(255L)
                 .build();
@@ -68,8 +69,8 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
     @Test
     public void viewShouldBeValid() {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .password("password")
                 .userId(255L)
                 .build();
@@ -81,8 +82,8 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
     @Test
     public void viewShouldNotBeValidBecauseOfPasswordIsNull() {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .userId(255L)
                 .build();
 
@@ -94,8 +95,8 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
     @Test
     public void viewShouldNotBeValidBecauseOfPasswordIsNotValid() {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .password("pa")
                 .userId(255L)
                 .build();
@@ -108,13 +109,27 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
     @Test
     public void viewShouldNotBeValidBecauseOfUserIdIsNull() {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .phoneNumber("447336934")
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
                 .password("password")
                 .build();
 
         final Set<ConstraintViolation<SaveTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
-        assertEquals("must not be null", findFirstMessage(constraintViolations));
+        assertEquals("User with given id doesn't exist", findFirstMessage(constraintViolations));
+    }
+
+    @Test
+    public void viewShouldNotBeValidBecauseOfUserWithGivenIdNotExist() {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99994444333366665456")
+                .phoneNumber("448664385")
+                .password("password")
+                .userId(MIN_VALUE)
+                .build();
+
+        final Set<ConstraintViolation<SaveTrackerView>> constraintViolations = validator.validate(givenView);
+        assertEquals(1, constraintViolations.size());
+        assertEquals("User with given id doesn't exist", findFirstMessage(constraintViolations));
     }
 }

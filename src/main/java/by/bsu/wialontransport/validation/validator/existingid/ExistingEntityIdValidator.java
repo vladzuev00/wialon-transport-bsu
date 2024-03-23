@@ -14,6 +14,6 @@ public abstract class ExistingEntityIdValidator<A extends Annotation, ID> implem
 
     @Override
     public final boolean isValid(final ID value, final ConstraintValidatorContext context) {
-        return service.isExist(value);
+        return value != null && service.isExist(value);
     }
 }
