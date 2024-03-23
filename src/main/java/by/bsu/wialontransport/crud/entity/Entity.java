@@ -7,11 +7,11 @@ import java.util.Objects;
 
 import static java.util.Objects.hash;
 
-public abstract class Entity<IdType> implements Serializable {
+public abstract class Entity<ID> implements Serializable {
 
-    public abstract void setId(final IdType id);
+    public abstract void setId(final ID id);
 
-    public abstract IdType getId();
+    public abstract ID getId();
 
     @Override
     @SuppressWarnings({"unchecked", "EqualsWhichDoesntCheckParameterClass"})
@@ -25,7 +25,7 @@ public abstract class Entity<IdType> implements Serializable {
         if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
-        final Entity<IdType> other = (Entity<IdType>) otherObject;
+        final Entity<ID> other = (Entity<ID>) otherObject;
         return Objects.equals(getId(), other.getId());
     }
 

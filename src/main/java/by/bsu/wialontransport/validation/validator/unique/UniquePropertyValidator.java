@@ -41,6 +41,6 @@ public abstract class UniquePropertyValidator<
     private boolean isViewDuplicateDto(final VIEW view, final DTO dto) {
         return view.findId()
                 .filter(viewId -> Objects.equals(viewId, dto.getId()))
-                .isPresent();
+                .isEmpty();
     }
 }

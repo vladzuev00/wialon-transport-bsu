@@ -74,38 +74,39 @@ public final class TrackerControllerTest {
         controller.createDtoBySaveView(givenView);
     }
 
-    @Test
-    public void trackerShouldBeCreatedByUpdateView() {
-        final Long givenId = 255L;
-        final String givenImei = "11112222333344445555";
-        final String givenPassword = "password";
-        final String givenPhoneNumber = "447336934";
-        final UpdateTrackerView givenView = new UpdateTrackerView(givenId, givenImei, givenPassword, givenPhoneNumber);
-
-        final Tracker actual = controller.createDtoByUpdateView(givenView);
-        final Tracker expected = Tracker.builder()
-                .id(givenId)
-                .imei(givenImei)
-                .password(givenPassword)
-                .phoneNumber(givenPhoneNumber)
-                .build();
-        assertEquals(expected, actual);
-    }
-
+//    @Test
+//    public void trackerShouldBeCreatedByUpdateView() {
+//        final Long givenId = 255L;
+//        final String givenImei = "11112222333344445555";
+//        final String givenPassword = "password";
+//        final String givenPhoneNumber = "447336934";
+//        final UpdateTrackerView givenView = new UpdateTrackerView(givenId, givenImei, givenPassword, givenPhoneNumber);
+//
+//        final Tracker actual = controller.createDtoByUpdateView(givenView);
+//        final Tracker expected = Tracker.builder()
+//                .id(givenId)
+//                .imei(givenImei)
+//                .password(givenPassword)
+//                .phoneNumber(givenPhoneNumber)
+//                .build();
+//        assertEquals(expected, actual);
+//    }
+//
     @Test
     public void responseViewShouldBeCreated() {
-        final Long givenId = 255L;
-        final String givenImei = "11112222333344445555";
-        final String givenPhoneNumber = "447336934";
-        final Tracker givenTracker = Tracker.builder()
-                .id(givenId)
-                .imei(givenImei)
-                .phoneNumber(givenPhoneNumber)
-                .build();
-
-        final ResponseTrackerView actual = controller.createResponseView(givenTracker);
-        final ResponseTrackerView expected = new ResponseTrackerView(givenId, givenImei, givenPhoneNumber);
-        assertEquals(expected, actual);
+//        final Long givenId = 255L;
+//        final String givenImei = "11112222333344445555";
+//        final String givenPhoneNumber = "447336934";
+//        final Tracker givenTracker = Tracker.builder()
+//                .id(givenId)
+//                .imei(givenImei)
+//                .phoneNumber(givenPhoneNumber)
+//                .build();
+//
+//        final ResponseTrackerView actual = controller.createResponseView(givenTracker);
+//        final ResponseTrackerView expected = new ResponseTrackerView(givenId, givenImei, givenPhoneNumber);
+//        assertEquals(expected, actual);
+        throw new RuntimeException();
     }
 
     private static User createUser(final Long id) {

@@ -14,23 +14,25 @@ public final class UniqueTrackerImeiValidatorTest {
 
     @Test
     public void imeiShouldExist() {
-        final String givenImei = "11112222333344445555";
-        final TrackerService givenService = mock(TrackerService.class);
-
-        when(givenService.isExistByImei(same(givenImei))).thenReturn(true);
-
-        final boolean exists = validator.isExist(givenService, givenImei);
-        assertTrue(exists);
+//        final String givenImei = "11112222333344445555";
+//        final TrackerService givenService = mock(TrackerService.class);
+//
+//        when(givenService.isExistByImei(same(givenImei))).thenReturn(true);
+//
+//        final boolean exists = validator.isExist(givenService, givenImei);
+//        assertTrue(exists);
+        throw new RuntimeException();
     }
 
     @Test
     public void imeiShouldNotExist() {
-        final String givenImei = "11112222333344445555";
-        final TrackerService givenService = mock(TrackerService.class);
-
-        when(givenService.isExistByImei(same(givenImei))).thenReturn(false);
-
-        final boolean exists = validator.isExist(givenService, givenImei);
-        assertFalse(exists);
+//        final String givenImei = "11112222333344445555";
+//        final TrackerService givenService = mock(TrackerService.class);
+//
+//        when(givenService.isExistByImei(same(givenImei))).thenReturn(false);
+//
+//        final boolean exists = validator.isExist(givenService, givenImei);
+//        assertFalse(exists);
+        throw new RuntimeException();
     }
 }

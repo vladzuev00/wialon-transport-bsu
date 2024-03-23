@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.controller.tracker;
 
 import by.bsu.wialontransport.controller.abstraction.CRUDController;
-import by.bsu.wialontransport.controller.tracker.view.SaveTrackerView;
 import by.bsu.wialontransport.controller.tracker.view.ResponseTrackerView;
+import by.bsu.wialontransport.controller.tracker.view.SaveTrackerView;
 import by.bsu.wialontransport.controller.tracker.view.UpdateTrackerView;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
@@ -45,7 +45,7 @@ public class TrackerController extends CRUDController<Long, Tracker, TrackerServ
 
     @Override
     protected ResponseTrackerView createResponseView(final Tracker dto) {
-        return new ResponseTrackerView(dto.getId(), dto.getImei(), dto.getPhoneNumber());
+        return new ResponseTrackerView(dto.getImei(), dto.getPhoneNumber(), dto.getId());
     }
 
     private User findUser(final SaveTrackerView view) {

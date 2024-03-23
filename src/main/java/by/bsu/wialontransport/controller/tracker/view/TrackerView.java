@@ -14,13 +14,13 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
+@UniqueTrackerImei
+@UniqueTrackerPhoneNumber
 public abstract class TrackerView implements View<Long> {
 
     @Imei
-    @UniqueTrackerImei
     private final String imei;
 
     @PhoneNumber
-    @UniqueTrackerPhoneNumber
     private final String phoneNumber;
 }

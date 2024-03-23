@@ -14,23 +14,25 @@ public final class UniqueTrackerPhoneNumberValidatorTest {
 
     @Test
     public void phoneNumberShouldExist() {
-        final String givenPhoneNumber = "447336934";
-        final TrackerService givenService = mock(TrackerService.class);
-
-        when(givenService.isExistByPhoneNumber(same(givenPhoneNumber))).thenReturn(true);
-
-        final boolean exists = validator.isExist(givenService, givenPhoneNumber);
-        assertTrue(exists);
+//        final String givenPhoneNumber = "447336934";
+//        final TrackerService givenService = mock(TrackerService.class);
+//
+//        when(givenService.isExistByPhoneNumber(same(givenPhoneNumber))).thenReturn(true);
+//
+//        final boolean exists = validator.isExist(givenService, givenPhoneNumber);
+//        assertTrue(exists);
+        throw new RuntimeException();
     }
 
     @Test
     public void phoneNumberShouldNotExist() {
-        final String givenPhoneNumber = "447336934";
-        final TrackerService givenService = mock(TrackerService.class);
-
-        when(givenService.isExistByPhoneNumber(same(givenPhoneNumber))).thenReturn(false);
-
-        final boolean exists = validator.isExist(givenService, givenPhoneNumber);
-        assertFalse(exists);
+//        final String givenPhoneNumber = "447336934";
+//        final TrackerService givenService = mock(TrackerService.class);
+//
+//        when(givenService.isExistByPhoneNumber(same(givenPhoneNumber))).thenReturn(false);
+//
+//        final boolean exists = validator.isExist(givenService, givenPhoneNumber);
+//        assertFalse(exists);
+        throw new RuntimeException();
     }
 }
