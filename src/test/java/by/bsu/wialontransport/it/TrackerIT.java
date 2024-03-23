@@ -49,9 +49,9 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String actualBody = actual.getBody();
         final String expectedBody = """
                 {
-                  "id": 255,
                   "imei": "11112222333344445555",
-                  "phoneNumber": "447336934"
+                  "phoneNumber": "447336934",
+                  "id": 255
                 }""";
         assertEquals(expectedBody, actualBody, true);
     }
@@ -83,8 +83,8 @@ public class TrackerIT extends AbstractSpringBootTest {
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
                 .imei("99887766554433221100")
-                .password("password")
                 .phoneNumber("448535523")
+                .password("password")
                 .userId(255L)
                 .build();
         final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
@@ -97,20 +97,19 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String actualBody = actual.getBody();
         final String expectedBody = """
                 {
-                  "id": 1,
                   "imei": "99887766554433221100",
-                  "phoneNumber": "448535523"
+                  "phoneNumber": "448535523",
+                  "id": 1
                 }""";
         JSONAssert.assertEquals(expectedBody, actualBody, true);
     }
 
     @Test
-    public void trackerShouldNotBeSavedBecauseOfImeiIsNotValid()
+    public void trackerShouldNotBeSavedBecauseOfImeiIsNull()
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("9988776655443322110")
-                .password("password")
                 .phoneNumber("448535523")
+                .password("password")
                 .userId(255L)
                 .build();
         final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
@@ -124,13 +123,148 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 {
                    "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "imei : Invalid imei",
+                   "message": "Invalid imei",
                    "dateTime": "2024-03-17 20-32-11"
                 }""";
         assertNotNull(actualBody);
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
     }
 
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfImeiIsNotValid()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("9988776655443322110")
+                .phoneNumber("448535523")
+                .password("password")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "Invalid imei",
+                   "dateTime": "2024-03-17 20-32-11"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfImeiShouldBeUnique()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("11112222333344445555")
+                .phoneNumber("448535523")
+                .password("password")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "Imei should be unique",
+                   "dateTime": "2024-03-17 20-32-11"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfPhoneNumberIsNull()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99887766554433221100")
+                .password("password")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "Invalid phone number",
+                   "dateTime": "2024-03-17 20-32-11"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfPhoneNumberIsNotValid()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99887766554433221100")
+                .phoneNumber("44853552")
+                .password("password")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "Invalid phone number",
+                   "dateTime": "2024-03-17 20-32-11"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfPhoneNumberShouldBeUnique()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99887766554433221100")
+                .phoneNumber("447336934")
+                .password("password")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                   "httpStatus": "NOT_ACCEPTABLE",
+                   "message": "Phone number should be unique",
+                   "dateTime": "2024-03-17 20-32-11"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    //TODO: stop
     @Test
     public void trackerShouldNotBeSavedBecauseOfPasswordIsNotValid()
             throws Exception {
@@ -153,33 +287,6 @@ public class TrackerIT extends AbstractSpringBootTest {
                   "httpStatus": "NOT_ACCEPTABLE",
                   "message": "password : Invalid password",
                   "dateTime": "2024-03-17 20-50-05"
-                }""";
-        assertNotNull(actualBody);
-        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
-    }
-
-    @Test
-    public void trackerShouldNotBeSavedBecauseOfPhoneNumberIsNotValid()
-            throws Exception {
-        final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("99887766554433221100")
-                .password("password")
-                .phoneNumber("44853552")
-                .userId(255L)
-                .build();
-        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
-
-        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
-
-        final HttpStatus actualStatus = actual.getStatusCode();
-        assertSame(NOT_ACCEPTABLE, actualStatus);
-
-        final String actualBody = actual.getBody();
-        final String expectedBody = """
-                {
-                   "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "phoneNumber : Invalid phone number",
-                   "dateTime": "2024-03-17 20-52-58"
                 }""";
         assertNotNull(actualBody);
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);

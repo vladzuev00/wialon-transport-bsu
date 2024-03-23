@@ -5,11 +5,10 @@ import by.bsu.wialontransport.controller.exception.NoSuchEntityException;
 import by.bsu.wialontransport.service.registration.exception.RegistrationException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
-import org.postgresql.util.PSQLException;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 import static java.lang.String.format;
-import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
@@ -34,14 +32,17 @@ public final class RestExceptionHandler {
     private static final String MESSAGE_TEMPLATE_NOT_VALID_ENUM_PARAM = "%s should be replaced by one of: %s";
     private static final String DELIMITER_ENUM_PARAM_ALLOWABLE_VALUE = ", ";
 
+    private static final String NOT_VALID_ARGUMENT_MESSAGE_DELIMITER = "; ";
+
     @ExceptionHandler
     public ResponseEntity<RestErrorResponse> handle(final ConstraintViolationException exception) {
         return createResponse(exception, NOT_ACCEPTABLE);
     }
 
+    //TODO: refactor and test
     @ExceptionHandler
     public ResponseEntity<RestErrorResponse> handle(final MethodArgumentNotValidException exception) {
-        return createResponse(findMessage(exception.getFieldError()), NOT_ACCEPTABLE);
+        return createResponse(findMessage(exception), NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler
@@ -79,10 +80,11 @@ public final class RestExceptionHandler {
         return new ResponseEntity<>(errorResponse, status);
     }
 
-    private static String findMessage(final FieldError error) {
-        return error != null
-                ? join(DELIMITER_ERROR_FIELD_NAME_AND_MESSAGE, error.getField(), error.getDefaultMessage())
-                : UNKNOWN_ERROR_MESSAGE;
+    private static String findMessage(final MethodArgumentNotValidException exception) {
+        return exception.getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(joining(NOT_VALID_ARGUMENT_MESSAGE_DELIMITER));
     }
 
     private static String findMessage(final ConversionFailedException exception) {
