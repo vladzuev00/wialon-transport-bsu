@@ -18,6 +18,7 @@ import java.util.List;
 import static by.bsu.wialontransport.util.HttpUtil.JSON_COMPARATOR_IGNORING_DATE_TIME;
 import static by.bsu.wialontransport.util.HttpUtil.createHttpEntity;
 import static java.lang.Long.MAX_VALUE;
+import static java.lang.Long.MIN_VALUE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -264,13 +265,11 @@ public class TrackerIT extends AbstractSpringBootTest {
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
     }
 
-    //TODO: stop
     @Test
-    public void trackerShouldNotBeSavedBecauseOfPasswordIsNotValid()
+    public void trackerShouldNotBeSavedBecauseOfPasswordIsNull()
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
                 .imei("99887766554433221100")
-                .password("pa")
                 .phoneNumber("448535523")
                 .userId(255L)
                 .build();
@@ -285,7 +284,34 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 {
                   "httpStatus": "NOT_ACCEPTABLE",
-                  "message": "password : Invalid password",
+                  "message": "Invalid password",
+                  "dateTime": "2024-03-17 20-50-05"
+                }""";
+        assertNotNull(actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
+    }
+
+    @Test
+    public void trackerShouldNotBeSavedBecauseOfPasswordIsNotValid()
+            throws Exception {
+        final SaveTrackerView givenView = SaveTrackerView.builder()
+                .imei("99887766554433221100")
+                .phoneNumber("448535523")
+                .password("pa")
+                .userId(255L)
+                .build();
+        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
+
+        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
+
+        final HttpStatus actualStatus = actual.getStatusCode();
+        assertSame(NOT_ACCEPTABLE, actualStatus);
+
+        final String actualBody = actual.getBody();
+        final String expectedBody = """
+                {
+                  "httpStatus": "NOT_ACCEPTABLE",
+                  "message": "Invalid password",
                   "dateTime": "2024-03-17 20-50-05"
                 }""";
         assertNotNull(actualBody);
@@ -297,8 +323,8 @@ public class TrackerIT extends AbstractSpringBootTest {
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
                 .imei("99887766554433221100")
-                .password("password")
                 .phoneNumber("448535523")
+                .password("password")
                 .build();
         final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
 
@@ -311,7 +337,7 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 {
                    "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "userId : must not be null",
+                   "message": "User with given id doesn't exist",
                    "dateTime": "2024-03-17 20-57-34"
                 }""";
         assertNotNull(actualBody);
@@ -319,40 +345,13 @@ public class TrackerIT extends AbstractSpringBootTest {
     }
 
     @Test
-    public void trackerShouldNotBeSavedBecauseOfImeiAlreadyExist()
-            throws Exception {
-        final SaveTrackerView givenView = SaveTrackerView.builder()
-                .imei("11112222333344445555")
-                .password("password")
-                .phoneNumber("448535523")
-                .userId(255L)
-                .build();
-        final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
-
-        final ResponseEntity<String> actual = restTemplate.postForEntity(URL, givenHttpEntity, String.class);
-
-        final HttpStatus actualStatus = actual.getStatusCode();
-        assertSame(NOT_ACCEPTABLE, actualStatus);
-
-        final String actualBody = actual.getBody();
-        final String expectedBody = """
-                {
-                   "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "imei : Imei should be unique",
-                   "dateTime": "2024-03-21 08-18-25"
-                }""";
-        assertNotNull(actualBody);
-        JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
-    }
-
-    @Test
-    public void trackerShouldNotBeSavedBecauseOfPhoneNumberAlreadyExist()
+    public void trackerShouldNotBeSavedBecauseOfUserWithGivenIdNotExist()
             throws Exception {
         final SaveTrackerView givenView = SaveTrackerView.builder()
                 .imei("99887766554433221100")
+                .phoneNumber("448535523")
                 .password("password")
-                .phoneNumber("447336934")
-                .userId(255L)
+                .userId(MIN_VALUE)
                 .build();
         final HttpEntity<SaveTrackerView> givenHttpEntity = createHttpEntity(givenView);
 
@@ -365,8 +364,8 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 {
                    "httpStatus": "NOT_ACCEPTABLE",
-                   "message": "phoneNumber : Phone number should be unique",
-                   "dateTime": "2024-03-21 08-22-26"
+                   "message": "User with given id doesn't exist",
+                   "dateTime": "2024-03-17 20-57-34"
                 }""";
         assertNotNull(actualBody);
         JSONAssert.assertEquals(expectedBody, actualBody, JSON_COMPARATOR_IGNORING_DATE_TIME);
@@ -378,14 +377,14 @@ public class TrackerIT extends AbstractSpringBootTest {
         final List<SaveTrackerView> givenViews = List.of(
                 SaveTrackerView.builder()
                         .imei("99887766554433221100")
-                        .password("password")
                         .phoneNumber("448535523")
+                        .password("password")
                         .userId(255L)
                         .build(),
                 SaveTrackerView.builder()
                         .imei("99887766554433221101")
-                        .password("password1")
                         .phoneNumber("448535524")
+                        .password("password1")
                         .userId(255L)
                         .build()
         );
@@ -401,20 +400,20 @@ public class TrackerIT extends AbstractSpringBootTest {
         final String expectedBody = """
                 [
                    {
-                     "id": 1,
                      "imei": "99887766554433221100",
-                     "phoneNumber": "448535523"
+                     "phoneNumber": "448535523",
+                     "id": 1
                    },
                    {
-                     "id": 2,
                      "imei": "99887766554433221101",
-                     "phoneNumber": "448535524"
+                     "phoneNumber": "448535524",
+                     "id": 2
                    }
                 ]""";
         JSONAssert.assertEquals(expectedBody, actualBody, true);
     }
 
-    //TODO: continue test
+    //TODO: test failed cases save all and check unique property in inbound list
 
     private static String createUrlToFindTrackerById(final Long id) {
         return URL + "/" + id;
