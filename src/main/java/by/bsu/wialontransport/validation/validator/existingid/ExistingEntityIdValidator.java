@@ -7,13 +7,12 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.lang.annotation.Annotation;
 
-//TODO: test
 @RequiredArgsConstructor
 public abstract class ExistingEntityIdValidator<A extends Annotation, ID> implements ConstraintValidator<A, ID> {
     private final CRUDService<ID, ?, ?, ?, ?> service;
 
     @Override
-    public final boolean isValid(final ID value, final ConstraintValidatorContext context) {
-        return value != null && service.isExist(value);
+    public final boolean isValid(final ID id, final ConstraintValidatorContext context) {
+        return id != null && service.isExist(id);
     }
 }
