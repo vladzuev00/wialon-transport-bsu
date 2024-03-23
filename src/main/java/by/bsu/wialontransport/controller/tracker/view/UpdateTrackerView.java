@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.controller.tracker.view;
 
+import by.bsu.wialontransport.validation.annotation.ExistingTrackerId;
 import by.bsu.wialontransport.validation.annotation.Password;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Getter
@@ -16,7 +16,7 @@ import java.util.Optional;
 @ToString(callSuper = true)
 public final class UpdateTrackerView extends TrackerView {
 
-    @NotNull
+    @ExistingTrackerId
     private final Long id;
 
     @Password
