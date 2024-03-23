@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Optional;
 import java.util.Set;
 
 import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessage;
@@ -131,5 +132,13 @@ public final class SaveTrackerViewTest extends AbstractSpringBootTest {
         final Set<ConstraintViolation<SaveTrackerView>> constraintViolations = validator.validate(givenView);
         assertEquals(1, constraintViolations.size());
         assertEquals("User with given id doesn't exist", findFirstMessage(constraintViolations));
+    }
+
+    @Test
+    public void idShouldNotBeFound() {
+        final SaveTrackerView givenView = SaveTrackerView.builder().build();
+
+        final Optional<Long> optionalActual = givenView.findId();
+        assertTrue(optionalActual.isEmpty());
     }
 }
