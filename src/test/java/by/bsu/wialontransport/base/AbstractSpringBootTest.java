@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 
 @Slf4j
 @Transactional
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@RunWith(SpringRunner.class)
 @ContextConfiguration(initializers = {DBContainerInitializer.class, KafkaContainerInitializer.class})
 public abstract class AbstractSpringBootTest {
 
