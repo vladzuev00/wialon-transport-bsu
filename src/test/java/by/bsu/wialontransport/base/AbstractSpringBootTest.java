@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.base;
 
-import by.bsu.wialontransport.base.containerinitializer.DBContainerInitializer;
+import by.bsu.wialontransport.base.containerinitializer.DataBaseContainerInitializer;
 import by.bsu.wialontransport.base.containerinitializer.KafkaContainerInitializer;
 import com.yannbriancon.interceptor.HibernateQueryInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = {DBContainerInitializer.class, KafkaContainerInitializer.class})
+@ContextConfiguration(initializers = {DataBaseContainerInitializer.class, KafkaContainerInitializer.class})
 public abstract class AbstractSpringBootTest {
 
     @PersistenceContext
