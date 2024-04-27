@@ -3,25 +3,38 @@ package by.bsu.wialontransport.base.containerinitializer;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.stream.Stream;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.testcontainers.utility.DockerImageName.parse;
+import static java.util.Optional.empty;
 
-public final class KafkaContainerInitializer extends ContainerInitializer {
-    private static final String PROPERTY_KEY_BOOTSTRAP_SERVERS = "spring.kafka.bootstrap-servers";
+public final class KafkaContainerInitializer extends ContainerInitializer<KafkaContainer> {
+    private static final String KEY_BOOTSTRAP_SERVERS = "spring.kafka.bootstrap-servers";
 
-    private static final String FULL_IMAGE_NAME = "confluentinc/cp-kafka:5.4.3";
-    private static final DockerImageName DOCKER_IMAGE_NAME = parse(FULL_IMAGE_NAME);
-    private static final KafkaContainer KAFKA_CONTAINER = new KafkaContainer(DOCKER_IMAGE_NAME);
+    private static final String IMAGE_NAME = "confluentinc/cp-kafka:latest";
 
-    static {
-        KAFKA_CONTAINER.start();
+    @Override
+    protected String getImageName() {
+        return IMAGE_NAME;
     }
 
     @Override
-    protected Stream<TestProperty> getProperties() {
-        return Stream.of(
-                new TestProperty(PROPERTY_KEY_BOOTSTRAP_SERVERS, KAFKA_CONTAINER.getBootstrapServers())
-        );
+    protected Optional<String> getOtherImageName() {
+        return empty();
+    }
+
+    @Override
+    protected KafkaContainer createContainer(final DockerImageName imageName) {
+        return new KafkaContainer(imageName);
+    }
+
+    @Override
+    protected void configure(final KafkaContainer container) {
+
+    }
+
+    @Override
+    protected Map<String, String> getPropertiesByKeys(final KafkaContainer container) {
+        return Map.of(KEY_BOOTSTRAP_SERVERS, container.getBootstrapServers());
     }
 }
