@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.it.core;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.base.kafka.TestKafkaSavedDataConsumer;
+import by.bsu.wialontransport.base.kafka.KafkaSavedDataAccumulatingPayloadConsumer;
 import by.bsu.wialontransport.crud.entity.*;
 import by.bsu.wialontransport.kafka.consumer.data.KafkaSavedDataConsumer;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
@@ -41,7 +41,7 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
     private NominatimService mockedNominatimService;
 
     @Autowired
-    private TestKafkaSavedDataConsumer savedDataConsumer;
+    private KafkaSavedDataAccumulatingPayloadConsumer savedDataConsumer;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -51,12 +51,12 @@ public abstract class ProtocolIT extends AbstractSpringBootTest {
 
     @Before
     public void resetSavedDataConsumer() {
-        savedDataConsumer.reset();
+//        savedDataConsumer.reset();
     }
 
     @SuppressWarnings("SameParameterValue")
     protected void resetSavedDataConsumer(final int consumedRecordCount) {
-        savedDataConsumer.reset(consumedRecordCount);
+        savedDataConsumer.expect(consumedRecordCount);
     }
 
     protected boolean isSuccessDataDelivering() {

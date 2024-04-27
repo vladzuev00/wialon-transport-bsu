@@ -13,18 +13,17 @@ import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.IntStream.rangeClosed;
 
-//TODO: setExpectedConsumedRecordCount instead of reset
 @Component
-public final class TestKafkaSavedDataConsumer {
-    private static final String PAYLOAD_RECORDS_SEPARATOR = " || ";
-    private static final int DEFAULT_CONSUMED_RECORDS_COUNT = 1;
+public final class KafkaSavedDataAccumulatingPayloadConsumer {
+    private static final String PAYLOAD_RECORD_SEPARATOR = " || ";
+    private static final int DEFAULT_EXPECTED_RECORD_COUNT = 1;
     private static final int WAIT_CONSUMING_SECONDS = 5;
 
     private final Phaser phaser;
     private final StringBuffer payloadBuffer;
 
-    public TestKafkaSavedDataConsumer() {
-        phaser = createNotTerminatedPhaser(DEFAULT_CONSUMED_RECORDS_COUNT + 1);
+    public KafkaSavedDataAccumulatingPayloadConsumer() {
+        phaser = createNotTerminatedPhaser(DEFAULT_EXPECTED_RECORD_COUNT + 1);
         payloadBuffer = new StringBuffer();
     }
 
@@ -37,18 +36,10 @@ public final class TestKafkaSavedDataConsumer {
         records.forEach(this::accumulate);
     }
 
-    public void reset() {
-        reset(DEFAULT_CONSUMED_RECORDS_COUNT);
-    }
-
-    public void reset(final int consumedRecordsCount) {
+    public void expect(final int recordCount) {
         rangeClosed(1, phaser.getUnarrivedParties()).forEach(i -> phaser.arriveAndDeregister());
-        phaser.bulkRegister(consumedRecordsCount + 1);
+        phaser.bulkRegister(recordCount + 1);
         payloadBuffer.delete(0, payloadBuffer.length());
-    }
-
-    public String getPayload() {
-        return payloadBuffer.toString();
     }
 
     public boolean isSuccessConsuming() {
@@ -64,6 +55,10 @@ public final class TestKafkaSavedDataConsumer {
         }
     }
 
+    public String getPayload() {
+        return payloadBuffer.toString();
+    }
+
     @SuppressWarnings("SameParameterValue")
     private static Phaser createNotTerminatedPhaser(final int parties) {
         return new Phaser(parties) {
@@ -77,7 +72,7 @@ public final class TestKafkaSavedDataConsumer {
     private void accumulate(final ConsumerRecord<Long, GenericRecord> record) {
         payloadBuffer.append(record.toString());
         if (phaser.getUnarrivedParties() > 1) {
-            payloadBuffer.append(PAYLOAD_RECORDS_SEPARATOR);
+            payloadBuffer.append(PAYLOAD_RECORD_SEPARATOR);
         }
         phaser.arriveAndDeregister();
     }
