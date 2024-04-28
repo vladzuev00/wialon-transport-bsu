@@ -6,10 +6,10 @@ import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 @Configuration
-public class GeoJsonConfig {
+public class GeoJSONConfig {
 
     @Bean
-    public GeoJSONReader geoJsonReader() {
+    public GeoJSONReader geoJSONReader() {
         return new GeoJSONReader();
     }
 
@@ -17,5 +17,4 @@ public class GeoJsonConfig {
     public GeoJSONWriter geoJSONWriter() {
         return new GeoJSONWriter();
     }
-
 }

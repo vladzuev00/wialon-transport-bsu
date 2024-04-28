@@ -10,5 +10,6 @@ KafkaContainerInitializer
 KafkaSavedDataAccumulatingPayloadConsumer
 
 ----------config
+GeoJSONConfig                                               GeoJSONConfigTest
 
 

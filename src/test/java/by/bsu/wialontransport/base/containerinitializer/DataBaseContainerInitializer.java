@@ -6,14 +6,15 @@ import org.testcontainers.utility.DockerImageName;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public final class DataBaseContainerInitializer extends ContainerInitializer<PostgreSQLContainer<?>> {
     private static final String KEY_DATASOURCE_URL = "spring.datasource.url";
     private static final String KEY_USERNAME = "spring.datasource.username";
     private static final String KEY_PASSWORD = "spring.datasource.password";
 
-    private static final String IMAGE_NAME = "million/postgis:latest";
+    private static final String IMAGE_NAME = "mdillon/postgis:latest";
+    private static final String OTHER_IMAGE_NAME = "postgres";
 
     private static final String DATA_BASE_NAME = "integration-tests-db";
     private static final String USERNAME = "sa";
@@ -26,7 +27,7 @@ public final class DataBaseContainerInitializer extends ContainerInitializer<Pos
 
     @Override
     protected Optional<String> getOtherImageName() {
-        return empty();
+        return of(OTHER_IMAGE_NAME);
     }
 
     @Override
