@@ -1,15 +1,21 @@
 ----------base
-AbstractSpringBootTest
+      AbstractSpringBootTest
 
 ----------base.containerinitializer
-ContainerInitializer
-DataBaseContainerInitializer
-KafkaContainerInitializer
+      ContainerInitializer
+      DataBaseContainerInitializer
+      KafkaContainerInitializer
 
 ----------base.kafka
-KafkaSavedDataAccumulatingPayloadConsumer
+      KafkaSavedDataAccumulatingPayloadConsumer
 
 ----------config
-GeoJSONConfig                                               GeoJSONConfigTest
+      GeoJSONConfig                                               GeoJSONConfigTest
+      GeometryFactoryConfig                                       GeometryFactoryConfigTest
+      ModelMapperConfig                                           ModelMapperConfigTest
+      RestTemplateConfig                                          RestTemplateConfigTest
+TODO: WebSecurityConfig                                           WebSecurityConfigTest
+
+----------config.property
 
 

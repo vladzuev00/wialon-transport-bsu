@@ -11,7 +11,6 @@ import static org.junit.Assert.assertSame;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.OK;
 
-//TODO: check all controllers here
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public final class WebSecurityConfigTest extends AbstractSpringBootTest {
 
