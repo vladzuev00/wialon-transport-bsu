@@ -1,0 +1,171 @@
+<mxfile host="app.diagrams.net" modified="2024-04-28T08:48:56.856Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0" version="24.3.1" etag="eQLa3fRBWtWPr8x6qGZq" type="device">
+  <diagram id="D3O15t6fEiUEKrggM-Jo" name="Page-1">
+    <mxGraphModel dx="6010" dy="2445" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="node15" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;AbstractWialonRequestDataPackageDecoder&lt;REQUEST, RESPONSE&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ AbstractWialonRequestDataPackageDecoder(String, WialonMessageParser): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- messageParser: WialonMessageParser&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# decodeMessage(String): REQUEST&lt;br/&gt;# createPackage(List&amp;lt;WialonData&amp;gt;): REQUEST&lt;br/&gt;# createNotValidSubMessageResponse(): RESPONSE&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="3570" y="1220" width="520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="node3" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingDataDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingDataDecoder(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- decodeSpeedIntegerPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeMinute(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeLongitudeIntegerPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeFirstAnalogInputLevel(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeFourthAnalogInputLevel(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- readAndAccumulateShortValue(ByteBuf, ShortConsumer): void&lt;br/&gt;- decodeFlagByte(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeMonth(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeSecond(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeLatitudeIntegerPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;+ decodeNext(ByteBuf): NewWingData&lt;br/&gt;- decodeHour(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeHdopIntegerPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeDay(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeYear(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeChecksum(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- readAndAccumulateByteValue(ByteBuf, ByteConsumer): void&lt;br/&gt;- decodeLatitudeFractionalPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeCourse(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeSpeedFractionalPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeDiscreteInputStateByte(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeHdopFractionalPart(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeSecondAnalogInputLevel(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeThirdAnalogInputLevel(ByteBuf, NewWingDataBuilder): void&lt;br/&gt;- decodeLongitudeFractionalPart(ByteBuf, NewWingDataBuilder): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="-200" y="1600" width="460" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="node6" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingDataIterator&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingDataIterator(NewWingDataDecoder, ByteBuf): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT: int&lt;br/&gt;- buffer: ByteBuf&lt;br/&gt;- decoder: NewWingDataDecoder&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ hasNext(): boolean&lt;br/&gt;- checkNext(): void&lt;br/&gt;+ next(): NewWingData&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="-670" y="1375" width="392" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="node8" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingDataIteratorFactory&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingDataIteratorFactory(NewWingDataDecoder): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- decoder: NewWingDataDecoder&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ create(ByteBuf): NewWingDataIterator&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="-610" y="1190" width="360" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="node5" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingDataPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingDataPackageDecoder(NewWingDataIteratorFactory): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- PACKAGE_PREFIX: String&lt;br/&gt;- dataIteratorFactory: NewWingDataIteratorFactory&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# createPackageBuilder(): NewWingDataPackageBuilder&lt;br/&gt;# decodeUntilChecksum(ByteBuf, NewWingDataPackageBuilder): void&lt;br/&gt;- decodeData(ByteBuf, NewWingDataPackageBuilder): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="-220" y="1350" width="450" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="node9" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingEventCountPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingEventCountPackageDecoder(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- PACKAGE_PREFIX: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- decodeFrameEventCount(ByteBuf, NewWingEventCountPackageBuilder): void&lt;br/&gt;- readAndAccumulateShortValue(ByteBuf, ShortConsumer): void&lt;br/&gt;- decodeEventCount(ByteBuf, NewWingEventCountPackageBuilder): void&lt;br/&gt;# createPackageBuilder(): NewWingEventCountPackageBuilder&lt;br/&gt;# decodeUntilChecksum(ByteBuf, NewWingEventCountPackageBuilder): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="-620" y="717" width="518" height="223" as="geometry" />
+        </mxCell>
+        <mxCell id="node4" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingLoginPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingLoginPackageDecoder(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- PACKAGE_PREFIX: String&lt;br/&gt;- TEMPLATE_IMEI: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# createPackageBuilder(): NewWingLoginPackageBuilder&lt;br/&gt;- decodeImei(ByteBuf, NewWingLoginPackageBuilder): void&lt;br/&gt;# decodeUntilChecksum(ByteBuf, NewWingLoginPackageBuilder): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="679" y="1261" width="461" height="209" as="geometry" />
+        </mxCell>
+        <mxCell id="node7" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NewWingPackageDecoder&lt;PACKAGE, BUILDER&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NewWingPackageDecoder(String): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ decode(ByteBuf): PACKAGE&lt;br/&gt;# decodeUntilChecksum(ByteBuf, BUILDER): void&lt;br/&gt;- decodeChecksum(ByteBuf, BUILDER): void&lt;br/&gt;# createPackageBuilder(): BUILDER&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="280" y="1090" width="364" height="162" as="geometry" />
+        </mxCell>
+        <mxCell id="node17" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NotValidSubMessageException&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ NotValidSubMessageException(Exception): &lt;br/&gt;+ NotValidSubMessageException(String, Exception): &lt;br/&gt;+ NotValidSubMessageException(): &lt;br/&gt;+ NotValidSubMessageException(String): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="3730" y="1476.5" width="317" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="node1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PackageBufferDecoder&lt;PREFIX, PACKAGE&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ PackageBufferDecoder(PREFIX): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="424" y="770" width="336" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="node2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PackageDecoder&lt;PREFIX, SOURCE, PACKAGE&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ PackageDecoder(PREFIX): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- packagePrefix: PREFIX&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ decode(SOURCE): PACKAGE&lt;br/&gt;+ getPackagePrefix(): PREFIX&lt;br/&gt;+ isAbleToDecode(PREFIX): boolean&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="965" y="1025" width="361" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="node0" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PackageStringDecoder&lt;PACKAGE&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ PackageStringDecoder(String): &lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="1390" y="1307" width="285" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="node14" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonMessageParser&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonMessageParser(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- SUB_MESSAGE_DELIMITER_REGEX: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- parseCourse(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseSubMessage(String): WialonData&lt;br/&gt;- parseLongitude(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseDriverKeyCode(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseHdop(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseAltitude(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseDate(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseInputs(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseParameters(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseAmountOfSatellites(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseNotRequiredComponent(WialonDataBuilder, WialonSubMessageComponentParser, Function&amp;lt;WialonSubMessageComponentParser, Optional&amp;lt;T&amp;gt;&amp;gt;, BiConsumer&amp;lt;WialonDataBuilder, T&amp;gt;): void&lt;br/&gt;- parseLatitude(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseAnalogInputs(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseSpeed(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;+ parse(String): List&amp;lt;WialonData&amp;gt;&lt;br/&gt;- parseRequiredComponent(WialonDataBuilder, WialonSubMessageComponentParser, Function&amp;lt;WialonSubMessageComponentParser, T&amp;gt;, BiConsumer&amp;lt;WialonDataBuilder, T&amp;gt;): void&lt;br/&gt;- parseOutputs(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;br/&gt;- parseTime(WialonDataBuilder, WialonSubMessageComponentParser): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="2110" y="820" width="1250" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="node18" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonPackageDecoder&lt;PACKAGE&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonPackageDecoder(String): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- extractMessage(String): String&lt;br/&gt;+ decode(String): PACKAGE&lt;br/&gt;# decodeMessage(String): PACKAGE&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="1797" y="1218" width="284" height="142" as="geometry" />
+        </mxCell>
+        <mxCell id="node16" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonRequestBlackBoxPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonRequestBlackBoxPackageDecoder(WialonMessageParser): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# createNotValidSubMessageResponse(): WialonResponseBlackBoxPackage&lt;br/&gt;# createPackage(List&amp;lt;WialonData&amp;gt;): WialonRequestBlackBoxPackage&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="2153" y="1493" width="537" height="127" as="geometry" />
+        </mxCell>
+        <mxCell id="node12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonRequestDataPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonRequestDataPackageDecoder(WialonMessageParser): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# createPackage(List&amp;lt;WialonData&amp;gt;): WialonRequestDataPackage&lt;br/&gt;# createNotValidSubMessageResponse(): WialonResponseDataPackage&lt;br/&gt;- checkContainingOneData(List&amp;lt;WialonData&amp;gt;): void&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="3580" y="762.5" width="490" height="147.5" as="geometry" />
+        </mxCell>
+        <mxCell id="node11" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonRequestLoginPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonRequestLoginPackageDecoder(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- INDEX_PASSWORD: int&lt;br/&gt;- REGEX_DELIMITER_IMEI_AND_PASSWORD: String&lt;br/&gt;- INDEX_IMEI: int&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# decodeMessage(String): WialonRequestLoginPackage&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="1590" y="948" width="360" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="node13" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonRequestPingPackageDecoder&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonRequestPingPackageDecoder(): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;# decodeMessage(String): WialonRequestPingPackage&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="1380" y="1493" width="381" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="node10" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;WialonSubMessageComponentParser&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ WialonSubMessageComponentParser(String): &lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;- GROUP_NUMBER_PARAMETERS: int&lt;br/&gt;- NOT_DEFINED_TIME: LocalTime&lt;br/&gt;- NOT_DEFINED_COMPONENT_SOURCE: String&lt;br/&gt;- GROUP_NUMBER_SPEED: int&lt;br/&gt;- GROUP_NUMBER_OUTPUTS: int&lt;br/&gt;- SUB_MESSAGE_REGEX: String&lt;br/&gt;- GROUP_NUMBER_DRIVER_KEY_CODE: int&lt;br/&gt;- GROUP_NUMBER_ALTITUDE: int&lt;br/&gt;- NOT_DEFINED_DATE: LocalDate&lt;br/&gt;- DATE_FORMAT: String&lt;br/&gt;- longitudeParser: LongitudeParser&lt;br/&gt;- GROUP_NUMBER_DATE: int&lt;br/&gt;- GROUP_NUMBER_TIME: int&lt;br/&gt;- DELIMITER_ANALOG_INPUTS: String&lt;br/&gt;- TIME_FORMAT: String&lt;br/&gt;- parameterParser: ParameterParser&lt;br/&gt;- latitudeParser: LatitudeParser&lt;br/&gt;- GROUP_NUMBER_COURSE: int&lt;br/&gt;- matcher: Matcher&lt;br/&gt;- TIME_FORMATTER: DateTimeFormatter&lt;br/&gt;- GROUP_NUMBER_ANALOG_INPUTS: int&lt;br/&gt;- SUB_MESSAGE_PATTERN: Pattern&lt;br/&gt;- GROUP_NUMBER_INPUTS: int&lt;br/&gt;- DATE_FORMATTER: DateTimeFormatter&lt;br/&gt;- DELIMITER_PARAMETERS: String&lt;br/&gt;- GROUP_NUMBER_AMOUNT_OF_SATELLITES: int&lt;br/&gt;- GROUP_NUMBER_HDOP: int&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0 0 0 4px;line-height:1.6;&quot;&gt;+ parseTime(): LocalTime&lt;br/&gt;- parseComponent(int, Function&amp;lt;String, T&amp;gt;, T): T&lt;br/&gt;+ parseLatitude(): Latitude&lt;br/&gt;+ parseAmountOfSatellites(): Optional&amp;lt;Integer&amp;gt;&lt;br/&gt;+ parseParameters(): Optional&amp;lt;Set&amp;lt;Parameter&amp;gt;&amp;gt;&lt;br/&gt;- match(String): void&lt;br/&gt;+ parseAltitude(): Optional&amp;lt;Integer&amp;gt;&lt;br/&gt;+ parseSpeed(): Optional&amp;lt;Double&amp;gt;&lt;br/&gt;- parseComponent(int, Function&amp;lt;String, T&amp;gt;): Optional&amp;lt;T&amp;gt;&lt;br/&gt;+ parseDriverKeyCode(): Optional&amp;lt;String&amp;gt;&lt;br/&gt;+ parseDate(): LocalDate&lt;br/&gt;+ parseHdop(): Optional&amp;lt;Double&amp;gt;&lt;br/&gt;+ parseAnalogInputs(): Optional&amp;lt;double[]&amp;gt;&lt;br/&gt;+ parseLongitude(): Longitude&lt;br/&gt;+ parseOutputs(): Optional&amp;lt;Integer&amp;gt;&lt;br/&gt;- isDefinedComponentSource(String): boolean&lt;br/&gt;- parseAnalogInputs(String): double[]&lt;br/&gt;+ parseCourse(): Optional&amp;lt;Integer&amp;gt;&lt;br/&gt;+ parseInputs(): Optional&amp;lt;Integer&amp;gt;&lt;br/&gt;- parseParameters(String): Set&amp;lt;Parameter&amp;gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=14;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;" parent="1" vertex="1">
+          <mxGeometry x="3040" y="1600" width="380" height="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.500;exitY=1.000;exitDx=0;exitDy=0;entryX=0.500;entryY=1.000;entryDx=0;entryDy=0;" parent="1" source="node15" target="node18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2892" y="1461" />
+              <mxPoint x="1939" y="1461" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge3" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.500;exitY=0.000;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;" parent="1" source="node5" target="node7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5" y="1268" />
+              <mxPoint x="224" y="1268" />
+              <mxPoint x="224" y="1170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge5" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=1.000;exitY=0.500;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;" parent="1" source="node9" target="node7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="884" />
+              <mxPoint x="30" y="1011" />
+              <mxPoint x="160" y="1011" />
+              <mxPoint x="160" y="1170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge2" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.500;exitY=0.000;exitDx=0;exitDy=0;entryX=0.000;entryY=0.500;entryDx=0;entryDy=0;" parent="1" source="node4" target="node7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="886" y="1081" />
+              <mxPoint x="224" y="1081" />
+              <mxPoint x="224" y="1170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge4" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.931;exitY=0.000;exitDx=0;exitDy=0;entryX=0.500;entryY=1.001;entryDx=0;entryDy=0;" parent="1" source="node7" target="node1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge0" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=1.000;exitY=0.520;exitDx=0;exitDy=0;entryX=0.500;entryY=0.000;entryDx=0;entryDy=0;" parent="1" source="node1" target="node2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="987" />
+              <mxPoint x="1146" y="987" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge1" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.500;exitY=0.000;exitDx=0;exitDy=0;entryX=0.500;entryY=0.000;entryDx=0;entryDy=0;" parent="1" source="node0" target="node2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1533" y="987" />
+              <mxPoint x="1146" y="987" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge8" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.000;exitY=0.314;exitDx=0;exitDy=0;entryX=1.000;entryY=0.500;entryDx=0;entryDy=0;" parent="1" source="node18" target="node0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge10" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=1.000;exitY=0.500;exitDx=0;exitDy=0;" parent="1" source="node16" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2730" y="1556" />
+              <mxPoint x="2730" y="1543" />
+              <mxPoint x="3470" y="1543" />
+              <mxPoint x="3470" y="1300" />
+            </Array>
+            <mxPoint x="3570" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge9" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.131;exitY=1.000;exitDx=0;exitDy=0;entryX=0.500;entryY=1.000;entryDx=0;entryDy=0;" parent="1" source="node11" target="node18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1780" y="1461" />
+              <mxPoint x="1939" y="1461" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge11" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0.500;exitY=0.000;exitDx=0;exitDy=0;entryX=0.500;entryY=1.000;entryDx=0;entryDy=0;" parent="1" source="node13" target="node18" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1573" y="1461" />
+              <mxPoint x="1939" y="1461" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dKV7r5HMrl_4uU8PvtSz-2" value="" style="html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;dashed=0;startArrow=none;endArrow=block;endSize=12;strokeColor=#000082;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.406;entryY=-0.045;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="node12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3580" y="855" />
+              <mxPoint x="3530" y="855" />
+              <mxPoint x="3530" y="1076" />
+              <mxPoint x="3480" y="1076" />
+              <mxPoint x="3480" y="1150" />
+              <mxPoint x="3780" y="1150" />
+              <mxPoint x="3780" y="1221" />
+            </Array>
+            <mxPoint x="3590" y="855" as="sourcePoint" />
+            <mxPoint x="3781.12" y="1220.9" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
