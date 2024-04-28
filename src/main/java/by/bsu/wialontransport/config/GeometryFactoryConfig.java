@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GeometryFactoryConfig {
-    private static final int SRID = 4326;
+    static final int SRID = 4326;
 
     @Bean
     public GeometryFactory geometryFactory() {

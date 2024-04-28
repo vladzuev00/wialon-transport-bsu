@@ -6,8 +6,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static by.bsu.wialontransport.config.GeometryFactoryConfig.SRID;
+import static org.junit.Assert.*;
 
 public final class GeometryFactoryConfigTest extends AbstractSpringBootTest {
 
@@ -22,12 +22,10 @@ public final class GeometryFactoryConfigTest extends AbstractSpringBootTest {
         assertNotNull(geometryFactory);
 
         final PrecisionModel actualPrecisionModel = geometryFactory.getPrecisionModel();
-        final PrecisionModel expectedPrecisionModel = new PrecisionModel();
-        assertEquals(expectedPrecisionModel, actualPrecisionModel);
+        assertSame(precisionModel, actualPrecisionModel);
 
         final int actualSRID = geometryFactory.getSRID();
-        final int expectedSRID = 4326;
-        assertEquals(expectedSRID, actualSRID);
+        assertEquals(SRID, actualSRID);
     }
 
     @Test
