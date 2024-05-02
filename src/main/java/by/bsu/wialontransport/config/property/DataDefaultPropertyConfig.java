@@ -3,6 +3,7 @@ package by.bsu.wialontransport.config.property;
 import by.bsu.wialontransport.validation.annotation.Altitude;
 import by.bsu.wialontransport.validation.annotation.Course;
 import by.bsu.wialontransport.validation.annotation.Hdop;
+import by.bsu.wialontransport.validation.annotation.Speed;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
@@ -27,8 +28,7 @@ public final class DataDefaultPropertyConfig {
     @Altitude
     private final Integer altitude;
 
-    @NotNull
-    @PositiveOrZero
+    @Speed
     private final Double speed;
 
     @NotNull
