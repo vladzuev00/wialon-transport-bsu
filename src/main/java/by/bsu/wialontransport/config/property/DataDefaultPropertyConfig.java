@@ -6,8 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 
 @RequiredArgsConstructor
 @Getter
@@ -36,8 +34,7 @@ public final class DataDefaultPropertyConfig {
     @Inputs
     private final Integer inputs;
 
-    @NotNull
-    @PositiveOrZero
+    @Outputs
     private final Integer outputs;
 
     @NotBlank
