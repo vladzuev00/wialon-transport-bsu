@@ -5,8 +5,6 @@ import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
-import javax.validation.constraints.NotBlank;
-
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
@@ -37,6 +35,6 @@ public final class DataDefaultPropertyConfig {
     @Outputs
     private final Integer outputs;
 
-    @NotBlank
+    @DriverKeyCode
     private final String driverKeyCode;
 }
