@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.config.property;
 
+import by.bsu.wialontransport.validation.annotation.AmountOfSatellites;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,35 +20,35 @@ import java.time.LocalDateTime;
 @ConfigurationProperties("data.validation")
 public final class DataValidationConfig {
 
-    @Positive
-    private final Integer minValidAmountOfSatellites;
+    @AmountOfSatellites
+    private final Integer minAmountOfSatellites;
 
-    @Positive
-    private final Integer maxValidAmountOfSatellites;
+    @AmountOfSatellites
+    private final Integer maxAmountOfSatellites;
 
     @NotNull
     @Past
-    private final LocalDateTime minValidDateTime;
+    private final LocalDateTime minDateTime;
 
     @NotNull
     @Positive
-    private final Integer maxValidDateTimeDeltaSecondsFromNow;
+    private final Integer maxDateTimeDeltaSecondsFromNow;
 
     @Builder
     @ConstructorBinding
-    public DataValidationConfig(final Integer minValidAmountOfSatellites,
-                                final Integer maxValidAmountOfSatellites,
-                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minValidDateTime,
-                                final Integer maxValidDateTimeDeltaSecondsFromNow) {
-        checkAmountOfSatellitesValues(minValidAmountOfSatellites, maxValidAmountOfSatellites);
-        this.minValidAmountOfSatellites = minValidAmountOfSatellites;
-        this.maxValidAmountOfSatellites = maxValidAmountOfSatellites;
-        this.minValidDateTime = minValidDateTime;
-        this.maxValidDateTimeDeltaSecondsFromNow = maxValidDateTimeDeltaSecondsFromNow;
+    public DataValidationConfig(final Integer minAmountOfSatellites,
+                                final Integer maxAmountOfSatellites,
+                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minDateTime,
+                                final Integer maxDateTimeDeltaSecondsFromNow) {
+        validateAmountOfSatellitesRange(minAmountOfSatellites, maxAmountOfSatellites);
+        this.minAmountOfSatellites = minAmountOfSatellites;
+        this.maxAmountOfSatellites = maxAmountOfSatellites;
+        this.minDateTime = minDateTime;
+        this.maxDateTimeDeltaSecondsFromNow = maxDateTimeDeltaSecondsFromNow;
     }
 
-    private static void checkAmountOfSatellitesValues(final Integer minValue, final Integer maxValue) {
-        if (minValue == null || maxValue == null || minValue > maxValue) {
+    private static void validateAmountOfSatellitesRange(final Integer min, final Integer max) {
+        if (min == null || max == null || min > max) {
             throw new IllegalArgumentException("Amount of satellites values aren't valid");
         }
     }

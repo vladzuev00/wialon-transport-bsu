@@ -42,18 +42,18 @@ public final class ReceivedDataValidator {
 
     private boolean isValidAmountOfSatellites(final ReceivedData data) {
         final int research = data.getAmountOfSatellites();
-        return validationProperty.getMinValidAmountOfSatellites() <= research
-                && research <= validationProperty.getMaxValidAmountOfSatellites();
+        return validationProperty.getMinAmountOfSatellites() <= research
+                && research <= validationProperty.getMaxAmountOfSatellites();
     }
 
     private boolean isValidDateTime(final ReceivedData data) {
         final LocalDateTime research = data.getDateTime();
-        final LocalDateTime minAllowableDateTime = validationProperty.getMinValidDateTime();
+        final LocalDateTime minAllowableDateTime = validationProperty.getMinDateTime();
         final LocalDateTime maxAllowableDateTime = findMaxAllowableDateTime();
         return research.isAfter(minAllowableDateTime) && research.isBefore(maxAllowableDateTime);
     }
 
     private LocalDateTime findMaxAllowableDateTime() {
-        return now().plusSeconds(validationProperty.getMaxValidDateTimeDeltaSecondsFromNow());
+        return now().plusSeconds(validationProperty.getMaxDateTimeDeltaSecondsFromNow());
     }
 }

@@ -17,5 +17,7 @@
 TODO: WebSecurityConfig                                           WebSecurityConfigTest
 
 ----------config.property
+DataDefaultPropertyConfig                                         DataDefaultPropertyConfigTest
+DataValidationConfig                                              DataValidationConfigTest
 
 

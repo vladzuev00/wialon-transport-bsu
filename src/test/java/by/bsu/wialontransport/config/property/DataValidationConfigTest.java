@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessage;
+import static by.bsu.wialontransport.util.ConstraintViolationUtil.findMessages;
+import static java.time.LocalDateTime.now;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -24,39 +27,39 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
     @Test
     public void configShouldBeCreated() {
         final DataValidationConfig expected = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(999)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(3)
+                .maxAmountOfSatellites(999)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
         assertEquals(expected, config);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void configShouldNotBeCreatedBecauseOfMinValidAmountOfSatellitesIsNull() {
+    public void configShouldNotBeCreatedBecauseOfMinAmountOfSatellitesIsNull() {
         DataValidationConfig.builder()
-                .maxValidAmountOfSatellites(999)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .maxAmountOfSatellites(999)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void configShouldNotBeCreatedBecauseOfMaxValidAmountOfSatellitesIsNull() {
+    public void configShouldNotBeCreatedBecauseOfMaxAmountOfSatellitesIsNull() {
         DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(3)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void configShouldNotBeCreatedBecauseOfMinValidAmountOfSatellitesIsBiggerThanMax() {
+    public void configShouldNotBeCreatedBecauseOfMinAmountOfSatellitesIsBiggerThanMax() {
         DataValidationConfig.builder()
-                .minValidAmountOfSatellites(999)
-                .maxValidAmountOfSatellites(3)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(999)
+                .maxAmountOfSatellites(3)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
     }
 
@@ -67,81 +70,71 @@ public final class DataValidationConfigTest extends AbstractSpringBootTest {
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMinAndMaxValidAmountOfSatellitesAreNotPositive() {
+    public void configShouldNotBeValidBecauseOfMinAndMaxAmountOfSatellitesAreNotPositive() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(0)
-                .maxValidAmountOfSatellites(0)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(0)
+                .maxAmountOfSatellites(0)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        final List<String> actualViolationMessages = findMessages(violations);
-        final List<String> expectedViolationMessages = List.of("must be greater than 0", "must be greater than 0");
-        assertEquals(expectedViolationMessages, actualViolationMessages);
+        final List<String> actualMessages = findMessages(violations);
+        final List<String> expectedMessages = List.of("must be greater than 0", "must be greater than 0");
+        assertEquals(expectedMessages, actualMessages);
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMinValidDateTimeIsNull() {
+    public void configShouldNotBeValidBecauseOfMinDateTimeIsNull() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(999)
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(3)
+                .maxAmountOfSatellites(999)
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        final List<String> actualViolationMessages = findMessages(violations);
-        final List<String> expectedViolationMessages = List.of("must not be null");
-        assertEquals(expectedViolationMessages, actualViolationMessages);
+        assertEquals(1, violations.size());
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMinValidDateTimeIsNotPast() {
+    public void configShouldNotBeValidBecauseOfMinDateTimeIsNotPast() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(999)
-                .minValidDateTime(LocalDateTime.now().plusDays(1))
-                .maxValidDateTimeDeltaSecondsFromNow(15)
+                .minAmountOfSatellites(3)
+                .maxAmountOfSatellites(999)
+                .minDateTime(now().plusDays(1))
+                .maxDateTimeDeltaSecondsFromNow(15)
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        final List<String> actualViolationMessages = findMessages(violations);
-        final List<String> expectedViolationMessages = List.of("must be a past date");
-        assertEquals(expectedViolationMessages, actualViolationMessages);
+        assertEquals(1, violations.size());
+        assertEquals("must be a past date", findFirstMessage(violations));
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMaxValidDateTimeDeltaSecondsFromNowIsNull() {
+    public void configShouldNotBeValidBecauseOfMaxDateTimeDeltaSecondsFromNowIsNull() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(999)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .minAmountOfSatellites(3)
+                .maxAmountOfSatellites(999)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        final List<String> actualViolationMessages = findMessages(violations);
-        final List<String> expectedViolationMessages = List.of("must not be null");
-        assertEquals(expectedViolationMessages, actualViolationMessages);
+        assertEquals(1, violations.size());
+        assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
-    public void configShouldNotBeValidBecauseOfMaxValidDateTimeDeltaSecondsFromNowIsNotPositive() {
+    public void configShouldNotBeValidBecauseOfMaxDateTimeDeltaSecondsFromNowIsNotPositive() {
         final DataValidationConfig givenConfig = DataValidationConfig.builder()
-                .minValidAmountOfSatellites(3)
-                .maxValidAmountOfSatellites(999)
-                .minValidDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
-                .maxValidDateTimeDeltaSecondsFromNow(0)
+                .minAmountOfSatellites(3)
+                .maxAmountOfSatellites(999)
+                .minDateTime(LocalDateTime.of(2010, 1, 1, 0, 0, 0))
+                .maxDateTimeDeltaSecondsFromNow(0)
                 .build();
 
         final Set<ConstraintViolation<DataValidationConfig>> violations = validator.validate(givenConfig);
-        final List<String> actualViolationMessages = findMessages(violations);
-        final List<String> expectedViolationMessages = List.of("must be greater than 0");
-        assertEquals(expectedViolationMessages, actualViolationMessages);
-    }
-
-    private static List<String> findMessages(final Set<ConstraintViolation<DataValidationConfig>> violations) {
-        return violations.stream()
-                .map(ConstraintViolation::getMessage)
-                .toList();
+        assertEquals(1, violations.size());
+        assertEquals("must be greater than 0", findFirstMessage(violations));
     }
 }
