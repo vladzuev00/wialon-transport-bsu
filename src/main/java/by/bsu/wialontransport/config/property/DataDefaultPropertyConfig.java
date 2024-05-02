@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.config.property;
 
+import by.bsu.wialontransport.validation.annotation.Altitude;
+import by.bsu.wialontransport.validation.annotation.Course;
 import by.bsu.wialontransport.validation.annotation.Hdop;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,10 +21,10 @@ import javax.validation.constraints.PositiveOrZero;
 @ConfigurationProperties("tracker-server.data-default-property")
 public final class DataDefaultPropertyConfig {
 
-    @NotNull
+    @Course
     private final Integer course;
 
-    @NotNull
+    @Altitude
     private final Integer altitude;
 
     @NotNull
