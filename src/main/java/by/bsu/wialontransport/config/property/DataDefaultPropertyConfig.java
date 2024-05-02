@@ -33,8 +33,7 @@ public final class DataDefaultPropertyConfig {
     @Hdop
     private final Double hdop;
 
-    @NotNull
-    @PositiveOrZero
+    @Inputs
     private final Integer inputs;
 
     @NotNull

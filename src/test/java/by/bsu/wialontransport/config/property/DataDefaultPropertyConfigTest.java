@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Set;
 
+import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -311,9 +312,5 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be blank", findFirstMessage(violations));
-    }
-
-    private static String findFirstMessage(final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations) {
-        return violations.iterator().next().getMessage();
     }
 }
