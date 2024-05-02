@@ -1,18 +1,22 @@
 package by.bsu.wialontransport.config.property;
 
+import by.bsu.wialontransport.validation.annotation.Hdop;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
 @ToString
 @Builder
-@ConfigurationProperties("tracker-server.data-default-property")
 @ConstructorBinding
+@ConfigurationProperties("tracker-server.data-default-property")
 public final class DataDefaultPropertyConfig {
 
     @NotNull
@@ -29,9 +33,7 @@ public final class DataDefaultPropertyConfig {
     @Positive
     private final Integer amountOfSatellites;
 
-    @NotNull
-    @Min(1)
-    @Max(10)
+    @Hdop
     private final Double hdop;
 
     @NotNull
