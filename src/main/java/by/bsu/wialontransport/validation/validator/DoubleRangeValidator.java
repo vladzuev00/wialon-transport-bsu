@@ -13,7 +13,7 @@ public final class DoubleRangeValidator implements ConstraintValidator<DoubleRan
     @Override
     public boolean isValid(final Double value, final ConstraintValidatorContext context) {
         final DoubleRange range = getRange(context);
-        return isBelong(value, range);
+        return value != null && isBelong(value, range);
     }
 
     private DoubleRange getRange(final ConstraintValidatorContext context) {
@@ -22,7 +22,7 @@ public final class DoubleRangeValidator implements ConstraintValidator<DoubleRan
                 .getAnnotation();
     }
 
-    private boolean isBelong(final Double value, final DoubleRange range) {
+    private boolean isBelong(final double value, final DoubleRange range) {
         return compare(value, range.min()) >= 0 && compare(value, range.max()) <= 0;
     }
 }

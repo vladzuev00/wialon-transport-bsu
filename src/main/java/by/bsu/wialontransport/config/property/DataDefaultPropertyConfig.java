@@ -1,16 +1,12 @@
 package by.bsu.wialontransport.config.property;
 
-import by.bsu.wialontransport.validation.annotation.Altitude;
-import by.bsu.wialontransport.validation.annotation.Course;
-import by.bsu.wialontransport.validation.annotation.Hdop;
-import by.bsu.wialontransport.validation.annotation.Speed;
+import by.bsu.wialontransport.validation.annotation.*;
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @RequiredArgsConstructor
@@ -31,8 +27,7 @@ public final class DataDefaultPropertyConfig {
     @Speed
     private final Double speed;
 
-    @NotNull
-    @Positive
+    @AmountOfSatellites
     private final Integer amountOfSatellites;
 
     @Hdop

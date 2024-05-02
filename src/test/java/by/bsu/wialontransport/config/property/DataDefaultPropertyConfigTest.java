@@ -169,7 +169,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("must not be null", findFirstMessage(violations));
+        assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
@@ -179,7 +179,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .altitude(0)
                 .speed(0.)
                 .amountOfSatellites(3)
-                .hdop(0.9)
+                .hdop(0.99999999)
                 .inputs(0)
                 .outputs(0)
                 .driverKeyCode("not defined")
@@ -187,7 +187,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("must be greater than or equal to 1", findFirstMessage(violations));
+        assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
@@ -197,7 +197,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .altitude(0)
                 .speed(0.)
                 .amountOfSatellites(3)
-                .hdop(10.1)
+                .hdop(10.00000001)
                 .inputs(0)
                 .outputs(0)
                 .driverKeyCode("not defined")
@@ -205,7 +205,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
         final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
-        assertEquals("must be less than or equal to 10", findFirstMessage(violations));
+        assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
