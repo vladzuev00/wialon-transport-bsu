@@ -11,6 +11,7 @@ import javax.persistence.*;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
+//TODO: remove
 @javax.persistence.Entity
 @Table(name = "searching_cities_processes")
 @TypeDef(
