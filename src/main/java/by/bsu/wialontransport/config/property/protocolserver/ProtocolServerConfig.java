@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.config.property.protocolserver;
 
 import by.bsu.wialontransport.validation.annotation.Host;
+import by.bsu.wialontransport.validation.annotation.Port;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,7 @@ public abstract class ProtocolServerConfig {
     @Host
     private final String host;
 
-    @NotNull
-    @Min(1)
-    @Max(65535)
+    @Port
     private final Integer port;
 
     @NotNull

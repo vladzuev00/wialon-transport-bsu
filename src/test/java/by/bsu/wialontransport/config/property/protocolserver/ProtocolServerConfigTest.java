@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Set;
 
+import static by.bsu.wialontransport.util.ConstraintViolationUtil.findFirstMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -220,10 +221,6 @@ public final class ProtocolServerConfigTest extends AbstractSpringBootTest {
         final Set<ConstraintViolation<TestProtocolServerConfig>> constraints = validator.validate(givenConfig);
         assertEquals(1, constraints.size());
         assertEquals("must be less than or equal to 600", findFirstMessage(constraints));
-    }
-
-    private static String findFirstMessage(final Set<ConstraintViolation<TestProtocolServerConfig>> constraints) {
-        return constraints.iterator().next().getMessage();
     }
 
     private static final class TestProtocolServerConfig extends ProtocolServerConfig {
