@@ -22,13 +22,13 @@ public final class ProtocolDecoderTest {
     private static final Object GIVEN_SOURCE = new Object();
 
     @Mock
-    private PackageDecoder<Object, Object, Package> firstMockedPackageDecoder;
+    private PackageDecoder<Object, Object> firstMockedPackageDecoder;
 
     @Mock
-    private PackageDecoder<Object, Object, Package> secondMockedPackageDecoder;
+    private PackageDecoder<Object, Object> secondMockedPackageDecoder;
 
     @Mock
-    private PackageDecoder<Object, Object, Package> thirdMockedPackageDecoder;
+    private PackageDecoder<Object, Object> thirdMockedPackageDecoder;
 
     private ProtocolDecoder<Object, Object> protocolDecoder;
 
@@ -84,7 +84,7 @@ public final class ProtocolDecoderTest {
         private final Object source;
         private final Object prefix;
 
-        public TestProtocolDecoder(final List<PackageDecoder<Object, Object, ?>> packageDecoders,
+        public TestProtocolDecoder(final List<PackageDecoder<Object, Object>> packageDecoders,
                                    final Object prefix,
                                    final Object source) {
             super(packageDecoders);

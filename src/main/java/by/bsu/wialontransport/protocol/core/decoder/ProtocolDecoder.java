@@ -11,14 +11,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecoder {
-    private final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders;
+    private final List<? extends PackageDecoder<PREFIX, SOURCE>> packageDecoders;
 
     @Override
     protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
             final SOURCE source = createSource(buffer);
-            final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
+            final PackageDecoder<PREFIX, SOURCE> decoder = findPackageDecoder(source);
             final Package request = decoder.decode(source);
             out.add(request);
         } finally {
@@ -30,7 +30,7 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
 
     protected abstract PREFIX getPrefix(final SOURCE source);
 
-    private PackageDecoder<PREFIX, SOURCE, ?> findPackageDecoder(final SOURCE source) {
+    private PackageDecoder<PREFIX, SOURCE> findPackageDecoder(final SOURCE source) {
         final PREFIX prefix = getPrefix(source);
         return packageDecoders.stream()
                 .filter(decoder -> decoder.isAbleToDecode(prefix))
