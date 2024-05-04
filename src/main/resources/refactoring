@@ -32,9 +32,9 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       ContextAttributeManager                                     ContextAttributeManagerTest
 
 ----------protocol.core.decoder
-      ProtocolDecoder                                             ProtocolDecoderTest
-      ProtocolBufferDecoder                                       ProtocolBufferDecoderTest
-      ProtocolStringDecoder                                       ProtocolStringDecoderTest
+TODO: ProtocolDecoder                                             ProtocolDecoderTest
+TODO: ProtocolBufferDecoder                                       ProtocolBufferDecoderTest
+TODO: ProtocolStringDecoder                                       ProtocolStringDecoderTest
 
 ----------protocol.core.decoder.packages
 

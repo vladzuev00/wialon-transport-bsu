@@ -1,13 +1,10 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 
-public abstract class PackageBufferDecoder<PREFIX, PACKAGE extends Package>
-        extends PackageDecoder<PREFIX, ByteBuf, PACKAGE> {
+public abstract class PackageBufferDecoder<PREFIX> extends PackageDecoder<PREFIX, ByteBuf> {
 
-    public PackageBufferDecoder(final PREFIX packagePrefix) {
-        super(packagePrefix);
+    public PackageBufferDecoder(final PREFIX prefix) {
+        super(prefix);
     }
-
 }
