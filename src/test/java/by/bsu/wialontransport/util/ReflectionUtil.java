@@ -66,7 +66,7 @@ public final class ReflectionUtil {
         }
     }
 
-    public static <S, P> P findProperty(final S source, final String fieldName, final Class<P> propertyType) {
+    public static <S, P> P getProperty(final S source, final String fieldName, final Class<P> propertyType) {
         return findFieldValue(
                 name -> findField(source, fieldName),
                 fieldName,

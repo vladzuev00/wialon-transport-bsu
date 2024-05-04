@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.assertEquals;
 
 public final class AreaIteratorTest {
@@ -68,6 +68,6 @@ public final class AreaIteratorTest {
     }
 
     private static Coordinate findCurrentCoordinate(final AreaIterator iterator) {
-        return findProperty(iterator, FIELD_NAME_CURRENT_COORDINATE, Coordinate.class);
+        return getProperty(iterator, FIELD_NAME_CURRENT_COORDINATE, Coordinate.class);
     }
 }

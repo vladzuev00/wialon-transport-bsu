@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -98,24 +98,24 @@ public final class WialonProtocolServerTest extends AbstractSpringBootTest {
 
     @SuppressWarnings("unchecked")
     private static List<PackageDecoder<?, ?, ?>> findPackageDecoders(final ProtocolDecoder<?, ?> protocolDecoder) {
-        return findProperty(protocolDecoder, FIELD_NAME_PACKAGE_DECODERS, List.class);
+        return getProperty(protocolDecoder, FIELD_NAME_PACKAGE_DECODERS, List.class);
     }
 
     @SuppressWarnings("unchecked")
     private static List<PackageEncoder<?>> findPackageEncoders(final ProtocolEncoder protocolEncoder) {
-        return findProperty(protocolEncoder, FIELD_NAME_PACKAGE_ENCODERS, List.class);
+        return getProperty(protocolEncoder, FIELD_NAME_PACKAGE_ENCODERS, List.class);
     }
 
     @SuppressWarnings("unchecked")
     private static List<PackageHandler<?>> findPackageHandlers(final ProtocolHandler protocolHandler) {
-        return findProperty(protocolHandler, FIELD_NAME_PACKAGE_HANDLERS, List.class);
+        return getProperty(protocolHandler, FIELD_NAME_PACKAGE_HANDLERS, List.class);
     }
 
     private static ContextAttributeManager findContextAttributeManager(final ProtocolHandler protocolHandler) {
-        return findProperty(protocolHandler, FIELD_NAME_CONTEXT_ATTRIBUTE_MANAGER, ContextAttributeManager.class);
+        return getProperty(protocolHandler, FIELD_NAME_CONTEXT_ATTRIBUTE_MANAGER, ContextAttributeManager.class);
     }
 
     private static ConnectionManager findConnectionManager(final ProtocolHandler protocolHandler) {
-        return findProperty(protocolHandler, FIELD_NAME_CONNECTION_MANAGER, ConnectionManager.class);
+        return getProperty(protocolHandler, FIELD_NAME_CONNECTION_MANAGER, ConnectionManager.class);
     }
 }

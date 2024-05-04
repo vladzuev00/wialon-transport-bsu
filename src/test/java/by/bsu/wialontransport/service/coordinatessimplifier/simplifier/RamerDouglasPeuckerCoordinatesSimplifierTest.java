@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 
 import static by.bsu.wialontransport.util.CsvReadingTestUtil.readCoordinates;
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static java.io.File.separator;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.*;
@@ -155,6 +155,6 @@ public final class RamerDouglasPeuckerCoordinatesSimplifierTest extends Abstract
     }
 
     private static double findEpsilon(final RamerDouglasPeuckerCoordinatesSimplifier simplifier) {
-        return findProperty(simplifier, FIELD_NAME_EPSILON, Double.class);
+        return getProperty(simplifier, FIELD_NAME_EPSILON, Double.class);
     }
 }

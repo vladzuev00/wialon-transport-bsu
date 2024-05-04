@@ -16,7 +16,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.*;
 
 public final class AvroGenericRecordDeserializerTest {
@@ -66,7 +66,7 @@ public final class AvroGenericRecordDeserializerTest {
 
     @SuppressWarnings("unchecked")
     private static GenericDatumReader<GenericRecord> findDatumReader(final AvroGenericRecordDeserializer deserializer) {
-        return (GenericDatumReader<GenericRecord>) findProperty(deserializer, FIELD_NAME_DATUM_READER, DatumReader.class);
+        return (GenericDatumReader<GenericRecord>) getProperty(deserializer, FIELD_NAME_DATUM_READER, DatumReader.class);
     }
 
     @SuppressWarnings("SameParameterValue")

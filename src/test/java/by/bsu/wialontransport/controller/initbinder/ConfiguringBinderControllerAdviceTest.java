@@ -8,7 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +37,7 @@ public final class ConfiguringBinderControllerAdviceTest {
     }
 
     private static boolean isEmptyAsNull(final StringTrimmerEditor editor) {
-        return findProperty(editor, FIELD_NAME_EMPTY_AS_NULL, Boolean.class);
+        return getProperty(editor, FIELD_NAME_EMPTY_AS_NULL, Boolean.class);
     }
 
 }

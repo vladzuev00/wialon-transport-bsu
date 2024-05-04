@@ -19,14 +19,7 @@ public final class ConnectionManager {
     private final Map<Long, ChannelHandlerContext> contextsByTrackerIds = new ConcurrentHashMap<>();
 
     public void add(final ChannelHandlerContext context) {
-        contextsByTrackerIds.merge(
-                findTrackerId(context),
-                context,
-                (oldContext, newContext) -> {
-                    oldContext.close();
-                    return newContext;
-                }
-        );
+        contextsByTrackerIds.merge(getTrackerId(context), context, ConnectionManager::closeOldReturningNew);
     }
 
     public Optional<ChannelHandlerContext> find(final Long trackerId) {
@@ -37,10 +30,16 @@ public final class ConnectionManager {
         contextsByTrackerIds.remove(trackerId);
     }
 
-    private Long findTrackerId(final ChannelHandlerContext context) {
+    private Long getTrackerId(final ChannelHandlerContext context) {
         return contextAttributeManager.findTracker(context)
                 .map(Tracker::getId)
                 .orElseThrow(NoTrackerInContextException::new);
+    }
+
+    private static ChannelHandlerContext closeOldReturningNew(final ChannelHandlerContext old,
+                                                              final ChannelHandlerContext fresh) {
+        old.close();
+        return fresh;
     }
 
     static final class NoTrackerInContextException extends RuntimeException {

@@ -17,7 +17,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static by.bsu.wialontransport.kafka.property.KafkaProperty.SCHEMA;
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.*;
 
 public final class AvroGenericRecordSerializerTest extends AbstractSpringBootTest {
@@ -65,11 +65,11 @@ public final class AvroGenericRecordSerializerTest extends AbstractSpringBootTes
 
     @SuppressWarnings("unchecked")
     private static DatumWriter<GenericRecord> findDatumWriter(final AvroGenericRecordSerializer serializer) {
-        return (DatumWriter<GenericRecord>) findProperty(serializer, FIELD_NAME_DATUM_WRITER, DatumWriter.class);
+        return (DatumWriter<GenericRecord>) getProperty(serializer, FIELD_NAME_DATUM_WRITER, DatumWriter.class);
     }
 
     private static Schema findSchema(final DatumWriter<GenericRecord> datumWriter) {
-        return findProperty(datumWriter, FIELD_NAME_SCHEMA, Schema.class);
+        return getProperty(datumWriter, FIELD_NAME_SCHEMA, Schema.class);
     }
 
     private static Schema createTransportableSchema() {

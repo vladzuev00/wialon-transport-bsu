@@ -23,7 +23,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.*;
 
@@ -184,24 +184,24 @@ public final class ProtocolServerTest {
     }
 
     private static InetSocketAddress findInetSocketAddress(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_INET_SOCKET_ADDRESS, InetSocketAddress.class);
+        return getProperty(server, FIELD_NAME_INET_SOCKET_ADDRESS, InetSocketAddress.class);
     }
 
     private static EventLoopGroup findLoopGroupProcessingConnection(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_CONNECTION, EventLoopGroup.class);
+        return getProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_CONNECTION, EventLoopGroup.class);
     }
 
     private static EventLoopGroup findLoopGroupProcessingData(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_DATA, EventLoopGroup.class);
+        return getProperty(server, FIELD_NAME_LOOP_GROUP_PROCESSING_DATA, EventLoopGroup.class);
     }
 
     private static int findConnectionLifeTimeoutSeconds(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_CONNECTION_LIFE_TIMEOUT_SECONDS, Integer.class);
+        return getProperty(server, FIELD_NAME_CONNECTION_LIFE_TIMEOUT_SECONDS, Integer.class);
     }
 
 
     private static ServerRunningContext findRunningContext(final ProtocolServer<?, ?> server) {
-        return findProperty(server, FIELD_NAME_RUNNING_CONTEXT, ServerRunningContext.class);
+        return getProperty(server, FIELD_NAME_RUNNING_CONTEXT, ServerRunningContext.class);
     }
 
     private static int findExecutorCount(final EventLoopGroup eventLoopGroup) {

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static by.bsu.wialontransport.util.ReflectionUtil.findProperty;
+import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
@@ -40,7 +40,7 @@ public final class NewWingDataIteratorFactoryTest {
     }
 
     private static NewWingDataDecoder findDataDecoder(final NewWingDataIterator iterator) {
-        return findProperty(
+        return getProperty(
                 iterator,
                 FIELD_NAME_DATA_DECODER,
                 NewWingDataDecoder.class
@@ -48,7 +48,7 @@ public final class NewWingDataIteratorFactoryTest {
     }
 
     public static ByteBuf findBuffer(final NewWingDataIterator iterator) {
-        return findProperty(
+        return getProperty(
                 iterator,
                 FIELD_NAME_BUFFER,
                 ByteBuf.class

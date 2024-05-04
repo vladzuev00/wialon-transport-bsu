@@ -22,6 +22,9 @@ TODO: WebSecurityConfig                                           WebSecurityCon
 
 ----------config.property.protocolserver
       ProtocolServerConfig                                        ProtocolServerConfigTest
+      NewWingProtocolServerConfig                                 NewWingProtocolServerConfigTest
+      WialonProtocolServerConfig                                  WialonProtocolServerConfigTest
+
 
 
 
