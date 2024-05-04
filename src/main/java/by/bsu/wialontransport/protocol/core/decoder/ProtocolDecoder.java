@@ -14,15 +14,13 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
     private final List<? extends PackageDecoder<PREFIX, SOURCE, ?>> packageDecoders;
 
     @Override
-    protected final void decode(final ChannelHandlerContext context,
-                                final ByteBuf buffer,
-                                final List<Object> outObjects) {
+    protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
             final SOURCE source = createSource(buffer);
             final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
             final Package requestPackage = decoder.decode(source);
-            outObjects.add(requestPackage);
+            out.add(requestPackage);
         } finally {
             buffer.release();
         }

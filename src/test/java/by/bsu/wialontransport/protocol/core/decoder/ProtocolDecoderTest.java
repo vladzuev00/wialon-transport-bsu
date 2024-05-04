@@ -50,7 +50,7 @@ public final class ProtocolDecoderTest {
     public void bufferShouldBeDecoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final List<Object> givenOutObjects = mock(List.class);
+        final List<Object> givenOut = mock(List.class);
 
         when(firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(true);
@@ -58,11 +58,11 @@ public final class ProtocolDecoderTest {
         final Package givenPackage = mock(Package.class);
         when(secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
 
-        protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
+        protocolDecoder.decode(givenContext, givenBuffer, givenOut);
 
         verifyNoInteractions(thirdMockedPackageDecoder);
         verify(givenBuffer, times(1)).retain();
-        verify(givenOutObjects, times(1)).add(same(givenPackage));
+        verify(givenOut, times(1)).add(same(givenPackage));
         verify(givenBuffer, times(1)).release();
     }
 
@@ -71,13 +71,13 @@ public final class ProtocolDecoderTest {
     public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final List<Object> givenOutObjects = mock(List.class);
+        final List<Object> givenOut = mock(List.class);
 
         when(firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(thirdMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
 
-        protocolDecoder.decode(givenContext, givenBuffer, givenOutObjects);
+        protocolDecoder.decode(givenContext, givenBuffer, givenOut);
     }
 
     private static final class TestProtocolDecoder extends ProtocolDecoder<Object, Object> {
