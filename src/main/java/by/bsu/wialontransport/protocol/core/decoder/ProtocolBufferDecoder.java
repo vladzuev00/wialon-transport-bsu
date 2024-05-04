@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class ProtocolBufferDecoder<PREFIX> extends ProtocolDecoder<PREFIX, ByteBuf> {
 
-    public ProtocolBufferDecoder(final List<? extends PackageBufferDecoder<PREFIX, ?>> packageDecoders) {
+    public ProtocolBufferDecoder(final List<? extends PackageBufferDecoder<PREFIX>> packageDecoders) {
         super(packageDecoders);
     }
 

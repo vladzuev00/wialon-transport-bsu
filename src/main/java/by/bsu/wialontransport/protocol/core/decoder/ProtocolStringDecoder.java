@@ -16,7 +16,7 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
 
     private final Pattern prefixPattern;
 
-    public ProtocolStringDecoder(final List<? extends PackageStringDecoder<?>> packageDecoders, final String prefixRegex) {
+    public ProtocolStringDecoder(final List<? extends PackageStringDecoder> packageDecoders, final String prefixRegex) {
         super(packageDecoders);
         prefixPattern = compile(prefixRegex);
     }
