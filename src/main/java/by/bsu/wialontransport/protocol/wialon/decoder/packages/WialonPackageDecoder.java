@@ -5,21 +5,21 @@ import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage.POSTFIX;
 
-public abstract class WialonPackageDecoder<PACKAGE extends WialonPackage> extends PackageStringDecoder<PACKAGE> {
+public abstract class WialonPackageDecoder extends PackageStringDecoder {
 
-    public WialonPackageDecoder(final String packagePrefix) {
-        super(packagePrefix);
+    public WialonPackageDecoder(final String prefix) {
+        super(prefix);
     }
 
     @Override
-    public final PACKAGE decode(final String source) {
-        final String message = extractMessage(source);
+    public final WialonPackage decode(final String source) {
+        final String message = getMessage(source);
         return decodeMessage(message);
     }
 
-    protected abstract PACKAGE decodeMessage(final String message);
+    protected abstract WialonPackage decodeMessage(final String message);
 
-    private String extractMessage(final String source) {
+    private String getMessage(final String source) {
         final int startIndex = getPrefix().length();
         final int nextEndIndex = source.length() - POSTFIX.length();
         return source.substring(startIndex, nextEndIndex);
