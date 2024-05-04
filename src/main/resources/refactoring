@@ -17,9 +17,11 @@
 TODO: WebSecurityConfig                                           WebSecurityConfigTest
 
 ----------config.property
-DataDefaultPropertyConfig                                         DataDefaultPropertyConfigTest
-DataValidationConfig                                              DataValidationConfigTest
+      DataDefaultPropertyConfig                                   DataDefaultPropertyConfigTest
+      DataValidationConfig                                        DataValidationConfigTest
 
 ----------config.property.protocolserver
+      ProtocolServerConfig                                        ProtocolServerConfigTest
+
 
 

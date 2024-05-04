@@ -16,5 +16,4 @@ public final class NewWingProtocolServerConfig extends ProtocolServerConfig {
                                        final Integer connectionLifeTimeoutSeconds) {
         super(host, port, threadCountProcessingConnection, threadCountProcessingData, connectionLifeTimeoutSeconds);
     }
-
 }
