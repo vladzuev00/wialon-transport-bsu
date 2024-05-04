@@ -13,10 +13,7 @@ import static by.bsu.wialontransport.protocol.wialon.model.packages.data.request
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.ERROR_PACKAGE_STRUCTURE;
 
 @Component
-public final class WialonRequestDataPackageDecoder extends AbstractWialonRequestDataPackageDecoder<
-        WialonRequestDataPackage,
-        WialonResponseDataPackage
-        > {
+public final class WialonRequestDataPackageDecoder extends AbstractWialonRequestDataPackageDecoder {
 
     public WialonRequestDataPackageDecoder(final WialonMessageParser messageParser) {
         super(PREFIX, messageParser);
