@@ -25,6 +25,11 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       NewWingProtocolServerConfig                                 NewWingProtocolServerConfigTest
       WialonProtocolServerConfig                                  WialonProtocolServerConfigTest
 
+----------protocol.core.connectionmanager
+      ConnectionManager                                           ConnectionManagerTest
+
+----------protocol.core.contextattributemanager
+
 
 
 

@@ -47,7 +47,7 @@ public final class DataValidationConfig {
         this.maxDateTimeDeltaSecondsFromNow = maxDateTimeDeltaSecondsFromNow;
     }
 
-    private static void validateAmountOfSatellitesRange(final Integer min, final Integer max) {
+    private void validateAmountOfSatellitesRange(final Integer min, final Integer max) {
         if (min == null || max == null || min > max) {
             throw new IllegalArgumentException("Amount of satellites values aren't valid");
         }

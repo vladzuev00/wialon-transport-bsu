@@ -240,14 +240,14 @@ public final class ContextAttributeManagerTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Tracker createTracker(final Long id) {
+    private Tracker createTracker(final Long id) {
         return Tracker.builder()
                 .id(id)
                 .build();
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Data createData(final Long id) {
+    private Data createData(final Long id) {
         return Data.builder()
                 .id(id)
                 .build();

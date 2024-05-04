@@ -60,7 +60,7 @@ public final class KafkaSavedDataAccumulatingPayloadConsumer {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Phaser createNotTerminatedPhaser(final int parties) {
+    private Phaser createNotTerminatedPhaser(final int parties) {
         return new Phaser(parties) {
             @Override
             protected boolean onAdvance(final int phase, final int registeredParties) {
