@@ -9,10 +9,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Getter
 public abstract class PackageDecoder<PREFIX, SOURCE, PACKAGE extends Package> {
-    private final PREFIX packagePrefix;
+    private final PREFIX prefix;
 
-    public final boolean isAbleToDecode(final PREFIX packagePrefix) {
-        return Objects.equals(packagePrefix, this.packagePrefix);
+    public final boolean isAbleToDecode(final PREFIX prefix) {
+        return Objects.equals(prefix, this.prefix);
     }
 
     public abstract PACKAGE decode(final SOURCE source);

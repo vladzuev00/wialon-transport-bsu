@@ -20,7 +20,7 @@ public abstract class WialonPackageDecoder<PACKAGE extends WialonPackage> extend
     protected abstract PACKAGE decodeMessage(final String message);
 
     private String extractMessage(final String source) {
-        final int startIndex = getPackagePrefix().length();
+        final int startIndex = getPrefix().length();
         final int nextEndIndex = source.length() - POSTFIX.length();
         return source.substring(startIndex, nextEndIndex);
     }

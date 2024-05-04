@@ -34,6 +34,10 @@ TODO: WebSecurityConfig                                           WebSecurityCon
 ----------protocol.core.decoder
       ProtocolDecoder                                             ProtocolDecoderTest
       ProtocolBufferDecoder                                       ProtocolBufferDecoderTest
+      ProtocolStringDecoder                                       ProtocolStringDecoderTest
+
+----------protocol.core.decoder.packages
+
 
 
 
