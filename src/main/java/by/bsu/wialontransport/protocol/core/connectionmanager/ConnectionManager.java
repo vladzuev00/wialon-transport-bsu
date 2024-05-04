@@ -19,7 +19,7 @@ public final class ConnectionManager {
     private final Map<Long, ChannelHandlerContext> contextsByTrackerIds = new ConcurrentHashMap<>();
 
     public void add(final ChannelHandlerContext context) {
-        contextsByTrackerIds.merge(getTrackerId(context), context, ConnectionManager::closeOldReturningNew);
+        contextsByTrackerIds.merge(getTrackerId(context), context, this::closeOldReturningNew);
     }
 
     public Optional<ChannelHandlerContext> find(final Long trackerId) {
@@ -36,8 +36,8 @@ public final class ConnectionManager {
                 .orElseThrow(NoTrackerInContextException::new);
     }
 
-    private static ChannelHandlerContext closeOldReturningNew(final ChannelHandlerContext old,
-                                                              final ChannelHandlerContext fresh) {
+    private ChannelHandlerContext closeOldReturningNew(final ChannelHandlerContext old,
+                                                       final ChannelHandlerContext fresh) {
         old.close();
         return fresh;
     }

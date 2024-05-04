@@ -181,7 +181,7 @@ public final class ConnectionManagerTest {
         verifyNoInteractions(givenContext);
     }
 
-    private static Tracker createTracker(final Long id) {
+    private Tracker createTracker(final Long id) {
         return Tracker.builder()
                 .id(id)
                 .build();
@@ -204,29 +204,29 @@ public final class ConnectionManagerTest {
         return context;
     }
 
-    private static Thread addContextsAsync(final ConnectionManager manager, final ChannelHandlerContext... contexts) {
+    private Thread addContextsAsync(final ConnectionManager manager, final ChannelHandlerContext... contexts) {
         return executeAsync(() -> stream(contexts).forEach(manager::add));
     }
 
-    private static Thread removeContextAsync(final ConnectionManager manager, final Long trackerId) {
+    private Thread removeContextAsync(final ConnectionManager manager, final Long trackerId) {
         return executeAsync(() -> manager.remove(trackerId));
     }
 
-    private static Thread executeAsync(final Runnable task) {
+    private Thread executeAsync(final Runnable task) {
         final Thread thread = new Thread(task);
         thread.start();
         return thread;
     }
 
-    private static void waitUntilFinish(final Thread... threads)
+    private void waitUntilFinish(final Thread... threads)
             throws InterruptedException {
         for (final Thread thread : threads) {
             thread.join();
         }
     }
 
-    private static ChannelHandlerContext verifyOneClosedReturningNotClosed(final ChannelHandlerContext first,
-                                                                           final ChannelHandlerContext second) {
+    private ChannelHandlerContext verifyOneClosedReturningNotClosed(final ChannelHandlerContext first,
+                                                                    final ChannelHandlerContext second) {
         try {
             verify(first, times(1)).close();
             verify(second, times(0)).close();
@@ -239,7 +239,7 @@ public final class ConnectionManagerTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<Long, ChannelHandlerContext> getContextsByTrackerIds(final ConnectionManager manager) {
+    private Map<Long, ChannelHandlerContext> getContextsByTrackerIds(final ConnectionManager manager) {
         return getProperty(manager, FIELD_NAME_CONTEXTS_BY_TRACKER_IDS, Map.class);
     }
 }
