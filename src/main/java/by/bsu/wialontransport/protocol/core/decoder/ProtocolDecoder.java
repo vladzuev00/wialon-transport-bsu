@@ -19,8 +19,8 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
         try {
             final SOURCE source = createSource(buffer);
             final PackageDecoder<PREFIX, SOURCE, ?> decoder = findPackageDecoder(source);
-            final Package requestPackage = decoder.decode(source);
-            out.add(requestPackage);
+            final Package request = decoder.decode(source);
+            out.add(request);
         } finally {
             buffer.release();
         }
@@ -28,38 +28,38 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
 
     protected abstract SOURCE createSource(final ByteBuf buffer);
 
-    protected abstract PREFIX extractPackagePrefix(final SOURCE source);
+    protected abstract PREFIX getPrefix(final SOURCE source);
 
     private PackageDecoder<PREFIX, SOURCE, ?> findPackageDecoder(final SOURCE source) {
-        final PREFIX packagePrefix = extractPackagePrefix(source);
+        final PREFIX prefix = getPrefix(source);
         return packageDecoders.stream()
-                .filter(packageDecoder -> packageDecoder.isAbleToDecode(packagePrefix))
+                .filter(decoder -> decoder.isAbleToDecode(prefix))
                 .findFirst()
-                .orElseThrow(
-                        () -> new NoSuitablePackageDecoderException(
-                                "No package decoder for source: %s".formatted(source)
-                        )
-                );
+                .orElseThrow(() -> createNoPackageDecoderException(source));
     }
 
-    static final class NoSuitablePackageDecoderException extends RuntimeException {
+    private NoPackageDecoderException createNoPackageDecoderException(final SOURCE source) {
+        return new NoPackageDecoderException("No package decoder for source: %s".formatted(source));
+    }
+
+    static final class NoPackageDecoderException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public NoSuitablePackageDecoderException() {
+        public NoPackageDecoderException() {
 
         }
 
-        public NoSuitablePackageDecoderException(final String description) {
+        public NoPackageDecoderException(final String description) {
             super(description);
         }
 
         @SuppressWarnings("unused")
-        public NoSuitablePackageDecoderException(final Exception cause) {
+        public NoPackageDecoderException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public NoSuitablePackageDecoderException(final String description, final Exception cause) {
+        public NoPackageDecoderException(final String description, final Exception cause) {
             super(description, cause);
         }
     }

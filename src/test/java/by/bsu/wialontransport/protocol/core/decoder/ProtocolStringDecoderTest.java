@@ -40,7 +40,7 @@ public final class ProtocolStringDecoderTest {
     public void packagePrefixShouldBeExtracted() {
         final String givenSource = "#L#11112222333344445555;111";
 
-        final String actual = decoder.extractPackagePrefix(givenSource);
+        final String actual = decoder.getPrefix(givenSource);
         final String expected = "#L#";
         assertEquals(expected, actual);
     }
@@ -49,6 +49,6 @@ public final class ProtocolStringDecoderTest {
     public void packagePrefixShouldNotBeExtracted() {
         final String givenSource = "#L11112222333344445555;111";
 
-        decoder.extractPackagePrefix(givenSource);
+        decoder.getPrefix(givenSource);
     }
 }

@@ -28,7 +28,7 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
     }
 
     @Override
-    protected final String extractPackagePrefix(final String source) {
+    protected final String getPrefix(final String source) {
         return packagePrefixPattern.matcher(source)
                 .results()
                 .map(MatchResult::group)

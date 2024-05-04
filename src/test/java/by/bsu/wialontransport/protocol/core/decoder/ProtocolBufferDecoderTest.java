@@ -10,7 +10,7 @@ public final class ProtocolBufferDecoderTest {
     private final ProtocolBufferDecoder<?> decoder = new ProtocolBufferDecoder<>(null) {
 
         @Override
-        protected Object extractPackagePrefix(final ByteBuf buffer) {
+        protected Object getPrefix(final ByteBuf buffer) {
             throw new UnsupportedOperationException();
         }
 

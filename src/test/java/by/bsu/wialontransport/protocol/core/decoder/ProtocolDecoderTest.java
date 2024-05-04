@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder.NoSuitablePackageDecoderException;
+import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder.NoPackageDecoderException;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
@@ -55,19 +55,19 @@ public final class ProtocolDecoderTest {
         when(firstMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(GIVEN_PREFIX))).thenReturn(true);
 
-        final Package givenPackage = mock(Package.class);
-        when(secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenPackage);
+        final Package givenRequest = mock(Package.class);
+        when(secondMockedPackageDecoder.decode(same(GIVEN_SOURCE))).thenReturn(givenRequest);
 
         protocolDecoder.decode(givenContext, givenBuffer, givenOut);
 
         verifyNoInteractions(thirdMockedPackageDecoder);
         verify(givenBuffer, times(1)).retain();
-        verify(givenOut, times(1)).add(same(givenPackage));
+        verify(givenOut, times(1)).add(same(givenRequest));
         verify(givenBuffer, times(1)).release();
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NoSuitablePackageDecoderException.class)
+    @Test(expected = NoPackageDecoderException.class)
     public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
@@ -98,7 +98,7 @@ public final class ProtocolDecoderTest {
         }
 
         @Override
-        protected Object extractPackagePrefix(final Object source) {
+        protected Object getPrefix(final Object source) {
             return prefix;
         }
     }
