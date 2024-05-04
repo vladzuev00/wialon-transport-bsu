@@ -12,14 +12,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.regex.Pattern.compile;
 
 public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, String> {
-    private static final Charset SOURCE_CHARSET = UTF_8;
+    static final Charset SOURCE_CHARSET = UTF_8;
 
-    private final Pattern packagePrefixPattern;
+    private final Pattern prefixPattern;
 
-    public ProtocolStringDecoder(final List<? extends PackageStringDecoder<?>> packageDecoders,
-                                 final String packagePrefixRegex) {
+    public ProtocolStringDecoder(final List<? extends PackageStringDecoder<?>> packageDecoders, final String prefixRegex) {
         super(packageDecoders);
-        packagePrefixPattern = compile(packagePrefixRegex);
+        prefixPattern = compile(prefixRegex);
     }
 
     @Override
@@ -29,35 +28,35 @@ public abstract class ProtocolStringDecoder extends ProtocolDecoder<String, Stri
 
     @Override
     protected final String getPrefix(final String source) {
-        return packagePrefixPattern.matcher(source)
+        return prefixPattern.matcher(source)
                 .results()
                 .map(MatchResult::group)
                 .findFirst()
-                .orElseThrow(
-                        () -> new PackagePrefixExtractingException(
-                                "Impossible to extract package's prefix from '%s'".formatted(source)
-                        )
-                );
+                .orElseThrow(() -> createPrefixExtractingException(source));
     }
 
-    static final class PackagePrefixExtractingException extends RuntimeException {
+    private PrefixExtractingException createPrefixExtractingException(final String source) {
+        return new PrefixExtractingException("Impossible to extract prefix from '%s'".formatted(source));
+    }
+
+    static final class PrefixExtractingException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public PackagePrefixExtractingException() {
+        public PrefixExtractingException() {
 
         }
 
-        public PackagePrefixExtractingException(final String description) {
+        public PrefixExtractingException(final String description) {
             super(description);
         }
 
         @SuppressWarnings("unused")
-        public PackagePrefixExtractingException(final Exception cause) {
+        public PrefixExtractingException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public PackagePrefixExtractingException(final String description, final Exception cause) {
+        public PrefixExtractingException(final String description, final Exception cause) {
             super(description, cause);
         }
     }
