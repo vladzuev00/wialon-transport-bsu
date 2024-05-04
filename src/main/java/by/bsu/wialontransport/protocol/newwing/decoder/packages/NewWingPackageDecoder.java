@@ -2,33 +2,25 @@ package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageBufferDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.builder.NewWingRequestPackageBuilder;
 import io.netty.buffer.ByteBuf;
 
-public abstract class NewWingPackageDecoder<
-        PACKAGE extends NewWingRequestPackage,
-        BUILDER extends NewWingRequestPackageBuilder<PACKAGE>
-        >
-        extends PackageBufferDecoder<String, PACKAGE> {
+public abstract class NewWingPackageDecoder extends PackageBufferDecoder<String> {
 
-    public NewWingPackageDecoder(final String packagePrefix) {
-        super(packagePrefix);
+    public NewWingPackageDecoder(final String prefix) {
+        super(prefix);
     }
 
     @Override
-    public final PACKAGE decode(final ByteBuf buffer) {
-        final BUILDER packageBuilder = createPackageBuilder();
-        decodeUntilChecksum(buffer, packageBuilder);
-        decodeChecksum(buffer, packageBuilder);
-        return packageBuilder.build();
+    public final NewWingRequestPackage decode(final ByteBuf buffer) {
+        final RequestFactory factory = decodeUntilChecksum(buffer);
+        final int checksum = buffer.readIntLE();
+        return factory.create(checksum);
     }
 
-    protected abstract BUILDER createPackageBuilder();
+    protected abstract RequestFactory decodeUntilChecksum(final ByteBuf buffer);
 
-    protected abstract void decodeUntilChecksum(final ByteBuf buffer, final BUILDER packageBuilder);
-
-    private void decodeChecksum(final ByteBuf buffer, final BUILDER packageBuilder) {
-        final int checksum = buffer.readIntLE();
-        packageBuilder.setChecksum(checksum);
+    @FunctionalInterface
+    protected interface RequestFactory {
+        NewWingRequestPackage create(final int checksum);
     }
 }
