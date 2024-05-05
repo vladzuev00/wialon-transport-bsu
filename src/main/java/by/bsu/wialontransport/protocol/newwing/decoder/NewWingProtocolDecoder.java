@@ -10,8 +10,8 @@ import java.util.List;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> {
-    private static final int PACKAGE_PREFIX_LENGTH = 6;
-    private static final Charset PACKAGE_PREFIX_CHARSET = UTF_8;
+    static final int PREFIX_LENGTH = 6;
+    static final Charset PREFIX_CHARSET = UTF_8;
 
     public NewWingProtocolDecoder(final List<NewWingPackageDecoder> packageDecoders) {
         super(packageDecoders);
@@ -19,6 +19,6 @@ public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> 
 
     @Override
     protected String getPrefix(final ByteBuf buffer) {
-        return buffer.readCharSequence(PACKAGE_PREFIX_LENGTH, PACKAGE_PREFIX_CHARSET).toString();
+        return buffer.readCharSequence(PREFIX_LENGTH, PREFIX_CHARSET).toString();
     }
 }

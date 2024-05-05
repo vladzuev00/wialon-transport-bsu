@@ -37,6 +37,11 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       ProtocolStringDecoder                                       ProtocolStringDecoderTest
 
 ----------protocol.core.decoder.packages
+      PackageDecoder                                              PackageDecoderTest
+      PackageBufferDecoder
+      PackageStringDecoder
+
+----------protocol.newwing.decoder
 
 
 

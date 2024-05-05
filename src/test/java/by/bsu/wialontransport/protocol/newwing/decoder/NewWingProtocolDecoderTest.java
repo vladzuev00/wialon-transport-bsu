@@ -3,9 +3,8 @@ package by.bsu.wialontransport.protocol.newwing.decoder;
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 
-import java.nio.charset.Charset;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static by.bsu.wialontransport.protocol.newwing.decoder.NewWingProtocolDecoder.PREFIX_CHARSET;
+import static by.bsu.wialontransport.protocol.newwing.decoder.NewWingProtocolDecoder.PREFIX_LENGTH;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
@@ -14,20 +13,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public final class NewWingProtocolDecoderTest {
-    private static final int EXPECTED_PACKAGE_PREFIX_LENGTH = 6;
-    private static final Charset EXPECTED_PACKAGE_PREFIX_CHARSET = UTF_8;
-
     private final NewWingProtocolDecoder decoder = new NewWingProtocolDecoder(emptyList());
 
     @Test
-    public void packagePrefixShouldBeExtracted() {
+    public void packagePrefixShouldBeGot() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final String givenPackagePrefix = "TEST";
-        when(givenBuffer.readCharSequence(eq(EXPECTED_PACKAGE_PREFIX_LENGTH), same(EXPECTED_PACKAGE_PREFIX_CHARSET)))
-                .thenReturn(givenPackagePrefix);
+        final String givenPrefix = "TEST";
+        when(givenBuffer.readCharSequence(eq(PREFIX_LENGTH), same(PREFIX_CHARSET))).thenReturn(givenPrefix);
 
         final String actual = decoder.getPrefix(givenBuffer);
-        assertSame(givenPackagePrefix, actual);
+        assertSame(givenPrefix, actual);
     }
 }
