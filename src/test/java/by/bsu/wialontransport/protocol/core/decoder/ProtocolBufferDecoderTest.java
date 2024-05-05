@@ -13,7 +13,6 @@ public final class ProtocolBufferDecoderTest {
         protected Object getPrefix(final ByteBuf buffer) {
             throw new UnsupportedOperationException();
         }
-
     };
 
     @Test

@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public final class WialonProtocolServer extends ProtocolServer<WialonPackageDecoder<?>, WialonPackageEncoder<?>> {
+public final class WialonProtocolServer extends ProtocolServer<WialonPackageDecoder, WialonPackageEncoder<?>> {
 
     public WialonProtocolServer(final WialonProtocolServerConfig configuration,
                                 final ContextAttributeManager contextAttributeManager,
                                 final ConnectionManager connectionManager,
-                                final List<WialonPackageDecoder<?>> packageDecoders,
+                                final List<WialonPackageDecoder> packageDecoders,
                                 final List<WialonPackageEncoder<?>> packageEncoders,
                                 final WialonRequestLoginPackageHandler loginPackageHandler,
                                 final WialonRequestPingPackageHandler pingPackageHandler,

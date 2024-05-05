@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDecoder<?, ?>, NewWingPackageEncoder<?>> {
+public final class NewWingProtocolServer extends ProtocolServer<NewWingPackageDecoder, NewWingPackageEncoder<?>> {
 
     public NewWingProtocolServer(final NewWingProtocolServerConfig configuration,
                                  final ContextAttributeManager contextAttributeManager,
                                  final ConnectionManager connectionManager,
-                                 final List<NewWingPackageDecoder<?, ?>> packageDecoders,
+                                 final List<NewWingPackageDecoder> packageDecoders,
                                  final List<NewWingPackageEncoder<?>> packageEncoders,
                                  final NewWingLoginPackageHandler loginPackageHandler,
                                  final NewWingEventCountPackageHandler eventCountPackageHandler,

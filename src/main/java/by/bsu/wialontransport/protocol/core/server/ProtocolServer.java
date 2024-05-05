@@ -26,7 +26,7 @@ import java.util.List;
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?, ?>, PACKAGE_ENCODER extends PackageEncoder<?>> {
+public abstract class ProtocolServer<PACKAGE_DECODER extends PackageDecoder<?, ?>, PACKAGE_ENCODER extends PackageEncoder<?>> {
     private final InetSocketAddress inetSocketAddress;
     private final EventLoopGroup loopGroupProcessingConnection;
     private final EventLoopGroup loopGroupProcessingData;

@@ -13,7 +13,7 @@ public final class NewWingProtocolDecoder extends ProtocolBufferDecoder<String> 
     private static final int PACKAGE_PREFIX_LENGTH = 6;
     private static final Charset PACKAGE_PREFIX_CHARSET = UTF_8;
 
-    public NewWingProtocolDecoder(final List<NewWingPackageDecoder<?, ?>> packageDecoders) {
+    public NewWingProtocolDecoder(final List<NewWingPackageDecoder> packageDecoders) {
         super(packageDecoders);
     }
 
