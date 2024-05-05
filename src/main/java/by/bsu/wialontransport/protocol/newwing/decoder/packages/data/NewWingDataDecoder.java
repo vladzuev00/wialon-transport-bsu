@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public final class NewWingDataDecoder {
 
-    //44
     public NewWingData decodeNext(final ByteBuf buffer) {
         final NewWingDataBuilder builder = NewWingData.builder();
         decodeHour(buffer, builder);
@@ -39,99 +38,99 @@ public final class NewWingDataDecoder {
     }
 
     private static void decodeHour(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::hour);
+        decodeByteValue(buffer, builder::hour);
     }
 
     private static void decodeMinute(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::minute);
+        decodeByteValue(buffer, builder::minute);
     }
 
     private static void decodeSecond(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::second);
+        decodeByteValue(buffer, builder::second);
     }
 
     private static void decodeLatitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::latitudeIntegerPart);
+        decodeShortValue(buffer, builder::latitudeIntegerPart);
     }
 
     private static void decodeLatitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::latitudeFractionalPart);
+        decodeShortValue(buffer, builder::latitudeFractionalPart);
     }
 
     private static void decodeLongitudeIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::longitudeIntegerPart);
+        decodeShortValue(buffer, builder::longitudeIntegerPart);
     }
 
     private static void decodeLongitudeFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::longitudeFractionalPart);
+        decodeShortValue(buffer, builder::longitudeFractionalPart);
     }
 
     private static void decodeHdopIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::hdopIntegerPart);
+        decodeByteValue(buffer, builder::hdopIntegerPart);
     }
 
     private static void decodeHdopFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::hdopFractionalPart);
+        decodeByteValue(buffer, builder::hdopFractionalPart);
     }
 
     private static void decodeCourse(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::course);
+        decodeShortValue(buffer, builder::course);
     }
 
     private static void decodeSpeedIntegerPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::speedIntegerPart);
+        decodeShortValue(buffer, builder::speedIntegerPart);
     }
 
     private static void decodeSpeedFractionalPart(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::speedFractionalPart);
+        decodeByteValue(buffer, builder::speedFractionalPart);
     }
 
     private static void decodeDay(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::day);
+        decodeByteValue(buffer, builder::day);
     }
 
     private static void decodeMonth(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::month);
+        decodeByteValue(buffer, builder::month);
     }
 
     private static void decodeYear(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::year);
+        decodeByteValue(buffer, builder::year);
     }
 
     private static void decodeFirstAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::firstAnalogInputLevel);
+        decodeShortValue(buffer, builder::firstAnalogInputLevel);
     }
 
     private static void decodeSecondAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::secondAnalogInputLevel);
+        decodeShortValue(buffer, builder::secondAnalogInputLevel);
     }
 
     private static void decodeThirdAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::thirdAnalogInputLevel);
+        decodeShortValue(buffer, builder::thirdAnalogInputLevel);
     }
 
     private static void decodeFourthAnalogInputLevel(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::fourthAnalogInputLevel);
+        decodeShortValue(buffer, builder::fourthAnalogInputLevel);
     }
 
     private static void decodeFlagByte(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::flagByte);
+        decodeByteValue(buffer, builder::flagByte);
     }
 
     private static void decodeDiscreteInputStateByte(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateByteValue(buffer, builder::discreteInputStateByte);
+        decodeByteValue(buffer, builder::discreteInputStateByte);
     }
 
     private static void decodeChecksum(final ByteBuf buffer, final NewWingDataBuilder builder) {
-        readAndAccumulateShortValue(buffer, builder::checksum);
+        decodeShortValue(buffer, builder::checksum);
     }
 
-    private static void readAndAccumulateShortValue(final ByteBuf buffer, final ShortConsumer accumulator) {
+    private static void decodeShortValue(final ByteBuf buffer, final ShortConsumer accumulator) {
         final short value = buffer.readShortLE();
         accumulator.accept(value);
     }
 
-    private static void readAndAccumulateByteValue(final ByteBuf buffer, final ByteConsumer accumulator) {
+    private static void decodeByteValue(final ByteBuf buffer, final ByteConsumer accumulator) {
         final byte value = buffer.readByte();
         accumulator.accept(value);
     }
