@@ -42,6 +42,9 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       PackageStringDecoder
 
 ----------protocol.newwing.decoder
+      NewWingProtocolDecoder                                      NewWingProtocolDecoderTest
+
+----------protocol.newwing.decoder.packages
 
 
 
