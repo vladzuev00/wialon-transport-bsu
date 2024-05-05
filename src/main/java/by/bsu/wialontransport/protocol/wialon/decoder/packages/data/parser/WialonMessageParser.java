@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.stream;
 
@@ -17,172 +17,91 @@ public final class WialonMessageParser {
 
     public List<WialonData> parse(final String message) {
         return stream(message.split(SUB_MESSAGE_DELIMITER_REGEX))
-                .map(WialonMessageParser::parseSubMessage)
+                .map(this::parseSubMessage)
                 .toList();
     }
 
-    private static WialonData parseSubMessage(final String subMessage) {
+    private WialonData parseSubMessage(final String subMessage) {
         final WialonSubMessageComponentParser parser = new WialonSubMessageComponentParser(subMessage);
         final WialonDataBuilder builder = WialonData.builder();
-        parseDate(builder, parser);
-        parseTime(builder, parser);
-        parseLatitude(builder, parser);
-        parseLongitude(builder, parser);
-        parseSpeed(builder, parser);
-        parseCourse(builder, parser);
-        parseAltitude(builder, parser);
-        parseAmountOfSatellites(builder, parser);
-        parseHdop(builder, parser);
-        parseInputs(builder, parser);
-        parseOutputs(builder, parser);
-        parseAnalogInputs(builder, parser);
-        parseDriverKeyCode(builder, parser);
-        parseParameters(builder, parser);
+        parseDate(parser, builder);
+        parseTime(parser, builder);
+        parseLatitude(parser, builder);
+        parseLongitude(parser, builder);
+        parseSpeed(parser, builder);
+        parseCourse(parser, builder);
+        parseAltitude(parser, builder);
+        parseAmountOfSatellites(parser, builder);
+        parseHdop(parser, builder);
+        parseInputs(parser, builder);
+        parseOutputs(parser, builder);
+        parseAnalogInputs(parser, builder);
+        parseDriverKeyCode(parser, builder);
+        parseParameters(parser, builder);
         return builder.build();
     }
 
-    private static void parseDate(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseDate,
-                WialonDataBuilder::date
-        );
+    private void parseDate(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseRequiredComponent(parser::parseDate, builder::date);
     }
 
-    private static void parseTime(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseTime,
-                WialonDataBuilder::time
-        );
+    private void parseTime(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseRequiredComponent(parser::parseTime, builder::time);
     }
 
-    private static void parseLatitude(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseLatitude,
-                WialonDataBuilder::latitude
-        );
+    private void parseLatitude(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseRequiredComponent(parser::parseLatitude, builder::latitude);
     }
 
-    private static void parseLongitude(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseLongitude,
-                WialonDataBuilder::longitude
-        );
+    private void parseLongitude(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseRequiredComponent(parser::parseLongitude, builder::longitude);
     }
 
-    private static <T> void parseRequiredComponent(
-            final WialonDataBuilder builder,
-            final WialonSubMessageComponentParser parser,
-            final Function<WialonSubMessageComponentParser, T> parsingFunction,
-            final BiConsumer<WialonDataBuilder, T> setter
-    ) {
-        setter.accept(builder, parsingFunction.apply(parser));
+    private <T> void parseRequiredComponent(final Supplier<T> parser, final Consumer<T> accumulator) {
+        accumulator.accept(parser.get());
     }
 
-    private static void parseSpeed(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseSpeed,
-                WialonDataBuilder::speed
-        );
+    private void parseSpeed(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseSpeed, builder::speed);
     }
 
-    private static void parseCourse(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseCourse,
-                WialonDataBuilder::course
-        );
+    private void parseCourse(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseCourse, builder::course);
     }
 
-    private static void parseAltitude(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseAltitude,
-                WialonDataBuilder::altitude
-        );
+    private void parseAltitude(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseAltitude, builder::altitude);
     }
 
-    private static void parseAmountOfSatellites(final WialonDataBuilder builder,
-                                                final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseAmountOfSatellites,
-                WialonDataBuilder::amountOfSatellites
-        );
+    private void parseAmountOfSatellites(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseAmountOfSatellites, builder::amountOfSatellites);
     }
 
-    private static void parseHdop(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseHdop,
-                WialonDataBuilder::hdop
-        );
+    private void parseHdop(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseHdop, builder::hdop);
     }
 
-    private static void parseInputs(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseInputs,
-                WialonDataBuilder::inputs
-        );
+    private void parseInputs(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseInputs, builder::inputs);
     }
 
-    private static void parseOutputs(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseOutputs,
-                WialonDataBuilder::outputs
-        );
+    private void parseOutputs(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseOutputs, builder::outputs);
     }
 
-    private static void parseAnalogInputs(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseAnalogInputs,
-                WialonDataBuilder::analogInputs
-        );
+    private void parseAnalogInputs(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseAnalogInputs, builder::analogInputs);
     }
 
-    private static void parseDriverKeyCode(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseDriverKeyCode,
-                WialonDataBuilder::driverKeyCode
-        );
+    private void parseDriverKeyCode(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseDriverKeyCode, builder::driverKeyCode);
     }
 
-    private static void parseParameters(final WialonDataBuilder builder, final WialonSubMessageComponentParser parser) {
-        parseNotRequiredComponent(
-                builder,
-                parser,
-                WialonSubMessageComponentParser::parseParameters,
-                WialonDataBuilder::parameters
-        );
+    private void parseParameters(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
+        parseNotRequiredComponent(parser::parseParameters, builder::parameters);
     }
 
-    private static <T> void parseNotRequiredComponent(
-            final WialonDataBuilder builder,
-            final WialonSubMessageComponentParser parser,
-            final Function<WialonSubMessageComponentParser, Optional<T>> parsingFunction,
-            final BiConsumer<WialonDataBuilder, T> setter
-    ) {
-        parsingFunction.apply(parser).ifPresent(component -> setter.accept(builder, component));
+    private <T> void parseNotRequiredComponent(final Supplier<Optional<T>> parser, final Consumer<T> accumulator) {
+        parser.get().ifPresent(accumulator);
     }
 }
