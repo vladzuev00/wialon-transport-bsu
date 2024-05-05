@@ -32,26 +32,18 @@ public final class NewWingDataIteratorFactoryTest {
 
         final NewWingDataIterator actual = factory.create(givenBuffer);
 
-        final NewWingDataDecoder actualDataDecoder = findDataDecoder(actual);
-        assertSame(mockedDecoder, actualDataDecoder);
+        final NewWingDataDecoder actualDecoder = getDataDecoder(actual);
+        assertSame(mockedDecoder, actualDecoder);
 
-        final ByteBuf actualBuffer = findBuffer(actual);
+        final ByteBuf actualBuffer = getBuffer(actual);
         assertSame(givenBuffer, actualBuffer);
     }
 
-    private static NewWingDataDecoder findDataDecoder(final NewWingDataIterator iterator) {
-        return getProperty(
-                iterator,
-                FIELD_NAME_DECODER,
-                NewWingDataDecoder.class
-        );
+    private NewWingDataDecoder getDataDecoder(final NewWingDataIterator iterator) {
+        return getProperty(iterator, FIELD_NAME_DECODER, NewWingDataDecoder.class);
     }
 
-    public static ByteBuf findBuffer(final NewWingDataIterator iterator) {
-        return getProperty(
-                iterator,
-                FIELD_NAME_BUFFER,
-                ByteBuf.class
-        );
+    public ByteBuf getBuffer(final NewWingDataIterator iterator) {
+        return getProperty(iterator, FIELD_NAME_BUFFER, ByteBuf.class);
     }
 }

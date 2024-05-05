@@ -50,7 +50,9 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       NewWingLoginPackageDecoder                                  NewWingLoginPackageDecoderTest
 
 ----------protocol.newwing.decoder.packages.data
-
+      NewWingDataDecoder                                          NewWingDataDecoderTest
+      NewWingDataIterator                                         NewWingDataIteratorTest
+      
 
 
 
