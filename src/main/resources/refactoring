@@ -58,6 +58,7 @@ TODO: WebSecurityConfig                                           WebSecurityCon
 ----------protocol.wialon.decoder
       WialonProtocolDecoder                                       WialonProtocolDecoderTest
 
+----------protocol.wialon.decoder.packages
 
 
 
