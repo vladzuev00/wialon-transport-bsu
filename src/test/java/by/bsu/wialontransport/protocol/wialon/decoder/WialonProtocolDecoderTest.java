@@ -4,25 +4,17 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.util.CollectionUtil.areAllMatch;
-import static by.bsu.wialontransport.util.CollectionUtil.areAllNotMatch;
-import static by.bsu.wialontransport.util.ReflectionUtil.findStaticFieldValue;
+import static by.bsu.wialontransport.protocol.wialon.decoder.WialonProtocolDecoder.PREFIX_REGEX;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public final class WialonProtocolDecoderTest {
-    private static final String FIELD_NAME_PACKAGE_PREFIX_REGEX = "PACKAGE_PREFIX_REGEX";
-
-    private final String packagePrefixRegex = findStaticFieldValue(
-            WialonProtocolDecoder.class,
-            FIELD_NAME_PACKAGE_PREFIX_REGEX,
-            String.class
-    );
 
     @Test
     public void packagePrefixesShouldMatchRegex() {
         final List<String> givenPrefixes = List.of("#L#", "#P#", "#D#", "#B#");
 
-        final boolean actual = areAllMatch(givenPrefixes, prefix -> prefix.matches(packagePrefixRegex));
+        final boolean actual = givenPrefixes.stream().allMatch(prefix -> prefix.matches(PREFIX_REGEX));
         assertTrue(actual);
     }
 
@@ -30,7 +22,7 @@ public final class WialonProtocolDecoderTest {
     public void packagePrefixesShouldNotMatchRegex() {
         final List<String> givenPrefixes = List.of("##", "P#", "#D", "");
 
-        final boolean actual = areAllNotMatch(givenPrefixes, prefix -> prefix.matches(packagePrefixRegex));
-        assertTrue(actual);
+        final boolean actual = givenPrefixes.stream().anyMatch(prefix -> prefix.matches(PREFIX_REGEX));
+        assertFalse(actual);
     }
 }

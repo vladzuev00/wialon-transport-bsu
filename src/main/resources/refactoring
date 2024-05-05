@@ -55,6 +55,8 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       NewWingDataIteratorFactory                                  NewWingDataIteratorFactoryTest
       NewWingDataPackageDecoder                                   NewWingDataPackageDecoderTest
 
+----------protocol.wialon.decoder
+      WialonProtocolDecoder                                       WialonProtocolDecoderTest
 
 
 

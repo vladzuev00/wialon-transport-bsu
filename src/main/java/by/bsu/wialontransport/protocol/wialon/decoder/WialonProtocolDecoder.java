@@ -6,7 +6,7 @@ import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDeco
 import java.util.List;
 
 public final class WialonProtocolDecoder extends ProtocolStringDecoder {
-    private static final String PREFIX_REGEX = "^#.+#";
+    static final String PREFIX_REGEX = "^#.+#";
 
     public WialonProtocolDecoder(final List<WialonPackageDecoder> packageDecoders) {
         super(packageDecoders, PREFIX_REGEX);
