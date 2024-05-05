@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.apache.commons.collections4.IteratorUtils.toList;
+import static by.bsu.wialontransport.util.CollectionUtil.collectToList;
 
 @Component
 public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
@@ -23,8 +23,12 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
 
     @Override
     protected RequestFactory decodeUntilChecksum(final ByteBuf buffer) {
-        final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
-        final List<NewWingData> data = toList(iterator);
+        final List<NewWingData> data = decodeData(buffer);
         return checksum -> new NewWingDataPackage(checksum, data);
+    }
+
+    private List<NewWingData> decodeData(final ByteBuf buffer) {
+        final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
+        return collectToList(iterator);
     }
 }
