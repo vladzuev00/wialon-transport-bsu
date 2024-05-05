@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-//TODO: refactor tests
 @RequiredArgsConstructor
 public final class NewWingDataIterator implements Iterator<NewWingData> {
     private static final int READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
@@ -22,13 +21,9 @@ public final class NewWingDataIterator implements Iterator<NewWingData> {
 
     @Override
     public NewWingData next() {
-        checkNext();
-        return decoder.decodeNext(buffer);
-    }
-
-    private void checkNext() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
+        return decoder.decodeNext(buffer);
     }
 }

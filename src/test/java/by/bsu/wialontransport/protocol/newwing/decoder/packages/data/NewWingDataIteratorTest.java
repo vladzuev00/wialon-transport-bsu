@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
+import static by.bsu.wialontransport.util.CollectionUtil.collectToList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
@@ -21,14 +21,14 @@ public final class NewWingDataIteratorTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         final NewWingDataIterator givenIterator = new NewWingDataIterator(givenDecoder, givenBuffer);
 
-        when(givenBuffer.isReadable())
-                .thenReturn(true)
-                .thenReturn(true)
-                .thenReturn(true)
-                .thenReturn(true)
-                .thenReturn(true)
-                .thenReturn(true)
-                .thenReturn(false);
+        when(givenBuffer.readableBytes())
+                .thenReturn(116)
+                .thenReturn(116)
+                .thenReturn(79)
+                .thenReturn(79)
+                .thenReturn(42)
+                .thenReturn(42)
+                .thenReturn(5);
 
         final NewWingData firstGivenData = createData(2, 9, 20);
         final NewWingData secondGivenData = createData(3, 10, 21);
@@ -38,7 +38,7 @@ public final class NewWingDataIteratorTest {
                 .thenReturn(secondGivenData)
                 .thenReturn(thirdGivenData);
 
-        final List<NewWingData> actual = convertToList(givenIterator);
+        final List<NewWingData> actual = collectToList(givenIterator);
         final List<NewWingData> expected = List.of(firstGivenData, secondGivenData, thirdGivenData);
         assertEquals(expected, actual);
     }
@@ -54,7 +54,7 @@ public final class NewWingDataIteratorTest {
         givenIterator.next();
     }
 
-    private static NewWingData createData(final int day, final int month, final int year) {
+    private NewWingData createData(final int day, final int month, final int year) {
         return NewWingData.builder()
                 .day((byte) day)
                 .month((byte) month)

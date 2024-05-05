@@ -13,27 +13,27 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class NewWingDataIteratorFactoryTest {
-    private static final String FIELD_NAME_DATA_DECODER = "decoder";
+    private static final String FIELD_NAME_DECODER = "decoder";
     private static final String FIELD_NAME_BUFFER = "buffer";
 
     @Mock
-    private NewWingDataDecoder mockedDataDecoder;
+    private NewWingDataDecoder mockedDecoder;
 
-    private NewWingDataIteratorFactory iteratorFactory;
+    private NewWingDataIteratorFactory factory;
 
     @Before
-    public void initializeIteratorFactory() {
-        iteratorFactory = new NewWingDataIteratorFactory(mockedDataDecoder);
+    public void initializeFactory() {
+        factory = new NewWingDataIteratorFactory(mockedDecoder);
     }
 
     @Test
     public void iteratorShouldBeCreated() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final NewWingDataIterator actual = iteratorFactory.create(givenBuffer);
+        final NewWingDataIterator actual = factory.create(givenBuffer);
 
         final NewWingDataDecoder actualDataDecoder = findDataDecoder(actual);
-        assertSame(mockedDataDecoder, actualDataDecoder);
+        assertSame(mockedDecoder, actualDataDecoder);
 
         final ByteBuf actualBuffer = findBuffer(actual);
         assertSame(givenBuffer, actualBuffer);
@@ -42,7 +42,7 @@ public final class NewWingDataIteratorFactoryTest {
     private static NewWingDataDecoder findDataDecoder(final NewWingDataIterator iterator) {
         return getProperty(
                 iterator,
-                FIELD_NAME_DATA_DECODER,
+                FIELD_NAME_DECODER,
                 NewWingDataDecoder.class
         );
     }

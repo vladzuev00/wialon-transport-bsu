@@ -53,10 +53,10 @@ public final class CollectionUtil {
     }
 
     //TODO: refactor with StreamUtil
-    public static <T> List<T> convertToList(final Iterator<T> iterator) {
+    public static <T> List<T> collectToList(final Iterator<T> iterator) {
         final Iterable<T> iterable = () -> iterator;
         final Spliterator<T> spliterator = iterable.spliterator();
-        return stream(spliterator, false).collect(toList());
+        return stream(spliterator, false).toList();
     }
 
     public static <K, V> Map<K, V> convertToMap(final Collection<V> sources, final Function<V, K> keyExtractor) {

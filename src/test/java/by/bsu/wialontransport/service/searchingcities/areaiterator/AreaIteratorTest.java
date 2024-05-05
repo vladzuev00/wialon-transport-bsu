@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
+import static by.bsu.wialontransport.util.CollectionUtil.collectToList;
 import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +36,7 @@ public final class AreaIteratorTest {
         final double givenSearchStep = 0.5;
         final AreaIterator givenAreaIterator = new AreaIterator(givenAreaCoordinate, givenSearchStep);
 
-        final List<Coordinate> actual = convertToList(givenAreaIterator);
+        final List<Coordinate> actual = collectToList(givenAreaIterator);
         final List<Coordinate> expected = List.of(
                 new Coordinate(5., 5.),
                 new Coordinate(5.5, 5.),
@@ -62,7 +62,7 @@ public final class AreaIteratorTest {
         final double givenSearchStep = 1.5;
         final AreaIterator givenAreaIterator = new AreaIterator(givenAreaCoordinate, givenSearchStep);
 
-        final List<Coordinate> actual = convertToList(givenAreaIterator);
+        final List<Coordinate> actual = collectToList(givenAreaIterator);
         final List<Coordinate> expected = List.of(new Coordinate(5., 5.));
         assertEquals(expected, actual);
     }

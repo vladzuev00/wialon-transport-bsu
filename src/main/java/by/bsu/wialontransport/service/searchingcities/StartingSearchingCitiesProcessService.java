@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static by.bsu.wialontransport.util.CollectionUtil.convertToList;
+import static by.bsu.wialontransport.util.CollectionUtil.collectToList;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.util.Collections.emptyList;
@@ -99,7 +99,7 @@ public final class StartingSearchingCitiesProcessService {
 
         private List<Coordinate> findCoordinates() {
             final AreaIterator areaIterator = new AreaIterator(areaCoordinate, searchStep);
-            return convertToList(areaIterator);
+            return collectToList(areaIterator);
         }
 
         private List<Coordinate> extractSubAreaCoordinates(final List<Coordinate> coordinates, final int subAreaIndex) {
