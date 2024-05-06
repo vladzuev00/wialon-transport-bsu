@@ -24,7 +24,6 @@ import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere.EAST;
 import static java.lang.Integer.parseInt;
-import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
@@ -71,8 +70,8 @@ public final class WialonSubMessageComponentParser {
 
     private static final String NOT_DEFINED_COMPONENT_SOURCE = "NA";
 
-    private static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
-    private static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
+    static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
+    static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
 
     private static final String DELIMITER_ANALOG_INPUTS = ",";
     private static final String DELIMITER_PARAMETERS = ",";
@@ -148,7 +147,7 @@ public final class WialonSubMessageComponentParser {
 
     private void match(final String subMessage) {
         if (!matcher.matches()) {
-            throw new NotValidSubMessageException(format("Given sub message isn't valid: '%s'", subMessage));
+            throw new NotValidSubMessageException("Given sub message isn't valid: '%s'".formatted(subMessage));
         }
     }
 
@@ -178,11 +177,11 @@ public final class WialonSubMessageComponentParser {
     }
 
     @RequiredArgsConstructor
-    private abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
+    abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_COORDINATE_SOURCE = "NA;NA";
-        private static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
-        private static final int NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
-        private static final int NOT_DEFINED_MINUTE_SHARE = Integer.MIN_VALUE;
+        static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
+        static final int NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
+        static final int NOT_DEFINED_MINUTE_SHARE = Integer.MIN_VALUE;
 
         private final int groupNumber;
         private final int groupNumberDegrees;
@@ -223,13 +222,13 @@ public final class WialonSubMessageComponentParser {
         }
     }
 
-    private final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
+    final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
         private static final int GROUP_NUMBER_LATITUDE = 6;
         private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
         private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
         private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
         private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
-        private static final LatitudeHemisphere NOT_DEFINED_TYPE = NORTH;
+        static final LatitudeHemisphere NOT_DEFINED_TYPE = NORTH;
 
         public LatitudeParser() {
             super(
@@ -253,13 +252,13 @@ public final class WialonSubMessageComponentParser {
         }
     }
 
-    private final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
+    final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
         private static final int GROUP_NUMBER_LONGITUDE = 13;
         private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
         private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
-        private static final LongitudeHemisphere NOT_DEFINED_TYPE = EAST;
+        static final LongitudeHemisphere NOT_DEFINED_TYPE = EAST;
 
         public LongitudeParser() {
             super(
