@@ -51,6 +51,7 @@ public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends 
 
     private Package handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
         contextAttributeManager.putTracker(context, tracker);
+        //TODO: do after putLastDataInContext(tracker, context);
         connectionManager.add(context);
         putLastDataInContext(tracker, context);
         return createSuccessResponse();

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder.NoPackageDecoderException;
+import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder.NoDecoderException;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
@@ -67,8 +67,8 @@ public final class ProtocolDecoderTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NoPackageDecoderException.class)
-    public void bufferShouldNotBeDecodedBecauseOfNoSuitablePackageDecoder() {
+    @Test(expected = NoDecoderException.class)
+    public void bufferShouldNotBeDecodedBecauseOfNoSuitableDecoder() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         final List<Object> givenOut = mock(List.class);

@@ -17,10 +17,7 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
     protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
-            final SOURCE source = createSource(buffer);
-            final PackageDecoder<PREFIX, SOURCE> decoder = findPackageDecoder(source);
-            final Package request = decoder.decode(source);
-            out.add(request);
+            decode(buffer, out);
         } finally {
             buffer.release();
         }
@@ -30,36 +27,43 @@ public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecod
 
     protected abstract PREFIX getPrefix(final SOURCE source);
 
-    private PackageDecoder<PREFIX, SOURCE> findPackageDecoder(final SOURCE source) {
+    private void decode(final ByteBuf buffer, final List<Object> out) {
+        final SOURCE source = createSource(buffer);
+        final PackageDecoder<PREFIX, SOURCE> decoder = findDecoder(source);
+        final Package request = decoder.decode(source);
+        out.add(request);
+    }
+
+    private PackageDecoder<PREFIX, SOURCE> findDecoder(final SOURCE source) {
         final PREFIX prefix = getPrefix(source);
         return packageDecoders.stream()
                 .filter(decoder -> decoder.isAbleToDecode(prefix))
                 .findFirst()
-                .orElseThrow(() -> createNoPackageDecoderException(source));
+                .orElseThrow(() -> createNoDecoderException(source));
     }
 
-    private NoPackageDecoderException createNoPackageDecoderException(final SOURCE source) {
-        return new NoPackageDecoderException("No package decoder for source: %s".formatted(source));
+    private NoDecoderException createNoDecoderException(final SOURCE source) {
+        return new NoDecoderException("No decoder for source: %s".formatted(source));
     }
 
-    static final class NoPackageDecoderException extends RuntimeException {
+    static final class NoDecoderException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public NoPackageDecoderException() {
+        public NoDecoderException() {
 
         }
 
-        public NoPackageDecoderException(final String description) {
+        public NoDecoderException(final String description) {
             super(description);
         }
 
         @SuppressWarnings("unused")
-        public NoPackageDecoderException(final Exception cause) {
+        public NoDecoderException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public NoPackageDecoderException(final String description, final Exception cause) {
+        public NoDecoderException(final String description, final Exception cause) {
             super(description, cause);
         }
     }
