@@ -53,13 +53,13 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       NewWingDataDecoder                                          NewWingDataDecoderTest
       NewWingDataIterator                                         NewWingDataIteratorTest
       NewWingDataIteratorFactory                                  NewWingDataIteratorFactoryTest
-TODO      NewWingDataPackageDecoder                                   NewWingDataPackageDecoderTest
+      NewWingDataPackageDecoder                                   NewWingDataPackageDecoderTest
 
 ----------protocol.wialon.decoder
-TODO      WialonProtocolDecoder                                       WialonProtocolDecoderTest
+      WialonProtocolDecoder                                       WialonProtocolDecoderTest
 
 ----------protocol.wialon.decoder.packages
-TODO      WialonPackageDecoder                                        WialonPackageDecoderTest
+      WialonPackageDecoder                                        WialonPackageDecoderTest
 TODO      WialonRequestLoginPackageDecoder                            WialonRequestLoginPackageDecoderTest
 TODO      WialonRequestPingPackageDecoder                             WialonRequestPingPackageDecoderTest
 
