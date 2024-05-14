@@ -25,13 +25,13 @@ public final class WialonMessageParserTest {
     private final WialonMessageParser parser = new WialonMessageParser();
 
     @ParameterizedTest
-    @MethodSource("givenMessageAndExpected")
+    @MethodSource("provideMessageAndExpected")
     public void messageShouldBeParsed(final String givenMessage, final List<WialonData> expected) {
         final List<WialonData> actual = parser.parse(givenMessage);
         assertEquals(expected, actual);
     }
 
-    private static Stream<Arguments> givenMessageAndExpected() {
+    private static Stream<Arguments> provideMessageAndExpected() {
         return Stream.of(
                 arguments(
                         "151122;145643;5544.6025;N;03739.6834;E;100;15;10;177;545.4554;17;18;"

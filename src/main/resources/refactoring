@@ -60,11 +60,11 @@ TODO: WebSecurityConfig                                           WebSecurityCon
 
 ----------protocol.wialon.decoder.packages
       WialonPackageDecoder                                        WialonPackageDecoderTest
-TODO      WialonRequestLoginPackageDecoder                            WialonRequestLoginPackageDecoderTest
-TODO      WialonRequestPingPackageDecoder                             WialonRequestPingPackageDecoderTest
+      WialonRequestLoginPackageDecoder                            WialonRequestLoginPackageDecoderTest
+      WialonRequestPingPackageDecoder                             WialonRequestPingPackageDecoderTest
 
 ----------protocol.wialon.decoder.packages.data.parser.exception
-TODO      NotValidSubMessageException
+      NotValidSubMessageException
 
 ----------protocol.wialon.decoder.packages.data.parser
 TODO      WialonMessageParser                                         WialonMessageParserTest

@@ -42,23 +42,19 @@ public final class WialonMessageParser {
     }
 
     private void parseDate(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
-        parseRequiredComponent(parser::parseDate, builder::date);
+        builder.date(parser.parseDate());
     }
 
     private void parseTime(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
-        parseRequiredComponent(parser::parseTime, builder::time);
+        builder.time(parser.parseTime());
     }
 
     private void parseLatitude(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
-        parseRequiredComponent(parser::parseLatitude, builder::latitude);
+        builder.latitude(parser.parseLatitude());
     }
 
     private void parseLongitude(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
-        parseRequiredComponent(parser::parseLongitude, builder::longitude);
-    }
-
-    private <T> void parseRequiredComponent(final Supplier<T> parser, final Consumer<T> accumulator) {
-        accumulator.accept(parser.get());
+        builder.longitude(parser.parseLongitude());
     }
 
     private void parseSpeed(final WialonSubMessageComponentParser parser, final WialonDataBuilder builder) {
