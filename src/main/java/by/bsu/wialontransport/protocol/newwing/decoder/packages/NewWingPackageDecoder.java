@@ -12,15 +12,15 @@ public abstract class NewWingPackageDecoder extends PackageBufferDecoder<String>
 
     @Override
     public final NewWingRequestPackage decode(final ByteBuf buffer) {
-        final RequestFactory factory = decodeUntilChecksum(buffer);
+        final PackageFactory factory = decodeUntilChecksum(buffer);
         final int checksum = buffer.readIntLE();
         return factory.create(checksum);
     }
 
-    protected abstract RequestFactory decodeUntilChecksum(final ByteBuf buffer);
+    protected abstract PackageFactory decodeUntilChecksum(final ByteBuf buffer);
 
     @FunctionalInterface
-    protected interface RequestFactory {
+    protected interface PackageFactory {
         NewWingRequestPackage create(final int checksum);
     }
 }

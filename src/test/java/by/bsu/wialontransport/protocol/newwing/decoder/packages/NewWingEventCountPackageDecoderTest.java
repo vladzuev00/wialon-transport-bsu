@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
-import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder.RequestFactory;
+import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder.PackageFactory;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
@@ -23,10 +23,10 @@ public final class NewWingEventCountPackageDecoderTest {
                 .thenReturn(givenEventCount)
                 .thenReturn(givenFrameEventCount);
 
-        final RequestFactory requestFactory = decoder.decodeUntilChecksum(givenBuffer);
+        final PackageFactory packageFactory = decoder.decodeUntilChecksum(givenBuffer);
 
         final int givenChecksum = 53444546;
-        final NewWingRequestPackage actual = requestFactory.create(givenChecksum);
+        final NewWingRequestPackage actual = packageFactory.create(givenChecksum);
         final var expected = new NewWingEventCountPackage(givenChecksum, givenEventCount, givenFrameEventCount);
         assertEquals(expected, actual);
     }

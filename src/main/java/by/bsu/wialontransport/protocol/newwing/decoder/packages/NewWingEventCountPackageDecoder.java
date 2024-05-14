@@ -13,7 +13,7 @@ public final class NewWingEventCountPackageDecoder extends NewWingPackageDecoder
     }
 
     @Override
-    protected RequestFactory decodeUntilChecksum(final ByteBuf buffer) {
+    protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
         final short eventCount = buffer.readShortLE();
         final short frameEventCount = buffer.readShortLE();
         return checksum -> new NewWingEventCountPackage(checksum, eventCount, frameEventCount);

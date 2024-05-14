@@ -39,7 +39,7 @@ public final class NewWingPackageDecoderTest {
         }
 
         @Override
-        protected RequestFactory decodeUntilChecksum(final ByteBuf buffer) {
+        protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
             return TestPackage::new;
         }
     }

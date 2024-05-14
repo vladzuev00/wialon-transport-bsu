@@ -22,7 +22,7 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
     }
 
     @Override
-    protected RequestFactory decodeUntilChecksum(final ByteBuf buffer) {
+    protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
         final List<NewWingData> data = decodeData(buffer);
         return checksum -> new NewWingDataPackage(checksum, data);
     }

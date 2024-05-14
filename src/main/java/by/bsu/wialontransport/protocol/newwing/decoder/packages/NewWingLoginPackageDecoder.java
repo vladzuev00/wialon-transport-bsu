@@ -16,7 +16,7 @@ public final class NewWingLoginPackageDecoder extends NewWingPackageDecoder {
     }
 
     @Override
-    protected RequestFactory decodeUntilChecksum(final ByteBuf buffer) {
+    protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
         final String imei = decodeImei(buffer);
         return checksum -> new NewWingLoginPackage(checksum, imei);
     }

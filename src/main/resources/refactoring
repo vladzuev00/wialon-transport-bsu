@@ -37,12 +37,12 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       ProtocolStringDecoder                                       ProtocolStringDecoderTest
 
 ----------protocol.core.decoder.packages
-TODO      PackageDecoder                                              PackageDecoderTest
-TODO      PackageBufferDecoder
-TODO      PackageStringDecoder
+      PackageDecoder                                              PackageDecoderTest
+      PackageBufferDecoder
+      PackageStringDecoder
 
 ----------protocol.newwing.decoder
-TODO      NewWingProtocolDecoder                                      NewWingProtocolDecoderTest
+      NewWingProtocolDecoder                                      NewWingProtocolDecoderTest
 
 ----------protocol.newwing.decoder.packages
 TODO      NewWingPackageDecoder                                       NewWingPackageDecoderTest
