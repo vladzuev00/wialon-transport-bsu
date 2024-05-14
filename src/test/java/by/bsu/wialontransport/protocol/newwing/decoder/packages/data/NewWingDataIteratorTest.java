@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static by.bsu.wialontransport.util.CollectionUtil.collectToList;
+import static org.apache.commons.collections4.IteratorUtils.toList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
@@ -38,7 +38,7 @@ public final class NewWingDataIteratorTest {
                 .thenReturn(secondGivenData)
                 .thenReturn(thirdGivenData);
 
-        final List<NewWingData> actual = collectToList(givenIterator);
+        final List<NewWingData> actual = toList(givenIterator);
         final List<NewWingData> expected = List.of(firstGivenData, secondGivenData, thirdGivenData);
         assertEquals(expected, actual);
     }

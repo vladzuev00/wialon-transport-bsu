@@ -9,14 +9,14 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public final class NewWingDataIterator implements Iterator<NewWingData> {
-    private static final int READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
+    private static final int BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
 
     private final NewWingDataDecoder decoder;
     private final ByteBuf buffer;
 
     @Override
     public boolean hasNext() {
-        return buffer.readableBytes() >= READABLE_BYTE_COUNT_TO_HAVE_NEXT_EVENT;
+        return buffer.readableBytes() >= BYTE_COUNT_TO_HAVE_NEXT_EVENT;
     }
 
     @Override
