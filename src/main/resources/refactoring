@@ -51,7 +51,7 @@ TODO: WebSecurityConfig                                           WebSecurityCon
 
 ----------protocol.newwing.decoder.packages.data
       NewWingDataDecoder                                          NewWingDataDecoderTest
-TODO      NewWingDataIterator                                         NewWingDataIteratorTest
+      NewWingDataIterator                                         NewWingDataIteratorTest
 TODO      NewWingDataIteratorFactory                                  NewWingDataIteratorFactoryTest
 TODO      NewWingDataPackageDecoder                                   NewWingDataPackageDecoderTest
 

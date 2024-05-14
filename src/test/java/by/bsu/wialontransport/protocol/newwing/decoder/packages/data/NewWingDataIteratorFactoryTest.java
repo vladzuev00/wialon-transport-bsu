@@ -43,7 +43,7 @@ public final class NewWingDataIteratorFactoryTest {
         return getProperty(iterator, FIELD_NAME_DECODER, NewWingDataDecoder.class);
     }
 
-    public ByteBuf getBuffer(final NewWingDataIterator iterator) {
+    private ByteBuf getBuffer(final NewWingDataIterator iterator) {
         return getProperty(iterator, FIELD_NAME_BUFFER, ByteBuf.class);
     }
 }
