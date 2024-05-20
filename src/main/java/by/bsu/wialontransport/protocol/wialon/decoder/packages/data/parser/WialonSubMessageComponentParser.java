@@ -183,7 +183,6 @@ public final class WialonSubMessageComponentParser {
                 .collect(toUnmodifiableSet());
     }
 
-    //TODO: stop refactor
     @RequiredArgsConstructor
     abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_SOURCE = "NA;NA";

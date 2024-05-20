@@ -18,6 +18,7 @@ public final class GeocodingManager {
     private final List<GeocodingService> geocodingServices;
     private final AddressService addressService;
 
+    //TODO: возможно здесь стоит возвращать просто адрес
     public Optional<Address> findSavedAddress(final Coordinate coordinate) {
         return geocodingServices.stream()
                 .map(geocodingService -> geocodingService.receive(coordinate))

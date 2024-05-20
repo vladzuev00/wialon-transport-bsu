@@ -67,7 +67,8 @@ TODO: WebSecurityConfig                                           WebSecurityCon
       NotValidSubMessageException
 
 ----------protocol.wialon.decoder.packages.data.parser
-TODO      WialonMessageParser                                         WialonMessageParserTest
+      WialonMessageParser                                         WialonMessageParserTest
+TODO      WialonSubMessageComponentParser                             WialonSubMessageComponentParserTest
 
 
 
