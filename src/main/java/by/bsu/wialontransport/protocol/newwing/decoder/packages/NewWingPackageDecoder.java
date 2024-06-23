@@ -1,8 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.FixPrefixedPackageDecoder;
 import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedPackageDecoder;
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoderByFixedPrefix;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
 
