@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class ProtocolDecoder<PREFIX, SOURCE> extends ByteToMessageDecoder {
+public abstract class ProtocolDecoder<PREFIX> extends ByteToMessageDecoder {
     private final List<? extends PackageDecoder<PREFIX, SOURCE>> packageDecoders;
 
     @Override

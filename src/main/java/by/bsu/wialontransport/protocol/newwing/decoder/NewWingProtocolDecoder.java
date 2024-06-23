@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.newwing.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.ProtocolBufferDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
 import io.netty.buffer.ByteBuf;
 

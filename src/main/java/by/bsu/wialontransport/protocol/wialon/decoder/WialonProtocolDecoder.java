@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.ProtocolStringDecoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.packages.WialonPackageDecoder;
 
 import java.util.List;

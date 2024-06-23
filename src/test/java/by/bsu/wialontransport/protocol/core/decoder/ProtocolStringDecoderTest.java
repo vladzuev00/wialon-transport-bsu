@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.ProtocolStringDecoder.PrefixExtractingException;
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 
