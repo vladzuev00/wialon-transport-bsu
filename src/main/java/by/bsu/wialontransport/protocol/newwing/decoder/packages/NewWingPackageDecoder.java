@@ -1,10 +1,11 @@
 //package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 //
+//import by.bsu.wialontransport.protocol.core.decoder.packages.FixPrefixedPackageDecoder;
 //import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoderByFixedPrefix;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 //import io.netty.buffer.ByteBuf;
 //
-//public class NewWingPackageDecoder extends PackageDecoderByFixedPrefix<String> {
+//public class NewWingPackageDecoder extends FixPrefixedPackageDecoder<String> {
 //
 //    public NewWingPackageDecoder(final String prefix) {
 //        super(prefix);
@@ -18,6 +19,11 @@
 //    }
 //
 //    protected abstract PackageFactory decodeUntilChecksum(final ByteBuf buffer);
+//
+//    @Override
+//    protected String getPrefix(ByteBuf buffer) {
+//        return null;
+//    }
 //
 //    @FunctionalInterface
 //    protected interface PackageFactory {
