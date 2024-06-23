@@ -3,6 +3,9 @@ package by.bsu.wialontransport;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import static org.springframework.boot.SpringApplication.run;
 
 //TODO: rename configuration to config everywhere

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static by.bsu.wialontransport.util.CollectionUtil.concat;
 
@@ -23,6 +24,7 @@ public final class MileageIncreasingService {
     private final MileageCalculator mileageCalculator;
     private final TrackerMileageService trackerMileageService;
 
+    //TODO inject last data before(see in diplom doc)
     public void increase(final Track track) {
         final List<Coordinate> pathCoordinates = findPathCoordinates(track);
         final Mileage mileageDelta = mileageCalculator.calculate(pathCoordinates);
