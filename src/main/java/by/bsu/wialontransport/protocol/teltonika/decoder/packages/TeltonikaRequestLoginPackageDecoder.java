@@ -9,7 +9,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
 public final class TeltonikaRequestLoginPackageDecoder extends PackageDecoderByPrefix<Short> {
-    private static final int IMEI_START_BYTE_INDEX = 2;
 
     @Override
     public TeltonikaRequestLoginPackage decode(final ByteBuf buffer) {
@@ -29,6 +28,6 @@ public final class TeltonikaRequestLoginPackageDecoder extends PackageDecoderByP
 
     private String readImei(final ByteBuf buffer) {
         final short length = buffer.readShort();
-        return buffer.toString(IMEI_START_BYTE_INDEX, length, US_ASCII);
+        return buffer.readCharSequence(length, US_ASCII).toString();
     }
 }

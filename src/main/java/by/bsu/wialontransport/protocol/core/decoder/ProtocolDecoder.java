@@ -11,14 +11,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class ProtocolDecoder<PREFIX> extends ByteToMessageDecoder {
-    private final List<PackageDecoder<PREFIX>> packageDecoders;
+//    private final List<PackageDecoder<PREFIX>> packageDecoders;
 
     @Override
     protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
-            Package request = findDecoder(buffer).decode(buffer);
-            out.add(request);
+//            Package request = findDecoder(buffer).decode(buffer);
+//            out.add(request);
         } finally {
             buffer.release();
         }
@@ -26,17 +26,17 @@ public abstract class ProtocolDecoder<PREFIX> extends ByteToMessageDecoder {
 
     protected abstract PREFIX getPrefix(final ByteBuf source);
 
-    private PackageDecoder<PREFIX> findDecoder(final ByteBuf buffer) {
-        final PREFIX prefix = getPrefix(buffer);
-        return packageDecoders.stream()
-                .filter(decoder -> decoder.isAbleToDecode(prefix))
-                .findFirst()
-                .orElseThrow(() -> createNoDecoderException(source));
-    }
+//    private PackageDecoder<PREFIX> findDecoder(final ByteBuf buffer) {
+//        final PREFIX prefix = getPrefix(buffer);
+//        return packageDecoders.stream()
+//                .filter(decoder -> decoder.isAbleToDecode(prefix))
+//                .findFirst()
+//                .orElseThrow(() -> createNoDecoderException(source));
+//    }
 
-    private NoDecoderException createNoDecoderException(final SOURCE source) {
-        return new NoDecoderException("No decoder for source: %s".formatted(source));
-    }
+//    private NoDecoderException createNoDecoderException(final SOURCE source) {
+//        return new NoDecoderException("No decoder for source: %s".formatted(source));
+//    }
 
     static final class NoDecoderException extends RuntimeException {
 
