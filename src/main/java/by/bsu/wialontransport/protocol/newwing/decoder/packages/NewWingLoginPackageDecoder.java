@@ -15,6 +15,7 @@ public final class NewWingLoginPackageDecoder extends NewWingPackageDecoder {
         super(PREFIX);
     }
 
+    //TODO: заполнение дополнительными нулями сделать в handler
     @Override
     protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
         final String imei = decodeImei(buffer);
