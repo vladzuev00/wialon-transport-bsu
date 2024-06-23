@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.teltonika.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoderByPrefix;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixiedPackageDecoder;
 import by.bsu.wialontransport.protocol.teltonika.model.packages.login.TeltonikaRequestLoginPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
-public final class TeltonikaRequestLoginPackageDecoder extends PackageDecoderByPrefix<Short> {
+public final class TeltonikaRequestLoginPackageDecoder extends PrefixiedPackageDecoder<Short> {
 
     @Override
     public TeltonikaRequestLoginPackage decode(final ByteBuf buffer) {

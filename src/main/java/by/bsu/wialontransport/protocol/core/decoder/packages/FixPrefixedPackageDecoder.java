@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public abstract class PackageDecoderByFixedPrefix<PREFIX> extends PackageDecoderByPrefix<PREFIX> {
+public abstract class FixPrefixedPackageDecoder<PREFIX> extends PrefixiedPackageDecoder<PREFIX> {
     private final PREFIX prefix;
 
     @Override
