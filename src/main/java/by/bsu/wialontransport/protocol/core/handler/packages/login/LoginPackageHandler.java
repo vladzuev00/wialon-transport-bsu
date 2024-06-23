@@ -12,6 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;
 
+//TODO: запонять imei дополнительными нулями
 public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends PackageHandler<PACKAGE> {
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
