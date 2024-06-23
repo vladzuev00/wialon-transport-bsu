@@ -24,12 +24,12 @@ public final class TeltonikaRequestLoginPackageDecoderTest {
     }
 
     @Test
-    public void prefixShouldBeGot() {
+    public void prefixShouldBeRead() {
         final ByteBuf givenBuffer = wrappedBuffer(
                 new byte[]{0, 15, 51, 53, 54, 51, 48, 55, 48, 52, 50, 52, 52, 49, 48, 49, 51}
         );
 
-        final Short actual = decoder.getPrefix(givenBuffer);
+        final Short actual = decoder.readPrefix(givenBuffer);
         final Short expected = 15;
         assertEquals(expected, actual);
 

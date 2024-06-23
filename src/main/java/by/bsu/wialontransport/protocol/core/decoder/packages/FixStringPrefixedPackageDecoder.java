@@ -11,7 +11,7 @@ public abstract class FixStringPrefixedPackageDecoder extends FixPrefixedPackage
     }
 
     @Override
-    protected final String getPrefix(final ByteBuf buffer) {
+    protected final String readPrefix(final ByteBuf buffer) {
         final int length = getPrefix().length();
         return buffer.readCharSequence(length, UTF_8).toString();
     }

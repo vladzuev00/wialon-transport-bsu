@@ -17,7 +17,7 @@ public final class TeltonikaRequestLoginPackageDecoder extends PrefixiedPackageD
     }
 
     @Override
-    protected Short getPrefix(final ByteBuf buffer) {
+    protected Short readPrefix(final ByteBuf buffer) {
         return buffer.getShort(0);
     }
 

@@ -6,11 +6,11 @@ public abstract class PrefixiedPackageDecoder<PREFIX> implements PackageDecoder 
 
     @Override
     public final boolean isAbleToDecode(final ByteBuf buffer) {
-        final PREFIX prefix = getPrefix(buffer);
+        final PREFIX prefix = readPrefix(buffer);
         return isAbleToDecode(prefix);
     }
 
-    protected abstract PREFIX getPrefix(final ByteBuf buffer);
+    protected abstract PREFIX readPrefix(final ByteBuf buffer);
 
     protected abstract boolean isAbleToDecode(final PREFIX prefix);
 }
