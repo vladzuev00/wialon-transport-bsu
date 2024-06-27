@@ -9,53 +9,53 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static io.netty.buffer.ByteBufUtil.hexDump;
+
 @RequiredArgsConstructor
-public abstract class ProtocolDecoder<PREFIX> extends ByteToMessageDecoder {
-//    private final List<PackageDecoder<PREFIX>> packageDecoders;
+public final class ProtocolDecoder extends ByteToMessageDecoder {
+    private final List<PackageDecoder> packageDecoders;
 
     @Override
-    protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
+    protected void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
-//            Package request = findDecoder(buffer).decode(buffer);
-//            out.add(request);
+            final Package request = decode(buffer);
+            out.add(request);
         } finally {
             buffer.release();
         }
     }
 
-    protected abstract PREFIX getPrefix(final ByteBuf source);
+    private Package decode(final ByteBuf buffer) {
+        return packageDecoders.stream()
+                .filter(decoder -> decoder.isAbleToDecode(buffer))
+                .findFirst()
+                .orElseThrow(() -> createNoPackageDecoderException(buffer))
+                .decode(buffer);
+    }
 
-//    private PackageDecoder<PREFIX> findDecoder(final ByteBuf buffer) {
-//        final PREFIX prefix = getPrefix(buffer);
-//        return packageDecoders.stream()
-//                .filter(decoder -> decoder.isAbleToDecode(prefix))
-//                .findFirst()
-//                .orElseThrow(() -> createNoDecoderException(source));
-//    }
+    private NoPackageDecoderException createNoPackageDecoderException(final ByteBuf buffer) {
+        return new NoPackageDecoderException("No package decoder for '%s'".formatted(hexDump(buffer)));
+    }
 
-//    private NoDecoderException createNoDecoderException(final SOURCE source) {
-//        return new NoDecoderException("No decoder for source: %s".formatted(source));
-//    }
-
-    static final class NoDecoderException extends RuntimeException {
+    static final class NoPackageDecoderException extends RuntimeException {
 
         @SuppressWarnings("unused")
-        public NoDecoderException() {
+        public NoPackageDecoderException() {
 
         }
 
-        public NoDecoderException(final String description) {
+        public NoPackageDecoderException(final String description) {
             super(description);
         }
 
         @SuppressWarnings("unused")
-        public NoDecoderException(final Exception cause) {
+        public NoPackageDecoderException(final Exception cause) {
             super(cause);
         }
 
         @SuppressWarnings("unused")
-        public NoDecoderException(final String description, final Exception cause) {
+        public NoPackageDecoderException(final String description, final Exception cause) {
             super(description, cause);
         }
     }
