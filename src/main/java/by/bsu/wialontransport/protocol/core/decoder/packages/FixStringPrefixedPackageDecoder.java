@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-public abstract class FixStringPrefixedPackageDecoder extends FixPrefixedPackageDecoder<String> {
+public abstract class FixStringPrefixedPackageDecoder extends FixPrefixedPackageDecoder {
 
     public FixStringPrefixedPackageDecoder(final String prefix) {
         super(prefix);
@@ -12,7 +12,7 @@ public abstract class FixStringPrefixedPackageDecoder extends FixPrefixedPackage
 
     @Override
     protected final String readPrefix(final ByteBuf buffer) {
-        final int length = getPrefix().length();
-        return buffer.readCharSequence(length, US_ASCII).toString();
+//        final int length = getPrefix().length();
+        return buffer.readCharSequence(3, US_ASCII).toString();
     }
 }
