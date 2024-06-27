@@ -6,7 +6,7 @@
 //import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
 //import by.bsu.wialontransport.protocol.core.server.ProtocolServer;
 //import by.bsu.wialontransport.protocol.newwing.decoder.NewWingProtocolDecoder;
-//import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
+//import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
 //import by.bsu.wialontransport.protocol.newwing.encoder.NewWingProtocolEncoder;
 //import by.bsu.wialontransport.protocol.newwing.encoder.packages.NewWingPackageEncoder;
 //import by.bsu.wialontransport.protocol.newwing.handler.packages.NewWingDataPackageHandler;

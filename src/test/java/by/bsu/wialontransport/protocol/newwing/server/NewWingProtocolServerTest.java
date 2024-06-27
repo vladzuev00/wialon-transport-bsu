@@ -11,7 +11,7 @@
 //import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 //import by.bsu.wialontransport.protocol.core.server.ProtocolServer.ServerRunningContext;
 //import by.bsu.wialontransport.protocol.newwing.decoder.NewWingProtocolDecoder;
-//import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder;
+//import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
 //import by.bsu.wialontransport.protocol.newwing.encoder.NewWingProtocolEncoder;
 //import by.bsu.wialontransport.protocol.newwing.encoder.packages.NewWingPackageEncoder;
 //import org.junit.Test;

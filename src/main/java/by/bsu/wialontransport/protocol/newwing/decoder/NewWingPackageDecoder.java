@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.packages;
+package by.bsu.wialontransport.protocol.newwing.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;

@@ -1,4 +1,4 @@
-//package by.bsu.wialontransport.protocol.newwing.decoder.packages.data;
+//package by.bsu.wialontransport.protocol.newwing.decoder.data;
 //
 //import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;

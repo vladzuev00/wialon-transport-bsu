@@ -1,6 +1,6 @@
 //package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 //
-//import by.bsu.wialontransport.protocol.newwing.decoder.packages.NewWingPackageDecoder.PackageFactory;
+//import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder.PackageFactory;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLoginPackage;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 //import io.netty.buffer.ByteBuf;
