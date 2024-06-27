@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonSubMessageComponentParser.LatitudeParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonSubMessageComponentParser.LongitudeParser;
-import by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonSubMessageComponentParser.LatitudeParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonSubMessageComponentParser.LongitudeParser;
+import by.bsu.wialontransport.protocol.wialon.decoder.data.parser.exception.NotValidSubMessageException;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
 import org.junit.Test;
@@ -11,9 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonSubMessageComponentParser.GeographicCoordinateParser.*;
-import static by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonSubMessageComponentParser.NOT_DEFINED_DATE;
-import static by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser.WialonSubMessageComponentParser.NOT_DEFINED_TIME;
+import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonSubMessageComponentParser.GeographicCoordinateParser.*;
+import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonSubMessageComponentParser.NOT_DEFINED_DATE;
+import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonSubMessageComponentParser.NOT_DEFINED_TIME;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere.EAST;
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.packages.data.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 
 import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.model.WialonData.WialonDataBuilder;
