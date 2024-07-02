@@ -20,7 +20,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String TEMPLATE_MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
     private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
-    private final List<? extends PackageHandler<?>> packageHandlers;
+//    private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
     private final ConnectionManager connectionManager;
 
@@ -28,8 +28,8 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(final ChannelHandlerContext context, final Object requestObject) {
         final Package request = (Package) requestObject;
         logStartHandlingPackage(request);
-        final PackageHandler<?> packageHandler = findPackageHandler(request);
-        packageHandler.handle(request, context);
+//        final PackageHandler<?> packageHandler = findPackageHandler(request);
+//        packageHandler.handle(request, context);
     }
 
     @Override
@@ -47,16 +47,16 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
         log.info(TEMPLATE_MESSAGE_START_HANDLING_PACKAGE, request);
     }
 
-    private PackageHandler<?> findPackageHandler(final Package requestPackage) {
-        return packageHandlers.stream()
-                .filter(packageHandler -> packageHandler.isAbleToHandle(requestPackage))
-                .findFirst()
-                .orElseThrow(
-                        () -> new NoSuitablePackageHandlerException(
-                                "No package handler for package: %s".formatted(requestPackage)
-                        )
-                );
-    }
+//    private PackageHandler<?> findPackageHandler(final Package requestPackage) {
+//        return packageHandlers.stream()
+//                .filter(packageHandler -> packageHandler.isAbleToHandle(requestPackage))
+//                .findFirst()
+//                .orElseThrow(
+//                        () -> new NoSuitablePackageHandlerException(
+//                                "No package handler for package: %s".formatted(requestPackage)
+//                        )
+//                );
+//    }
 
     private void logAboutInactiveChannel(final ChannelHandlerContext context) {
         final String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);

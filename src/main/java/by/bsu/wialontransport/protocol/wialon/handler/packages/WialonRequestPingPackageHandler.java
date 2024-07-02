@@ -8,14 +8,19 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class WialonRequestPingPackageHandler extends PackageHandler<WialonRequestPingPackage> {
+public final class WialonRequestPingPackageHandler extends PackageHandler {
 
     public WialonRequestPingPackageHandler() {
         super(WialonRequestPingPackage.class);
     }
 
+//    @Override
+//    protected Package handleInternal(final WialonRequestPingPackage request, final ChannelHandlerContext context) {
+//        return new WialonResponsePingPackage();
+//    }
+
     @Override
-    protected Package handleInternal(final WialonRequestPingPackage request, final ChannelHandlerContext context) {
-        return new WialonResponsePingPackage();
+    protected Package handleInternal(Package request, ChannelHandlerContext context) {
+        return null;
     }
 }
