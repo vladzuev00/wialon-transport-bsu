@@ -1,23 +1,17 @@
 package by.bsu.wialontransport.protocol.core.server;
 
-import io.netty.bootstrap.ServerBootstrap;
+import by.bsu.wialontransport.config.property.protocolserver.ProtocolServerConfig;
+import by.bsu.wialontransport.protocol.core.decoder.ProtocolDecoder;
+import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder;
+import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static java.lang.Thread.currentThread;
-
 @RequiredArgsConstructor
+@Getter
 public final class ProtocolServer {
-    private final ServerBootstrap bootstrap;
-
-    public void run() {
-        try {
-            bootstrap.bind()
-                    .sync()
-                    .channel()
-                    .closeFuture()
-                    .sync();
-        } catch (final InterruptedException cause) {
-            currentThread().interrupt();
-        }
-    }
+    private final ProtocolDecoder decoder;
+    private final ProtocolHandler handler;
+    private final ProtocolEncoder encoder;
+    private final ProtocolServerConfig config;
 }

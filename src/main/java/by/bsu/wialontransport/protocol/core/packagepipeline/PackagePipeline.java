@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public final class PackagePipeline<REQUEST extends Package, RESPONSE extends Package> {
-    private final PackageDecoder<REQUEST> decoder;
+    private final PackageDecoder decoder;
     private final PackageHandler<REQUEST, RESPONSE> handler;
     private final PackageEncoder<RESPONSE> encoder;
 }

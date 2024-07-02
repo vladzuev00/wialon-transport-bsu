@@ -13,7 +13,7 @@ import static io.netty.buffer.ByteBufUtil.hexDump;
 
 @RequiredArgsConstructor
 public final class ProtocolDecoder extends ByteToMessageDecoder {
-    private final List<PackageDecoder<?>> packageDecoders;
+    private final List<PackageDecoder> packageDecoders;
 
     @Override
     protected void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
