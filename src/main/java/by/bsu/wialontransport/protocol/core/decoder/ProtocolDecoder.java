@@ -9,32 +9,33 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static io.netty.buffer.ByteBufUtil.hexDump;
-
 @RequiredArgsConstructor
-public final class ProtocolDecoder extends ByteToMessageDecoder {
-    private final List<PackageDecoder> packageDecoders;
+public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
+    private final List<PackageDecoder<SOURCE>> packageDecoders;
 
     @Override
-    protected void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
+    protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {
         buffer.retain();
         try {
-            final Package request = decode(buffer);
+            final SOURCE source = createSource(buffer);
+            final Package request = decode(source);
             out.add(request);
         } finally {
             buffer.release();
         }
     }
 
-    private Package decode(final ByteBuf buffer) {
+    protected abstract SOURCE createSource(final ByteBuf buffer);
+
+    private Package decode(final SOURCE source) {
         return packageDecoders.stream()
-                .filter(decoder -> decoder.isAbleToDecode(buffer))
+                .filter(decoder -> decoder.isAbleToDecode(source))
                 .findFirst()
-                .orElseThrow(() -> createNoPackageDecoderException(buffer))
-                .decode(buffer);
+                .orElseThrow(() -> createNoPackageDecoderException(source))
+                .decode(source);
     }
 
-    private IllegalStateException createNoPackageDecoderException(final ByteBuf buffer) {
-        return new IllegalStateException("No package decoder for '%s'".formatted(hexDump(buffer)));
+    private IllegalStateException createNoPackageDecoderException(final SOURCE source) {
+        return new IllegalStateException("No package decoder for '%s'".formatted(source));
     }
 }
