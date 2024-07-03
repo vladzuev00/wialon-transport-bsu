@@ -2,9 +2,12 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import io.netty.buffer.ByteBuf;
 
+import java.nio.charset.Charset;
+
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedBinaryPackageDecoder<String> {
+    static final Charset CHARSET = US_ASCII;
 
     public FixStringPrefixedBinaryPackageDecoder(final String prefix) {
         super(prefix);
@@ -12,16 +15,11 @@ public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedB
 
     @Override
     protected final int getPrefixByteCount() {
-        return getPrefix().getBytes(US_ASCII).length;
+        return getPrefix().getBytes(CHARSET).length;
     }
 
     @Override
     protected String createPrefix(final ByteBuf prefixBytes) {
-        return prefixBytes.toString(US_ASCII);
+        return prefixBytes.toString(CHARSET);
     }
-
-//    @Override
-//    protected final String readPrefix(final ByteBuf buffer) {
-//        return buffer.getCharSequence(0, getPrefixByteCount(), US_ASCII).toString();
-//    }
 }
