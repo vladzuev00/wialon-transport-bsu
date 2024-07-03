@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
+import by.bsu.wialontransport.protocol.core.decoder.packages.binary.PrefixedPackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;

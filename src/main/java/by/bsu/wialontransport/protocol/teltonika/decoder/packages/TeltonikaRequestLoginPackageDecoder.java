@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.teltonika.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedPackageDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.binary.PrefixedPackageDecoder;
 import by.bsu.wialontransport.protocol.teltonika.model.packages.login.TeltonikaRequestLoginPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;

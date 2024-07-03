@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.decoder.packages;
+package by.bsu.wialontransport.protocol.core.decoder.packages.binary;
 
 import io.netty.buffer.ByteBuf;
 
