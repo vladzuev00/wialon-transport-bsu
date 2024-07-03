@@ -36,7 +36,7 @@ public final class PrefixedPackageDecoderTest {
     }
 
     @RequiredArgsConstructor
-    private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<String> {
+    private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<ByteBuf, String> {
         private final String suitablePrefix;
         private final String readPrefix;
 
@@ -51,7 +51,7 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected boolean isAbleToDecode(final String prefix) {
+        protected boolean isSuitablePrefix(final String prefix) {
             return Objects.equals(prefix, suitablePrefix);
         }
     }
