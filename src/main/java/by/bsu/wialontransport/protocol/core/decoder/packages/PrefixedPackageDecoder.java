@@ -1,6 +1,5 @@
-package by.bsu.wialontransport.protocol.core.decoder.packages.binary;
+package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import io.netty.buffer.ByteBuf;
 
 public abstract class PrefixedPackageDecoder<PREFIX> implements PackageDecoder {

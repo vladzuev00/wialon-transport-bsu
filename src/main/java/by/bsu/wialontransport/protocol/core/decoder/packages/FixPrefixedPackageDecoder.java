@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.decoder.packages.binary;
+package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
