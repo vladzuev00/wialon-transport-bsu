@@ -1,5 +1,6 @@
 //package by.bsu.wialontransport.protocol.newwing.decoder.packages;
 //
+//import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
 //import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 //import io.netty.buffer.ByteBuf;
 //import org.junit.Test;
@@ -34,8 +35,8 @@
 //
 //    private static final class TestNewWingPackageDecoder extends NewWingPackageDecoder {
 //
-//        public TestNewWingPackageDecoder(final String packagePrefix) {
-//            super(packagePrefix);
+//        public TestNewWingPackageDecoder(final String prefix) {
+//            super(prefix);
 //        }
 //
 //        @Override
