@@ -1,18 +1,16 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import io.netty.buffer.ByteBuf;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
-
-public abstract class FixStringPrefixedPackageDecoder extends FixPrefixedPackageDecoder<String> {
+public abstract class FixStringPrefixedPackageDecoder<SOURCE> extends FixPrefixedPackageDecoder<SOURCE, String> {
 
     public FixStringPrefixedPackageDecoder(final String prefix) {
         super(prefix);
     }
 
     @Override
-    protected final String readPrefix(final ByteBuf buffer) {
+    protected final String readPrefix(final SOURCE source) {
         final int length = getPrefix().length();
-        return buffer.readCharSequence(length, US_ASCII).toString();
+        return readPrefix(source, length);
     }
+
+    protected abstract String readPrefix(final SOURCE source, final int length);
 }
