@@ -1,12 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedPackageDecoder;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
-import io.netty.buffer.ByteBuf;
-
-import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage.POSTFIX;
-
 //public class WialonPackageDecoder extends FixStringPrefixedPackageDecoder {
 //
 //    public WialonPackageDecoder(final String prefix) {
