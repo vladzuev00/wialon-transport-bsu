@@ -7,11 +7,11 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Getter
-public abstract class FixPrefixedPackageDecoder<PREFIX> extends PrefixedPackageDecoder<PREFIX> {
+public abstract class FixPrefixedPackageDecoder<SOURCE, PREFIX> extends PrefixedPackageDecoder<SOURCE, PREFIX> {
     private final PREFIX prefix;
 
     @Override
-    protected final boolean isAbleToDecode(final PREFIX prefix) {
+    protected final boolean isSuitablePrefix(final PREFIX prefix) {
         return Objects.equals(prefix, this.prefix);
     }
 }
