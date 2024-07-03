@@ -16,7 +16,12 @@ public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedB
     }
 
     @Override
-    protected final String readPrefix(final ByteBuf buffer) {
-        return buffer.getCharSequence(0, getPrefixByteCount(), US_ASCII).toString();
+    protected String createPrefix(final ByteBuf prefixBytes) {
+        return prefixBytes.toString(US_ASCII);
     }
+
+//    @Override
+//    protected final String readPrefix(final ByteBuf buffer) {
+//        return buffer.getCharSequence(0, getPrefixByteCount(), US_ASCII).toString();
+//    }
 }
