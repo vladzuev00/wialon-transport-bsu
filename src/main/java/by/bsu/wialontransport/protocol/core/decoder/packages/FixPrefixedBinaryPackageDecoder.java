@@ -13,17 +13,17 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
 
     @Override
     public final Package decode(final ByteBuf buffer) {
-        buffer.skipBytes(getPrefixByteCount());
+        skipPrefix(buffer);
         return decodeAfterSkipPrefix(buffer);
     }
 
     @Override
     protected final PREFIX readPrefix(final ByteBuf buffer) {
-        final ByteBuf prefixBytes = getPrefixBytes(buffer);
+        final ByteBuf bytes = getPrefixBytes(buffer);
         try {
-            return createPrefix(prefixBytes);
+            return createPrefix(bytes);
         } finally {
-            prefixBytes.release();
+            bytes.release();
         }
     }
 
@@ -32,6 +32,10 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
     protected abstract Package decodeAfterSkipPrefix(final ByteBuf buffer);
 
     protected abstract PREFIX createPrefix(final ByteBuf prefixBytes);
+
+    private void skipPrefix(final ByteBuf buffer) {
+        buffer.skipBytes(getPrefixByteCount());
+    }
 
     private ByteBuf getPrefixBytes(final ByteBuf buffer) {
         final byte[] bytes = new byte[getPrefixByteCount()];
