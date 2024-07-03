@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Getter
-public abstract class FixPrefixedPackageDecoder<PREFIX> extends PrefixiedPackageDecoder<PREFIX> {
+public abstract class FixPrefixedPackageDecoder<PREFIX> extends PrefixedPackageDecoder<PREFIX> {
     private final PREFIX prefix;
 
     @Override

@@ -11,13 +11,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public final class PrefixiedPackageDecoderTest {
+public final class PrefixedPackageDecoderTest {
 
     @Test
     public void decoderShouldBeAbleToDecodeBuffer() {
         final String givenSuitablePrefix = "PREFIX";
         final String givenReadPrefix = "PREFIX";
-        final var givenDecoder = new TestPrefixiedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
+        final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
         final boolean actual = givenDecoder.isAbleToDecode(givenBuffer);
@@ -28,7 +28,7 @@ public final class PrefixiedPackageDecoderTest {
     public void decoderShouldNotBeAbleToDecodeBuffer() {
         final String givenSuitablePrefix = "PREFIX-1";
         final String givenReadPrefix = "PREFIX-2";
-        final var givenDecoder = new TestPrefixiedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
+        final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
         final boolean actual = givenDecoder.isAbleToDecode(givenBuffer);
@@ -36,7 +36,7 @@ public final class PrefixiedPackageDecoderTest {
     }
 
     @RequiredArgsConstructor
-    private static final class TestPrefixiedPackageDecoder extends PrefixiedPackageDecoder<String> {
+    private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<String> {
         private final String suitablePrefix;
         private final String readPrefix;
 
