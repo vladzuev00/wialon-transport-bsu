@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 
 public interface PackageDecoder<SOURCE> {
-    boolean isAbleToDecode(final SOURCE buffer);
+    boolean isAbleToDecode(final SOURCE source);
 
-    Package decode(final SOURCE buffer);
+    Package decode(final SOURCE source);
 }
