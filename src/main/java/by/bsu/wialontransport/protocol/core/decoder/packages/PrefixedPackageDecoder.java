@@ -1,16 +1,14 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import io.netty.buffer.ByteBuf;
-
-public abstract class PrefixedPackageDecoder<PREFIX> implements PackageDecoder {
+public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageDecoder<SOURCE> {
 
     @Override
-    public final boolean isAbleToDecode(final ByteBuf buffer) {
-        final PREFIX prefix = readPrefix(buffer);
-        return isAbleToDecode(prefix);
+    public final boolean isAbleToDecode(final SOURCE source) {
+        final PREFIX prefix = readPrefix(source);
+        return isSuitablePrefix(prefix);
     }
 
-    protected abstract PREFIX readPrefix(final ByteBuf buffer);
+    protected abstract PREFIX readPrefix(final SOURCE source);
 
-    protected abstract boolean isAbleToDecode(final PREFIX prefix);
+    protected abstract boolean isSuitablePrefix(final PREFIX prefix);
 }
