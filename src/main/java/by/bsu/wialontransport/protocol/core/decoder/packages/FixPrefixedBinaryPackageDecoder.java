@@ -11,11 +11,11 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
 
     @Override
     public final Package decode(final ByteBuf buffer) {
-        skipPrefix(buffer);
+        buffer.skipBytes(getPrefixByteCount());
         return decodeAfterSkipPrefix(buffer);
     }
 
-    protected abstract void skipPrefix(final ByteBuf buffer);
+    protected abstract int getPrefixByteCount();
 
     protected abstract Package decodeAfterSkipPrefix(final ByteBuf buffer);
 }

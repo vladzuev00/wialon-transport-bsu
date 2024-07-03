@@ -11,12 +11,12 @@ public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedB
     }
 
     @Override
-    protected final void skipPrefix(final ByteBuf buffer) {
-        buffer.skipBytes(getPrefix().length());
+    protected final int getPrefixByteCount() {
+        return getPrefix().getBytes(US_ASCII).length;
     }
 
     @Override
     protected final String readPrefix(final ByteBuf buffer) {
-        return buffer.getCharSequence(0, getPrefix().length(), US_ASCII).toString();
+        return buffer.getCharSequence(0, getPrefixByteCount(), US_ASCII).toString();
     }
 }

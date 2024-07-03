@@ -11,9 +11,8 @@ public final class FixStringPrefixedTextPackageDecoderTest {
     @Test
     public void prefixShouldBeRead() {
         final String givenContent = "#PREFIX#message\r\n";
-        final int givenLength = 8;
 
-        final String actual = decoder.readPrefix(givenContent, givenLength);
+        final String actual = decoder.readPrefix(givenContent);
         final String expected = "#PREFIX#";
         assertEquals(expected, actual);
     }
