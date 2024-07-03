@@ -34,29 +34,7 @@ public final class ProtocolDecoder extends ByteToMessageDecoder {
                 .decode(buffer);
     }
 
-    private NoPackageDecoderException createNoPackageDecoderException(final ByteBuf buffer) {
-        return new NoPackageDecoderException("No package decoder for '%s'".formatted(hexDump(buffer)));
-    }
-
-    static final class NoPackageDecoderException extends RuntimeException {
-
-        @SuppressWarnings("unused")
-        public NoPackageDecoderException() {
-
-        }
-
-        public NoPackageDecoderException(final String description) {
-            super(description);
-        }
-
-        @SuppressWarnings("unused")
-        public NoPackageDecoderException(final Exception cause) {
-            super(cause);
-        }
-
-        @SuppressWarnings("unused")
-        public NoPackageDecoderException(final String description, final Exception cause) {
-            super(description, cause);
-        }
+    private IllegalStateException createNoPackageDecoderException(final ByteBuf buffer) {
+        return new IllegalStateException("No package decoder for '%s'".formatted(hexDump(buffer)));
     }
 }
