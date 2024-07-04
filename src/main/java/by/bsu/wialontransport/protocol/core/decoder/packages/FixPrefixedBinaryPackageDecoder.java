@@ -3,8 +3,6 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 
-import static io.netty.buffer.Unpooled.wrappedBuffer;
-
 public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixedPackageDecoder<ByteBuf, PREFIX> {
 
     public FixPrefixedBinaryPackageDecoder(final PREFIX prefix) {
@@ -38,8 +36,6 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
     }
 
     private ByteBuf getPrefixBytes(final ByteBuf buffer) {
-        final byte[] bytes = new byte[getPrefixByteCount()];
-        buffer.getBytes(0, bytes);
-        return wrappedBuffer(bytes);
+        return buffer.slice(0, getPrefixByteCount());
     }
 }

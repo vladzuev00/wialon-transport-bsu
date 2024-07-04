@@ -19,7 +19,7 @@ public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedB
     }
 
     @Override
-    protected String createPrefix(final ByteBuf prefixBytes) {
+    protected final String createPrefix(final ByteBuf prefixBytes) {
         return prefixBytes.toString(CHARSET);
     }
 }
