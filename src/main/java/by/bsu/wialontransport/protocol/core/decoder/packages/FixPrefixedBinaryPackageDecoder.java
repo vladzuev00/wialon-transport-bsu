@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 
 public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixedPackageDecoder<ByteBuf, PREFIX> {
@@ -10,14 +9,8 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
     }
 
     @Override
-    public final Package decode(final ByteBuf buffer) {
-        skipPrefix(buffer);
-        return decodeAfterSkipPrefix(buffer);
-    }
-
-    @Override
     protected final PREFIX readPrefix(final ByteBuf buffer) {
-        final ByteBuf bytes = getPrefixBytes(buffer);
+        final ByteBuf bytes = buffer.slice(0, getPrefixByteCount());
         bytes.retain();
         try {
             return createPrefix(bytes);
@@ -26,17 +19,13 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
         }
     }
 
+    @Override
+    protected final ByteBuf removePrefix(final ByteBuf buffer) {
+        buffer.skipBytes(getPrefixByteCount());
+        return buffer;
+    }
+
     protected abstract int getPrefixByteCount();
 
-    protected abstract Package decodeAfterSkipPrefix(final ByteBuf buffer);
-
     protected abstract PREFIX createPrefix(final ByteBuf prefixBytes);
-
-    private void skipPrefix(final ByteBuf buffer) {
-        buffer.skipBytes(getPrefixByteCount());
-    }
-
-    private ByteBuf getPrefixBytes(final ByteBuf buffer) {
-        return buffer.slice(0, getPrefixByteCount());
-    }
 }

@@ -1,16 +1,25 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
-//public class WialonPackageDecoder extends FixStringPrefixedPackageDecoder {
+import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedTextPackageDecoder;
+import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
+
+//public class WialonPackageDecoder extends FixStringPrefixedTextPackageDecoder {
 //
 //    public WialonPackageDecoder(final String prefix) {
 //        super(prefix);
 //    }
-//
+
+//    @Override
+//    public WialonPackage decode(final String s) {
+//        return null;
+//    }
+
 //    @Override
 //    public Package decode(ByteBuf buffer) {
 //        return null;
 //    }
-
+//
 //    @Override
 //    public final WialonPackage decode(final String source) {
 //        final String message = getMessage(source);

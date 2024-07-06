@@ -18,7 +18,7 @@ public final class NewWingPackageDecoderTest {
         final int givenChecksum = 12345;
         when(givenBuffer.readIntLE()).thenReturn(givenChecksum);
 
-        final NewWingRequestPackage actual = decoder.decodeAfterSkipPrefix(givenBuffer);
+        final NewWingRequestPackage actual = decoder.decodeWithoutPrefix(givenBuffer);
         final NewWingRequestPackage expected = new TestPackage(givenChecksum);
         assertEquals(expected, actual);
     }

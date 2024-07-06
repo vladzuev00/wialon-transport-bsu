@@ -53,7 +53,7 @@ public final class FixPrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected TestPackage decodeAfterSkipPrefix(final ByteBuf buffer) {
+        protected TestPackage decodeWithoutPrefix(final ByteBuf buffer) {
             final String message = decodeMessage(buffer);
             return new TestPackage(message);
         }

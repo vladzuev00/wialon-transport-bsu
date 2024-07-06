@@ -34,7 +34,7 @@ public final class FixStringPrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected Package decodeAfterSkipPrefix(final ByteBuf buffer) {
+        protected Package decodeWithoutPrefix(final ByteBuf buffer) {
             throw new UnsupportedOperationException();
         }
     }
