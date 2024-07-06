@@ -18,6 +18,7 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
     @Override
     protected final PREFIX readPrefix(final ByteBuf buffer) {
         final ByteBuf bytes = getPrefixBytes(buffer);
+        bytes.retain();
         try {
             return createPrefix(bytes);
         } finally {
