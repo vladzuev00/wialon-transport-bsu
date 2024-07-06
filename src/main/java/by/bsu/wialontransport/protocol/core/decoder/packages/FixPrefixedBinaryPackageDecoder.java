@@ -21,8 +21,7 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends FixPrefixe
 
     @Override
     protected final ByteBuf removePrefix(final ByteBuf buffer) {
-        buffer.skipBytes(getPrefixByteCount());
-        return buffer;
+        return buffer.skipBytes(getPrefixByteCount());
     }
 
     protected abstract int getPrefixByteCount();
