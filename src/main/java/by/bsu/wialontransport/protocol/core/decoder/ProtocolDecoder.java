@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
-    private final List<PackageDecoder<SOURCE>> packageDecoders;
+    private final List<? extends PackageDecoder<SOURCE>> packageDecoders;
 
     @Override
     protected final void decode(final ChannelHandlerContext context, final ByteBuf buffer, final List<Object> out) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 public final class BinaryProtocolDecoder extends ProtocolDecoder<ByteBuf> {
 
-    public BinaryProtocolDecoder(final List<PackageDecoder<ByteBuf>> packageDecoders) {
+    public BinaryProtocolDecoder(final List<? extends PackageDecoder<ByteBuf>> packageDecoders) {
         super(packageDecoders);
     }
 
