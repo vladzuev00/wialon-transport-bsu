@@ -7,22 +7,11 @@ import org.junit.Test;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.lang.Short.BYTES;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public final class FixPrefixedBinaryPackageDecoderTest {
     private final TestFixPrefixedBinaryPackageDecoder decoder = new TestFixPrefixedBinaryPackageDecoder();
-
-    @Test
-    public void bufferShouldBeDecoded() {
-        final ByteBuf givenBuffer = wrappedBuffer(new byte[]{0, 100, 109, 101, 115, 115, 97, 103, 101});
-
-        final Package actual = decoder.decode(givenBuffer);
-        final TestPackage expected = new TestPackage("message");
-        assertEquals(expected, actual);
-
-        assertEquals(0, givenBuffer.readableBytes());
-    }
 
     @Test
     public void prefixShouldBeRead() {
@@ -33,6 +22,16 @@ public final class FixPrefixedBinaryPackageDecoderTest {
         assertEquals(expected, actual);
 
         assertEquals(0, givenBuffer.readerIndex());
+    }
+
+    @Test
+    public void prefixShouldBeRemoved() {
+        final ByteBuf givenBuffer = wrappedBuffer(new byte[]{0, 100, 109, 101, 115, 115, 97, 103, 101});
+
+        final ByteBuf actual = decoder.removePrefix(givenBuffer);
+        assertSame(givenBuffer, actual);
+
+        assertEquals(2, givenBuffer.readerIndex());
     }
 
     @Value
@@ -48,23 +47,18 @@ public final class FixPrefixedBinaryPackageDecoderTest {
         }
 
         @Override
+        protected TestPackage decodeWithoutPrefix(final ByteBuf buffer) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         protected int getPrefixByteCount() {
             return BYTES;
         }
 
         @Override
-        protected TestPackage decodeWithoutPrefix(final ByteBuf buffer) {
-            final String message = decodeMessage(buffer);
-            return new TestPackage(message);
-        }
-
-        @Override
         protected Short createPrefix(final ByteBuf prefixBytes) {
             return prefixBytes.readShort();
-        }
-
-        private String decodeMessage(final ByteBuf buffer) {
-            return buffer.readCharSequence(buffer.readableBytes(), US_ASCII).toString();
         }
     }
 }
