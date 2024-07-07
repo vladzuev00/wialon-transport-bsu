@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
-import lombok.Value;
 import org.junit.Test;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;
@@ -34,11 +33,6 @@ public final class FixPrefixedBinaryPackageDecoderTest {
         assertEquals(2, givenBuffer.readerIndex());
     }
 
-    @Value
-    private static class TestPackage implements Package {
-        String text;
-    }
-
     private static final class TestFixPrefixedBinaryPackageDecoder extends FixPrefixedBinaryPackageDecoder<Short> {
         private static final Short PREFIX = 100;
 
@@ -47,7 +41,7 @@ public final class FixPrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected TestPackage decodeWithoutPrefix(final ByteBuf buffer) {
+        protected Package decodeWithoutPrefix(final ByteBuf buffer) {
             throw new UnsupportedOperationException();
         }
 
