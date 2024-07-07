@@ -14,7 +14,7 @@ public final class WialonRequestLoginPackageTest {
                 "111"
         );
 
-        final String actual = givenPackage.findPrefix();
+        final String actual = givenPackage.getPrefix();
         assertSame(PREFIX, actual);
     }
 }

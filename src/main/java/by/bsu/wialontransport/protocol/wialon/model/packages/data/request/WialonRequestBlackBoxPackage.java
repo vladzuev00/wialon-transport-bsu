@@ -12,7 +12,7 @@ public final class WialonRequestBlackBoxPackage extends AbstractWialonRequestDat
     }
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 }

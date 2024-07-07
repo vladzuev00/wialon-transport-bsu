@@ -20,7 +20,7 @@ public final class WialonResponseLoginPackage extends WialonPackage {
     private final Status status;
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 

@@ -12,7 +12,7 @@ public final class WialonRequestBlackBoxPackageTest {
     public void prefixShouldBeFound() {
         final WialonRequestBlackBoxPackage givenPackage = new WialonRequestBlackBoxPackage(emptyList());
 
-        final String actual = givenPackage.findPrefix();
+        final String actual = givenPackage.getPrefix();
         assertSame(PREFIX, actual);
     }
 }

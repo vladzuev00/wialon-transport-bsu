@@ -11,7 +11,7 @@ public final class WialonRequestPingPackageTest {
     public void prefixShouldBeFound() {
         final WialonRequestPingPackage givenPackage = new WialonRequestPingPackage();
 
-        final String actual = givenPackage.findPrefix();
+        final String actual = givenPackage.getPrefix();
         assertSame(PREFIX, actual);
     }
 }

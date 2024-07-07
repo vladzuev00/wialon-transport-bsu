@@ -11,7 +11,7 @@ public abstract class WialonPackageEncoder<PACKAGE extends WialonPackage> extend
 
     @Override
     protected final String encodeInternal(final PACKAGE response) {
-        return response.findPrefix() + encodeMessage(response) + response.findPostfix();
+        return response.getPrefix() + encodeMessage(response) + response.getPostfix();
     }
 
     protected abstract String encodeMessage(final PACKAGE response);

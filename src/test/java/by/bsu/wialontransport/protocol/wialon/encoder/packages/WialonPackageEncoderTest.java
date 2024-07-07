@@ -27,7 +27,7 @@ public final class WialonPackageEncoderTest {
         private final String message;
 
         @Override
-        public String findPrefix() {
+        public String getPrefix() {
             return PREFIX;
         }
     }

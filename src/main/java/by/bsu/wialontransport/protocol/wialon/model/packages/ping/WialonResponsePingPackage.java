@@ -6,7 +6,7 @@ public final class WialonResponsePingPackage extends WialonPackage {
     public static final String PREFIX = "#AP#";
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 }

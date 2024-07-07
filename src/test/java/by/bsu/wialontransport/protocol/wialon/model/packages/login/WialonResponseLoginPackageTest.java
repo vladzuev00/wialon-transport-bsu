@@ -12,7 +12,7 @@ public final class WialonResponseLoginPackageTest {
     public void prefixShouldBeFound() {
         final WialonResponseLoginPackage givenPackage = new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);
 
-        final String actual = givenPackage.findPrefix();
+        final String actual = givenPackage.getPrefix();
         assertSame(PREFIX, actual);
     }
 }

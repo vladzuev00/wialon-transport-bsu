@@ -16,7 +16,7 @@ public final class WialonResponseBlackBoxPackage extends WialonPackage {
     private final int amountFixedMessages;
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 }

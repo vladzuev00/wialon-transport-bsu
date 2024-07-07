@@ -19,7 +19,7 @@ public final class WialonResponseDataPackage extends WialonPackage {
     private final Status status;
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 

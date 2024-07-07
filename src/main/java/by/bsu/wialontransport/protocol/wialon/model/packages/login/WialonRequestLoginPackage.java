@@ -18,7 +18,7 @@ public final class WialonRequestLoginPackage extends WialonPackage implements Pr
     private final String password;
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 }

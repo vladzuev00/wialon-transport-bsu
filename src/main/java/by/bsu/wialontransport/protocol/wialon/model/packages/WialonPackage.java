@@ -9,9 +9,9 @@ import lombok.ToString;
 public abstract class WialonPackage implements Package {
     public static final String POSTFIX = "\r\n";
 
-    public abstract String findPrefix();
+    public abstract String getPrefix();
 
-    public final String findPostfix() {
+    public final String getPostfix() {
         return POSTFIX;
     }
 }

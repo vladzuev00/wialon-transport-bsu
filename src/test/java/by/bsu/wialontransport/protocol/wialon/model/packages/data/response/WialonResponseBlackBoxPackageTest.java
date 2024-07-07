@@ -11,7 +11,7 @@ public final class WialonResponseBlackBoxPackageTest {
     public void prefixShouldBeFound() {
         final WialonResponseBlackBoxPackage givenPackage = new WialonResponseBlackBoxPackage(5);
 
-        final String actual = givenPackage.findPrefix();
+        final String actual = givenPackage.getPrefix();
         assertSame(PREFIX, actual);
     }
 }

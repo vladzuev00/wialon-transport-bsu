@@ -11,7 +11,7 @@ public final class WialonPackageTest {
     public void postfixShouldBeFound() {
         final WialonPackage givenPackage = createPackage();
 
-        final String actual = givenPackage.findPostfix();
+        final String actual = givenPackage.getPostfix();
         assertSame(POSTFIX, actual);
     }
 
@@ -19,7 +19,7 @@ public final class WialonPackageTest {
         return new WialonPackage() {
 
             @Override
-            public String findPrefix() {
+            public String getPrefix() {
                 throw new UnsupportedOperationException();
             }
         };

@@ -12,7 +12,7 @@ public final class WialonRequestDataPackage extends AbstractWialonRequestDataPac
     }
 
     @Override
-    public String findPrefix() {
+    public String getPrefix() {
         return PREFIX;
     }
 }
