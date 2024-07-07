@@ -9,7 +9,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class TextProtocolDecoder extends ProtocolDecoder<String> {
 
-    public TextProtocolDecoder(final List<PackageDecoder<String>> packageDecoders) {
+    public TextProtocolDecoder(final List<? extends PackageDecoder<String>> packageDecoders) {
         super(packageDecoders);
     }
 
