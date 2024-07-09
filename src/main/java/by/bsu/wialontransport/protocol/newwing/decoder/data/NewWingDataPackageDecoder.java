@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
+import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import io.netty.buffer.ByteBuf;
@@ -22,11 +23,11 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
 
     @Override
     protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
-        final List<NewWingData> data = decodeData(buffer);
+        final List<Data> data = decodeData(buffer);
         return checksum -> new NewWingDataPackage(checksum, data);
     }
 
-    private List<NewWingData> decodeData(final ByteBuf buffer) {
+    private List<Data> decodeData(final ByteBuf buffer) {
         final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
         return toList(iterator);
     }

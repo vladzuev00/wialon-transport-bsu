@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
+import by.bsu.wialontransport.crud.dto.Data;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 
@@ -7,7 +8,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
-public final class NewWingDataIterator implements Iterator<NewWingData> {
+public final class NewWingDataIterator implements Iterator<Data> {
     private static final int BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
 
     private final NewWingDataDecoder decoder;
