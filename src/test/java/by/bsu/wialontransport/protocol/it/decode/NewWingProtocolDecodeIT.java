@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.it.decode;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingLoginPackage;

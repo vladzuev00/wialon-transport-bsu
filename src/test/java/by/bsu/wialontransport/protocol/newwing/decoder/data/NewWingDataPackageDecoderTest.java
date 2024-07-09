@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.protocol.newwing.model.NewWingData;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
