@@ -13,10 +13,10 @@ public final class WialonPackageDecoderTest {
     private final TestWialonPackageDecoder decoder = new TestWialonPackageDecoder();
 
     @Test
-    public void textShouldBeDecoded() {
-        final String givenSource = "message\r\n";
+    public void contentShouldBeDecoded() {
+        final String givenContent = "message\r\n";
 
-        final WialonPackage actual = decoder.decodeWithoutPrefix(givenSource);
+        final WialonPackage actual = decoder.decodeWithoutPrefix(givenContent);
         final TestPackage expected = new TestPackage("message");
         assertEquals(expected, actual);
     }
