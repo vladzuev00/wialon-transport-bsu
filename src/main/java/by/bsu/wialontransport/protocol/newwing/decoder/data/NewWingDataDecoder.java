@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static by.bsu.wialontransport.util.NumberUtil.createDoubleByParts;
-import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLatitude;
-import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.calculateLongitude;
+import static by.bsu.wialontransport.util.NumberUtil.concatToDouble;
+import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.createLatitude;
+import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.createLongitude;
 
 @Component
 public final class NewWingDataDecoder {
@@ -39,11 +39,11 @@ public final class NewWingDataDecoder {
         skipDiscreteInputStateByte(buffer);
         skipChecksum(buffer);
         return Data.builder()
-                .dateTime(LocalDateTime.of(YEAR_MARK_POINT + year, month, day, hour, minute, second))
-                .coordinate(new Coordinate(calculateLatitude(latitudeIntegerPart, latitudeFractionalPart), calculateLongitude(longitudeIntegerPart, longitudeFractionalPart)))
+                .dateTime(createDateTime(year, month, day, hour, minute, second))
+                .coordinate(createCoordinate(latitudeIntegerPart, latitudeFractionalPart, longitudeIntegerPart, longitudeFractionalPart))
                 .course(course)
-                .speed(createDoubleByParts(speedIntegerPart, speedFractionalPart))
-                .hdop(createDoubleByParts(hdopIntegerPart, hdopFractionalPart))
+                .speed(concatToDouble(speedIntegerPart, speedFractionalPart))
+                .hdop(concatToDouble(hdopIntegerPart, hdopFractionalPart))
                 .analogInputs(new double[]{firstAnalogInputLevel, secondAnalogInputLevel, thirdAnalogInputLevel, fourthAnalogInputLevel})
                 .build();
     }
@@ -54,6 +54,24 @@ public final class NewWingDataDecoder {
 
     private byte decodeByte(final ByteBuf buffer) {
         return buffer.readByte();
+    }
+
+    private LocalDateTime createDateTime(final byte year,
+                                         final byte month,
+                                         final byte day,
+                                         final byte hour,
+                                         final byte minute,
+                                         final byte second) {
+        return LocalDateTime.of(YEAR_MARK_POINT + year, month, day, hour, minute, second);
+    }
+
+    private Coordinate createCoordinate(final short latitudeIntegerPart,
+                                        final short latitudeFractionalPart,
+                                        final short longitudeIntegerPart,
+                                        final short longitudeFractionalPart) {
+        final double latitude = createLatitude(latitudeIntegerPart, latitudeFractionalPart);
+        final double longitude = createLongitude(longitudeIntegerPart, longitudeFractionalPart);
+        return new Coordinate(latitude, longitude);
     }
 
     private void skipFlagByte(final ByteBuf buffer) {

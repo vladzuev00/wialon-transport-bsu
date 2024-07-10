@@ -18,7 +18,7 @@ public final class NewWingCoordinateUtil {
     private static final String LONGITUDE_INTEGER_PART_TEMPLATE = "%05d";
     private static final int LONGITUDE_FIRST_PART_INTEGER_PART_NEXT_LAST_INDEX = 3;
 
-    public static double calculateLatitude(final int integerPart, final int fractionalPart) {
+    public static double createLatitude(final int integerPart, final int fractionalPart) {
         return calculateGpsCoordinate(
                 integerPart,
                 fractionalPart,
@@ -27,7 +27,7 @@ public final class NewWingCoordinateUtil {
         );
     }
 
-    public static double calculateLongitude(final int integerPart, final int fractionalPart) {
+    public static double createLongitude(final int integerPart, final int fractionalPart) {
         return calculateGpsCoordinate(
                 integerPart,
                 fractionalPart,
