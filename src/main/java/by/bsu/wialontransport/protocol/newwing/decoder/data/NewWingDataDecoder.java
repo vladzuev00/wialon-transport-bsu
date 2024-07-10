@@ -2,6 +2,8 @@ package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLatitudeCalculator;
+import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLongitudeCalculator;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
