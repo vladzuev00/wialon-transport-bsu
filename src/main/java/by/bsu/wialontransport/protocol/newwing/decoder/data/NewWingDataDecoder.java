@@ -3,17 +3,20 @@ package by.bsu.wialontransport.protocol.newwing.decoder.data;
 import by.bsu.wialontransport.crud.dto.Data;
 import by.bsu.wialontransport.model.Coordinate;
 import io.netty.buffer.ByteBuf;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 import static by.bsu.wialontransport.util.NumberUtil.concatToDouble;
-import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.createLatitude;
-import static by.bsu.wialontransport.util.coordinate.NewWingCoordinateUtil.createLongitude;
 
 @Component
+@RequiredArgsConstructor
 public final class NewWingDataDecoder {
     private static final int YEAR_MARK_POINT = 2000;
+
+    private final NewWingLatitudeCalculator latitudeCalculator;
+    private final NewWingLongitudeCalculator longitudeCalculator;
 
     public Data decodeNext(final ByteBuf buffer) {
         final byte hour = decodeByte(buffer);
@@ -40,11 +43,25 @@ public final class NewWingDataDecoder {
         skipChecksum(buffer);
         return Data.builder()
                 .dateTime(createDateTime(year, month, day, hour, minute, second))
-                .coordinate(createCoordinate(latitudeIntegerPart, latitudeFractionalPart, longitudeIntegerPart, longitudeFractionalPart))
+                .coordinate(
+                        calculateCoordinate(
+                                latitudeIntegerPart,
+                                latitudeFractionalPart,
+                                longitudeIntegerPart,
+                                longitudeFractionalPart
+                        )
+                )
                 .course(course)
                 .speed(concatToDouble(speedIntegerPart, speedFractionalPart))
                 .hdop(concatToDouble(hdopIntegerPart, hdopFractionalPart))
-                .analogInputs(new double[]{firstAnalogInputLevel, secondAnalogInputLevel, thirdAnalogInputLevel, fourthAnalogInputLevel})
+                .analogInputs(
+                        new double[]{
+                                firstAnalogInputLevel,
+                                secondAnalogInputLevel,
+                                thirdAnalogInputLevel,
+                                fourthAnalogInputLevel
+                        }
+                )
                 .build();
     }
 
@@ -65,12 +82,12 @@ public final class NewWingDataDecoder {
         return LocalDateTime.of(YEAR_MARK_POINT + year, month, day, hour, minute, second);
     }
 
-    private Coordinate createCoordinate(final short latitudeIntegerPart,
-                                        final short latitudeFractionalPart,
-                                        final short longitudeIntegerPart,
-                                        final short longitudeFractionalPart) {
-        final double latitude = createLatitude(latitudeIntegerPart, latitudeFractionalPart);
-        final double longitude = createLongitude(longitudeIntegerPart, longitudeFractionalPart);
+    private Coordinate calculateCoordinate(final short latitudeIntegerPart,
+                                           final short latitudeFractionalPart,
+                                           final short longitudeIntegerPart,
+                                           final short longitudeFractionalPart) {
+        final double latitude = latitudeCalculator.calculate(latitudeIntegerPart, latitudeFractionalPart);
+        final double longitude = longitudeCalculator.calculate(longitudeIntegerPart, longitudeFractionalPart);
         return new Coordinate(latitude, longitude);
     }
 
