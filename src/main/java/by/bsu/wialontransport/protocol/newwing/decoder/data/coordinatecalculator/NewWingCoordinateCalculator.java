@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator;
 
 import lombok.RequiredArgsConstructor;
 
