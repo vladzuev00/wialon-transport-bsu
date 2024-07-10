@@ -5,4 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class NewWingLatitudeCalculator extends NewWingCoordinateCalculator {
 
+    public NewWingLatitudeCalculator() {
+        super("%04d", 2);
+    }
 }
