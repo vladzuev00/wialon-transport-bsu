@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.protocol.it.decode;
 
+import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
@@ -9,6 +11,7 @@ import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public final class NewWingProtocolDecodeIT extends BinaryProtocolDecodeIT {
@@ -98,7 +101,22 @@ public final class NewWingProtocolDecodeIT extends BinaryProtocolDecodeIT {
                 new NewWingDataPackage(
                         -1512959769,
                         List.of(
-
+                                Data.builder()
+                                        .dateTime(LocalDateTime.of(2023, 10, 31, 18, 51, 43))
+                                        .coordinate(new Coordinate(53.91630172729492, 27.56231689453125))
+                                        .course(182)
+                                        .speed(0.10)
+                                        .hdop(2.123)
+                                        .analogInputs(new double[]{0, 0, 0, 439})
+                                        .build(),
+                                Data.builder()
+                                        .dateTime(LocalDateTime.of(2023, 10, 31, 19, 52, 44))
+                                        .coordinate(new Coordinate(53.91630172729492, 27.56231689453125))
+                                        .course(182)
+                                        .speed(0.10)
+                                        .hdop(2.123)
+                                        .analogInputs(new double[]{0, 0, 0, 439})
+                                        .build()
                         )
                 )
         );
