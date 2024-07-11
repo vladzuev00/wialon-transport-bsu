@@ -20,7 +20,7 @@ public final class NewWingDataIterator implements Iterator<Data> {
     }
 
     @Override
-    public NewWingData next() {
+    public Data next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
