@@ -16,19 +16,15 @@ public abstract class NewWingCoordinateCalculator {
     private final int firstPartIntegerPartNextLastIndex;
 
     public final double calculate(final short integerPart, final short fractionalPart) {
-        final String fractionalPartAsString = Integer.toString(fractionalPart);
-        final int absIntegerPart = abs(integerPart);
-        final String integerPartAsString = format(integerPartTemplate, absIntegerPart);
-        final double absGpsCoordinate =
-                parseInt(integerPartAsString.substring(0, firstPartIntegerPartNextLastIndex))
-                        +
-                        parseFloat(
-                                join(
-                                        POINT,
-                                        integerPartAsString.substring(integerPartAsString.length() - 2),
-                                        fractionalPartAsString.substring(1)
-                                )
-                        ) / 60;
-        return integerPart >= 0 ? absGpsCoordinate : -1 * absGpsCoordinate;
+        final String integerPartAsString = format(integerPartTemplate, abs(integerPart));
+        final double abs = parseInt(integerPartAsString.substring(0, firstPartIntegerPartNextLastIndex))
+                + parseFloat(
+                join(
+                        POINT,
+                        integerPartAsString.substring(integerPartAsString.length() - 2),
+                        Integer.toString(fractionalPart).substring(1)
+                )
+        ) / 60;
+        return integerPart >= 0 ? abs : -1 * abs;
     }
 }
