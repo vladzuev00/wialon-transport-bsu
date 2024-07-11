@@ -12,7 +12,7 @@ public final class NewWingPackageDecoderTest {
     private final TestNewWingPackageDecoder decoder = new TestNewWingPackageDecoder();
 
     @Test
-    public void bufferShouldBeDecodedAfterSkipPrefix() {
+    public void bufferShouldBeDecodedWithoutPrefix() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
         final int givenChecksum = 12345;
