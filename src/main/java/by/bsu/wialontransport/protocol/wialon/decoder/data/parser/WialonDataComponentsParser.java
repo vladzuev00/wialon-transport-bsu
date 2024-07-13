@@ -13,10 +13,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,8 +29,8 @@ import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-public final class WialonSubMessageComponentParser {
-    private static final String SUB_MESSAGE_REGEX
+public final class WialonDataComponentsParser {
+    private static final String DATA_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
@@ -46,9 +45,10 @@ public final class WialonSubMessageComponentParser {
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
-    private static final Pattern SUB_MESSAGE_PATTERN = compile(SUB_MESSAGE_REGEX);
+    private static final Pattern DATA_PATTERN = compile(DATA_REGEX);
 
-    private static final int GROUP_NUMBER_DATE = 2;
+    private static final String NA = "NA";
+
     private static final int GROUP_NUMBER_TIME = 4;
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
@@ -61,51 +61,49 @@ public final class WialonSubMessageComponentParser {
     private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
-    private static final String DATE_FORMAT = "ddMMyy";
-    private static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_FORMAT);
-
     private static final String TIME_FORMAT = "HHmmss";
     private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
 
     private static final String NOT_DEFINED_SOURCE = "NA";
 
-    static final LocalDate NOT_DEFINED_DATE = LocalDate.MIN;
-    static final LocalTime NOT_DEFINED_TIME = LocalTime.MIN;
-
     private static final String DELIMITER_ANALOG_INPUTS = ",";
     private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
+    private final DateParser dateParser;
+
     private final LatitudeParser latitudeParser;
     private final LongitudeParser longitudeParser;
     private final ParameterParser parameterParser;
 
-    public WialonSubMessageComponentParser(final String subMessage) {
-        matcher = SUB_MESSAGE_PATTERN.matcher(subMessage);
-        match(subMessage);
+    public WialonDataComponentsParser(final String data) {
+        matcher = DATA_PATTERN.matcher(data);
+        match(data);
+        dateParser = new DateParser();
+
         latitudeParser = new LatitudeParser();
         longitudeParser = new LongitudeParser();
         parameterParser = new ParameterParser();
     }
 
-    public LocalDate parseDate() {
-        return parse(GROUP_NUMBER_DATE, source -> LocalDate.parse(source, DATE_FORMATTER), NOT_DEFINED_DATE);
+    public Optional<LocalDate> parseDate() {
+        return dateParser.parse();
     }
 
-    public LocalTime parseTime() {
-        return parse(GROUP_NUMBER_TIME, source -> LocalTime.parse(source, TIME_FORMATTER), NOT_DEFINED_TIME);
+    public Optional<LocalTime> parseTime() {
+        return parse(GROUP_NUMBER_TIME, content -> LocalTime.parse(content, TIME_FORMATTER));
     }
 
-    public Latitude parseLatitude() {
+    public OptionalDouble parseLatitude() {
         return latitudeParser.parse();
     }
 
-    public Longitude parseLongitude() {
+    public OptionalDouble parseLongitude() {
         return longitudeParser.parse();
     }
 
-    public Optional<Double> parseSpeed() {
-        return parseDouble(GROUP_NUMBER_SPEED);
+    public OptionalDouble parseSpeed() {
+        return parseDouble(GROUP_NUMBER_SPEED, Double::parseDouble);
     }
 
     public Optional<Integer> parseCourse() {
@@ -167,6 +165,11 @@ public final class WialonSubMessageComponentParser {
         return isDefinedSource(source) ? Optional.of(parser.apply(source)) : empty();
     }
 
+    private OptionalDouble parseDouble(final int groupNumber, final ToDoubleFunction<String> parser) {
+        final String source = matcher.group(groupNumber);
+        return isDefinedSource(source) ? OptionalDouble.of(parser.applyAsDouble(source)) : OptionalDouble.empty();
+    }
+
     private boolean isDefinedSource(final String source) {
         return !source.isEmpty() && !source.equals(NOT_DEFINED_SOURCE);
     }
@@ -184,6 +187,58 @@ public final class WialonSubMessageComponentParser {
     }
 
     @RequiredArgsConstructor
+    abstract class ComponentParser<T> {
+        private final int contentGroupNumber;
+        private final String notDefinedContent;
+
+        public final T parse() {
+            final String content = matcher.group(contentGroupNumber);
+            return !Objects.equals(content, notDefinedContent) ? parseDefined(content) : createNotDefinedComponent();
+        }
+
+        protected abstract T parseDefined(final String content);
+
+        protected abstract T createNotDefinedComponent();
+    }
+
+    class DateParser extends ComponentParser<Optional<LocalDate>> {
+        private static final int GROUP_NUMBER = 2;
+        private static final String FORMAT = "ddMMyy";
+        private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
+
+        public DateParser() {
+            super(GROUP_NUMBER, NA);
+        }
+
+        @Override
+        protected Optional<LocalDate> parseDefined(final String content) {
+            return Optional.of(LocalDate.parse(content, FORMATTER));
+        }
+
+        @Override
+        protected Optional<LocalDate> createNotDefinedComponent() {
+            return Optional.empty();
+        }
+    }
+
+    class TimeParser extends ComponentParser<Optional<LocalTime>> {
+
+        public TimeParser(int contentGroupNumber, String notDefinedContent) {
+            super(contentGroupNumber, notDefinedContent);
+        }
+
+        @Override
+        protected Optional<LocalTime> parseDefined(String content) {
+            return empty();
+        }
+
+        @Override
+        protected Optional<LocalTime> createNotDefinedComponent() {
+            return empty();
+        }
+    }
+
+    @RequiredArgsConstructor
     abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_SOURCE = "NA;NA";
         static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
@@ -196,7 +251,7 @@ public final class WialonSubMessageComponentParser {
         private final int groupNumberMinuteShare;
         private final int groupNumberType;
 
-        public final T parse() {
+        public final OptionalDouble parse() {
             final String source = matcher.group(groupNumber);
             return !source.equals(NOT_DEFINED_SOURCE) ? createDefinedCoordinate() : createNotDefinedCoordinate();
         }
