@@ -20,7 +20,7 @@ public abstract class WialonPackageDecoder extends FixStringPrefixedTextPackageD
     protected abstract WialonPackage decodeMessage(final String message);
 
     private String removePostfix(final String content) {
-        final int startPostfixIndex = content.length() - POSTFIX.length();
-        return content.substring(0, startPostfixIndex);
+        final int startIndex = content.length() - POSTFIX.length();
+        return content.substring(0, startIndex);
     }
 }
