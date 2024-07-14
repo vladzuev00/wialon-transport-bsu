@@ -3,11 +3,6 @@ package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.protocol.wialon.decoder.data.parser.exception.NotValidSubMessageException;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.GeographicCoordinate;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
-import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -15,13 +10,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;
-import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude.LongitudeHemisphere.EAST;
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
@@ -49,10 +43,6 @@ public final class WialonDataComponentsParser {
 
     private static final String NA = "NA";
 
-    private static final int GROUP_NUMBER_SPEED = 20;
-    private static final int GROUP_NUMBER_COURSE = 22;
-    private static final int GROUP_NUMBER_ALTITUDE = 24;
-    private static final int GROUP_NUMBER_AMOUNT_OF_SATELLITES = 26;
     private static final int GROUP_NUMBER_HDOP = 28;
     private static final int GROUP_NUMBER_INPUTS = 31;
     private static final int GROUP_NUMBER_OUTPUTS = 33;
@@ -68,9 +58,13 @@ public final class WialonDataComponentsParser {
     private final Matcher matcher;
     private final DateParser dateParser;
     private final TimeParser timeParser;
-
     private final LatitudeParser latitudeParser;
     private final LongitudeParser longitudeParser;
+    private final SpeedParser speedParser;
+    private final CourseParser courseParser;
+    private final AltitudeParser altitudeParser;
+    private final AmountOfSatellitesParser amountOfSatellitesParser;
+
     private final ParameterParser parameterParser;
 
     public WialonDataComponentsParser(final String data) {
@@ -78,9 +72,13 @@ public final class WialonDataComponentsParser {
         match(data);
         dateParser = new DateParser();
         timeParser = new TimeParser();
-
         latitudeParser = new LatitudeParser();
         longitudeParser = new LongitudeParser();
+        speedParser = new SpeedParser();
+        courseParser = new CourseParser();
+        altitudeParser = new AltitudeParser();
+        amountOfSatellitesParser = new AmountOfSatellitesParser();
+
         parameterParser = new ParameterParser();
     }
 
@@ -101,19 +99,19 @@ public final class WialonDataComponentsParser {
     }
 
     public OptionalDouble parseSpeed() {
-        return parseDouble(GROUP_NUMBER_SPEED, Double::parseDouble);
+        return speedParser.parse();
     }
 
-    public Optional<Integer> parseCourse() {
-        return parseInt(GROUP_NUMBER_COURSE);
+    public OptionalInt parseCourse() {
+        return courseParser.parse();
     }
 
-    public Optional<Integer> parseAltitude() {
-        return parseInt(GROUP_NUMBER_ALTITUDE);
+    public OptionalInt parseAltitude() {
+        return altitudeParser.parse();
     }
 
-    public Optional<Integer> parseAmountOfSatellites() {
-        return parseInt(GROUP_NUMBER_AMOUNT_OF_SATELLITES);
+    public OptionalInt parseAmountOfSatellites() {
+        return amountOfSatellitesParser.parse();
     }
 
     public Optional<Double> parseHdop() {
@@ -146,13 +144,13 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    private Optional<Double> parseDouble(final int groupNumber) {
-        return parse(groupNumber, Double::valueOf);
-    }
+//    private Optional<Double> parseDouble(final int groupNumber) {
+//        return parse(groupNumber, Double::valueOf);
+//    }
 
-    private Optional<Integer> parseInt(final int groupNumber) {
-        return parse(groupNumber, Integer::valueOf);
-    }
+//    private Optional<Integer> parseInt(final int groupNumber) {
+//        return parse(groupNumber, Integer::valueOf);
+//    }
 
     private <T> T parse(final int groupNumber, final Function<String, T> parser, final T notDefinedValue) {
         return parse(groupNumber, parser).orElse(notDefinedValue);
@@ -163,10 +161,10 @@ public final class WialonDataComponentsParser {
         return isDefinedSource(source) ? Optional.of(parser.apply(source)) : empty();
     }
 
-    private OptionalDouble parseDouble(final int groupNumber, final ToDoubleFunction<String> parser) {
-        final String source = matcher.group(groupNumber);
-        return isDefinedSource(source) ? OptionalDouble.of(parser.applyAsDouble(source)) : OptionalDouble.empty();
-    }
+//    private OptionalDouble parseDouble(final int groupNumber, final ToDoubleFunction<String> parser) {
+//        final String source = matcher.group(groupNumber);
+//        return isDefinedSource(source) ? OptionalDouble.of(parser.applyAsDouble(source)) : OptionalDouble.empty();
+//    }
 
     private boolean isDefinedSource(final String source) {
         return !source.isEmpty() && !source.equals(NOT_DEFINED_SOURCE);
@@ -186,11 +184,11 @@ public final class WialonDataComponentsParser {
 
     @RequiredArgsConstructor
     abstract class ComponentParser<T> {
-        private final int contentGroupNumber;
+        private final int groupNumber;
         private final String notDefinedContent;
 
         public final T parse() {
-            final String content = matcher.group(contentGroupNumber);
+            final String content = matcher.group(groupNumber);
             return !Objects.equals(content, notDefinedContent) ? parseDefined(content) : createNotDefinedComponent();
         }
 
@@ -199,7 +197,7 @@ public final class WialonDataComponentsParser {
         protected abstract T createNotDefinedComponent();
     }
 
-    class DateParser extends ComponentParser<Optional<LocalDate>> {
+    final class DateParser extends ComponentParser<Optional<LocalDate>> {
         private static final int GROUP_NUMBER = 2;
         private static final String FORMAT = "ddMMyy";
         private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
@@ -215,11 +213,11 @@ public final class WialonDataComponentsParser {
 
         @Override
         protected Optional<LocalDate> createNotDefinedComponent() {
-            return Optional.of(LocalDate.now());
+            return Optional.empty();
         }
     }
 
-    class TimeParser extends ComponentParser<Optional<LocalTime>> {
+    final class TimeParser extends ComponentParser<Optional<LocalTime>> {
         private static final int GROUP_NUMBER = 4;
         private static final String FORMAT = "HHmmss";
         private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
@@ -235,113 +233,161 @@ public final class WialonDataComponentsParser {
 
         @Override
         protected Optional<LocalTime> createNotDefinedComponent() {
-            return Optional.of(LocalTime.now());
+            return Optional.empty();
         }
     }
 
+    abstract class CoordinateParser extends ComponentParser<OptionalDouble> {
+        private static final String NOT_DEFINED_CONTENT = NA + ";" + NA;
 
-
-    @RequiredArgsConstructor
-    abstract class TempGeographicCoordinateParser<T extends GeographicCoordinate> {
-        private static final String NOT_DEFINED_SOURCE = "NA;NA";
-        static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
-        static final int NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
-        static final int NOT_DEFINED_MINUTE_SHARE = Integer.MIN_VALUE;
-
-        private final int groupNumber;
         private final int groupNumberDegrees;
         private final int groupNumberMinutes;
         private final int groupNumberMinuteShare;
-        private final int groupNumberType;
+        private final int groupNumberHemisphere;
+        private final char hemisphereReplacingSign;
 
-        public final OptionalDouble parse() {
-            final String source = matcher.group(groupNumber);
-            return !source.equals(NOT_DEFINED_SOURCE) ? createDefinedCoordinate() : createNotDefinedCoordinate();
+        public CoordinateParser(final int groupNumber,
+                                final int groupNumberDegrees,
+                                final int groupNumberMinutes,
+                                final int groupNumberMinuteShare,
+                                final int groupNumberHemisphere,
+                                final char hemisphereReplacingSign) {
+            super(groupNumber, NOT_DEFINED_CONTENT);
+            this.groupNumberDegrees = groupNumberDegrees;
+            this.groupNumberMinutes = groupNumberMinutes;
+            this.groupNumberMinuteShare = groupNumberMinuteShare;
+            this.groupNumberHemisphere = groupNumberHemisphere;
+            this.hemisphereReplacingSign = hemisphereReplacingSign;
         }
 
-        protected abstract T create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue);
-
-        @SuppressWarnings("SameParameterValue")
-        protected abstract T createNotDefinedCoordinate(final int degrees, final int minutes, final int minuteShare);
-
-        private T createDefinedCoordinate() {
-            final int degrees = extractGroupAsInteger(groupNumberDegrees);
-            final int minutes = extractGroupAsInteger(groupNumberMinutes);
-            final int minuteShare = extractGroupAsInteger(groupNumberMinuteShare);
-            final char hemisphereValue = extractGroupAsChar(groupNumberType);
-            return create(degrees, minutes, minuteShare, hemisphereValue);
+        @Override
+        protected final OptionalDouble parseDefined(final String content) {
+            final int degrees = extractIntGroup(groupNumberDegrees);
+            final int minutes = extractIntGroup(groupNumberMinutes);
+            final int minuteShare = extractIntGroup(groupNumberMinuteShare);
+            final char hemisphere = extractCharGroup(groupNumberHemisphere);
+            final double abs = degrees + (minutes / 60.) + (minuteShare / 3600.);
+            final double value = Objects.equals(hemisphere, hemisphereReplacingSign) ? -1 * abs : abs;
+            return OptionalDouble.of(value);
         }
 
-        private int extractGroupAsInteger(final int groupNumber) {
-            return Integer.parseInt(matcher.group(groupNumber));
+        @Override
+        protected final OptionalDouble createNotDefinedComponent() {
+            return OptionalDouble.empty();
         }
 
-        private char extractGroupAsChar(final int groupNumber) {
+        private int extractIntGroup(final int groupNumber) {
+            return parseInt(matcher.group(groupNumber));
+        }
+
+        private char extractCharGroup(final int groupNumber) {
             return matcher.group(groupNumber).charAt(0);
-        }
-
-        private T createNotDefinedCoordinate() {
-            return createNotDefinedCoordinate(NOT_DEFINED_DEGREES, NOT_DEFINED_MINUTES, NOT_DEFINED_MINUTE_SHARE);
         }
     }
 
-    final class LatitudeParser extends TempGeographicCoordinateParser<Latitude> {
-        private static final int GROUP_NUMBER_LATITUDE = 6;
-        private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
-        private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
-        private static final int GROUP_NUMBER_LATITUDE_MINUTE_SHARE = 10;
-        private static final int GROUP_NUMBER_LATITUDE_TYPE_VALUE = 11;
-        static final LatitudeHemisphere NOT_DEFINED_TYPE = NORTH;
+    final class LatitudeParser extends CoordinateParser {
+        private static final int GROUP_NUMBER = 6;
+        private static final int GROUP_NUMBER_DEGREES = 8;
+        private static final int GROUP_NUMBER_MINUTES = 9;
+        private static final int GROUP_NUMBER_MINUTE_SHARE = 10;
+        private static final int GROUP_NUMBER_HEMISPHERE = 11;
+        private static final char HEMISPHERE_REPLACING_SIGN = 'N';
 
         public LatitudeParser() {
             super(
-                    GROUP_NUMBER_LATITUDE,
-                    GROUP_NUMBER_LATITUDE_DEGREES,
-                    GROUP_NUMBER_LATITUDE_MINUTES,
-                    GROUP_NUMBER_LATITUDE_MINUTE_SHARE,
-                    GROUP_NUMBER_LATITUDE_TYPE_VALUE
+                    GROUP_NUMBER,
+                    GROUP_NUMBER_DEGREES,
+                    GROUP_NUMBER_MINUTES,
+                    GROUP_NUMBER_MINUTE_SHARE,
+                    GROUP_NUMBER_HEMISPHERE,
+                    HEMISPHERE_REPLACING_SIGN
             );
-        }
-
-        @Override
-        protected Latitude create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue) {
-            final LatitudeHemisphere hemisphere = LatitudeHemisphere.findByValue(hemisphereValue);
-            return new Latitude(degrees, minutes, minuteShare, hemisphere);
-        }
-
-        @Override
-        protected Latitude createNotDefinedCoordinate(final int degrees, final int minutes, final int minuteShare) {
-            return new Latitude(degrees, minutes, minuteShare, NOT_DEFINED_TYPE);
         }
     }
 
-    final class LongitudeParser extends TempGeographicCoordinateParser<Longitude> {
-        private static final int GROUP_NUMBER_LONGITUDE = 13;
-        private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
-        private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
-        private static final int GROUP_NUMBER_LONGITUDE_MINUTE_SHARE = 17;
-        private static final int GROUP_NUMBER_LONGITUDE_TYPE_VALUE = 18;
-        static final LongitudeHemisphere NOT_DEFINED_TYPE = EAST;
+    final class LongitudeParser extends CoordinateParser {
+        private static final int GROUP_NUMBER = 13;
+        private static final int GROUP_NUMBER_DEGREES = 15;
+        private static final int GROUP_NUMBER_MINUTES = 16;
+        private static final int GROUP_NUMBER_MINUTE_SHARE = 17;
+        private static final int GROUP_NUMBER_HEMISPHERE = 18;
+        private static final char HEMISPHERE_REPLACING_SIGN = 'W';
 
         public LongitudeParser() {
             super(
-                    GROUP_NUMBER_LONGITUDE,
-                    GROUP_NUMBER_LONGITUDE_DEGREES,
-                    GROUP_NUMBER_LONGITUDE_MINUTES,
-                    GROUP_NUMBER_LONGITUDE_MINUTE_SHARE,
-                    GROUP_NUMBER_LONGITUDE_TYPE_VALUE
+                    GROUP_NUMBER,
+                    GROUP_NUMBER_DEGREES,
+                    GROUP_NUMBER_MINUTES,
+                    GROUP_NUMBER_MINUTE_SHARE,
+                    GROUP_NUMBER_HEMISPHERE,
+                    HEMISPHERE_REPLACING_SIGN
             );
         }
+    }
 
-        @Override
-        protected Longitude create(final int degrees, final int minutes, final int minuteShare, final char hemisphereValue) {
-            final LongitudeHemisphere hemisphere = LongitudeHemisphere.findByValue(hemisphereValue);
-            return new Longitude(degrees, minutes, minuteShare, hemisphere);
+    abstract class IntComponentParser extends ComponentParser<OptionalInt> {
+
+        public IntComponentParser(final int groupNumber) {
+            super(groupNumber, NA);
         }
 
         @Override
-        protected Longitude createNotDefinedCoordinate(final int degrees, final int minutes, final int minuteShare) {
-            return new Longitude(degrees, minutes, minuteShare, NOT_DEFINED_TYPE);
+        protected final OptionalInt parseDefined(final String content) {
+            return OptionalInt.of(parseInt(content));
+        }
+
+        @Override
+        protected final OptionalInt createNotDefinedComponent() {
+            return OptionalInt.empty();
+        }
+    }
+
+    abstract class DoubleComponentParser extends ComponentParser<OptionalDouble> {
+
+        public DoubleComponentParser(final int groupNumber) {
+            super(groupNumber, NA);
+        }
+
+        @Override
+        protected final OptionalDouble parseDefined(final String content) {
+            return OptionalDouble.of(parseDouble(content));
+        }
+
+        @Override
+        protected final OptionalDouble createNotDefinedComponent() {
+            return OptionalDouble.empty();
+        }
+    }
+
+    final class SpeedParser extends DoubleComponentParser {
+        private static final int GROUP_NUMBER = 20;
+
+        public SpeedParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    final class CourseParser extends IntComponentParser {
+        private static final int GROUP_NUMBER = 22;
+
+        public CourseParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    final class AltitudeParser extends IntComponentParser {
+        private static final int GROUP_NUMBER = 24;
+
+        public AltitudeParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    final class AmountOfSatellitesParser extends IntComponentParser {
+        private static final int GROUP_NUMBER = 26;
+
+        public AmountOfSatellitesParser() {
+            super(GROUP_NUMBER);
         }
     }
 
