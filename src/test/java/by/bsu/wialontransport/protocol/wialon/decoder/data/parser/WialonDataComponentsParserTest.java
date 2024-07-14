@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonDataComponentsParser.GeographicCoordinateParser.*;
+import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonDataComponentsParser.TempGeographicCoordinateParser.*;
 import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonDataComponentsParser.NOT_DEFINED_DATE;
 import static by.bsu.wialontransport.protocol.wialon.decoder.data.parser.WialonDataComponentsParser.NOT_DEFINED_TIME;
 import static by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude.LatitudeHemisphere.NORTH;

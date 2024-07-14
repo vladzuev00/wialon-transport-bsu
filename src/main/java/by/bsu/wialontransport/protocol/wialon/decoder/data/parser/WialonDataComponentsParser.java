@@ -49,7 +49,6 @@ public final class WialonDataComponentsParser {
 
     private static final String NA = "NA";
 
-    private static final int GROUP_NUMBER_TIME = 4;
     private static final int GROUP_NUMBER_SPEED = 20;
     private static final int GROUP_NUMBER_COURSE = 22;
     private static final int GROUP_NUMBER_ALTITUDE = 24;
@@ -61,9 +60,6 @@ public final class WialonDataComponentsParser {
     private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
     private static final int GROUP_NUMBER_PARAMETERS = 41;
 
-    private static final String TIME_FORMAT = "HHmmss";
-    private static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_FORMAT);
-
     private static final String NOT_DEFINED_SOURCE = "NA";
 
     private static final String DELIMITER_ANALOG_INPUTS = ",";
@@ -71,6 +67,7 @@ public final class WialonDataComponentsParser {
 
     private final Matcher matcher;
     private final DateParser dateParser;
+    private final TimeParser timeParser;
 
     private final LatitudeParser latitudeParser;
     private final LongitudeParser longitudeParser;
@@ -80,6 +77,7 @@ public final class WialonDataComponentsParser {
         matcher = DATA_PATTERN.matcher(data);
         match(data);
         dateParser = new DateParser();
+        timeParser = new TimeParser();
 
         latitudeParser = new LatitudeParser();
         longitudeParser = new LongitudeParser();
@@ -91,7 +89,7 @@ public final class WialonDataComponentsParser {
     }
 
     public Optional<LocalTime> parseTime() {
-        return parse(GROUP_NUMBER_TIME, content -> LocalTime.parse(content, TIME_FORMATTER));
+        return timeParser.parse();
     }
 
     public OptionalDouble parseLatitude() {
@@ -217,29 +215,34 @@ public final class WialonDataComponentsParser {
 
         @Override
         protected Optional<LocalDate> createNotDefinedComponent() {
-            return Optional.empty();
+            return Optional.of(LocalDate.now());
         }
     }
 
     class TimeParser extends ComponentParser<Optional<LocalTime>> {
+        private static final int GROUP_NUMBER = 4;
+        private static final String FORMAT = "HHmmss";
+        private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
 
-        public TimeParser(int contentGroupNumber, String notDefinedContent) {
-            super(contentGroupNumber, notDefinedContent);
+        public TimeParser() {
+            super(GROUP_NUMBER, NA);
         }
 
         @Override
-        protected Optional<LocalTime> parseDefined(String content) {
-            return empty();
+        protected Optional<LocalTime> parseDefined(final String content) {
+            return Optional.of(LocalTime.parse(content, FORMATTER));
         }
 
         @Override
         protected Optional<LocalTime> createNotDefinedComponent() {
-            return empty();
+            return Optional.of(LocalTime.now());
         }
     }
 
+
+
     @RequiredArgsConstructor
-    abstract class GeographicCoordinateParser<T extends GeographicCoordinate> {
+    abstract class TempGeographicCoordinateParser<T extends GeographicCoordinate> {
         private static final String NOT_DEFINED_SOURCE = "NA;NA";
         static final int NOT_DEFINED_DEGREES = Integer.MIN_VALUE;
         static final int NOT_DEFINED_MINUTES = Integer.MIN_VALUE;
@@ -282,7 +285,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class LatitudeParser extends GeographicCoordinateParser<Latitude> {
+    final class LatitudeParser extends TempGeographicCoordinateParser<Latitude> {
         private static final int GROUP_NUMBER_LATITUDE = 6;
         private static final int GROUP_NUMBER_LATITUDE_DEGREES = 8;
         private static final int GROUP_NUMBER_LATITUDE_MINUTES = 9;
@@ -312,7 +315,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class LongitudeParser extends GeographicCoordinateParser<Longitude> {
+    final class LongitudeParser extends TempGeographicCoordinateParser<Longitude> {
         private static final int GROUP_NUMBER_LONGITUDE = 13;
         private static final int GROUP_NUMBER_LONGITUDE_DEGREES = 15;
         private static final int GROUP_NUMBER_LONGITUDE_MINUTES = 16;
