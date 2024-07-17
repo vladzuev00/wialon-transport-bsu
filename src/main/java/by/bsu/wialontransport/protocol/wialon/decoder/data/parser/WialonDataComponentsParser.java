@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +17,6 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
-import static java.util.Optional.empty;
-import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
@@ -40,19 +37,7 @@ public final class WialonDataComponentsParser {
             + "(.*);"                                              //driverKeyCode
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
     private static final Pattern DATA_PATTERN = compile(DATA_REGEX);
-
     private static final String NA = "NA";
-
-    private static final int GROUP_NUMBER_HDOP = 28;
-    private static final int GROUP_NUMBER_INPUTS = 31;
-    private static final int GROUP_NUMBER_OUTPUTS = 33;
-    private static final int GROUP_NUMBER_ANALOG_INPUTS = 35;
-    private static final int GROUP_NUMBER_DRIVER_KEY_CODE = 40;
-    private static final int GROUP_NUMBER_PARAMETERS = 41;
-
-    private static final String NOT_DEFINED_SOURCE = "NA";
-
-    private static final String DELIMITER_ANALOG_INPUTS = ",";
     private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
@@ -64,8 +49,12 @@ public final class WialonDataComponentsParser {
     private final CourseParser courseParser;
     private final AltitudeParser altitudeParser;
     private final AmountOfSatellitesParser amountOfSatellitesParser;
-
-    private final ParameterParser parameterParser;
+    private final HdopParser hdopParser;
+    private final InputsParser inputsParser;
+    private final OutputsParser outputsParser;
+    private final AnalogInputsParser analogInputsParser;
+    private final DriverKeyCodeParser driverKeyCodeParser;
+    private final ParametersParser parametersParser;
 
     public WialonDataComponentsParser(final String data) {
         matcher = DATA_PATTERN.matcher(data);
@@ -78,8 +67,12 @@ public final class WialonDataComponentsParser {
         courseParser = new CourseParser();
         altitudeParser = new AltitudeParser();
         amountOfSatellitesParser = new AmountOfSatellitesParser();
-
-        parameterParser = new ParameterParser();
+        hdopParser = new HdopParser();
+        inputsParser = new InputsParser();
+        outputsParser = new OutputsParser();
+        analogInputsParser = new AnalogInputsParser();
+        driverKeyCodeParser = new DriverKeyCodeParser();
+        parametersParser = new ParametersParser();
     }
 
     public Optional<LocalDate> parseDate() {
@@ -114,76 +107,38 @@ public final class WialonDataComponentsParser {
         return amountOfSatellitesParser.parse();
     }
 
-    public Optional<Double> parseHdop() {
-        return parseDouble(GROUP_NUMBER_HDOP);
+    public OptionalDouble parseHdop() {
+        return hdopParser.parse();
     }
 
-    public Optional<Integer> parseInputs() {
-        return parseInt(GROUP_NUMBER_INPUTS);
+    public OptionalInt parseInputs() {
+        return inputsParser.parse();
     }
 
-    public Optional<Integer> parseOutputs() {
-        return parseInt(GROUP_NUMBER_OUTPUTS);
+    public OptionalInt parseOutputs() {
+        return outputsParser.parse();
     }
 
     public Optional<double[]> parseAnalogInputs() {
-        return parse(GROUP_NUMBER_ANALOG_INPUTS, this::parseAnalogInputs);
+        return analogInputsParser.parse();
     }
 
     public Optional<String> parseDriverKeyCode() {
-        return parse(GROUP_NUMBER_DRIVER_KEY_CODE, identity());
+        return driverKeyCodeParser.parse();
     }
 
     public Optional<Set<Parameter>> parseParameters() {
-        return parse(GROUP_NUMBER_PARAMETERS, this::parseParameters);
+        return parametersParser.parse();
     }
 
-    private void match(final String subMessage) {
+    private void match(final String data) {
         if (!matcher.matches()) {
-            throw new NotValidSubMessageException("Given sub message isn't valid: '%s'".formatted(subMessage));
+            throw new NotValidSubMessageException("Given sub message isn't valid: '%s'".formatted(data));
         }
     }
 
-//    private Optional<Double> parseDouble(final int groupNumber) {
-//        return parse(groupNumber, Double::valueOf);
-//    }
-
-//    private Optional<Integer> parseInt(final int groupNumber) {
-//        return parse(groupNumber, Integer::valueOf);
-//    }
-
-    private <T> T parse(final int groupNumber, final Function<String, T> parser, final T notDefinedValue) {
-        return parse(groupNumber, parser).orElse(notDefinedValue);
-    }
-
-    private <T> Optional<T> parse(final int groupNumber, final Function<String, T> parser) {
-        final String source = matcher.group(groupNumber);
-        return isDefinedSource(source) ? Optional.of(parser.apply(source)) : empty();
-    }
-
-//    private OptionalDouble parseDouble(final int groupNumber, final ToDoubleFunction<String> parser) {
-//        final String source = matcher.group(groupNumber);
-//        return isDefinedSource(source) ? OptionalDouble.of(parser.applyAsDouble(source)) : OptionalDouble.empty();
-//    }
-
-    private boolean isDefinedSource(final String source) {
-        return !source.isEmpty() && !source.equals(NOT_DEFINED_SOURCE);
-    }
-
-    private double[] parseAnalogInputs(final String source) {
-        return stream(source.split(DELIMITER_ANALOG_INPUTS))
-                .mapToDouble(Double::parseDouble)
-                .toArray();
-    }
-
-    private Set<Parameter> parseParameters(final String source) {
-        return stream(source.split(DELIMITER_PARAMETERS))
-                .map(parameterParser::parse)
-                .collect(toUnmodifiableSet());
-    }
-
     @RequiredArgsConstructor
-    abstract class ComponentParser<T> {
+    private abstract class ComponentParser<T> {
         private final int groupNumber;
         private final String notDefinedContent;
 
@@ -197,7 +152,7 @@ public final class WialonDataComponentsParser {
         protected abstract T createNotDefinedComponent();
     }
 
-    final class DateParser extends ComponentParser<Optional<LocalDate>> {
+    private final class DateParser extends ComponentParser<Optional<LocalDate>> {
         private static final int GROUP_NUMBER = 2;
         private static final String FORMAT = "ddMMyy";
         private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
@@ -217,7 +172,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class TimeParser extends ComponentParser<Optional<LocalTime>> {
+    private final class TimeParser extends ComponentParser<Optional<LocalTime>> {
         private static final int GROUP_NUMBER = 4;
         private static final String FORMAT = "HHmmss";
         private static final DateTimeFormatter FORMATTER = ofPattern(FORMAT);
@@ -237,7 +192,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    abstract class CoordinateParser extends ComponentParser<OptionalDouble> {
+    private abstract class CoordinateParser extends ComponentParser<OptionalDouble> {
         private static final String NOT_DEFINED_CONTENT = NA + ";" + NA;
 
         private final int groupNumberDegrees;
@@ -285,7 +240,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class LatitudeParser extends CoordinateParser {
+    private final class LatitudeParser extends CoordinateParser {
         private static final int GROUP_NUMBER = 6;
         private static final int GROUP_NUMBER_DEGREES = 8;
         private static final int GROUP_NUMBER_MINUTES = 9;
@@ -305,7 +260,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class LongitudeParser extends CoordinateParser {
+    private final class LongitudeParser extends CoordinateParser {
         private static final int GROUP_NUMBER = 13;
         private static final int GROUP_NUMBER_DEGREES = 15;
         private static final int GROUP_NUMBER_MINUTES = 16;
@@ -325,7 +280,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    abstract class IntComponentParser extends ComponentParser<OptionalInt> {
+    private abstract class IntComponentParser extends ComponentParser<OptionalInt> {
 
         public IntComponentParser(final int groupNumber) {
             super(groupNumber, NA);
@@ -342,7 +297,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    abstract class DoubleComponentParser extends ComponentParser<OptionalDouble> {
+    private abstract class DoubleComponentParser extends ComponentParser<OptionalDouble> {
 
         public DoubleComponentParser(final int groupNumber) {
             super(groupNumber, NA);
@@ -359,7 +314,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class SpeedParser extends DoubleComponentParser {
+    private final class SpeedParser extends DoubleComponentParser {
         private static final int GROUP_NUMBER = 20;
 
         public SpeedParser() {
@@ -367,7 +322,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class CourseParser extends IntComponentParser {
+    private final class CourseParser extends IntComponentParser {
         private static final int GROUP_NUMBER = 22;
 
         public CourseParser() {
@@ -375,7 +330,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class AltitudeParser extends IntComponentParser {
+    private final class AltitudeParser extends IntComponentParser {
         private static final int GROUP_NUMBER = 24;
 
         public AltitudeParser() {
@@ -383,7 +338,7 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    final class AmountOfSatellitesParser extends IntComponentParser {
+    private final class AmountOfSatellitesParser extends IntComponentParser {
         private static final int GROUP_NUMBER = 26;
 
         public AmountOfSatellitesParser() {
@@ -391,20 +346,111 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    private static final class ParameterParser {
-        private static final Map<String, ParameterEntity.Type> TYPES_BY_ALIASES = Map.of(
-                "1", INTEGER,
-                "2", DOUBLE,
-                "3", STRING
-        );
+    private final class HdopParser extends DoubleComponentParser {
+        private static final int GROUP_NUMBER = 28;
 
+        public HdopParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    private final class InputsParser extends IntComponentParser {
+        private static final int GROUP_NUMBER = 31;
+
+        public InputsParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    private final class OutputsParser extends IntComponentParser {
+        private static final int GROUP_NUMBER = 33;
+
+        public OutputsParser() {
+            super(GROUP_NUMBER);
+        }
+    }
+
+    private final class AnalogInputsParser extends ComponentParser<Optional<double[]>> {
+        private static final int GROUP_NUMBER = 35;
+        private static final String DELIMITER = ",";
+
+        public AnalogInputsParser() {
+            super(GROUP_NUMBER, NA);
+        }
+
+        @Override
+        protected Optional<double[]> parseDefined(final String content) {
+            final double[] analogInputs = stream(content.split(DELIMITER))
+                    .mapToDouble(Double::parseDouble)
+                    .toArray();
+            return Optional.of(analogInputs);
+        }
+
+        @Override
+        protected Optional<double[]> createNotDefinedComponent() {
+            return Optional.empty();
+        }
+    }
+
+    private final class DriverKeyCodeParser extends ComponentParser<Optional<String>> {
+        private static final int GROUP_NUMBER = 40;
+
+        public DriverKeyCodeParser() {
+            super(GROUP_NUMBER, NA);
+        }
+
+        @Override
+        protected Optional<String> parseDefined(final String content) {
+            return Optional.of(content);
+        }
+
+        @Override
+        protected Optional<String> createNotDefinedComponent() {
+            return Optional.empty();
+        }
+    }
+
+    private final class ParametersParser extends ComponentParser<Optional<Set<Parameter>>> {
+        private static final int GROUP_NUMBER = 41;
+        private static final String EMPTY_STRING = "";
+
+        private final ParameterParser parameterParser;
+
+        public ParametersParser() {
+            super(GROUP_NUMBER, EMPTY_STRING);
+            parameterParser = new ParameterParser();
+        }
+
+        @Override
+        protected Optional<Set<Parameter>> parseDefined(final String content) {
+            final Set<Parameter> parameters = stream(content.split(DELIMITER_PARAMETERS))
+                    .map(parameterParser::parse)
+                    .collect(toUnmodifiableSet());
+            return Optional.of(parameters);
+        }
+
+        @Override
+        protected Optional<Set<Parameter>> createNotDefinedComponent() {
+            return Optional.empty();
+        }
+    }
+
+    private static final class ParameterParser {
+        private static final String INTEGER_ALIAS = "1";
+        private static final String DOUBLE_ALIAS = "2";
+        private static final String STRING_ALIAS = "3";
+        private static final Map<String, ParameterEntity.Type> TYPES_BY_ALIASES = Map.of(
+                INTEGER_ALIAS, INTEGER,
+                DOUBLE_ALIAS, DOUBLE,
+                STRING_ALIAS, STRING
+        );
         private static final String COMPONENTS_DELIMITER = ":";
         private static final int NAME_INDEX = 0;
         private static final int TYPE_INDEX = 1;
         private static final int VALUE_INDEX = 2;
 
-        public Parameter parse(final String source) {
-            final String[] components = source.split(COMPONENTS_DELIMITER);
+        public Parameter parse(final String content) {
+            final String[] components = content.split(COMPONENTS_DELIMITER);
             final String name = components[NAME_INDEX];
             final ParameterEntity.Type type = TYPES_BY_ALIASES.get(components[TYPE_INDEX]);
             final String value = components[VALUE_INDEX];

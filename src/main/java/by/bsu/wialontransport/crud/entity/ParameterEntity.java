@@ -46,6 +46,7 @@ public class ParameterEntity extends Entity<Long> {
     @ToString.Exclude
     private DataEntity data;
 
+    //TODO: out
     public enum Type {
         INTEGER, DOUBLE, STRING
     }
