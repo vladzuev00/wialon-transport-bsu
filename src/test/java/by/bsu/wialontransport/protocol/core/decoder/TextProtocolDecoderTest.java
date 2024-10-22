@@ -1,11 +1,11 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
 import io.netty.buffer.ByteBuf;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TextProtocolDecoderTest {
     private final TextProtocolDecoder decoder = new TextProtocolDecoder(emptyList());
