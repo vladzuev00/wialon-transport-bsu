@@ -8,11 +8,11 @@ public abstract class FixStringPrefixedTextPackageDecoder extends FixPrefixedPac
 
     @Override
     protected final String readPrefix(final String content) {
-        return content.substring(0, getPrefix().length());
+        return content.substring(0, 1);
     }
 
     @Override
-    protected final String removePrefix(final String content) {
-        return content.substring(getPrefix().length());
+    protected final String skip(final String content, int length) {
+        return content.substring(2);
     }
 }

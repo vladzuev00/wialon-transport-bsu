@@ -16,4 +16,9 @@ public final class WialonRequestPingPackageDecoder extends WialonPackageDecoder 
     protected WialonRequestPingPackage decodeMessage(final String message) {
         return new WialonRequestPingPackage();
     }
+
+    @Override
+    protected int getLength(String s) {
+        return 0;
+    }
 }

@@ -18,4 +18,9 @@ public final class NewWingEventCountPackageDecoder extends NewWingPackageDecoder
         final short frameEventCount = buffer.readShortLE();
         return checksum -> new NewWingEventCountPackage(checksum, eventCount, frameEventCount);
     }
+
+    @Override
+    protected int getLength(String s) {
+        return 0;
+    }
 }

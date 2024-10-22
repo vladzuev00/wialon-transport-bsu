@@ -12,7 +12,7 @@ public abstract class WialonPackageDecoder extends FixStringPrefixedTextPackageD
     }
 
     @Override
-    protected final WialonPackage decodeWithoutPrefix(final String content) {
+    protected final WialonPackage decodeInternal(final String content) {
         final String message = removePostfix(content);
         return decodeMessage(message);
     }

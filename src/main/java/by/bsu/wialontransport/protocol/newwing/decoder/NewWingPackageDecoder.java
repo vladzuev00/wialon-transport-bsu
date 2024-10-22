@@ -11,7 +11,7 @@ public abstract class NewWingPackageDecoder extends FixStringPrefixedBinaryPacka
     }
 
     @Override
-    protected final NewWingRequestPackage decodeWithoutPrefix(final ByteBuf buffer) {
+    protected final NewWingRequestPackage decodeInternal(final ByteBuf buffer) {
         final PackageFactory factory = decodeUntilChecksum(buffer);
         final int checksum = buffer.readIntLE();
         return factory.create(checksum);

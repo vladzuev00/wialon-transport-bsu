@@ -22,4 +22,9 @@ public final class NewWingLoginPackageDecoder extends NewWingPackageDecoder {
         final short imei = buffer.readShortLE();
         return Short.toString(imei);
     }
+
+    @Override
+    protected int getLength(String s) {
+        return 0;
+    }
 }

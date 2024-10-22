@@ -1,62 +1,52 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import lombok.Value;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class FixPrefixedPackageDecoderTest {
     private final TestFixPrefixedPackageDecoder decoder = new TestFixPrefixedPackageDecoder();
 
     @Test
     public void sourceShouldBeDecoded() {
-        final ByteBuf givenBuffer = wrappedBuffer(new byte[]{0, 100, 109, 101, 115, 115, 97, 103, 101});
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("0064746573742d6d657373616765"));
 
-        final Package actual = decoder.decode(givenBuffer);
-        final TestPackage expected = new TestPackage("message");
+        final Object actual = decoder.decode(givenBuffer);
+        final Object expected = new TestPackage("test-message");
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void prefixShouldBeSuitable() {
-        final Short givenPrefix = 100;
-
-        final boolean actual = decoder.isSuitablePrefix(givenPrefix);
-        assertTrue(actual);
-    }
-
-    @Test
-    public void prefixShouldNotBeSuitable() {
-        final Short givenPrefix = 101;
-
-        final boolean actual = decoder.isSuitablePrefix(givenPrefix);
-        assertFalse(actual);
-    }
-
     @Value
-    private static class TestPackage implements Package {
+    private static class TestPackage {
         String message;
     }
 
     private static final class TestFixPrefixedPackageDecoder extends FixPrefixedPackageDecoder<ByteBuf, Short> {
-        private static final Short PREFIX = 100;
+        private static final short PREFIX = 100;
+        private static final int MESSAGE_BYTE_COUNT = 12;
 
         public TestFixPrefixedPackageDecoder() {
             super(PREFIX);
         }
 
         @Override
-        protected ByteBuf removePrefix(final ByteBuf buffer) {
-            return buffer.skipBytes(2);
+        protected int getLength(final Short prefix) {
+            return Short.BYTES;
         }
 
         @Override
-        protected TestPackage decodeWithoutPrefix(final ByteBuf buffer) {
-            final String message = decodeMessage(buffer);
+        protected ByteBuf skip(final ByteBuf buffer, final int length) {
+            return buffer.skipBytes(length);
+        }
+
+        @Override
+        protected Object decodeInternal(final ByteBuf buffer) {
+            final String message = readMessage(buffer);
             return new TestPackage(message);
         }
 
@@ -65,8 +55,8 @@ public final class FixPrefixedPackageDecoderTest {
             throw new UnsupportedOperationException();
         }
 
-        private String decodeMessage(final ByteBuf buffer) {
-            return buffer.readCharSequence(buffer.readableBytes(), US_ASCII).toString();
+        private String readMessage(final ByteBuf buffer) {
+            return buffer.readCharSequence(MESSAGE_BYTE_COUNT, US_ASCII).toString();
         }
     }
 }

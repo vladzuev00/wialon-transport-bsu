@@ -15,7 +15,7 @@ public abstract class FixStringPrefixedBinaryPackageDecoder extends FixPrefixedB
 
     @Override
     protected final int getPrefixByteCount() {
-        return getPrefix().getBytes(CHARSET).length;
+        return "getPrefix()".getBytes(CHARSET).length;
     }
 
     @Override
