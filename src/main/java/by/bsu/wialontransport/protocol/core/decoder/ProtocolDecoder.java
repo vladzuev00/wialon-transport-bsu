@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -18,7 +17,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
         buffer.retain();
         try {
             final SOURCE source = createSource(buffer);
-            final Package request = decode(source);
+            final Object request = decode(source);
             out.add(request);
         } finally {
             buffer.release();
@@ -27,7 +26,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
 
     protected abstract SOURCE createSource(final ByteBuf buffer);
 
-    private Package decode(final SOURCE source) {
+    private Object decode(final SOURCE source) {
         return packageDecoders.stream()
                 .filter(decoder -> decoder.isAbleToDecode(source))
                 .findFirst()

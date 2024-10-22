@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +48,13 @@ public final class ProtocolDecoderTest {
         when(firstMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(true);
 
-        final Package givenPackage = mock(Package.class);
-        when(secondMockedPackageDecoder.decode(same(givenBuffer))).thenReturn(givenPackage);
+        final Object givenRequest = new Object();
+        when(secondMockedPackageDecoder.decode(same(givenBuffer))).thenReturn(givenRequest);
 
         protocolDecoder.decode(givenContext, givenBuffer, givenOut);
 
         verify(givenBuffer, times(1)).retain();
-        verify(givenOut, times(1)).add(same(givenPackage));
+        verify(givenOut, times(1)).add(same(givenRequest));
         verify(givenBuffer, times(1)).release();
         verify(firstMockedPackageDecoder, times(0)).decode(any(ByteBuf.class));
         verifyNoInteractions(thirdMockedPackageDecoder);
