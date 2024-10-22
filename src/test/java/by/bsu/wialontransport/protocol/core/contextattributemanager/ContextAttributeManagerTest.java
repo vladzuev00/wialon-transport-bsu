@@ -106,8 +106,8 @@ public final class ContextAttributeManagerTest {
                                                  final AttributeKey<T> expectedKey,
                                                  final FindingAttributeOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Attribute<T> attribute = mockAttribute(givenContext, expectedKey);
-        when(attribute.get()).thenReturn(expectedObject);
+        final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
+        when(givenAttribute.get()).thenReturn(expectedObject);
         return operation.execute(manager, givenContext);
     }
 
