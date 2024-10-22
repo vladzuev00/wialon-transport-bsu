@@ -1,16 +1,13 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import io.netty.buffer.ByteBuf;
-import lombok.RequiredArgsConstructor;
-import org.junit.Test;
-
-import java.util.Objects;
+import lombok.Value;
+import org.junit.jupiter.api.Test;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class PrefixedPackageDecoderTest {
     private final TestPrefixedPackageDecoder decoder = new TestPrefixedPackageDecoder();
@@ -29,13 +26,26 @@ public final class PrefixedPackageDecoderTest {
         assertFalse(decoder.isAbleDecode(givenBuffer));
     }
 
-    @RequiredArgsConstructor
+    @Test
+    public void sourceShouldBeDecoded() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("505245464958746573742d6d657373616765"));
+
+        final Object actual = decoder.decode(givenBuffer);
+        final Object expected = new TestPackage("test-message");
+        assertEquals(expected, actual);
+    }
+
+    @Value
+    private static class TestPackage {
+        String message;
+    }
+
     private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<ByteBuf, String> {
         private static final String REQUIRED_PREFIX = "PREFIX";
+        private static final int MESSAGE_BYTE_COUNT = 12;
 
-        @Override
-        public Package decode(final ByteBuf buffer) {
-            throw new UnsupportedOperationException();
+        public TestPrefixedPackageDecoder() {
+            super(REQUIRED_PREFIX);
         }
 
         @Override
@@ -44,8 +54,23 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected boolean isSuitablePrefix(final String prefix) {
-            return Objects.equals(prefix, REQUIRED_PREFIX);
+        protected int getLength(final String requiredPrefix) {
+            return requiredPrefix.length();
+        }
+
+        @Override
+        protected ByteBuf skip(final ByteBuf buffer, final int length) {
+            return buffer.skipBytes(length);
+        }
+
+        @Override
+        protected Object decodeInternal(final ByteBuf buffer) {
+            final String message = readMessage(buffer);
+            return new TestPackage(message);
+        }
+
+        private String readMessage(final ByteBuf buffer) {
+            return buffer.readCharSequence(MESSAGE_BYTE_COUNT, US_ASCII).toString();
         }
     }
 }

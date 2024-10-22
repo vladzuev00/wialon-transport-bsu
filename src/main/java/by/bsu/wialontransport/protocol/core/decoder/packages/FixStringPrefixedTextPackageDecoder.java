@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-public abstract class FixStringPrefixedTextPackageDecoder extends FixPrefixedPackageDecoder<String, String> {
+public abstract class FixStringPrefixedTextPackageDecoder extends PrefixedPackageDecoder<String, String> {
 
     public FixStringPrefixedTextPackageDecoder(final String prefix) {
         super(prefix);
@@ -12,7 +12,17 @@ public abstract class FixStringPrefixedTextPackageDecoder extends FixPrefixedPac
     }
 
     @Override
+    protected int getLength(String s) {
+        return 0;
+    }
+
+    @Override
     protected final String skip(final String content, int length) {
         return content.substring(2);
+    }
+
+    @Override
+    protected Object decodeInternal(String s) {
+        return null;
     }
 }
