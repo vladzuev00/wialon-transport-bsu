@@ -20,7 +20,7 @@ public final class PrefixedPackageDecoderTest {
         final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final boolean actual = givenDecoder.isAbleToDecode(givenBuffer);
+        final boolean actual = givenDecoder.isAbleDecode(givenBuffer);
         assertTrue(actual);
     }
 
@@ -31,7 +31,7 @@ public final class PrefixedPackageDecoderTest {
         final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final boolean actual = givenDecoder.isAbleToDecode(givenBuffer);
+        final boolean actual = givenDecoder.isAbleDecode(givenBuffer);
         assertFalse(actual);
     }
 

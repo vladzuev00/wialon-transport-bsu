@@ -28,7 +28,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
 
     private Object decode(final SOURCE source) {
         return packageDecoders.stream()
-                .filter(decoder -> decoder.isAbleToDecode(source))
+                .filter(decoder -> decoder.isAbleDecode(source))
                 .findFirst()
                 .orElseThrow(() -> createNoPackageDecoderException(source))
                 .decode(source);

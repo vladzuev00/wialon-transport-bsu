@@ -45,8 +45,8 @@ public final class ProtocolDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         @SuppressWarnings("unchecked") final List<Object> givenOut = mock(List.class);
 
-        when(firstMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
-        when(secondMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(true);
+        when(firstMockedPackageDecoder.isAbleDecode(same(givenBuffer))).thenReturn(false);
+        when(secondMockedPackageDecoder.isAbleDecode(same(givenBuffer))).thenReturn(true);
 
         final Object givenRequest = new Object();
         when(secondMockedPackageDecoder.decode(same(givenBuffer))).thenReturn(givenRequest);
@@ -66,9 +66,9 @@ public final class ProtocolDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         @SuppressWarnings("unchecked") final List<Object> givenOut = mock(List.class);
 
-        when(firstMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
-        when(secondMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
-        when(thirdMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
+        when(firstMockedPackageDecoder.isAbleDecode(same(givenBuffer))).thenReturn(false);
+        when(secondMockedPackageDecoder.isAbleDecode(same(givenBuffer))).thenReturn(false);
+        when(thirdMockedPackageDecoder.isAbleDecode(same(givenBuffer))).thenReturn(false);
 
         assertThrows(IllegalStateException.class, () -> protocolDecoder.decode(givenContext, givenBuffer, givenOut));
 
