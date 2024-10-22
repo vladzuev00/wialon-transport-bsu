@@ -1,44 +1,37 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 import org.junit.Test;
 
 import java.util.Objects;
 
+import static io.netty.buffer.ByteBufUtil.decodeHexDump;
+import static io.netty.buffer.Unpooled.wrappedBuffer;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public final class PrefixedPackageDecoderTest {
+    private final TestPrefixedPackageDecoder decoder = new TestPrefixedPackageDecoder();
 
     @Test
     public void decoderShouldBeAbleToDecodeBuffer() {
-        final String givenSuitablePrefix = "PREFIX";
-        final String givenReadPrefix = "PREFIX";
-        final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
-        final ByteBuf givenBuffer = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("5052454649586753"));
 
-        final boolean actual = givenDecoder.isAbleDecode(givenBuffer);
-        assertTrue(actual);
+        assertTrue(decoder.isAbleDecode(givenBuffer));
     }
 
     @Test
     public void decoderShouldNotBeAbleToDecodeBuffer() {
-        final String givenSuitablePrefix = "PREFIX-1";
-        final String givenReadPrefix = "PREFIX-2";
-        final var givenDecoder = new TestPrefixedPackageDecoder(givenSuitablePrefix, givenReadPrefix);
-        final ByteBuf givenBuffer = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("5052444649586753"));
 
-        final boolean actual = givenDecoder.isAbleDecode(givenBuffer);
-        assertFalse(actual);
+        assertFalse(decoder.isAbleDecode(givenBuffer));
     }
 
     @RequiredArgsConstructor
     private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<ByteBuf, String> {
-        private final String suitablePrefix;
-        private final String readPrefix;
+        private static final String REQUIRED_PREFIX = "PREFIX";
 
         @Override
         public Package decode(final ByteBuf buffer) {
@@ -47,12 +40,12 @@ public final class PrefixedPackageDecoderTest {
 
         @Override
         protected String readPrefix(final ByteBuf buffer) {
-            return readPrefix;
+            return buffer.readCharSequence(REQUIRED_PREFIX.length(), US_ASCII).toString();
         }
 
         @Override
         protected boolean isSuitablePrefix(final String prefix) {
-            return Objects.equals(prefix, suitablePrefix);
+            return Objects.equals(prefix, REQUIRED_PREFIX);
         }
     }
 }
