@@ -29,7 +29,7 @@ public abstract class FixPrefixedBinaryPackageDecoder<PREFIX> extends PrefixedPa
     protected abstract PREFIX createPrefix(final ByteBuf prefixBytes);
 
     @Override
-    protected PREFIX readPrefix(ByteBuf buf) {
+    protected PREFIX readPrefix(ByteBuf buf, int length) {
         return null;
     }
 

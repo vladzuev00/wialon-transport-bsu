@@ -49,13 +49,13 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected String readPrefix(final ByteBuf buffer) {
-            return buffer.readCharSequence(REQUIRED_PREFIX.length(), US_ASCII).toString();
+        protected int getLength(final String prefix) {
+            return prefix.length();
         }
 
         @Override
-        protected int getLength(final String requiredPrefix) {
-            return requiredPrefix.length();
+        protected String readPrefix(final ByteBuf buffer, final int length) {
+            return buffer.readCharSequence(length, US_ASCII).toString();
         }
 
         @Override

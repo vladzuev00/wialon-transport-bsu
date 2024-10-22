@@ -7,7 +7,7 @@ public abstract class FixStringPrefixedTextPackageDecoder extends PrefixedPackag
     }
 
     @Override
-    protected final String readPrefix(final String content) {
+    protected final String readPrefix(final String content, int length) {
         return content.substring(0, 1);
     }
 

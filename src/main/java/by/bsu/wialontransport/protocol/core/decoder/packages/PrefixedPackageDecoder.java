@@ -10,7 +10,10 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
 
     @Override
     public final boolean isAbleDecode(final SOURCE source) {
-        final PREFIX prefix = readPrefix(source);
+        //TODO: check source length to read prefix
+        //TODO: read prefix shouldn't update reader index - validate
+        final int prefixLength = getLength(requiredPrefix);
+        final PREFIX prefix = readPrefix(source, prefixLength);
         return Objects.equals(prefix, requiredPrefix);
     }
 
@@ -21,9 +24,9 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
         return decodeInternal(sourceWithoutPrefix);
     }
 
-    protected abstract PREFIX readPrefix(final SOURCE source);
-
     protected abstract int getLength(final PREFIX prefix);
+
+    protected abstract PREFIX readPrefix(final SOURCE source, final int length);
 
     protected abstract SOURCE skip(final SOURCE source, final int length);
 
