@@ -2,7 +2,7 @@ package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.model.Coordinate;
@@ -38,9 +38,9 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldBeFoundFetchingParameters() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isPresent());
-        final Data actual = optionalActual.get();
+        final Location actual = optionalActual.get();
 
         final Long actualId = actual.getId();
         final Long expectedId = 257L;
@@ -51,7 +51,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsNoDataFromGivenTracker() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -59,7 +59,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsSuchTracker() {
         final Tracker givenTracker = createTracker(MIN_VALUE);
 
-        final Optional<Data> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -73,14 +73,14 @@ public final class DataServiceTest extends AbstractSpringBootTest {
         );
 
         try (
-                final Stream<Data> actual = service.findDataByUserIdFetchingTrackerAndAddress(
+                final Stream<Location> actual = service.findDataByUserIdFetchingTrackerAndAddress(
                         givenUser,
                         givenDateInterval
                 )
         ) {
-            final Set<Data> actualAsSet = actual.collect(toSet());
-            final Set<Data> expectedAsSet = Set.of(
-                    Data.builder()
+            final Set<Location> actualAsSet = actual.collect(toSet());
+            final Set<Location> expectedAsSet = Set.of(
+                    Location.builder()
                             .id(254L)
                             .dateTime(LocalDateTime.of(2019, 10, 23, 14, 39, 50))
                             .coordinate(new Coordinate(53.233, 27.3434))
@@ -112,7 +112,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
                                             .build()
                             )
                             .build(),
-                    Data.builder()
+                    Location.builder()
                             .id(255L)
                             .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 51))
                             .coordinate(new Coordinate(53.232, 27.3433))
@@ -158,7 +158,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
         );
 
         try (
-                final Stream<Data> actual = service.findDataByUserIdFetchingTrackerAndAddress(
+                final Stream<Location> actual = service.findDataByUserIdFetchingTrackerAndAddress(
                         givenUser,
                         givenDateInterval
                 )
@@ -202,9 +202,9 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldBeFound() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastData(givenTracker);
         assertTrue(optionalActual.isPresent());
-        final Data actual = optionalActual.get();
+        final Location actual = optionalActual.get();
 
         final Long actualId = actual.getId();
         final Long expectedId = 257L;
@@ -215,7 +215,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundBecauseOfThereIsNoDataFromGivenTracker() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastData(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -223,7 +223,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundBecauseOfThereIsSuchTracker() {
         final Tracker givenTracker = createTracker(MIN_VALUE);
 
-        final Optional<Data> optionalActual = service.findTrackerLastData(givenTracker);
+        final Optional<Location> optionalActual = service.findTrackerLastData(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingDataPackage;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
@@ -43,7 +43,7 @@ public final class NewWingDataPackageDecoderTest {
             final NewWingDataIterator givenIterator = mock(NewWingDataIterator.class);
             when(mockedDataIteratorFactory.create(same(givenBuffer))).thenReturn(givenIterator);
 
-            final List<Data> givenData = List.of(createData(255L), createData(256L), createData(257L));
+            final List<Location> givenData = List.of(createData(255L), createData(256L), createData(257L));
             mockedIteratorUtil.when(() -> toList(same(givenIterator))).thenReturn(givenData);
 
             final Object packageFactory = decoder.decodeUntilChecksum(givenBuffer);
@@ -55,8 +55,8 @@ public final class NewWingDataPackageDecoderTest {
         }
     }
 
-    private Data createData(final Long id) {
-        return Data.builder()
+    private Location createData(final Long id) {
+        return Location.builder()
                 .id(id)
                 .build();
     }

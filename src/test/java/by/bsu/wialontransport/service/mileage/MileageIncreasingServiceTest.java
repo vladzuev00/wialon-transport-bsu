@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.mileage;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
@@ -61,7 +61,7 @@ public final class MileageIncreasingServiceTest {
         final Track givenTrack = new Track(givenTracker, givenCoordinates);
 
         final Coordinate givenLastDataCoordinate = new Coordinate(4.4, 4.4);
-        final Data givenLastData = createData(256L, givenLastDataCoordinate);
+        final Location givenLastData = createData(256L, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker)))
                 .thenReturn(Optional.of(givenLastData));
 
@@ -117,8 +117,8 @@ public final class MileageIncreasingServiceTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Data createData(final Long id, final Coordinate coordinate) {
-        return Data.builder()
+    private static Location createData(final Long id, final Coordinate coordinate) {
+        return Location.builder()
                 .id(id)
                 .coordinate(coordinate)
                 .build();

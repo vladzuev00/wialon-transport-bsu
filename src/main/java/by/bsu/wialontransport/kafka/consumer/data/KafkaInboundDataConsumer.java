@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
@@ -57,8 +57,8 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     }
 
     @Override
-    protected Data createData(final ConsumingContext context) {
-        return Data.builder()
+    protected Location createData(final ConsumingContext context) {
+        return Location.builder()
                 .dateTime(context.getDateTime())
                 .coordinate(context.getCoordinate())
                 .speed(context.getSpeed())
@@ -92,13 +92,13 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
 
     @Override
     @Transactional
-    protected void process(final List<Data> data) {
+    protected void process(final List<Location> data) {
         increaseMileages(data);
-        final List<Data> savedData = dataService.saveAll(data);
+        final List<Location> savedData = dataService.saveAll(data);
         sendToSavedDataTopic(savedData);
     }
 
-    private void increaseMileages(final List<Data> data) {
+    private void increaseMileages(final List<Location> data) {
         groupCoordinatesByTrackers(data)
                 .entrySet()
                 .stream()
@@ -106,17 +106,17 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
                 .forEach(mileageIncreasingService::increase);
     }
 
-    private static Map<Tracker, List<Coordinate>> groupCoordinatesByTrackers(final List<Data> data) {
+    private static Map<Tracker, List<Coordinate>> groupCoordinatesByTrackers(final List<Location> data) {
         return data.stream()
                 .collect(
                         groupingBy(
-                                Data::getTracker,
-                                mapping(Data::getCoordinate, toList())
+                                Location::getTracker,
+                                mapping(Location::getCoordinate, toList())
                         )
                 );
     }
 
-    private void sendToSavedDataTopic(final List<Data> data) {
+    private void sendToSavedDataTopic(final List<Location> data) {
         data.forEach(savedDataProducer::send);
     }
 }

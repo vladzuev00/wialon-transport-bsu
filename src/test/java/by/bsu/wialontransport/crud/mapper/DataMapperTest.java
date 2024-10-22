@@ -2,7 +2,7 @@ package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
@@ -34,7 +34,7 @@ public final class DataMapperTest extends AbstractSpringBootTest {
 
     @Test
     public void dtoShouldBeMappedToEntity() {
-        final Data givenDto = Data.builder()
+        final Location givenDto = Location.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
                 .coordinate(new Coordinate(5.5, 6.6))
@@ -110,8 +110,8 @@ public final class DataMapperTest extends AbstractSpringBootTest {
                 .address(createAddressEntity(259L))
                 .build();
 
-        final Data actual = mapper.mapToDto(givenEntity);
-        final Data expected = Data.builder()
+        final Location actual = mapper.mapToDto(givenEntity);
+        final Location expected = Location.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
                 .coordinate(new Coordinate(5.5, 6.6))
@@ -168,8 +168,8 @@ public final class DataMapperTest extends AbstractSpringBootTest {
                     .address(givenAddress)
                     .build();
 
-            final Data actual = mapper.mapToDto(givenEntity);
-            final Data expected = Data.builder()
+            final Location actual = mapper.mapToDto(givenEntity);
+            final Location expected = Location.builder()
                     .id(255L)
                     .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
                     .coordinate(new Coordinate(5.5, 6.6))

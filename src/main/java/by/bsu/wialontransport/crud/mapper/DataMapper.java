@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.crud.mapper;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
@@ -16,15 +16,15 @@ import java.util.Map;
 import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 
 @Component
-public final class DataMapper extends Mapper<DataEntity, Data> {
+public final class DataMapper extends Mapper<DataEntity, Location> {
 
     public DataMapper(final ModelMapper modelMapper) {
-        super(modelMapper, DataEntity.class, Data.class);
+        super(modelMapper, DataEntity.class, Location.class);
     }
 
     @Override
-    protected Data createDto(final DataEntity source) {
-        return new Data(
+    protected Location createDto(final DataEntity source) {
+        return new Location(
                 source.getId(),
                 source.getDateTime(),
                 mapNullableCoordinate(source),
@@ -44,7 +44,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
     }
 
     @Override
-    protected void mapSpecificFields(final Data source, final DataEntity destination) {
+    protected void mapSpecificFields(final Location source, final DataEntity destination) {
         mapCoordinate(source, destination);
         mapParameters(source, destination);
     }
@@ -70,15 +70,15 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return mapLazy(source.getAddress(), Address.class);
     }
 
-    private void mapCoordinate(final Data source, final DataEntity destination) {
+    private void mapCoordinate(final Location source, final DataEntity destination) {
         destination.setCoordinate(mapNullableCoordinate(source));
     }
 
-    private void mapParameters(final Data source, final DataEntity destination) {
+    private void mapParameters(final Location source, final DataEntity destination) {
         destination.setParameters(mapNullableParameters(source));
     }
 
-    private static DataEntity.Coordinate mapNullableCoordinate(final Data source) {
+    private static DataEntity.Coordinate mapNullableCoordinate(final Location source) {
         final Coordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
@@ -87,7 +87,7 @@ public final class DataMapper extends Mapper<DataEntity, Data> {
         return new DataEntity.Coordinate(source.getLatitude(), source.getLongitude());
     }
 
-    private List<ParameterEntity> mapNullableParameters(final Data source) {
+    private List<ParameterEntity> mapNullableParameters(final Location source) {
         final Map<String, Parameter> parametersByNames = source.getParametersByNames();
         return parametersByNames != null ? map(parametersByNames) : null;
     }

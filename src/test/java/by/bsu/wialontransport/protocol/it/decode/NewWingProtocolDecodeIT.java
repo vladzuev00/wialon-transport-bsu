@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.it.decode;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingPackageDecoder;
@@ -101,7 +101,7 @@ public final class NewWingProtocolDecodeIT extends BinaryProtocolDecodeIT {
                 new NewWingDataPackage(
                         -1512959769,
                         List.of(
-                                Data.builder()
+                                Location.builder()
                                         .dateTime(LocalDateTime.of(2023, 10, 31, 18, 51, 43))
                                         .coordinate(new Coordinate(53.91630172729492, 27.56231689453125))
                                         .course(182)
@@ -109,7 +109,7 @@ public final class NewWingProtocolDecodeIT extends BinaryProtocolDecodeIT {
                                         .hdop(2.123)
                                         .analogInputs(new double[]{0, 0, 0, 439})
                                         .build(),
-                                Data.builder()
+                                Location.builder()
                                         .dateTime(LocalDateTime.of(2023, 10, 31, 19, 52, 44))
                                         .coordinate(new Coordinate(53.91630172729492, 27.56231689453125))
                                         .course(182)

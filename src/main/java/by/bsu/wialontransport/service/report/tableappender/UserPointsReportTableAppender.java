@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.report.tableappender;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TableRowMetaData;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
@@ -12,7 +12,6 @@ import org.vandeseer.easytable.structure.Row;
 import org.vandeseer.easytable.structure.cell.AbstractCell;
 
 import java.awt.*;
-import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.PDFCellFactoryUtil.createTextCell;
@@ -86,7 +85,7 @@ public final class UserPointsReportTableAppender extends AbstractUserMovementRep
         };
     }
 
-    private static Row createContentRow(final Tracker tracker, final Data data) {
+    private static Row createContentRow(final Tracker tracker, final Location data) {
         final String trackerImei = tracker.getImei();
 //        final LocalDateTime dateTime = data.findDateTime();
 //        final double latitudeAsDouble = data.findLatitudeAsDouble();

@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
@@ -51,7 +51,7 @@ public final class KafkaInboundDataConsumerTest {
     private ArgumentCaptor<Track> trackArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<Data> dataArgumentCaptor;
+    private ArgumentCaptor<Location> dataArgumentCaptor;
 
     private KafkaInboundDataConsumer consumer;
 
@@ -110,8 +110,8 @@ public final class KafkaInboundDataConsumerTest {
                 givenAddress
         );
 
-        @SuppressWarnings("unchecked") final Data actual = consumer.createData(givenContext);
-        final Data expected = Data.builder()
+        @SuppressWarnings("unchecked") final Location actual = consumer.createData(givenContext);
+        final Location expected = Location.builder()
                 .dateTime(givenDateTime)
                 .coordinate(givenCoordinate)
                 .speed(givenSpeed)
@@ -178,12 +178,12 @@ public final class KafkaInboundDataConsumerTest {
         final Coordinate fourthGivenCoordinate = new Coordinate(4.4, 4.4);
         final Coordinate fifthGivenCoordinate = new Coordinate(5.5, 5.5);
 
-        final Data firstGivenData = createData(firstGivenCoordinate, firstGivenTracker);
-        final Data secondGivenData = createData(secondGivenCoordinate, firstGivenTracker);
-        final Data thirdGivenData = createData(thirdGivenCoordinate, secondGivenTracker);
-        final Data fourthGivenData = createData(fourthGivenCoordinate, secondGivenTracker);
-        final Data fifthGivenData = createData(fifthGivenCoordinate, secondGivenTracker);
-        final List<Data> givenData = List.of(
+        final Location firstGivenData = createData(firstGivenCoordinate, firstGivenTracker);
+        final Location secondGivenData = createData(secondGivenCoordinate, firstGivenTracker);
+        final Location thirdGivenData = createData(thirdGivenCoordinate, secondGivenTracker);
+        final Location fourthGivenData = createData(fourthGivenCoordinate, secondGivenTracker);
+        final Location fifthGivenData = createData(fifthGivenCoordinate, secondGivenTracker);
+        final List<Location> givenData = List.of(
                 firstGivenData,
                 secondGivenData,
                 thirdGivenData,
@@ -191,12 +191,12 @@ public final class KafkaInboundDataConsumerTest {
                 fifthGivenData
         );
 
-        final Data firstGivenSavedData = createData(1L, firstGivenCoordinate, firstGivenTracker);
-        final Data secondGivenSavedData = createData(2L, secondGivenCoordinate, firstGivenTracker);
-        final Data thirdGivenSavedData = createData(3L, thirdGivenCoordinate, secondGivenTracker);
-        final Data fourthGivenSavedData = createData(4L, fourthGivenCoordinate, secondGivenTracker);
-        final Data fifthGivenSavedData = createData(5L, fifthGivenCoordinate, secondGivenTracker);
-        final List<Data> givenSavedData = List.of(
+        final Location firstGivenSavedData = createData(1L, firstGivenCoordinate, firstGivenTracker);
+        final Location secondGivenSavedData = createData(2L, secondGivenCoordinate, firstGivenTracker);
+        final Location thirdGivenSavedData = createData(3L, thirdGivenCoordinate, secondGivenTracker);
+        final Location fourthGivenSavedData = createData(4L, fourthGivenCoordinate, secondGivenTracker);
+        final Location fifthGivenSavedData = createData(5L, fifthGivenCoordinate, secondGivenTracker);
+        final List<Location> givenSavedData = List.of(
                 firstGivenSavedData,
                 secondGivenSavedData,
                 thirdGivenSavedData,
@@ -216,7 +216,7 @@ public final class KafkaInboundDataConsumerTest {
         assertEquals(expectedCapturedTracks, actualCapturedTracks);
 
         verify(mockedSavedDataProducer, times(givenSavedData.size())).send(dataArgumentCaptor.capture());
-        final List<Data> actualCapturedData = dataArgumentCaptor.getAllValues();
+        final List<Location> actualCapturedData = dataArgumentCaptor.getAllValues();
         assertEquals(givenSavedData, actualCapturedData);
     }
 
@@ -287,15 +287,15 @@ public final class KafkaInboundDataConsumerTest {
                 .build();
     }
 
-    private static Data createData(final Coordinate coordinate, final Tracker tracker) {
-        return Data.builder()
+    private static Location createData(final Coordinate coordinate, final Tracker tracker) {
+        return Location.builder()
                 .coordinate(coordinate)
                 .tracker(tracker)
                 .build();
     }
 
-    private static Data createData(final Long id, final Coordinate coordinate, final Tracker tracker) {
-        return Data.builder()
+    private static Location createData(final Long id, final Coordinate coordinate, final Tracker tracker) {
+        return Location.builder()
                 .id(id)
                 .coordinate(coordinate)
                 .tracker(tracker)

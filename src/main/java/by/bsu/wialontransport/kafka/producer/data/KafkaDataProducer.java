@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.producer.data;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.kafka.producer.GenericRecordKafkaProducer;
 import by.bsu.wialontransport.kafka.model.view.ParameterView;
@@ -21,7 +21,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.collectValuesToList;
 import static java.time.ZoneOffset.UTC;
 import static lombok.AccessLevel.NONE;
 
-public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long, TransportableData, Data> {
+public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long, TransportableData, Location> {
     private static final ZoneOffset ZONE_OFFSET = UTC;
 
     private final ObjectMapper objectMapper;
@@ -35,7 +35,7 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
     }
 
     @Override
-    protected final TransportableData mapToTransportable(final Data data) {
+    protected final TransportableData mapToTransportable(final Location data) {
         final ProducingContext context = createCreatingContext(data);
         return createTransportable(context);
     }
@@ -44,7 +44,7 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
 
     protected abstract ParameterView createParameterView(final Parameter parameter);
 
-    private ProducingContext createCreatingContext(final Data data) {
+    private ProducingContext createCreatingContext(final Location data) {
         return ProducingContext.builder()
                 .data(data)
                 .epochSeconds(findEpochSeconds(data))
@@ -53,20 +53,20 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
                 .build();
     }
 
-    private static long findEpochSeconds(final Data data) {
+    private static long findEpochSeconds(final Location data) {
         return data.getDateTime().toEpochSecond(ZONE_OFFSET);
     }
 
-    private String serializeAnalogInputs(final Data data) {
+    private String serializeAnalogInputs(final Location data) {
         return serializeToJson(data.getAnalogInputs());
     }
 
-    private String serializeParameters(final Data data) {
+    private String serializeParameters(final Location data) {
         final List<ParameterView> parameterViews = createParameterViews(data);
         return serializeToJson(parameterViews);
     }
 
-    private List<ParameterView> createParameterViews(final Data data) {
+    private List<ParameterView> createParameterViews(final Location data) {
         return collectValuesToList(data.getParametersByNames(), this::createParameterView);
     }
 
@@ -83,7 +83,7 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
     protected static final class ProducingContext {
 
         @Getter(NONE)
-        private final Data data;
+        private final Location data;
 
         @Getter
         private final long epochSeconds;

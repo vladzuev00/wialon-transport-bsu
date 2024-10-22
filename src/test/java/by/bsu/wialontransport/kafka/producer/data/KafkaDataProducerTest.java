@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.producer.data;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
@@ -31,7 +31,7 @@ public final class KafkaDataProducerTest {
 
     @Test
     public void dataShouldBeMappedToTransportable() {
-        final Data givenData = Data.builder()
+        final Location givenData = Location.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
                 .coordinate(new Coordinate(5.5, 6.6))

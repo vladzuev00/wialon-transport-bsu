@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import io.netty.buffer.ByteBuf;
 import org.junit.Test;
 
@@ -30,16 +30,16 @@ public final class NewWingDataIteratorTest {
                 .thenReturn(42)
                 .thenReturn(5);
 
-        final Data firstGivenData = createData(255L);
-        final Data secondGivenData = createData(256L);
-        final Data thirdGivenData = createData(257L);
+        final Location firstGivenData = createData(255L);
+        final Location secondGivenData = createData(256L);
+        final Location thirdGivenData = createData(257L);
         when(givenDecoder.decodeNext(same(givenBuffer)))
                 .thenReturn(firstGivenData)
                 .thenReturn(secondGivenData)
                 .thenReturn(thirdGivenData);
 
-        final List<Data> actual = toList(givenIterator);
-        final List<Data> expected = List.of(firstGivenData, secondGivenData, thirdGivenData);
+        final List<Location> actual = toList(givenIterator);
+        final List<Location> expected = List.of(firstGivenData, secondGivenData, thirdGivenData);
         assertEquals(expected, actual);
     }
 
@@ -54,8 +54,8 @@ public final class NewWingDataIteratorTest {
         givenIterator.next();
     }
 
-    private Data createData(final Long id) {
-        return Data.builder()
+    private Location createData(final Long id) {
+        return Location.builder()
                 .id(id)
                 .build();
     }

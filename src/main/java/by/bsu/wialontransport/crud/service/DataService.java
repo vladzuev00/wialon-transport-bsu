@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.service;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.entity.DataEntity;
@@ -15,14 +15,14 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper, DataRepository> {
+public class DataService extends CRUDService<Long, DataEntity, Location, DataMapper, DataRepository> {
 
     public DataService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Data> findTrackerLastDataFetchingParameters(final Tracker tracker) {
+    public Optional<Location> findTrackerLastDataFetchingParameters(final Tracker tracker) {
         return findUniqueDto(
                 repository -> repository.findTrackerLastDataByTrackerIdFetchingParameters(
                         tracker.getId()
@@ -31,7 +31,7 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
     }
 
     @Transactional(readOnly = true)
-    public Stream<Data> findDataByUserIdFetchingTrackerAndAddress(final User user, final DateInterval dateInterval) {
+    public Stream<Location> findDataByUserIdFetchingTrackerAndAddress(final User user, final DateInterval dateInterval) {
         return findDtoStream(
                 repository -> repository.findDataByUserIdFetchingTrackerAndAddress(
                         user.getId(),
@@ -47,13 +47,13 @@ public class DataService extends CRUDService<Long, DataEntity, Data, DataMapper,
     }
 
     @Transactional(readOnly = true)
-    public Optional<Data> findTrackerLastData(final Tracker tracker) {
+    public Optional<Location> findTrackerLastData(final Tracker tracker) {
         return findTrackerLastData(tracker.getId());
     }
 
     //TODO: test
     @Transactional(readOnly = true)
-    public Optional<Data> findTrackerLastData(final Long trackerId) {
+    public Optional<Location> findTrackerLastData(final Long trackerId) {
         return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
     }
 

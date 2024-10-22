@@ -1,12 +1,11 @@
 package by.bsu.wialontransport.service.report.factory;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
-import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.TempTrack;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import by.bsu.wialontransport.service.report.model.UserMovementReportBuildingContext;
@@ -61,25 +60,25 @@ public final class UserMovementReportBuildingContextFactory {
                 .toList();
     }
 
-    private Map<Tracker, List<Data>> findSortedByDateTimeDataGroupedByAllTrackers(final User user,
-                                                                                  final DateInterval dateInterval) {
-        final Map<Tracker, List<Data>> dataByTrackers = this.findSortedByDateTimeDataGroupedByTrackers(user, dateInterval);
+    private Map<Tracker, List<Location>> findSortedByDateTimeDataGroupedByAllTrackers(final User user,
+                                                                                      final DateInterval dateInterval) {
+        final Map<Tracker, List<Location>> dataByTrackers = this.findSortedByDateTimeDataGroupedByTrackers(user, dateInterval);
         this.insertLackedTrackers(dataByTrackers, user);
         return dataByTrackers;
     }
 
-    private Map<Tracker, List<Data>> findSortedByDateTimeDataGroupedByTrackers(final User user,
-                                                                               final DateInterval dateInterval) {
+    private Map<Tracker, List<Location>> findSortedByDateTimeDataGroupedByTrackers(final User user,
+                                                                                   final DateInterval dateInterval) {
 //        final List<Data> data = this.dataService.findDataWithTrackerAndAddress(user, dateInterval);
 //        return groupSortedByDateTimeDataByTrackers(data);
         return null;
     }
 
-    private static Map<Tracker, List<Data>> groupSortedByDateTimeDataByTrackers(final List<Data> data) {
+    private static Map<Tracker, List<Location>> groupSortedByDateTimeDataByTrackers(final List<Location> data) {
         return data.stream()
                 .collect(
                         groupingBy(
-                                Data::getTracker,
+                                Location::getTracker,
                                 collectingAndThen(
                                         toList(),
                                         UserMovementReportBuildingContextFactory::sortByDateTime
@@ -88,19 +87,19 @@ public final class UserMovementReportBuildingContextFactory {
                 );
     }
 
-    private static List<Data> sortByDateTime(final List<Data> data) {
+    private static List<Location> sortByDateTime(final List<Location> data) {
 //        data.sort(DATA_COMPARATOR_BY_DATE_TIME);
         return data;
     }
 
-    private void insertLackedTrackers(final Map<Tracker, List<Data>> dataByTrackers, final User user) {
+    private void insertLackedTrackers(final Map<Tracker, List<Location>> dataByTrackers, final User user) {
 //        final List<Tracker> userAllTrackers = this.trackerService.findByUser(user);
 //        userAllTrackers.forEach(userTracker -> dataByTrackers.computeIfAbsent(userTracker, tracker -> emptyList()));
     }
 
-    private TrackerMovement createTrackerMovement(final Entry<Tracker, List<Data>> dataByTracker) {
+    private TrackerMovement createTrackerMovement(final Entry<Tracker, List<Location>> dataByTracker) {
         final Tracker tracker = dataByTracker.getKey();
-        final List<Data> trackerData = dataByTracker.getValue();
+        final List<Location> trackerData = dataByTracker.getValue();
         final TempTrack track = this.trackFactory.create(trackerData);
 //        final Mileage mileage = this.mileageCalculatingService.calculate(track);
 //        return new TrackerMovement(tracker, trackerData, mileage);

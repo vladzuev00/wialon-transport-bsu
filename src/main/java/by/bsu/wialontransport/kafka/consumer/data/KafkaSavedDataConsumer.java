@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.service.AddressService;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -40,8 +40,8 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected Data createData(final ConsumingContext context) {
-        return Data.builder()
+    protected Location createData(final ConsumingContext context) {
+        return Location.builder()
                 .id(extractDataId(context))
                 .dateTime(context.getDateTime())
                 .coordinate(context.getCoordinate())
@@ -76,7 +76,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
     }
 
     @Override
-    protected void process(final List<Data> data) {
+    protected void process(final List<Location> data) {
         log.info("Consuming saved data: {}", data);
     }
 

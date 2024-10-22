@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.report.tableappender;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.service.report.model.TrackerMovement;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public final class UserTrackersReportTableAppenderTest {
         final String givenPhoneNumber = "447336934";
         final Tracker givenTracker = createTracker(givenTrackerImei, givenPhoneNumber);
 
-        final List<Data> givenData = List.of(createData(), createData(), createData(), createData(), createData());
+        final List<Location> givenData = List.of(createData(), createData(), createData(), createData(), createData());
 
         final TrackerMovement givenTrackerMovement = createTrackerMovement(givenTracker, givenData);
 
@@ -49,11 +49,11 @@ public final class UserTrackersReportTableAppenderTest {
                 .build();
     }
 
-    private static Data createData() {
-        return Data.builder().build();
+    private static Location createData() {
+        return Location.builder().build();
     }
 
-    private static TrackerMovement createTrackerMovement(final Tracker tracker, final List<Data> data) {
+    private static TrackerMovement createTrackerMovement(final Tracker tracker, final List<Location> data) {
         return TrackerMovement.builder()
                 .tracker(tracker)
                 .data(data)

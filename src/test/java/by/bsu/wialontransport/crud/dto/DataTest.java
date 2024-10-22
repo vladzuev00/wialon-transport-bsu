@@ -8,7 +8,7 @@ public final class DataTest {
 
     @Test
     public void cityNameShouldBeFound() {
-        final Data givenData = Data.builder()
+        final Location givenData = Location.builder()
                 .address(
                         Address.builder()
                                 .cityName("city")
@@ -22,7 +22,7 @@ public final class DataTest {
 
     @Test
     public void countryNameShouldBeFound() {
-        final Data givenData = Data.builder()
+        final Location givenData = Location.builder()
                 .address(
                         Address.builder()
                                 .countryName("country")

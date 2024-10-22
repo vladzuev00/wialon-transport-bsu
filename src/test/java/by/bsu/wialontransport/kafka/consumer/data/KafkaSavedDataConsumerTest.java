@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
@@ -86,8 +86,8 @@ public final class KafkaSavedDataConsumerTest {
                 givenAddressId
         );
 
-        @SuppressWarnings("unchecked") final Data actual = consumer.createData(givenContext);
-        final Data expected = Data.builder()
+        @SuppressWarnings("unchecked") final Location actual = consumer.createData(givenContext);
+        final Location expected = Location.builder()
                 .id(givenDataId)
                 .dateTime(givenDateTime)
                 .coordinate(givenCoordinate)
@@ -198,7 +198,7 @@ public final class KafkaSavedDataConsumerTest {
 
     @Test
     public void dataShouldBeProcessed() {
-        final List<Data> givenData = List.of(
+        final List<Location> givenData = List.of(
                 createData(1L),
                 createData(2L)
         );
@@ -245,8 +245,8 @@ public final class KafkaSavedDataConsumerTest {
                 .build();
     }
 
-    private static Data createData(final Long id) {
-        return Data.builder()
+    private static Location createData(final Long id) {
+        return Location.builder()
                 .id(id)
                 .build();
     }

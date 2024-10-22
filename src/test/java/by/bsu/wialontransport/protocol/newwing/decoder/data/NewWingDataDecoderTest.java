@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLatitudeCalculator;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLongitudeCalculator;
@@ -76,8 +76,8 @@ public final class NewWingDataDecoderTest extends AbstractSpringBootTest {
         when(mockedLongitudeCalculator.calculate(eq(expectedLongitudeIntegerPart), eq(expectedLongitudeFractionalPart)))
                 .thenReturn(givenLongitude);
 
-        final Data actual = decoder.decodeNext(givenBuffer);
-        final Data expected = Data.builder()
+        final Location actual = decoder.decodeNext(givenBuffer);
+        final Location expected = Location.builder()
                 .dateTime(LocalDateTime.of(2023, 10, 31, 18, 51, 43))
                 .coordinate(new Coordinate(givenLatitude, givenLongitude))
                 .course(182)

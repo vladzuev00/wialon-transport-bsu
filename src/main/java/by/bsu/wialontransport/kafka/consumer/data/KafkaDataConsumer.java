@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.TrackerService;
@@ -28,18 +28,18 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
-public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGenericRecordConsumer<Long, Data> {
+public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGenericRecordConsumer<Long, Location> {
     private final ObjectMapper objectMapper;
     private final TrackerService trackerService;
     private final Class<P> parameterViewType;
 
     @Override
-    protected final Data mapToSource(final GenericRecord record) {
+    protected final Location mapToSource(final GenericRecord record) {
         final ConsumingContext context = new ConsumingContext(record);
         return createData(context);
     }
 
-    protected abstract Data createData(final ConsumingContext context);
+    protected abstract Location createData(final ConsumingContext context);
 
     protected abstract Parameter createParameter(final P view);
 

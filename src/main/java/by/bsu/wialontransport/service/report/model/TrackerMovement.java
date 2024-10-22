@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.report.model;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.model.Mileage;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class TrackerMovement {
     Tracker tracker;
-    List<Data> data;
+    List<Location> data;
     Mileage mileage;
 
     public int findPointCounts() {

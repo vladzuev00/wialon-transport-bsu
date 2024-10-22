@@ -2,7 +2,7 @@ package by.bsu.wialontransport.kafka.consumer.data;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
@@ -123,8 +123,8 @@ public final class KafkaDataConsumerTest extends AbstractSpringBootTest {
         final Address givenAddress = createAddress(givenAddressId);
         when(mockedAddressService.findById(same(givenAddressId))).thenReturn(Optional.of(givenAddress));
 
-        final Data actual = consumer.mapToSource(givenGenericRecord);
-        final Data expected = Data.builder()
+        final Location actual = consumer.mapToSource(givenGenericRecord);
+        final Location expected = Location.builder()
                 .id(givenDataId)
                 .dateTime(givenDateTime)
                 .coordinate(new Coordinate(givenLatitude, givenLongitude))
@@ -486,13 +486,13 @@ public final class KafkaDataConsumerTest extends AbstractSpringBootTest {
         }
 
         @Override
-        protected void process(final List<Data> data) {
+        protected void process(final List<Location> data) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        protected Data createData(final ConsumingContext context) {
-            return Data.builder()
+        protected Location createData(final ConsumingContext context) {
+            return Location.builder()
                     .id(extractDataId(context))
                     .dateTime(context.getDateTime())
                     .coordinate(context.getCoordinate())

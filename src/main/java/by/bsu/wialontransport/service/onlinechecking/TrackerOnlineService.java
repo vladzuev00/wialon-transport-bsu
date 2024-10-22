@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.onlinechecking;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.model.online.OnlineStatus;
@@ -36,7 +36,7 @@ public final class TrackerOnlineService {
         return check(tracker.getId());
     }
 
-    private TrackerOnline createInfo(final Long trackerId, final Data lastData) {
+    private TrackerOnline createInfo(final Long trackerId, final Location lastData) {
         final OnlineStatus status = isThresholdNotExceeded(lastData) ? ONLINE : OFFLINE;
         final LastData lastDataProject = projectLastData(lastData);
         return new TrackerOnline(trackerId, lastDataProject, status);
@@ -49,12 +49,12 @@ public final class TrackerOnlineService {
                 .build();
     }
 
-    private boolean isThresholdNotExceeded(final Data data) {
+    private boolean isThresholdNotExceeded(final Location data) {
         final long secondsSinceData = between(data.getDateTime(), now()).get(SECONDS);
         return secondsSinceData <= lastDataSecondThreshold;
     }
 
-    private static LastData projectLastData(final Data data) {
+    private static LastData projectLastData(final Location data) {
         return new LastData(data.getDateTime(), data.getCoordinate());
     }
 }

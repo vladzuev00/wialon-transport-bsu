@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLatitudeCalculator;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLongitudeCalculator;
@@ -20,7 +20,7 @@ public final class NewWingDataDecoder {
     private final NewWingLatitudeCalculator latitudeCalculator;
     private final NewWingLongitudeCalculator longitudeCalculator;
 
-    public Data decodeNext(final ByteBuf buffer) {
+    public Location decodeNext(final ByteBuf buffer) {
         final byte hour = decodeByte(buffer);
         final byte minute = decodeByte(buffer);
         final byte second = decodeByte(buffer);
@@ -43,7 +43,7 @@ public final class NewWingDataDecoder {
         skipFlagByte(buffer);
         skipDiscreteInputStateByte(buffer);
         skipChecksum(buffer);
-        return Data.builder()
+        return Location.builder()
                 .dateTime(createDateTime(year, month, day, hour, minute, second))
                 .coordinate(
                         calculateCoordinate(

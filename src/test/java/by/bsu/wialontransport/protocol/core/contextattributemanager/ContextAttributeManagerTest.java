@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.contextattributemanager;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -78,7 +78,7 @@ public final class ContextAttributeManagerTest {
     @SuppressWarnings("unchecked")
     public void trackerShouldBePutInContextAsAttribute() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Tracker givenTracker = createTracker(255L);
+        final Tracker givenTracker = Tracker.builder().build();
 
         final Channel givenChannel = mock(Channel.class);
         when(givenContext.channel()).thenReturn(givenChannel);
@@ -102,7 +102,7 @@ public final class ContextAttributeManagerTest {
         final Attribute<Tracker> givenAttribute = mock(Attribute.class);
         when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER))).thenReturn(givenAttribute);
 
-        final Tracker givenTracker = createTracker(255L);
+        final Tracker givenTracker = Tracker.builder().build();
         when(givenAttribute.get()).thenReturn(givenTracker);
 
         final Optional<Tracker> optionalActual = contextAttributeManager.findTracker(givenContext);
@@ -132,15 +132,15 @@ public final class ContextAttributeManagerTest {
     @SuppressWarnings("unchecked")
     public void lastDataShouldBePutInContextAsAttribute() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Data givenData = createData(255L);
+        final Location givenData = Location.builder().build();
 
         final Channel givenChannel = mock(Channel.class);
         when(givenContext.channel()).thenReturn(givenChannel);
 
-        final Attribute<Data> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_DATA))).thenReturn(givenAttribute);
+        final Attribute<Location> givenAttribute = mock(Attribute.class);
+        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
 
-        contextAttributeManager.putLastData(givenContext, givenData);
+        contextAttributeManager.putLastLocation(givenContext, givenData);
 
         verify(givenAttribute, times(1)).set(same(givenData));
     }
@@ -153,15 +153,15 @@ public final class ContextAttributeManagerTest {
         final Channel givenChannel = mock(Channel.class);
         when(givenContext.channel()).thenReturn(givenChannel);
 
-        final Attribute<Data> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_DATA))).thenReturn(givenAttribute);
+        final Attribute<Location> givenAttribute = mock(Attribute.class);
+        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
 
-        final Data givenData = createData(255L);
+        final Location givenData = Location.builder().build();
         when(givenAttribute.get()).thenReturn(givenData);
 
-        final Optional<Data> optionalActual = contextAttributeManager.findLastData(givenContext);
+        final Optional<Location> optionalActual = contextAttributeManager.findLastLocation(givenContext);
         assertTrue(optionalActual.isPresent());
-        final Data actual = optionalActual.get();
+        final Location actual = optionalActual.get();
         assertSame(givenData, actual);
     }
 
@@ -173,26 +173,12 @@ public final class ContextAttributeManagerTest {
         final Channel givenChannel = mock(Channel.class);
         when(givenContext.channel()).thenReturn(givenChannel);
 
-        final Attribute<Data> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_DATA))).thenReturn(givenAttribute);
+        final Attribute<Location> givenAttribute = mock(Attribute.class);
+        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
 
         when(givenAttribute.get()).thenReturn(null);
 
-        final Optional<Data> optionalActual = contextAttributeManager.findLastData(givenContext);
+        final Optional<Location> optionalActual = contextAttributeManager.findLastLocation(givenContext);
         assertTrue(optionalActual.isEmpty());
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private Tracker createTracker(final Long id) {
-        return Tracker.builder()
-                .id(id)
-                .build();
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private Data createData(final Long id) {
-        return Data.builder()
-                .id(id)
-                .build();
     }
 }

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.mileage;
 
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import static by.bsu.wialontransport.util.CollectionUtil.concat;
 
@@ -38,6 +37,6 @@ public final class MileageIncreasingService {
     }
 
     private Optional<Coordinate> findLastCoordinate(final Tracker tracker) {
-        return dataService.findTrackerLastDataFetchingParameters(tracker).map(Data::getCoordinate);
+        return dataService.findTrackerLastDataFetchingParameters(tracker).map(Location::getCoordinate);
     }
 }

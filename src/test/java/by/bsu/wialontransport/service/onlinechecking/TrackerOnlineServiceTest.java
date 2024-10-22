@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.onlinechecking;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.crud.dto.Data;
+import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.DataService;
 import by.bsu.wialontransport.model.Coordinate;
@@ -36,7 +36,7 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(295);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
-        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        final Location givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTrackerId);
@@ -55,7 +55,7 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(305);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
-        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        final Location givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTrackerId);
@@ -89,7 +89,7 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(295);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
-        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        final Location givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTracker);
@@ -109,7 +109,7 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
         final LocalDateTime givenLastDataDateTime = now().minusSeconds(305);
         final Coordinate givenLastDataCoordinate = new Coordinate(5.5, 6.6);
 
-        final Data givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
+        final Location givenLastData = createData(givenLastDataDateTime, givenLastDataCoordinate);
         when(mockedDataService.findTrackerLastData(same(givenTrackerId))).thenReturn(Optional.of(givenLastData));
 
         final TrackerOnline actual = service.check(givenTracker);
@@ -143,8 +143,8 @@ public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
                 .build();
     }
 
-    private static Data createData(final LocalDateTime dateTime, final Coordinate coordinate) {
-        return Data.builder()
+    private static Location createData(final LocalDateTime dateTime, final Coordinate coordinate) {
+        return Location.builder()
                 .dateTime(dateTime)
                 .coordinate(coordinate)
                 .build();
