@@ -4,17 +4,18 @@ import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ProtocolDecoderTest {
 
     @Mock
@@ -28,7 +29,7 @@ public final class ProtocolDecoderTest {
 
     private ProtocolDecoder<ByteBuf> protocolDecoder;
 
-    @Before
+    @BeforeEach
     public void initializeProtocolDecoder() {
         protocolDecoder = new TestProtocolDecoder(
                 List.of(
@@ -40,11 +41,10 @@ public final class ProtocolDecoderTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void bufferShouldBeDecoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final List<Object> givenOut = mock(List.class);
+        @SuppressWarnings("unchecked") final List<Object> givenOut = mock(List.class);
 
         when(firstMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(true);
@@ -61,18 +61,24 @@ public final class ProtocolDecoderTest {
         verifyNoInteractions(thirdMockedPackageDecoder);
     }
 
-    @SuppressWarnings("unchecked")
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void bufferShouldNotBeDecoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final ByteBuf givenBuffer = mock(ByteBuf.class);
-        final List<Object> givenOut = mock(List.class);
+        @SuppressWarnings("unchecked") final List<Object> givenOut = mock(List.class);
 
         when(firstMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
         when(secondMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
         when(thirdMockedPackageDecoder.isAbleToDecode(same(givenBuffer))).thenReturn(false);
 
-        protocolDecoder.decode(givenContext, givenBuffer, givenOut);
+        assertThrows(IllegalStateException.class, () -> protocolDecoder.decode(givenContext, givenBuffer, givenOut));
+
+        verify(givenBuffer, times(1)).retain();
+        verify(givenBuffer, times(1)).release();
+        verify(firstMockedPackageDecoder, times(0)).decode(any(ByteBuf.class));
+        verify(secondMockedPackageDecoder, times(0)).decode(any(ByteBuf.class));
+        verify(thirdMockedPackageDecoder, times(0)).decode(any(ByteBuf.class));
+        verifyNoInteractions(givenOut);
     }
 
     private static final class TestProtocolDecoder extends ProtocolDecoder<ByteBuf> {
