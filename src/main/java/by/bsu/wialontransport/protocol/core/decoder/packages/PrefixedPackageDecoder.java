@@ -16,7 +16,8 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
 
     @Override
     public final Object decode(final SOURCE source) {
-        final SOURCE sourceWithoutPrefix = skipPrefix(source);
+        final int prefixLength = getLength(requiredPrefix);
+        final SOURCE sourceWithoutPrefix = skip(source, prefixLength);
         return decodeInternal(sourceWithoutPrefix);
     }
 
@@ -27,9 +28,4 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
     protected abstract SOURCE skip(final SOURCE source, final int length);
 
     protected abstract Object decodeInternal(final SOURCE source);
-
-    private SOURCE skipPrefix(final SOURCE source) {
-        final int prefixLength = getLength(requiredPrefix);
-        return skip(source, prefixLength);
-    }
 }
