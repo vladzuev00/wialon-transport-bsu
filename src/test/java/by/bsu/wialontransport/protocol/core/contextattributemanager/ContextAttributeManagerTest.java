@@ -5,180 +5,119 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.Attribute;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import io.netty.util.AttributeKey;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager.*;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ContextAttributeManagerTest {
-    private final ContextAttributeManager contextAttributeManager = new ContextAttributeManager();
+    private final ContextAttributeManager manager = new ContextAttributeManager();
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void trackerImeiShouldBePutInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final String givenImei = "11111222223333344444";
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<String> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER_IMEI))).thenReturn(givenAttribute);
-
-        contextAttributeManager.putTrackerImei(givenContext, givenImei);
-
-        verify(givenAttribute, times(1)).set(same(givenImei));
+    public void trackerImeiShouldBePutAsAttribute() {
+        testPuttingAttribute("11111222223333344444", KEY_TRACKER_IMEI, ContextAttributeManager::putTrackerImei);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    public void trackerShouldBePutAsAttribute() {
+        testPuttingAttribute(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::putTracker);
+    }
+
+    @Test
+    public void locationShouldBePutAsAttribute() {
+        testPuttingAttribute(Location.builder().build(), KEY_LAST_LOCATION, ContextAttributeManager::putLastLocation);
+    }
+
+    @Test
     public void trackerImeiShouldBeFoundInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<String> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER_IMEI))).thenReturn(givenAttribute);
-
-        final String givenImei = "11111222223333344444";
-        when(givenAttribute.get()).thenReturn(givenImei);
-
-        final Optional<String> optionalActual = contextAttributeManager.findTrackerImei(givenContext);
-        assertTrue(optionalActual.isPresent());
-        final String actual = optionalActual.get();
-        assertSame(givenImei, actual);
+        testSuccessFindingAttribute("11111222223333344444", KEY_TRACKER_IMEI, ContextAttributeManager::findTrackerImei);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void trackerImeiShouldNotBeFoundInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<String> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER_IMEI))).thenReturn(givenAttribute);
-
-        when(givenAttribute.get()).thenReturn(null);
-
-        final Optional<String> optionalActual = contextAttributeManager.findTrackerImei(givenContext);
-        assertTrue(optionalActual.isEmpty());
+        testFailFindingAttribute(KEY_TRACKER_IMEI, ContextAttributeManager::findTrackerImei);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void trackerShouldBePutInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Tracker givenTracker = Tracker.builder().build();
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<Tracker> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER))).thenReturn(givenAttribute);
-
-        contextAttributeManager.putTracker(givenContext, givenTracker);
-
-        verify(givenAttribute, times(1)).set(same(givenTracker));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void trackerShouldBeFoundInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<Tracker> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER))).thenReturn(givenAttribute);
-
-        final Tracker givenTracker = Tracker.builder().build();
-        when(givenAttribute.get()).thenReturn(givenTracker);
-
-        final Optional<Tracker> optionalActual = contextAttributeManager.findTracker(givenContext);
-        assertTrue(optionalActual.isPresent());
-        final Tracker actual = optionalActual.get();
-        assertSame(givenTracker, actual);
+        testSuccessFindingAttribute(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::findTracker);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void trackerShouldNotBeFoundInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<Tracker> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_TRACKER))).thenReturn(givenAttribute);
-
-        when(givenAttribute.get()).thenReturn(null);
-
-        final Optional<Tracker> optionalActual = contextAttributeManager.findTracker(givenContext);
-        assertTrue(optionalActual.isEmpty());
+        testFailFindingAttribute(KEY_TRACKER, ContextAttributeManager::findTracker);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void lastDataShouldBePutInContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Location givenData = Location.builder().build();
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<Location> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
-
-        contextAttributeManager.putLastLocation(givenContext, givenData);
-
-        verify(givenAttribute, times(1)).set(same(givenData));
+    public void lastLocationShouldBeFoundInContextAsAttribute() {
+        testSuccessFindingAttribute(
+                Location.builder().build(),
+                KEY_LAST_LOCATION,
+                ContextAttributeManager::findLastLocation
+        );
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void lastDataShouldBeFoundFromContextAsAttribute() {
+    public void lastLocationShouldNotBeFoundInContextAsAttribute() {
+        testFailFindingAttribute(KEY_LAST_LOCATION, ContextAttributeManager::findLastLocation);
+    }
+
+    private <T> void testPuttingAttribute(final T givenObject,
+                                          final AttributeKey<T> expectedKey,
+                                          final PuttingAttributeOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+        final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
+        operation.execute(manager, givenContext, givenObject);
+        verify(givenAttribute, times(1)).set(same(givenObject));
+    }
 
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
+    private <T> Attribute<T> mockAttribute(final ChannelHandlerContext context, final AttributeKey<T> key) {
+        final Channel channel = mock(Channel.class);
+        when(context.channel()).thenReturn(channel);
+        @SuppressWarnings("unchecked") final Attribute<T> attribute = mock(Attribute.class);
+        when(channel.attr(same(key))).thenReturn(attribute);
+        return attribute;
+    }
 
-        final Attribute<Location> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
-
-        final Location givenData = Location.builder().build();
-        when(givenAttribute.get()).thenReturn(givenData);
-
-        final Optional<Location> optionalActual = contextAttributeManager.findLastLocation(givenContext);
+    private <T> void testSuccessFindingAttribute(final T expectedObject,
+                                                 final AttributeKey<T> expectedKey,
+                                                 final FindingAttributeOperation<T> operation) {
+        final Optional<T> optionalActual = testFindingAttribute(expectedObject, expectedKey, operation);
         assertTrue(optionalActual.isPresent());
-        final Location actual = optionalActual.get();
-        assertSame(givenData, actual);
+        final T actual = optionalActual.get();
+        assertSame(expectedObject, actual);
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void lastDataShouldNotBeFoundFromContextAsAttribute() {
-        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-
-        final Channel givenChannel = mock(Channel.class);
-        when(givenContext.channel()).thenReturn(givenChannel);
-
-        final Attribute<Location> givenAttribute = mock(Attribute.class);
-        when(givenChannel.attr(same(ATTRIBUTE_KEY_LAST_LOCATION))).thenReturn(givenAttribute);
-
-        when(givenAttribute.get()).thenReturn(null);
-
-        final Optional<Location> optionalActual = contextAttributeManager.findLastLocation(givenContext);
+    private <T> void testFailFindingAttribute(final AttributeKey<T> expectedKey,
+                                              final FindingAttributeOperation<T> operation) {
+        final Optional<T> optionalActual = testFindingAttribute(null, expectedKey, operation);
         assertTrue(optionalActual.isEmpty());
+    }
+
+    private <T> Optional<T> testFindingAttribute(final T expectedObject,
+                                                 final AttributeKey<T> expectedKey,
+                                                 final FindingAttributeOperation<T> operation) {
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+        final Attribute<T> attribute = mockAttribute(givenContext, expectedKey);
+        when(attribute.get()).thenReturn(expectedObject);
+        return operation.execute(manager, givenContext);
+    }
+
+    @FunctionalInterface
+    private interface PuttingAttributeOperation<T> {
+        void execute(ContextAttributeManager manager, ChannelHandlerContext context, T object);
+    }
+
+    @FunctionalInterface
+    private interface FindingAttributeOperation<T> {
+        Optional<T> execute(ContextAttributeManager manager, ChannelHandlerContext context);
     }
 }
