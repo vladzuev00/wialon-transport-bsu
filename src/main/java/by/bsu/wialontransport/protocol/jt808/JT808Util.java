@@ -2,9 +2,7 @@ package by.bsu.wialontransport.protocol.jt808;
 
 import io.netty.buffer.ByteBuf;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import static java.nio.charset.Charset.defaultCharset;
@@ -32,18 +30,18 @@ public class JT808Util {
         return temp.toString();
     }
 
-    public static float decodeLatitude(ByteBuf buffer) {
-        return buffer.readUnsignedInt() / 1000000F;
+    public static double decodeLatitude(ByteBuf buffer) {
+        return buffer.readUnsignedInt() / 1000000.;
     }
 
-    public static float decodeLongitude(ByteBuf buffer) {
-        return buffer.readUnsignedInt() / 10000000F;
+    public static double decodeLongitude(ByteBuf buffer) {
+        return buffer.readUnsignedInt() / 10000000.;
     }
 
-    public static Instant decodeDateTime(ByteBuf buffer) {
+    public static LocalDateTime decodeDateTime(ByteBuf buffer) {
         byte[] bytes = new byte[6];
         buffer.readBytes(bytes);
-        return LocalDateTime.parse(toBcdTimeString(bytes), DATE_FORMAT).toInstant(ZoneOffset.UTC);
+        return LocalDateTime.parse(toBcdTimeString(bytes), DATE_FORMAT);
     }
 
     public static String toBcdTimeString(byte[] bs) {

@@ -2,11 +2,11 @@ package by.bsu.wialontransport.protocol.jt808.model;
 
 import lombok.Value;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Value
 public class JT808Location {
-    Instant dateTime;
+    LocalDateTime dateTime;
     double latitude;
     double longitude;
     short altitude;
