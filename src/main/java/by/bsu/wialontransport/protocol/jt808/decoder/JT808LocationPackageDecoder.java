@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.time.LocalDateTime;
 
-import static by.bsu.wialontransport.protocol.jt808.JT808Util.*;
+import static by.bsu.wialontransport.protocol.jt808.util.JT808Util.*;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;

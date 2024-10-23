@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.jt808.decoder;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByBytesBinaryPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
-import static by.bsu.wialontransport.protocol.jt808.JT808Util.decodePhoneNumber;
+import static by.bsu.wialontransport.protocol.jt808.util.JT808Util.decodePhoneNumber;
 
 public abstract class JT808PackageDecoder extends PrefixedByBytesBinaryPackageDecoder {
 

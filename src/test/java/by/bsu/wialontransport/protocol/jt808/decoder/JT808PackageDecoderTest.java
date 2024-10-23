@@ -1,12 +1,12 @@
 package by.bsu.wialontransport.protocol.jt808.decoder;
 
-import by.bsu.wialontransport.protocol.jt808.JT808Util;
+import by.bsu.wialontransport.protocol.jt808.util.JT808Util;
 import io.netty.buffer.ByteBuf;
 import lombok.Value;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import static by.bsu.wialontransport.protocol.jt808.JT808Util.decodePhoneNumber;
+import static by.bsu.wialontransport.protocol.jt808.util.JT808Util.decodePhoneNumber;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;

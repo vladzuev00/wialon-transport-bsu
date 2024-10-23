@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.jt808;
+package by.bsu.wialontransport.protocol.jt808.util;
 
 import io.netty.buffer.ByteBuf;
 

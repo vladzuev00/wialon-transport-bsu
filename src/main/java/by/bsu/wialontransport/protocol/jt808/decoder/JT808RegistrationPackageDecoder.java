@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.jt808.model.JT808RegistrationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
-import static by.bsu.wialontransport.protocol.jt808.JT808Util.decodeString;
+import static by.bsu.wialontransport.protocol.jt808.util.JT808Util.decodeString;
 
 @Component
 public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
