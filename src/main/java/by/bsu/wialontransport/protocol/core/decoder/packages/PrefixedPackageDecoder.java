@@ -2,8 +2,6 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageDecoder<SOURCE> {
     private final PREFIX requiredPrefix;
@@ -12,7 +10,7 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
     public final boolean isAbleDecode(final SOURCE source) {
         final int prefixLength = getLength(requiredPrefix);
         final PREFIX prefix = readPrefix(source, prefixLength);
-        return Objects.equals(prefix, requiredPrefix);
+        return isEqual(prefix, requiredPrefix);
     }
 
     @Override
@@ -25,6 +23,8 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
     protected abstract int getLength(final PREFIX prefix);
 
     protected abstract PREFIX readPrefix(final SOURCE source, final int length);
+
+    protected abstract boolean isEqual(final PREFIX first, final PREFIX second);
 
     protected abstract SOURCE skip(final SOURCE source, final int length);
 

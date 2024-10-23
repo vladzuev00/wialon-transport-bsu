@@ -1,5 +1,7 @@
 package by.bsu.wialontransport.protocol.core.decoder.packages;
 
+import java.util.Objects;
+
 public abstract class PrefixedByStringTextPackageDecoder extends PrefixedPackageDecoder<String, String> {
 
     public PrefixedByStringTextPackageDecoder(final String prefix) {
@@ -9,6 +11,12 @@ public abstract class PrefixedByStringTextPackageDecoder extends PrefixedPackage
     @Override
     protected final String readPrefix(final String source, final int length) {
         return source.substring(0, length);
+    }
+
+    //TODO: test
+    @Override
+    protected final boolean isEqual(final String first, final String second) {
+        return Objects.equals(first, second);
     }
 
     @Override

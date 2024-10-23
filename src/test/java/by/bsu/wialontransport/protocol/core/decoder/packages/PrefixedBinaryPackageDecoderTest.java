@@ -39,6 +39,11 @@ public final class PrefixedBinaryPackageDecoderTest {
         }
 
         @Override
+        protected boolean isEqual(final Short first, final Short second) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         protected Object decodeInternal(final ByteBuf buffer) {
             throw new UnsupportedOperationException();
         }

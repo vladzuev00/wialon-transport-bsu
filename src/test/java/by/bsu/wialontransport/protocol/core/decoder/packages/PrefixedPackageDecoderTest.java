@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import lombok.Value;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -56,6 +58,11 @@ public final class PrefixedPackageDecoderTest {
         @Override
         protected String readPrefix(final ByteBuf buffer, final int length) {
             return buffer.readCharSequence(length, US_ASCII).toString();
+        }
+
+        @Override
+        protected boolean isEqual(final String first, final String second) {
+            return Objects.equals(first, second);
         }
 
         @Override

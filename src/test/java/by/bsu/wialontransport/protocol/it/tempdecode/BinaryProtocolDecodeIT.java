@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.it.decode;
+package by.bsu.wialontransport.protocol.it.tempdecode;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.protocol.core.decoder.BinaryProtocolDecoder;
