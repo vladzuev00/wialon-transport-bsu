@@ -1,11 +1,11 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedTextPackageDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringTextPackageDecoder;
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage.POSTFIX;
 
-public abstract class WialonPackageDecoder extends FixStringPrefixedTextPackageDecoder {
+public abstract class WialonPackageDecoder extends PrefixedByStringTextPackageDecoder {
 
     public WialonPackageDecoder(final String prefix) {
         super(prefix);

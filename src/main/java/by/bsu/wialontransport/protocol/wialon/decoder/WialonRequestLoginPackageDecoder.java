@@ -22,9 +22,4 @@ public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder
         final String password = components[INDEX_PASSWORD];
         return new WialonRequestLoginPackage(imei, password);
     }
-
-    @Override
-    protected int getLength(String s) {
-        return 0;
-    }
 }
