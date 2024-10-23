@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class PrefixedByBytesBinaryPackageDecoderTest {
     private final TestPrefixedByBytesBinaryPackageDecoder decoder = new TestPrefixedByBytesBinaryPackageDecoder();
@@ -28,6 +27,22 @@ public final class PrefixedByBytesBinaryPackageDecoderTest {
         final byte[] actual = decoder.readPrefix(givenBuffer, givenLength);
         final byte[] expected = {80, 82, 69, 70};
         assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void prefixesShouldBeEqual() {
+        final byte[] givenFirst = {1, 2, 3};
+        final byte[] givenSecond = {1, 2, 3};
+
+        assertTrue(decoder.isEqual(givenFirst, givenSecond));
+    }
+
+    @Test
+    public void prefixesShouldNotBeEqual() {
+        final byte[] givenFirst = {1, 2, 3};
+        final byte[] givenSecond = {1, 3, 2};
+
+        assertFalse(decoder.isEqual(givenFirst, givenSecond));
     }
 
     private static final class TestPrefixedByBytesBinaryPackageDecoder extends PrefixedByBytesBinaryPackageDecoder {
