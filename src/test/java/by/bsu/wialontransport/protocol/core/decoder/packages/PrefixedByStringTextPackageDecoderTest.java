@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class PrefixedByStringTextPackageDecoderTest {
     private final TestPrefixedByStringTextPackageDecoder decoder = new TestPrefixedByStringTextPackageDecoder();
@@ -15,6 +15,22 @@ public final class PrefixedByStringTextPackageDecoderTest {
         final String actual = decoder.readPrefix(givenSource, givenLength);
         final String expected = "#PREFIX#";
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void prefixesShouldBeEqual() {
+        final String givenFirst = "#PREFIX#";
+        final String givenSecond = "#PREFIX#";
+
+        assertTrue(decoder.isEqual(givenFirst, givenSecond));
+    }
+
+    @Test
+    public void prefixesShouldNotBeEqual() {
+        final String givenFirst = "#PREFIX#";
+        final String givenSecond = "#PREFI#";
+
+        assertFalse(decoder.isEqual(givenFirst, givenSecond));
     }
 
     @Test

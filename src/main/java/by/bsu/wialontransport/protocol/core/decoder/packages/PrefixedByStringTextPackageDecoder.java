@@ -13,7 +13,6 @@ public abstract class PrefixedByStringTextPackageDecoder extends PrefixedPackage
         return source.substring(0, length);
     }
 
-    //TODO: test
     @Override
     protected final boolean isEqual(final String first, final String second) {
         return Objects.equals(first, second);
