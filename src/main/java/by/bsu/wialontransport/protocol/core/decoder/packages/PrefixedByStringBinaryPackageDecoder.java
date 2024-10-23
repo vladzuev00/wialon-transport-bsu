@@ -22,9 +22,8 @@ public abstract class PrefixedByStringBinaryPackageDecoder extends PrefixedBinar
         return buffer.getCharSequence(0, length, US_ASCII).toString();
     }
 
-    //TODO: test
     @Override
-    protected boolean isEqual(final String first, final String second) {
+    protected final boolean isEqual(final String first, final String second) {
         return Objects.equals(first, second);
     }
 }
