@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.jt808.decoder;
 
-import by.bsu.wialontransport.protocol.jt808.model.JT808RegistrationMessage;
+import by.bsu.wialontransport.protocol.jt808.model.JT808RegistrationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
         skipProvinceId(buffer);
         skipCityId(buffer);
         final String manufacturerId = decodeManufacturerId(buffer);
-        return new JT808RegistrationMessage(phoneNumber, manufacturerId);
+        return new JT808RegistrationPackage(phoneNumber, manufacturerId);
     }
 
     private void skipProvinceId(final ByteBuf buffer) {

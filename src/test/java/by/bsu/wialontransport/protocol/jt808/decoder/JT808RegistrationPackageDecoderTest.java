@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.jt808.decoder;
 
-import by.bsu.wialontransport.protocol.jt808.model.JT808RegistrationMessage;
+import by.bsu.wialontransport.protocol.jt808.model.JT808RegistrationPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ public final class JT808RegistrationPackageDecoderTest {
         final String givenPhoneNumber = "375446753423";
 
         final Object actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
-        final Object expected = new JT808RegistrationMessage(givenPhoneNumber, "86977");
+        final Object expected = new JT808RegistrationPackage(givenPhoneNumber, "86977");
         assertEquals(expected, actual);
     }
 }
