@@ -23,4 +23,9 @@ public final class NewWingEventCountPackageDecoder extends NewWingPackageDecoder
     protected int getLength(String s) {
         return 0;
     }
+
+    @Override
+    protected String readPrefix(ByteBuf buf, int length) {
+        return null;
+    }
 }
