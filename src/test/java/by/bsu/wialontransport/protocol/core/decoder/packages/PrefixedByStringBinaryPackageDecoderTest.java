@@ -27,6 +27,8 @@ public final class PrefixedByStringBinaryPackageDecoderTest {
         final String actual = decoder.readPrefix(givenBuffer, givenLength);
         final String expected = "#PREFIX#";
         assertEquals(expected, actual);
+
+        assertEquals(0, givenBuffer.readerIndex());
     }
 
     private static final class TestPrefixedByStringBinaryPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
