@@ -1,10 +1,10 @@
 package by.bsu.wialontransport.protocol.newwing.decoder;
 
-import by.bsu.wialontransport.protocol.core.decoder.packages.FixStringPrefixedBinaryPackageDecoder;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
 
-public abstract class NewWingPackageDecoder extends FixStringPrefixedBinaryPackageDecoder {
+public abstract class NewWingPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
 
     public NewWingPackageDecoder(final String prefix) {
         super(prefix);

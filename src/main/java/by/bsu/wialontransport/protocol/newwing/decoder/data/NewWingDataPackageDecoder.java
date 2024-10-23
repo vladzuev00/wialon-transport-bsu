@@ -31,14 +31,4 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
         final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
         return toList(iterator);
     }
-
-    @Override
-    protected int getLength(String s) {
-        return 0;
-    }
-
-    @Override
-    protected String readPrefix(ByteBuf buf, int length) {
-        return null;
-    }
 }
