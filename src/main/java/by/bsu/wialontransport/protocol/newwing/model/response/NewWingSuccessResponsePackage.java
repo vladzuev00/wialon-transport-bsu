@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.model.response;
 
-public final class NewWingSuccessResponsePackage extends ResponseNewWingPackage {
+public final class NewWingSuccessResponsePackage extends NewWingResponsePackage {
     private static final String VALUE = "TTTTT";
 
     public NewWingSuccessResponsePackage() {

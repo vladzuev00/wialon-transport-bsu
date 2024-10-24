@@ -10,6 +10,6 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public abstract class ResponseNewWingPackage implements Package {
+public abstract class NewWingResponsePackage implements Package {
     private final String value;
 }
