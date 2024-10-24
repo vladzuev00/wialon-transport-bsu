@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.tempdecoder;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.model.request.NewWingRequestPackage;
 import io.netty.buffer.ByteBuf;
 
 public abstract class NewWingPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
