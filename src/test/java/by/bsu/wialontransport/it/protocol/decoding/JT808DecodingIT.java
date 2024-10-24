@@ -18,15 +18,15 @@ import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.annotation.DirtiesContext.MethodMode.AFTER_METHOD;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public final class JT808DecodingIT extends AbstractSpringBootTest {
 
     @Autowired
     private BinaryProtocolDecoder decoder;
 
     @ParameterizedTest
-    @DirtiesContext(methodMode = AFTER_METHOD)
     @MethodSource("provideHexDumpAndExpectedPackage")
     public void packageShouldBeDecoded(final String givenHexDump, final Object expected) {
         final EmbeddedChannel givenChannel = new EmbeddedChannel(decoder);
