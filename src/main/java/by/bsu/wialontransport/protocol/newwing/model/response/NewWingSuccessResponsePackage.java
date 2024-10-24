@@ -6,5 +6,4 @@ public final class NewWingSuccessResponsePackage extends ResponseNewWingPackage 
     public NewWingSuccessResponsePackage() {
         super(VALUE);
     }
-
 }
