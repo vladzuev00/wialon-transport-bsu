@@ -3,10 +3,10 @@ package by.bsu.wialontransport.protocol.jt808.util;
 import io.netty.buffer.ByteBuf;
 import lombok.experimental.UtilityClass;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static java.nio.charset.Charset.defaultCharset;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @UtilityClass
@@ -18,7 +18,7 @@ public final class JT808Util {
     public static String decodePhoneNumber(final ByteBuf buffer) {
         final byte[] bytes = new byte[PHONE_NUMBER_BYTE_COUNT];
         buffer.readBytes(bytes);
-        return bcd2String(bytes);
+        return decodeBcdString(bytes);
     }
 
     public static String decodeManufacturerId(final ByteBuf buffer) {
@@ -26,10 +26,10 @@ public final class JT808Util {
     }
 
     public static String decodeString(ByteBuf buffer, int byteCount) {
-        return buffer.readCharSequence(byteCount, defaultCharset()).toString().trim();
+        return buffer.readCharSequence(byteCount, StandardCharsets.US_ASCII).toString().trim();
     }
 
-    public static String bcd2String(byte[] bytes) {
+    public static String decodeBcdString(byte[] bytes) {
         StringBuilder temp = new StringBuilder(bytes.length * 2);
         for (byte aByte : bytes) {
             temp.append((aByte & 0xf0) >>> 4);
