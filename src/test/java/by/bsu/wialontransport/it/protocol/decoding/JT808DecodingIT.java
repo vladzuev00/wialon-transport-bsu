@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.it.decoding;
+package by.bsu.wialontransport.it.protocol.decoding;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.protocol.core.decoder.BinaryProtocolDecoder;
@@ -52,8 +52,8 @@ public final class JT808DecodingIT extends AbstractSpringBootTest {
                                 singletonList(
                                         new JT808Location(
                                                 LocalDateTime.of(2023, 7, 27, 7, 9, 14),
-                                                22.577608,
-                                                11.393793,
+                                                22.577609,
+                                                11.3937925,
                                                 (short) 0,
                                                 (short) 0,
                                                 (short) 0
@@ -71,8 +71,8 @@ public final class JT808DecodingIT extends AbstractSpringBootTest {
                                 singletonList(
                                         new JT808Location(
                                                 LocalDateTime.of(2023, 7, 27, 7, 9, 14),
-                                                22.577608,
-                                                11.393793,
+                                                22.577609,
+                                                11.3937925,
                                                 (short) 0,
                                                 (short) 0,
                                                 (short) 0

@@ -19,6 +19,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
             final SOURCE source = createSource(buffer);
             final Object request = decode(source);
             out.add(request);
+            skipRemaining(buffer);
         } finally {
             buffer.release();
         }
@@ -36,5 +37,9 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
 
     private IllegalStateException createNoPackageDecoderException(final SOURCE source) {
         return new IllegalStateException("No package decoder for '%s'".formatted(source));
+    }
+
+    private void skipRemaining(final ByteBuf buffer) {
+        buffer.skipBytes(buffer.readableBytes());
     }
 }
