@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 public final class JT808DecodingIT extends AbstractSpringBootTest {
 
     @Autowired
+    @Qualifier("jt808ProtocolDecoder")
     private BinaryProtocolDecoder decoder;
 
     @ParameterizedTest
