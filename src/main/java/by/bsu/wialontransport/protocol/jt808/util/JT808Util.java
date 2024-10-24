@@ -1,20 +1,28 @@
 package by.bsu.wialontransport.protocol.jt808.util;
 
 import io.netty.buffer.ByteBuf;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.nio.charset.Charset.defaultCharset;
+import static java.time.format.DateTimeFormatter.ofPattern;
 
-//TODO: refactor and test
-public class JT808Util {
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+@UtilityClass
+public final class JT808Util {
+    private static final int PHONE_NUMBER_BYTE_COUNT = 6;
+    private static final int MANUFACTURER_ID_BYTE_COUNT = 5;
+    private static final DateTimeFormatter DATE_FORMAT = ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static String decodePhoneNumber(ByteBuf buffer) {
-        byte[] bytes = new byte[6];
+    public static String decodePhoneNumber(final ByteBuf buffer) {
+        final byte[] bytes = new byte[PHONE_NUMBER_BYTE_COUNT];
         buffer.readBytes(bytes);
         return bcd2String(bytes);
+    }
+
+    public static String decodeManufacturerId(final ByteBuf buffer) {
+        return decodeString(buffer, MANUFACTURER_ID_BYTE_COUNT);
     }
 
     public static String decodeString(ByteBuf buffer, int byteCount) {
