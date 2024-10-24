@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.newwing.encoder.packages;
 
-import by.bsu.wialontransport.protocol.newwing.model.packages.response.ResponseNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.response.ResponseNewWingPackage;
 import org.junit.Test;
 
 import static org.junit.Assert.assertSame;

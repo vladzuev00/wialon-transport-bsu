@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
+import by.bsu.wialontransport.protocol.newwing.model.request.NewWingEventCountPackage;
+import by.bsu.wialontransport.protocol.newwing.model.response.NewWingSuccessResponsePackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.encoder.packages;
 
 import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
-import by.bsu.wialontransport.protocol.newwing.model.packages.response.ResponseNewWingPackage;
+import by.bsu.wialontransport.protocol.newwing.model.response.ResponseNewWingPackage;
 
 public abstract class NewWingPackageEncoder<PACKAGE extends ResponseNewWingPackage> extends PackageEncoder<PACKAGE> {
 

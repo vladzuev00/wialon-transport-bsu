@@ -2,8 +2,7 @@ package by.bsu.wialontransport.protocol.newwing.handler.packages;
 
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.model.packages.Package;
-import by.bsu.wialontransport.protocol.newwing.model.packages.request.NewWingEventCountPackage;
-import by.bsu.wialontransport.protocol.newwing.model.packages.response.NewWingSuccessResponsePackage;
+import by.bsu.wialontransport.protocol.newwing.model.request.NewWingEventCountPackage;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
