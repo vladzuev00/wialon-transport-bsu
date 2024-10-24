@@ -3,10 +3,10 @@ package by.bsu.wialontransport.protocol.jt808.util;
 import io.netty.buffer.ByteBuf;
 import lombok.experimental.UtilityClass;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @UtilityClass
@@ -22,11 +22,16 @@ public final class JT808Util {
     }
 
     public static String decodeManufacturerId(final ByteBuf buffer) {
-        return decodeString(buffer, MANUFACTURER_ID_BYTE_COUNT);
+        return buffer.readCharSequence(MANUFACTURER_ID_BYTE_COUNT, US_ASCII)
+                .toString()
+                .trim();
     }
 
-    public static String decodeString(ByteBuf buffer, int byteCount) {
-        return buffer.readCharSequence(byteCount, StandardCharsets.US_ASCII).toString().trim();
+    public static LocalDateTime decodeDateTime(final ByteBuf buffer) {
+        byte[] bytes = new byte[6];
+        buffer.readBytes(bytes);
+        //TODO: use decodeBcdString
+        return LocalDateTime.parse(toBcdTimeString(bytes), DATE_FORMAT);
     }
 
     public static String decodeBcdString(byte[] bytes) {
@@ -44,12 +49,6 @@ public final class JT808Util {
 
     public static double decodeLongitude(ByteBuf buffer) {
         return buffer.readUnsignedInt() / 10000000.;
-    }
-
-    public static LocalDateTime decodeDateTime(ByteBuf buffer) {
-        byte[] bytes = new byte[6];
-        buffer.readBytes(bytes);
-        return LocalDateTime.parse(toBcdTimeString(bytes), DATE_FORMAT);
     }
 
     public static String toBcdTimeString(byte[] bs) {
