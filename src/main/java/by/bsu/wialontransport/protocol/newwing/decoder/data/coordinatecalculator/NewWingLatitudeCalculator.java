@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.tempdecoder.data.coordinatecalculator;
+package by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.tempdecoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;

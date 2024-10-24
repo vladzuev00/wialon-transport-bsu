@@ -1,6 +1,7 @@
-package by.bsu.wialontransport.protocol.newwing.tempdecoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import by.bsu.wialontransport.crud.dto.Location;
+import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.tempdecoder.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPackage;
 import io.netty.buffer.ByteBuf;
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.apache.commons.collections4.IteratorUtils.toList;
 
 @Component
-public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
+public final class NewWingDataPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
     private static final String PREFIX = "GPRSSI";
 
     private final NewWingDataIteratorFactory dataIteratorFactory;
@@ -22,9 +23,9 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
     }
 
     @Override
-    protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
+    protected Object decodeInternal(final ByteBuf buf) {
         final List<Location> data = decodeData(buffer);
-        return checksum -> new NewWingLocationPackage(checksum, data);
+        return checksum -> new NewWingLocationPackage(data);
     }
 
     private List<Location> decodeData(final ByteBuf buffer) {
