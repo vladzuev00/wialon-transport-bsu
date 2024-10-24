@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
 
 @UtilityClass
 public final class JT808Util {
@@ -45,11 +47,9 @@ public final class JT808Util {
     private static String decodeBcdString(final ByteBuf buffer, final int length) {
         final byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
-        final StringBuilder builder = new StringBuilder(bytes.length * 2);
-        for (final byte b : bytes) {
-            builder.append(decodeBcdString(b));
-        }
-        return builder.toString();
+        return range(0, length)
+                .mapToObj(i -> decodeBcdString(bytes[i]))
+                .collect(joining());
     }
 
     private String decodeBcdString(final byte source) {
