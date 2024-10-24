@@ -31,6 +31,24 @@ public final class JT808UtilTest {
     }
 
     @Test
+    public void latitudeShouldBeDecoded() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("015881C9"));
+
+        final double actual = decodeLatitude(givenBuffer);
+        final double expected = 22.577609;
+        assertEquals(expected, actual, 0.);
+    }
+
+    @Test
+    public void longitudeShouldBeDecoded() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("06CA8E05"));
+
+        final double actual = decodeLongitude(givenBuffer);
+        final double expected = 11.3937925;
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void dateTimeShouldBeDecoded() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("230727070914"));
 

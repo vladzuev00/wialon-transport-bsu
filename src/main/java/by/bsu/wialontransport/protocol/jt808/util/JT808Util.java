@@ -7,18 +7,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.time.LocalDateTime.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @UtilityClass
 public final class JT808Util {
     private static final int PHONE_NUMBER_BYTE_COUNT = 6;
     private static final int MANUFACTURER_ID_BYTE_COUNT = 5;
-    private static final DateTimeFormatter DATE_FORMAT = ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final double LATITUDE_DELIMITER = 1000000.;
+    private static final double LONGITUDE_DELIMITER = 10000000.;
+    private static final int DATE_TIME_BYTE_COUNT = 6;
+    private static final DateTimeFormatter DATE_FORMAT = ofPattern("yyMMddHHmmss");
 
     public static String decodePhoneNumber(final ByteBuf buffer) {
-        final byte[] bytes = new byte[PHONE_NUMBER_BYTE_COUNT];
-        buffer.readBytes(bytes);
-        return decodeBcdString(bytes);
+        return decodeBcdString(buffer, PHONE_NUMBER_BYTE_COUNT);
     }
 
     public static String decodeManufacturerId(final ByteBuf buffer) {
@@ -27,61 +29,30 @@ public final class JT808Util {
                 .trim();
     }
 
+    public static double decodeLatitude(final ByteBuf buffer) {
+        return buffer.readUnsignedInt() / LATITUDE_DELIMITER;
+    }
+
+    public static double decodeLongitude(final ByteBuf buffer) {
+        return buffer.readUnsignedInt() / LONGITUDE_DELIMITER;
+    }
+
     public static LocalDateTime decodeDateTime(final ByteBuf buffer) {
-        byte[] bytes = new byte[6];
+        final String content = decodeBcdString(buffer, DATE_TIME_BYTE_COUNT);
+        return parse(content, DATE_FORMAT);
+    }
+
+    private static String decodeBcdString(final ByteBuf buffer, final int length) {
+        final byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
-        //TODO: use decodeBcdString
-        return LocalDateTime.parse(toBcdTimeString(bytes), DATE_FORMAT);
-    }
-
-    public static String decodeBcdString(byte[] bytes) {
-        StringBuilder temp = new StringBuilder(bytes.length * 2);
-        for (byte aByte : bytes) {
-            temp.append((aByte & 0xf0) >>> 4);
-            temp.append(aByte & 0x0f);
+        final StringBuilder builder = new StringBuilder(bytes.length * 2);
+        for (final byte b : bytes) {
+            builder.append(decodeBcdString(b));
         }
-        return temp.toString();
+        return builder.toString();
     }
 
-    public static double decodeLatitude(ByteBuf buffer) {
-        return buffer.readUnsignedInt() / 1000000.;
-    }
-
-    public static double decodeLongitude(ByteBuf buffer) {
-        return buffer.readUnsignedInt() / 10000000.;
-    }
-
-    public static String toBcdTimeString(byte[] bs) {
-        if (bs.length != 6 && bs.length != 7) {
-            return "0000-00-00 00:00:00";
-        }
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        if (bs.length == 6) {
-            sb.append("20");
-        } else {
-            sb.append(BCDtoString(bs[i++]));
-        }
-        sb.append(BCDtoString(bs[i++]));
-        sb.append("-").append(BCDtoString(bs[i++]));
-        sb.append("-").append(BCDtoString(bs[i++]));
-        sb.append(" ").append(BCDtoString(bs[i++]));
-        sb.append(":").append(BCDtoString(bs[i++]));
-        sb.append(":").append(BCDtoString(bs[i]));
-        return sb.toString();
-    }
-
-    public static String BCDtoString(byte bcd) {
-        StringBuilder sb = new StringBuilder();
-
-        byte high = (byte) (bcd & 0xf0);
-        high >>>= (byte) 4;
-        high = (byte) (high & 0x0f);
-        byte low = (byte) (bcd & 0x0f);
-
-        sb.append(high);
-        sb.append(low);
-
-        return sb.toString();
+    private String decodeBcdString(final byte source) {
+        return Integer.toString((source & 0xf0) >>> 4) + (source & 0x0f);
     }
 }
