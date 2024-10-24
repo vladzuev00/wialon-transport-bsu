@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.newwing.tempdecoder.data;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.protocol.newwing.tempdecoder.NewWingPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.model.request.NewWingDataPackage;
+import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public final class NewWingDataPackageDecoder extends NewWingPackageDecoder {
     @Override
     protected PackageFactory decodeUntilChecksum(final ByteBuf buffer) {
         final List<Location> data = decodeData(buffer);
-        return checksum -> new NewWingDataPackage(checksum, data);
+        return checksum -> new NewWingLocationPackage(checksum, data);
     }
 
     private List<Location> decodeData(final ByteBuf buffer) {

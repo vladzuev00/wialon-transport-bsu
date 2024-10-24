@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.tempdecoder.data;
 
 import by.bsu.wialontransport.crud.dto.Location;
-import by.bsu.wialontransport.protocol.newwing.model.request.NewWingDataPackage;
+import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPackage;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.collections4.IteratorUtils;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public final class NewWingDataPackageDecoderTest {
 
             final int givenChecksum = 53444546;
             final NewWingRequestPackage actual = createPackage(packageFactory, givenChecksum);
-            final NewWingRequestPackage expected = new NewWingDataPackage(givenChecksum, givenData);
+            final NewWingRequestPackage expected = new NewWingLocationPackage(givenChecksum, givenData);
             assertEquals(expected, actual);
         }
     }
