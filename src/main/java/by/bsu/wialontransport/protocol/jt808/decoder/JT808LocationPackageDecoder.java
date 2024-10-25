@@ -19,7 +19,7 @@ public abstract class JT808LocationPackageDecoder extends JT808PackageDecoder {
     }
 
     @Override
-    protected final Object decodeInternal(final ByteBuf buffer, final String phoneNumber) {
+    protected final JT808LocationPackage decodeInternal(final ByteBuf buffer, final String phoneNumber) {
         final int locationCount = decodeLocationCount(buffer);
         skipUntilFirstLocation(buffer);
         return decodeLocations(buffer, locationCount);

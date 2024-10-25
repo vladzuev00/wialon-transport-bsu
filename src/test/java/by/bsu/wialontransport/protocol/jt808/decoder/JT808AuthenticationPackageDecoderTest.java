@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.jt808.decoder;
 
+import by.bsu.wialontransport.protocol.jt808.model.JT808AuthenticationPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public final class JT808AuthenticationPackageDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
         final String givenPhoneNumber = "";
 
-        final Object actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
+        final JT808AuthenticationPackage actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
         assertNotNull(actual);
     }
 }

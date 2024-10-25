@@ -24,8 +24,8 @@ public final class NewWingDataPackageDecoder extends PrefixedByStringBinaryPacka
 
     @Override
     protected Object decodeInternal(final ByteBuf buf) {
-        final List<Location> data = decodeData(buffer);
-        return checksum -> new NewWingLocationPackage(data);
+        final List<Location> data = decodeData(buf);
+        return new NewWingLocationPackage(null);
     }
 
     private List<Location> decodeData(final ByteBuf buffer) {

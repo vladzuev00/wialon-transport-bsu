@@ -15,7 +15,7 @@ public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buffer, final String phoneNumber) {
+    protected JT808RegistrationPackage decodeInternal(final ByteBuf buffer, final String phoneNumber) {
         skipProvinceId(buffer);
         skipCityId(buffer);
         final String manufacturerId = decodeManufacturerId(buffer);

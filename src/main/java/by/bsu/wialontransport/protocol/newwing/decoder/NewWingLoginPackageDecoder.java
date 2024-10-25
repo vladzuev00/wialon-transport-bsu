@@ -16,7 +16,7 @@ public final class NewWingLoginPackageDecoder extends PrefixedByStringBinaryPack
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buffer) {
+    protected NewWingLoginPackage decodeInternal(final ByteBuf buffer) {
         final String imei = decodeImei(buffer);
         return new NewWingLoginPackage(imei);
     }

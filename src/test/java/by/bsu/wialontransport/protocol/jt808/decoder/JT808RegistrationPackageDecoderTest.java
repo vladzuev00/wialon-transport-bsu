@@ -25,8 +25,8 @@ public final class JT808RegistrationPackageDecoderTest {
             final String givenManufacturerId = "86977";
             mockedUtil.when(() -> decodeManufacturerId(same(givenBuffer))).thenReturn(givenManufacturerId);
 
-            final Object actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
-            final Object expected = new JT808RegistrationPackage(givenPhoneNumber, givenManufacturerId);
+            final JT808RegistrationPackage actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
+            final var expected = new JT808RegistrationPackage(givenPhoneNumber, givenManufacturerId);
             assertEquals(expected, actual);
 
             assertEquals(0, givenBuffer.readableBytes());

@@ -14,7 +14,7 @@ public final class NewWingEventCountPackageDecoder extends PrefixedByStringBinar
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buffer) {
+    protected NewWingEventCountPackage decodeInternal(final ByteBuf buffer) {
         return new NewWingEventCountPackage();
     }
 }

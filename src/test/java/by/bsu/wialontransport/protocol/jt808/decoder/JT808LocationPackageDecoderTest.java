@@ -20,8 +20,8 @@ public final class JT808LocationPackageDecoderTest {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("00020100420001000000000001015881C906CA8E0500000000000023072707091430011F31010051080000000000000000560231005708000200000000000063020000FD02002600420001000000000001015881C906CA8E0500000000000023072707091430011F31010051080000000000000000560231005708000200000000000063020000FD020026"));
         final String givenPhoneNumber = "";
 
-        final Object actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
-        final Object expected = new JT808LocationPackage(
+        final JT808LocationPackage actual = decoder.decodeInternal(givenBuffer, givenPhoneNumber);
+        final JT808LocationPackage expected = new JT808LocationPackage(
                 List.of(
                         new JT808Location(
                                 LocalDateTime.of(2023, 7, 27, 7, 9, 14),

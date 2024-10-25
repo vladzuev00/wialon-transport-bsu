@@ -13,7 +13,7 @@ public final class JT808AuthenticationPackageDecoder extends JT808PackageDecoder
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buffer, final String phoneNumber) {
+    protected JT808AuthenticationPackage decodeInternal(final ByteBuf buffer, final String phoneNumber) {
         return new JT808AuthenticationPackage();
     }
 }
