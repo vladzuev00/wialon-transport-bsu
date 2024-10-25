@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class NewWingLoginPackage {
-    String imei;
+    short imei;
 }

@@ -5,8 +5,7 @@ import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLoginPackage
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
-import static by.bsu.wialontransport.protocol.newwing.util.NewWingUtil.decodeImei;
-
+//TODO: test
 @Component
 public final class NewWingLoginPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
     private static final String REQUIRED_PREFIX = "GPRSGC";
@@ -17,7 +16,7 @@ public final class NewWingLoginPackageDecoder extends PrefixedByStringBinaryPack
 
     @Override
     protected NewWingLoginPackage decodeInternal(final ByteBuf buffer) {
-        final String imei = decodeImei(buffer);
+        final short imei = buffer.readShortLE();
         return new NewWingLoginPackage(imei);
     }
 }
