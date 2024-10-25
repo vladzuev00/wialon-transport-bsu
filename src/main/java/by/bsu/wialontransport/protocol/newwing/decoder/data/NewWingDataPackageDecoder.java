@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.tempdecoder.NewWingPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
