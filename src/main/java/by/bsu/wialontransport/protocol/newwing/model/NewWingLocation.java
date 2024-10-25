@@ -9,7 +9,8 @@ public class NewWingLocation {
     LocalDateTime dateTime;
     double latitude;
     double longitude;
-    int speed;
+    short course;
+    double speed;
     double hdop;
     double[] analogInputs;
 }

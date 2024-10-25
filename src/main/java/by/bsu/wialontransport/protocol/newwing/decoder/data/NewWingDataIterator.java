@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
 import by.bsu.wialontransport.crud.dto.Location;
+import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
-public final class NewWingDataIterator implements Iterator<Location> {
+public final class NewWingDataIterator implements Iterator<NewWingLocation> {
     private static final int BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
 
     private final NewWingDataDecoder decoder;
@@ -20,7 +21,7 @@ public final class NewWingDataIterator implements Iterator<Location> {
     }
 
     @Override
-    public Location next() {
+    public NewWingLocation next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }

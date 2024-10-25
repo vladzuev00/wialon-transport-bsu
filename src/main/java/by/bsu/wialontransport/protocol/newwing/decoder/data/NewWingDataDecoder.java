@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLatitudeCalculator;
 import by.bsu.wialontransport.protocol.newwing.decoder.data.coordinatecalculator.NewWingLongitudeCalculator;
+import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public final class NewWingDataDecoder {
     private final NewWingLatitudeCalculator latitudeCalculator;
     private final NewWingLongitudeCalculator longitudeCalculator;
 
-    public Location decodeNext(final ByteBuf buffer) {
+    public NewWingLocation decodeNext(final ByteBuf buffer) {
         final byte hour = decodeByte(buffer);
         final byte minute = decodeByte(buffer);
         final byte second = decodeByte(buffer);
@@ -43,28 +43,20 @@ public final class NewWingDataDecoder {
         skipFlagByte(buffer);
         skipDiscreteInputStateByte(buffer);
         skipChecksum(buffer);
-        return Location.builder()
-                .dateTime(createDateTime(year, month, day, hour, minute, second))
-                .coordinate(
-                        calculateCoordinate(
-                                latitudeIntegerPart,
-                                latitudeFractionalPart,
-                                longitudeIntegerPart,
-                                longitudeFractionalPart
-                        )
-                )
-                .course(course)
-                .speed(concatToDouble(speedIntegerPart, speedFractionalPart))
-                .hdop(concatToDouble(hdopIntegerPart, hdopFractionalPart))
-                .analogInputs(
-                        new double[]{
-                                firstAnalogInputLevel,
-                                secondAnalogInputLevel,
-                                thirdAnalogInputLevel,
-                                fourthAnalogInputLevel
-                        }
-                )
-                .build();
+        return new NewWingLocation(
+                createDateTime(year, month, day, hour, minute, second),
+                latitudeCalculator.calculate(latitudeIntegerPart, latitudeFractionalPart),
+                longitudeCalculator.calculate(longitudeIntegerPart, longitudeFractionalPart),
+                course,
+                concatToDouble(speedIntegerPart, speedFractionalPart),
+                concatToDouble(hdopIntegerPart, hdopFractionalPart),
+                new double[]{
+                        firstAnalogInputLevel,
+                        secondAnalogInputLevel,
+                        thirdAnalogInputLevel,
+                        fourthAnalogInputLevel
+                }
+        );
     }
 
     private short decodeShort(final ByteBuf buffer) {
