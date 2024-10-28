@@ -62,29 +62,24 @@ public final class NewWingUtil {
     }
 
     public static double decodeSpeed(final ByteBuf buffer) {
-        final short speedIntegerPart = buffer.readShortLE();
-        final byte speedFractionalPart = buffer.readByte();
-        return concatToDouble(speedIntegerPart, speedFractionalPart);
+        final short integerPart = decodeShort(buffer);
+        final byte fractionalPart = buffer.readByte();
+        return concatToDouble(integerPart, fractionalPart);
     }
 
     public static double[] decodeAnalogInputs(final ByteBuf buffer) {
-        final short firstAnalogInputLevel = buffer.readShortLE();
-        final short secondAnalogInputLevel = buffer.readShortLE();
-        final short thirdAnalogInputLevel = buffer.readShortLE();
-        final short fourthAnalogInputLevel = buffer.readShortLE();
-        return new double[]{
-                firstAnalogInputLevel,
-                secondAnalogInputLevel,
-                thirdAnalogInputLevel,
-                fourthAnalogInputLevel
-        };
+        final short first = decodeShort(buffer);
+        final short second = decodeShort(buffer);
+        final short third = decodeShort(buffer);
+        final short fourth = decodeShort(buffer);
+        return new double[]{first, second, third, fourth};
     }
 
     private static double decodeGpsCoordinate(final ByteBuf buffer,
                                               final String integerPartTemplate,
                                               final int firstPartIntegerPartNextLastIndex) {
-        final short integerPart = buffer.readShortLE();
-        final short fractionalPart = buffer.readShortLE();
+        final short integerPart = decodeShort(buffer);
+        final short fractionalPart = decodeShort(buffer);
         final String integerPartAsString = integerPartTemplate.formatted(abs(integerPart));
         final double abs = parseInt(integerPartAsString.substring(0, firstPartIntegerPartNextLastIndex))
                 + parseFloat(
