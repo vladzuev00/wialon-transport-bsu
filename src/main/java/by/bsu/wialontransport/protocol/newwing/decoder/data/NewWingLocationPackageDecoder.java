@@ -12,23 +12,19 @@ import static org.apache.commons.collections4.IteratorUtils.toList;
 
 @Component
 public final class NewWingLocationPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
-    private static final String PREFIX = "GPRSSI";
+    private static final String REQUIRED_PREFIX = "GPRSSI";
 
-    private final NewWingLocationIteratorFactory dataIteratorFactory;
+    private final NewWingLocationIteratorFactory locationIteratorFactory;
 
-    public NewWingLocationPackageDecoder(final NewWingLocationIteratorFactory dataIteratorFactory) {
-        super(PREFIX);
-        this.dataIteratorFactory = dataIteratorFactory;
+    public NewWingLocationPackageDecoder(final NewWingLocationIteratorFactory locationIteratorFactory) {
+        super(REQUIRED_PREFIX);
+        this.locationIteratorFactory = locationIteratorFactory;
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buf) {
-        final List<NewWingLocation> data = decodeData(buf);
-        return new NewWingLocationPackage(data);
-    }
-
-    private List<NewWingLocation> decodeData(final ByteBuf buffer) {
-        final NewWingLocationIterator iterator = dataIteratorFactory.create(buffer);
-        return toList(iterator);
+    protected NewWingLocationPackage decodeInternal(final ByteBuf buffer) {
+        final NewWingLocationIterator locationIterator = locationIteratorFactory.create(buffer);
+        final List<NewWingLocation> locations = toList(locationIterator);
+        return new NewWingLocationPackage(locations);
     }
 }
