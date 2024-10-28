@@ -9,14 +9,14 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public final class NewWingLocationIterator implements Iterator<NewWingLocation> {
-    private static final int BYTE_COUNT_TO_HAVE_NEXT_EVENT = 37;
+    private static final int LOCATION_BYTE_COUNT = 37;
 
     private final NewWingLocationDecoder decoder;
     private final ByteBuf buffer;
 
     @Override
     public boolean hasNext() {
-        return buffer.readableBytes() >= BYTE_COUNT_TO_HAVE_NEXT_EVENT;
+        return buffer.readableBytes() >= LOCATION_BYTE_COUNT;
     }
 
     @Override
