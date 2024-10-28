@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.newwing.decoder.data;
 
-import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
 import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPackage;
@@ -12,12 +11,12 @@ import java.util.List;
 import static org.apache.commons.collections4.IteratorUtils.toList;
 
 @Component
-public final class NewWingDataPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
+public final class NewWingLocationPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
     private static final String PREFIX = "GPRSSI";
 
-    private final NewWingDataIteratorFactory dataIteratorFactory;
+    private final NewWingLocationIteratorFactory dataIteratorFactory;
 
-    public NewWingDataPackageDecoder(final NewWingDataIteratorFactory dataIteratorFactory) {
+    public NewWingLocationPackageDecoder(final NewWingLocationIteratorFactory dataIteratorFactory) {
         super(PREFIX);
         this.dataIteratorFactory = dataIteratorFactory;
     }
@@ -29,7 +28,7 @@ public final class NewWingDataPackageDecoder extends PrefixedByStringBinaryPacka
     }
 
     private List<NewWingLocation> decodeData(final ByteBuf buffer) {
-        final NewWingDataIterator iterator = dataIteratorFactory.create(buffer);
+        final NewWingLocationIterator iterator = dataIteratorFactory.create(buffer);
         return toList(iterator);
     }
 }

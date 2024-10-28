@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public final class NewWingDataIteratorFactory {
-    private final NewWingDataDecoder decoder;
+public final class NewWingLocationIteratorFactory {
+    private final NewWingLocationDecoder decoder;
 
-    public NewWingDataIterator create(final ByteBuf buffer) {
-        return new NewWingDataIterator(decoder, buffer);
+    public NewWingLocationIterator create(final ByteBuf buffer) {
+        return new NewWingLocationIterator(decoder, buffer);
     }
 }

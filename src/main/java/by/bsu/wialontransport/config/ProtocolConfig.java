@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.core.decoder.BinaryProtocolDecoder;
 import by.bsu.wialontransport.protocol.jt808.decoder.JT808PackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingEventCountPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingLoginPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.decoder.data.NewWingDataPackageDecoder;
+import by.bsu.wialontransport.protocol.newwing.decoder.data.NewWingLocationPackageDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +21,7 @@ public class ProtocolConfig {
     @Bean
     public BinaryProtocolDecoder newWingProtocolDecoder(final NewWingLoginPackageDecoder loginPackageDecoder,
                                                         final NewWingEventCountPackageDecoder eventCountPackageDecoder,
-                                                        final NewWingDataPackageDecoder locationPackageDecoder) {
+                                                        final NewWingLocationPackageDecoder locationPackageDecoder) {
         return new BinaryProtocolDecoder(List.of(loginPackageDecoder, eventCountPackageDecoder, locationPackageDecoder));
     }
 }
