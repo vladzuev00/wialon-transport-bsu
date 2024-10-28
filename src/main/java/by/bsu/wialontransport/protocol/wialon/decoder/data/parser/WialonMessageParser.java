@@ -1,13 +1,8 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 
-import by.bsu.wialontransport.protocol.wialon.model.WialonData;
-import by.bsu.wialontransport.protocol.wialon.model.WialonData.WialonDataBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static java.util.Arrays.stream;
 

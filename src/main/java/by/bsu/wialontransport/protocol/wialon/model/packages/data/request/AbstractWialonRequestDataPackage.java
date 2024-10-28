@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.model.packages.data.request;
 
-import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

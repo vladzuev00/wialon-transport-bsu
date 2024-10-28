@@ -2,7 +2,6 @@ package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
-import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Latitude;
 import by.bsu.wialontransport.protocol.wialon.model.coordinate.Longitude;
 import org.junit.jupiter.params.ParameterizedTest;

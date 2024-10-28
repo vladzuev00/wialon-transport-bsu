@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.wialon.model.packages.data.request;
 
-import by.bsu.wialontransport.protocol.wialon.model.WialonData;
 import org.junit.Test;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.data.request.WialonRequestDataPackage.PREFIX;
