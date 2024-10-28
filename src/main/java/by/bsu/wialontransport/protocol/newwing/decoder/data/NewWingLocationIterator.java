@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public final class NewWingLocationIterator implements Iterator<NewWingLocation> {
-    private static final int LOCATION_BYTE_COUNT = 37;
+    static final int LOCATION_BYTE_COUNT = 37;
 
     private final NewWingLocationDecoder decoder;
     private final ByteBuf buffer;
