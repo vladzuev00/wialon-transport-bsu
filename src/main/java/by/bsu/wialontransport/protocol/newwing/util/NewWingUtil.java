@@ -21,6 +21,10 @@ public final class NewWingUtil {
     private static final int LONGITUDE_FIRST_PART_INTEGER_PART_NEXT_LAST_INDEX = 3;
     private static final String POINT = ".";
 
+    public static short decodeShort(final ByteBuf buffer) {
+        return buffer.readShortLE();
+    }
+
     public static LocalDate decodeDate(final ByteBuf buffer) {
         final byte day = buffer.readByte();
         final byte month = buffer.readByte();

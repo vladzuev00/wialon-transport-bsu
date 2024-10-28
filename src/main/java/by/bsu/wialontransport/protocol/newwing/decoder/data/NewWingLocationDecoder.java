@@ -29,10 +29,6 @@ public final class NewWingLocationDecoder {
         return new NewWingLocation(dateTime, latitude, longitude, course, speed, hdop, analogInputs);
     }
 
-    private short decodeShort(final ByteBuf buffer) {
-        return buffer.readShortLE();
-    }
-
     private void skipFlagByte(final ByteBuf buffer) {
         buffer.skipBytes(Byte.BYTES);
     }
