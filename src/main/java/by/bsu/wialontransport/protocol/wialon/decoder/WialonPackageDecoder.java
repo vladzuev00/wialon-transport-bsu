@@ -7,8 +7,8 @@ import static by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackag
 
 public abstract class WialonPackageDecoder extends PrefixedByStringTextPackageDecoder {
 
-    public WialonPackageDecoder(final String prefix) {
-        super(prefix);
+    public WialonPackageDecoder(final String requiredPrefix) {
+        super(requiredPrefix);
     }
 
     @Override
