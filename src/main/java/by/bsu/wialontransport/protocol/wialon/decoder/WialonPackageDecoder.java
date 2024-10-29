@@ -12,15 +12,15 @@ public abstract class WialonPackageDecoder extends PrefixedByStringTextPackageDe
     }
 
     @Override
-    protected final WialonPackage decodeInternal(final String content) {
-        final String message = removePostfix(content);
+    protected final WialonPackage decodeInternal(final String source) {
+        final String message = removePostfix(source);
         return decodeMessage(message);
     }
 
     protected abstract WialonPackage decodeMessage(final String message);
 
-    private String removePostfix(final String content) {
-        final int startIndex = content.length() - POSTFIX.length();
-        return content.substring(0, startIndex);
+    private String removePostfix(final String source) {
+        final int startIndex = source.length() - POSTFIX.length();
+        return source.substring(0, startIndex);
     }
 }
