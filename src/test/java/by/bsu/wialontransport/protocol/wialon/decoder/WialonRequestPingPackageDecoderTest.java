@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.decoder;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public final class WialonRequestPingPackageDecoderTest {
     private final WialonRequestPingPackageDecoder decoder = new WialonRequestPingPackageDecoder();
