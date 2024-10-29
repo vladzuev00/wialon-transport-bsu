@@ -7,7 +7,7 @@ import static by.bsu.wialontransport.protocol.wialon.model.packages.login.Wialon
 
 @Component
 public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder {
-    private static final String DELIMITER_IMEI_AND_PASSWORD = ";";
+    private static final String COMPONENT_DELIMITER = ";";
     private static final int INDEX_IMEI = 0;
     private static final int INDEX_PASSWORD = 1;
 
@@ -17,7 +17,7 @@ public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder
 
     @Override
     protected WialonRequestLoginPackage decodeMessage(final String message) {
-        final String[] components = message.split(DELIMITER_IMEI_AND_PASSWORD);
+        final String[] components = message.split(COMPONENT_DELIMITER);
         final String imei = components[INDEX_IMEI];
         final String password = components[INDEX_PASSWORD];
         return new WialonRequestLoginPackage(imei, password);
