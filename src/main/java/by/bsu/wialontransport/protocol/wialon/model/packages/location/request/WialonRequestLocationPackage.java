@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.model.packages.data.request;
+package by.bsu.wialontransport.protocol.wialon.model.packages.location.request;
 
 import by.bsu.wialontransport.protocol.wialon.model.WialonLocation;
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
@@ -13,6 +13,6 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public abstract class AbstractWialonRequestDataPackage extends WialonPackage {
-    private final List<WialonLocation> data;
+public abstract class WialonRequestLocationPackage extends WialonPackage {
+    private final List<WialonLocation> locations;
 }

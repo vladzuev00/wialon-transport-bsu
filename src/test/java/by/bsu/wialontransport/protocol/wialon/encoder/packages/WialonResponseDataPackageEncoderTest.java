@@ -1,9 +1,9 @@
 package by.bsu.wialontransport.protocol.wialon.encoder.packages;
 
-import by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage;
+import by.bsu.wialontransport.protocol.wialon.model.packages.location.response.WialonResponseDataPackage;
 import org.junit.Test;
 
-import static by.bsu.wialontransport.protocol.wialon.model.packages.data.response.WialonResponseDataPackage.Status.PACKAGE_FIX_SUCCESS;
+import static by.bsu.wialontransport.protocol.wialon.model.packages.location.response.WialonResponseDataPackage.Status.PACKAGE_FIX_SUCCESS;
 import static org.junit.Assert.assertEquals;
 
 public final class WialonResponseDataPackageEncoderTest {
