@@ -9,8 +9,4 @@ public abstract class WialonPackage {
     public static final String POSTFIX = "\r\n";
 
     public abstract String getPrefix();
-
-    public final String getPostfix() {
-        return POSTFIX;
-    }
 }
