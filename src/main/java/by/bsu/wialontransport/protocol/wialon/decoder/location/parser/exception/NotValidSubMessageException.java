@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.data.parser.exception;
+package by.bsu.wialontransport.protocol.wialon.decoder.location.parser.exception;
 
 public final class NotValidSubMessageException extends RuntimeException {
 

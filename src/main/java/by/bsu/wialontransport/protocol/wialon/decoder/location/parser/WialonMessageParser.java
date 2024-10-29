@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.location.parser;
 
 import by.bsu.wialontransport.protocol.wialon.model.WialonLocation;
 import org.springframework.stereotype.Component;

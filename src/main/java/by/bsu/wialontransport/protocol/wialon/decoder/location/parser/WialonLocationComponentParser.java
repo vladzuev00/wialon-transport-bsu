@@ -1,8 +1,8 @@
-package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
+package by.bsu.wialontransport.protocol.wialon.decoder.location.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.data.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.protocol.wialon.decoder.location.parser.exception.NotValidSubMessageException;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -20,25 +20,23 @@ import static java.util.Arrays.stream;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-public final class WialonDataComponentsParser {
-    private static final String DATA_REGEX
+public final class WialonLocationComponentParser {
+    private static final String LOCATION_REGEX
             = "((\\d{6}|(NA));(\\d{6}|(NA)));"                     //date, time
             + "(((\\d{2})(\\d{2})\\.(\\d+);([NS]))|(NA;NA));"      //latitude
             + "(((\\d{3})(\\d{2})\\.(\\d+);([EW]))|(NA;NA));"      //longitude
             + "(\\d+|(NA));"                                       //speed
             + "(\\d+|(NA));"                                       //course
             + "(\\d+|(NA));"                                       //altitude
-            + "(\\d+|(NA));"                                       //amountOfSatellites
+            + "(\\d+|(NA));"                                       //satelliteCount
             + "((\\d+\\.\\d+)|(NA));"                              //hdop
             + "(\\d+|(NA));"                                       //inputs
             + "(\\d+|(NA));"                                       //outputs
-            //NA comes from retranslator
             + "(((\\d+(\\.\\d+)?),?)*|(NA));"                      //analogInputs
             + "(.*);"                                              //driverKeyCode
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
-    private static final Pattern DATA_PATTERN = compile(DATA_REGEX);
+    private static final Pattern LOCATION_PATTERN = compile(LOCATION_REGEX);
     private static final String NA = "NA";
-    private static final String DELIMITER_PARAMETERS = ",";
 
     private final Matcher matcher;
     private final DateParser dateParser;
@@ -48,7 +46,7 @@ public final class WialonDataComponentsParser {
     private final SpeedParser speedParser;
     private final CourseParser courseParser;
     private final AltitudeParser altitudeParser;
-    private final AmountOfSatellitesParser amountOfSatellitesParser;
+    private final SatelliteCountParser satelliteCountParser;
     private final HdopParser hdopParser;
     private final InputsParser inputsParser;
     private final OutputsParser outputsParser;
@@ -56,9 +54,9 @@ public final class WialonDataComponentsParser {
     private final DriverKeyCodeParser driverKeyCodeParser;
     private final ParametersParser parametersParser;
 
-    public WialonDataComponentsParser(final String data) {
-        matcher = DATA_PATTERN.matcher(data);
-        match(data);
+    public WialonLocationComponentParser(final String source) {
+        matcher = LOCATION_PATTERN.matcher(source);
+        match(source);
         dateParser = new DateParser();
         timeParser = new TimeParser();
         latitudeParser = new LatitudeParser();
@@ -66,7 +64,7 @@ public final class WialonDataComponentsParser {
         speedParser = new SpeedParser();
         courseParser = new CourseParser();
         altitudeParser = new AltitudeParser();
-        amountOfSatellitesParser = new AmountOfSatellitesParser();
+        satelliteCountParser = new SatelliteCountParser();
         hdopParser = new HdopParser();
         inputsParser = new InputsParser();
         outputsParser = new OutputsParser();
@@ -91,20 +89,20 @@ public final class WialonDataComponentsParser {
         return longitudeParser.parse();
     }
 
-    public OptionalDouble parseSpeed() {
-        return speedParser.parse();
-    }
-
     public OptionalInt parseCourse() {
         return courseParser.parse();
+    }
+
+    public OptionalDouble parseSpeed() {
+        return speedParser.parse();
     }
 
     public OptionalInt parseAltitude() {
         return altitudeParser.parse();
     }
 
-    public OptionalInt parseAmountOfSatellites() {
-        return amountOfSatellitesParser.parse();
+    public OptionalInt parseSatelliteCount() {
+        return satelliteCountParser.parse();
     }
 
     public OptionalDouble parseHdop() {
@@ -131,9 +129,9 @@ public final class WialonDataComponentsParser {
         return parametersParser.parse();
     }
 
-    private void match(final String data) {
+    private void match(final String source) {
         if (!matcher.matches()) {
-            throw new NotValidSubMessageException("Given sub message isn't valid: '%s'".formatted(data));
+            throw new NotValidSubMessageException("Given source isn't valid: '%s'".formatted(source));
         }
     }
 
@@ -338,10 +336,10 @@ public final class WialonDataComponentsParser {
         }
     }
 
-    private final class AmountOfSatellitesParser extends IntComponentParser {
+    private final class SatelliteCountParser extends IntComponentParser {
         private static final int GROUP_NUMBER = 26;
 
-        public AmountOfSatellitesParser() {
+        public SatelliteCountParser() {
             super(GROUP_NUMBER);
         }
     }
@@ -413,6 +411,7 @@ public final class WialonDataComponentsParser {
     private final class ParametersParser extends ComponentParser<Optional<Set<Parameter>>> {
         private static final int GROUP_NUMBER = 41;
         private static final String EMPTY_STRING = "";
+        private static final String DELIMITER_PARAMETERS = ",";
 
         private final ParameterParser parameterParser;
 
