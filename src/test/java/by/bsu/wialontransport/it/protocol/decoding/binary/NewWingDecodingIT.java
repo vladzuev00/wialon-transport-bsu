@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.it.protocol.decoding;
+package by.bsu.wialontransport.it.protocol.decoding.binary;
 
 import by.bsu.wialontransport.protocol.core.decoder.BinaryProtocolDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
