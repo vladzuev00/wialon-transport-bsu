@@ -9,7 +9,7 @@ import static org.junit.Assert.assertSame;
 public final class WialonResponseLoginPackageTest {
 
     @Test
-    public void prefixShouldBeFound() {
+    public void prefixShouldBeGot() {
         final WialonResponseLoginPackage givenPackage = new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);
 
         final String actual = givenPackage.getPrefix();
