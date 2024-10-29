@@ -10,10 +10,10 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public final class WialonResponseBlackBoxPackage extends WialonPackage {
+public final class WialonResponseBulkLocationPackage extends WialonPackage {
     public static final String PREFIX = "#AB#";
 
-    private final int amountFixedMessages;
+    private final int fixedMessageCount;
 
     @Override
     public String getPrefix() {
