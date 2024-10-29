@@ -4,7 +4,7 @@ import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class PackageEncoder<PACKAGE extends Package> {
+public abstract class PackageEncoder<PACKAGE> {
     private final Class<PACKAGE> encodedPackageType;
 
     public final boolean isAbleToEncode(final Package response) {

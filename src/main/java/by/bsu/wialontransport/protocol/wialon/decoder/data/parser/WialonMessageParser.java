@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.data.parser;
 
+import by.bsu.wialontransport.protocol.wialon.model.WialonLocation;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,31 +11,32 @@ import static java.util.Arrays.stream;
 public final class WialonMessageParser {
     private static final String SUB_MESSAGE_DELIMITER_REGEX = "\\|";
 
-    public List<WialonData> parse(final String message) {
-        return stream(message.split(SUB_MESSAGE_DELIMITER_REGEX))
-                .map(this::parseSubMessage)
-                .toList();
+    public List<WialonLocation> parse(final String message) {
+        return null;
+//        return stream(message.split(SUB_MESSAGE_DELIMITER_REGEX))
+//                .map(this::parseSubMessage)
+//                .toList();
     }
 
-    private WialonData parseSubMessage(final String subMessage) {
-        final WialonDataComponentsParser parser = new WialonDataComponentsParser(subMessage);
-        final WialonDataBuilder builder = WialonData.builder();
-//        parseDate(parser, builder);
-//        parseTime(parser, builder);
-//        parseLatitude(parser, builder);
-//        parseLongitude(parser, builder);
-//        parseSpeed(parser, builder);
-//        parseCourse(parser, builder);
-//        parseAltitude(parser, builder);
-//        parseAmountOfSatellites(parser, builder);
-//        parseHdop(parser, builder);
-//        parseInputs(parser, builder);
-//        parseOutputs(parser, builder);
-//        parseAnalogInputs(parser, builder);
-//        parseDriverKeyCode(parser, builder);
-//        parseParameters(parser, builder);
-        return builder.build();
-    }
+//    private WialonData parseSubMessage(final String subMessage) {
+//        final WialonDataComponentsParser parser = new WialonDataComponentsParser(subMessage);
+//        final WialonDataBuilder builder = WialonData.builder();
+////        parseDate(parser, builder);
+////        parseTime(parser, builder);
+////        parseLatitude(parser, builder);
+////        parseLongitude(parser, builder);
+////        parseSpeed(parser, builder);
+////        parseCourse(parser, builder);
+////        parseAltitude(parser, builder);
+////        parseAmountOfSatellites(parser, builder);
+////        parseHdop(parser, builder);
+////        parseInputs(parser, builder);
+////        parseOutputs(parser, builder);
+////        parseAnalogInputs(parser, builder);
+////        parseDriverKeyCode(parser, builder);
+////        parseParameters(parser, builder);
+//        return builder.build();
+//    }
 
 //    private void parseDate(final WialonDataComponentsParser parser, final WialonDataBuilder builder) {
 //        builder.date(parser.parseDate());

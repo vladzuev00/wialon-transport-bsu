@@ -8,7 +8,7 @@ import static org.junit.Assert.assertSame;
 public final class WialonRequestPingPackageTest {
 
     @Test
-    public void prefixShouldBeFound() {
+    public void prefixShouldBeGot() {
         final WialonRequestPingPackage givenPackage = new WialonRequestPingPackage();
 
         final String actual = givenPackage.getPrefix();
