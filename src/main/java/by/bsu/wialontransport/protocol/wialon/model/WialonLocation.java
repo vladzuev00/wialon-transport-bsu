@@ -1,14 +1,20 @@
 package by.bsu.wialontransport.protocol.wialon.model;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Value
+@Builder
+@AllArgsConstructor
 public class WialonLocation {
-    LocalDateTime dateTime;
+    LocalDate date;
+    LocalTime time;
     Double latitude;
     Double longitude;
     Integer course;
