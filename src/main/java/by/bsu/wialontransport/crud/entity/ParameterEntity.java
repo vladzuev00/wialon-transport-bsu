@@ -1,5 +1,6 @@
 package by.bsu.wialontransport.crud.entity;
 
+import by.bsu.wialontransport.model.ParameterType;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import lombok.*;
 import org.hibernate.annotations.TypeDef;
@@ -36,7 +37,7 @@ public class ParameterEntity extends Entity<Long> {
     @Enumerated(STRING)
     @Column(name = "type")
     @org.hibernate.annotations.Type(type = "pgsql_enum")
-    private Type type;
+    private ParameterType type;
 
     @Column(name = "value")
     private String value;
@@ -45,9 +46,4 @@ public class ParameterEntity extends Entity<Long> {
     @JoinColumn(name = "data_id")
     @ToString.Exclude
     private DataEntity data;
-
-    //TODO: out
-    public enum Type {
-        INTEGER, DOUBLE, STRING
-    }
 }

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.kafka.model.view;
 
-import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
+import by.bsu.wialontransport.model.ParameterType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,6 @@ import lombok.ToString;
 @ToString
 public abstract class ParameterView {
     private final String name;
-    private final Type type;
+    private final ParameterType type;
     private final String value;
 }

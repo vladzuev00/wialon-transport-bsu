@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.dto;
 
-import by.bsu.wialontransport.crud.entity.ParameterEntity.Type;
+import by.bsu.wialontransport.model.ParameterType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -11,6 +11,6 @@ import lombok.Value;
 public class Parameter implements Dto<Long> {
     Long id;
     String name;
-    Type type;
+    ParameterType type;
     String value;
 }

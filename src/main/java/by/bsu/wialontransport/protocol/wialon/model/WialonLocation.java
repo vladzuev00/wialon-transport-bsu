@@ -9,15 +9,15 @@ import java.util.Set;
 @Value
 public class WialonLocation {
     LocalDateTime dateTime;
-    double latitude;
-    double longitude;
-    int course;
-    double speed;
-    int altitude;
-    int satelliteCount;
-    double hdop;
-    int inputs;
-    int outputs;
+    Double latitude;
+    Double longitude;
+    Integer course;
+    Double speed;
+    Integer altitude;
+    Integer satelliteCount;
+    Double hdop;
+    Integer inputs;
+    Integer outputs;
     double[] analogInputs;
     String driverKeyCode;
     Set<Parameter> parameters;

@@ -1,8 +1,7 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.location.parser;
 
 import by.bsu.wialontransport.crud.dto.Parameter;
-import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.protocol.wialon.decoder.location.parser.exception.NotValidSubMessageException;
+import by.bsu.wialontransport.model.ParameterType;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -12,11 +11,12 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.wialontransport.crud.entity.ParameterEntity.Type.*;
+import static by.bsu.wialontransport.model.ParameterType.*;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptySet;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
@@ -37,6 +37,7 @@ public final class WialonLocationComponentParser {
             + "((([^:]+:[123]:[^,:]+)(,([^:]+:[123]:[^,:]+))*)|)"; //parameters
     private static final Pattern LOCATION_PATTERN = compile(LOCATION_REGEX);
     private static final String NA = "NA";
+    private static final String NA_OR_EMPTY_REGEX = "(" + NA + ")?";
 
     private final Matcher matcher;
     private final DateParser dateParser;
@@ -89,12 +90,12 @@ public final class WialonLocationComponentParser {
         return longitudeParser.parse();
     }
 
-    public OptionalInt parseCourse() {
-        return courseParser.parse();
-    }
-
     public OptionalDouble parseSpeed() {
         return speedParser.parse();
+    }
+
+    public OptionalInt parseCourse() {
+        return courseParser.parse();
     }
 
     public OptionalInt parseAltitude() {
@@ -117,7 +118,7 @@ public final class WialonLocationComponentParser {
         return outputsParser.parse();
     }
 
-    public Optional<double[]> parseAnalogInputs() {
+    public double[] parseAnalogInputs() {
         return analogInputsParser.parse();
     }
 
@@ -125,27 +126,27 @@ public final class WialonLocationComponentParser {
         return driverKeyCodeParser.parse();
     }
 
-    public Optional<Set<Parameter>> parseParameters() {
+    public Set<Parameter> parseParameters() {
         return parametersParser.parse();
     }
 
     private void match(final String source) {
         if (!matcher.matches()) {
-            throw new NotValidSubMessageException("Given source isn't valid: '%s'".formatted(source));
+            throw new IllegalArgumentException("Given source isn't valid: '%s'".formatted(source));
         }
     }
 
     @RequiredArgsConstructor
     private abstract class ComponentParser<T> {
         private final int groupNumber;
-        private final String notDefinedContent;
+        private final String notDefinedSourceRegex;
 
         public final T parse() {
-            final String content = matcher.group(groupNumber);
-            return !Objects.equals(content, notDefinedContent) ? parseDefined(content) : createNotDefinedComponent();
+            final String source = matcher.group(groupNumber);
+            return !source.matches(notDefinedSourceRegex) ? parseDefined(source) : createNotDefinedComponent();
         }
 
-        protected abstract T parseDefined(final String content);
+        protected abstract T parseDefined(final String source);
 
         protected abstract T createNotDefinedComponent();
     }
@@ -160,8 +161,8 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected Optional<LocalDate> parseDefined(final String content) {
-            return Optional.of(LocalDate.parse(content, FORMATTER));
+        protected Optional<LocalDate> parseDefined(final String source) {
+            return Optional.of(LocalDate.parse(source, FORMATTER));
         }
 
         @Override
@@ -180,8 +181,8 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected Optional<LocalTime> parseDefined(final String content) {
-            return Optional.of(LocalTime.parse(content, FORMATTER));
+        protected Optional<LocalTime> parseDefined(final String source) {
+            return Optional.of(LocalTime.parse(source, FORMATTER));
         }
 
         @Override
@@ -190,8 +191,10 @@ public final class WialonLocationComponentParser {
         }
     }
 
-    private abstract class CoordinateParser extends ComponentParser<OptionalDouble> {
-        private static final String NOT_DEFINED_CONTENT = NA + ";" + NA;
+    private abstract class GpsCoordinateParser extends ComponentParser<OptionalDouble> {
+        private static final String NOT_DEFINED_SOURCE_REGEX = NA + ";" + NA;
+        private static final double MINUTE_DELIMITER = 60.;
+        private static final double MINUTE_SHARE_DELIMITER = 3600.;
 
         private final int groupNumberDegrees;
         private final int groupNumberMinutes;
@@ -199,13 +202,13 @@ public final class WialonLocationComponentParser {
         private final int groupNumberHemisphere;
         private final char hemisphereReplacingSign;
 
-        public CoordinateParser(final int groupNumber,
-                                final int groupNumberDegrees,
-                                final int groupNumberMinutes,
-                                final int groupNumberMinuteShare,
-                                final int groupNumberHemisphere,
-                                final char hemisphereReplacingSign) {
-            super(groupNumber, NOT_DEFINED_CONTENT);
+        public GpsCoordinateParser(final int groupNumber,
+                                   final int groupNumberDegrees,
+                                   final int groupNumberMinutes,
+                                   final int groupNumberMinuteShare,
+                                   final int groupNumberHemisphere,
+                                   final char hemisphereReplacingSign) {
+            super(groupNumber, NOT_DEFINED_SOURCE_REGEX);
             this.groupNumberDegrees = groupNumberDegrees;
             this.groupNumberMinutes = groupNumberMinutes;
             this.groupNumberMinuteShare = groupNumberMinuteShare;
@@ -214,12 +217,12 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected final OptionalDouble parseDefined(final String content) {
+        protected final OptionalDouble parseDefined(final String source) {
             final int degrees = extractIntGroup(groupNumberDegrees);
             final int minutes = extractIntGroup(groupNumberMinutes);
             final int minuteShare = extractIntGroup(groupNumberMinuteShare);
             final char hemisphere = extractCharGroup(groupNumberHemisphere);
-            final double abs = degrees + (minutes / 60.) + (minuteShare / 3600.);
+            final double abs = degrees + (minutes / MINUTE_DELIMITER) + (minuteShare / MINUTE_SHARE_DELIMITER);
             final double value = Objects.equals(hemisphere, hemisphereReplacingSign) ? -1 * abs : abs;
             return OptionalDouble.of(value);
         }
@@ -238,7 +241,7 @@ public final class WialonLocationComponentParser {
         }
     }
 
-    private final class LatitudeParser extends CoordinateParser {
+    private final class LatitudeParser extends GpsCoordinateParser {
         private static final int GROUP_NUMBER = 6;
         private static final int GROUP_NUMBER_DEGREES = 8;
         private static final int GROUP_NUMBER_MINUTES = 9;
@@ -258,7 +261,7 @@ public final class WialonLocationComponentParser {
         }
     }
 
-    private final class LongitudeParser extends CoordinateParser {
+    private final class LongitudeParser extends GpsCoordinateParser {
         private static final int GROUP_NUMBER = 13;
         private static final int GROUP_NUMBER_DEGREES = 15;
         private static final int GROUP_NUMBER_MINUTES = 16;
@@ -285,8 +288,8 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected final OptionalInt parseDefined(final String content) {
-            return OptionalInt.of(parseInt(content));
+        protected final OptionalInt parseDefined(final String source) {
+            return OptionalInt.of(parseInt(source));
         }
 
         @Override
@@ -302,8 +305,8 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected final OptionalDouble parseDefined(final String content) {
-            return OptionalDouble.of(parseDouble(content));
+        protected final OptionalDouble parseDefined(final String source) {
+            return OptionalDouble.of(parseDouble(source));
         }
 
         @Override
@@ -368,25 +371,24 @@ public final class WialonLocationComponentParser {
         }
     }
 
-    private final class AnalogInputsParser extends ComponentParser<Optional<double[]>> {
+    private final class AnalogInputsParser extends ComponentParser<double[]> {
         private static final int GROUP_NUMBER = 35;
         private static final String DELIMITER = ",";
 
         public AnalogInputsParser() {
-            super(GROUP_NUMBER, NA);
+            super(GROUP_NUMBER, NA_OR_EMPTY_REGEX);
         }
 
         @Override
-        protected Optional<double[]> parseDefined(final String content) {
-            final double[] analogInputs = stream(content.split(DELIMITER))
+        protected double[] parseDefined(final String source) {
+            return stream(source.split(DELIMITER))
                     .mapToDouble(Double::parseDouble)
                     .toArray();
-            return Optional.of(analogInputs);
         }
 
         @Override
-        protected Optional<double[]> createNotDefinedComponent() {
-            return Optional.empty();
+        protected double[] createNotDefinedComponent() {
+            return new double[]{};
         }
     }
 
@@ -394,12 +396,12 @@ public final class WialonLocationComponentParser {
         private static final int GROUP_NUMBER = 40;
 
         public DriverKeyCodeParser() {
-            super(GROUP_NUMBER, NA);
+            super(GROUP_NUMBER, NA_OR_EMPTY_REGEX);
         }
 
         @Override
-        protected Optional<String> parseDefined(final String content) {
-            return Optional.of(content);
+        protected Optional<String> parseDefined(final String source) {
+            return Optional.of(source);
         }
 
         @Override
@@ -408,10 +410,10 @@ public final class WialonLocationComponentParser {
         }
     }
 
-    private final class ParametersParser extends ComponentParser<Optional<Set<Parameter>>> {
+    private final class ParametersParser extends ComponentParser<Set<Parameter>> {
         private static final int GROUP_NUMBER = 41;
         private static final String EMPTY_STRING = "";
-        private static final String DELIMITER_PARAMETERS = ",";
+        private static final String DELIMITER = ",";
 
         private final ParameterParser parameterParser;
 
@@ -421,16 +423,15 @@ public final class WialonLocationComponentParser {
         }
 
         @Override
-        protected Optional<Set<Parameter>> parseDefined(final String content) {
-            final Set<Parameter> parameters = stream(content.split(DELIMITER_PARAMETERS))
+        protected Set<Parameter> parseDefined(final String source) {
+            return stream(source.split(DELIMITER))
                     .map(parameterParser::parse)
                     .collect(toUnmodifiableSet());
-            return Optional.of(parameters);
         }
 
         @Override
-        protected Optional<Set<Parameter>> createNotDefinedComponent() {
-            return Optional.empty();
+        protected Set<Parameter> createNotDefinedComponent() {
+            return emptySet();
         }
     }
 
@@ -438,7 +439,7 @@ public final class WialonLocationComponentParser {
         private static final String INTEGER_ALIAS = "1";
         private static final String DOUBLE_ALIAS = "2";
         private static final String STRING_ALIAS = "3";
-        private static final Map<String, ParameterEntity.Type> TYPES_BY_ALIASES = Map.of(
+        private static final Map<String, ParameterType> TYPES_BY_ALIASES = Map.of(
                 INTEGER_ALIAS, INTEGER,
                 DOUBLE_ALIAS, DOUBLE,
                 STRING_ALIAS, STRING
@@ -448,16 +449,12 @@ public final class WialonLocationComponentParser {
         private static final int TYPE_INDEX = 1;
         private static final int VALUE_INDEX = 2;
 
-        public Parameter parse(final String content) {
-            final String[] components = content.split(COMPONENTS_DELIMITER);
+        public Parameter parse(final String source) {
+            final String[] components = source.split(COMPONENTS_DELIMITER);
             final String name = components[NAME_INDEX];
-            final ParameterEntity.Type type = TYPES_BY_ALIASES.get(components[TYPE_INDEX]);
+            final ParameterType type = TYPES_BY_ALIASES.get(components[TYPE_INDEX]);
             final String value = components[VALUE_INDEX];
-            return Parameter.builder()
-                    .name(name)
-                    .type(type)
-                    .value(value)
-                    .build();
+            return Parameter.builder().name(name).type(type).value(value).build();
         }
     }
 }
