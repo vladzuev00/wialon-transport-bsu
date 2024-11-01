@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
@@ -38,25 +39,22 @@ public final class WialonLocationParserTest {
                 Parameter.builder().id(3L).build()
         );
         try (
-                final var ignored = mockConstruction(
-                        WialonLocationComponentParser.class,
-                        (parser, context) -> {
-                            when(parser.parseDate()).thenReturn(Optional.of(givenDate));
-                            when(parser.parseTime()).thenReturn(Optional.of(givenTime));
-                            when(parser.parseLatitude()).thenReturn(OptionalDouble.of(givenLatitude));
-                            when(parser.parseLongitude()).thenReturn(OptionalDouble.of(givenLongitude));
-                            when(parser.parseSpeed()).thenReturn(OptionalDouble.of(givenSpeed));
-                            when(parser.parseCourse()).thenReturn(OptionalInt.of(givenCourse));
-                            when(parser.parseAltitude()).thenReturn(OptionalInt.of(givenAltitude));
-                            when(parser.parseSatelliteCount()).thenReturn(OptionalInt.of(givenSatelliteCount));
-                            when(parser.parseHdop()).thenReturn(OptionalDouble.of(givenHdop));
-                            when(parser.parseInputs()).thenReturn(OptionalInt.of(givenInputs));
-                            when(parser.parseOutputs()).thenReturn(OptionalInt.of(givenOutputs));
-                            when(parser.parseAnalogInputs()).thenReturn(givenAnalogInputs);
-                            when(parser.parseDriverKeyCode()).thenReturn(Optional.of(givenDriverKeyCode));
-                            when(parser.parseParameters()).thenReturn(givenParameters);
-                            assertEquals(List.of(givenSource), context.arguments());
-                        }
+                final var ignored = mockComponentParserConstruction(
+                        Optional.of(givenDate),
+                        Optional.of(givenTime),
+                        OptionalDouble.of(givenLatitude),
+                        OptionalDouble.of(givenLongitude),
+                        OptionalDouble.of(givenSpeed),
+                        OptionalInt.of(givenCourse),
+                        OptionalInt.of(givenAltitude),
+                        OptionalInt.of(givenSatelliteCount),
+                        OptionalDouble.of(givenHdop),
+                        OptionalInt.of(givenInputs),
+                        OptionalInt.of(givenOutputs),
+                        givenAnalogInputs,
+                        Optional.of(givenDriverKeyCode),
+                        givenParameters,
+                        givenSource
                 )
         ) {
             final WialonLocation actual = parser.parse(givenSource);
@@ -80,35 +78,74 @@ public final class WialonLocationParserTest {
         }
     }
 
-    private MockedConstruction<WialonLocationComponentParser> mockComponentParser(final WialonLocationComponentParser parser,
-                                                                                  final LocalDate date,
-                                                                                  final LocalTime time,
-                                                                                  final double latitude,
-                                                                                  final double longitude,
-                                                                                  final double speed,
-                                                                                  final int course,
-                                                                                  final int altitude,
-                                                                                  final int satelliteCount,
-                                                                                  final double hdop,
-                                                                                  final int inputs,
-                                                                                  final int outputs,
-                                                                                  final String driverKeyCode,
-                                                                                  final Set<Parameter> parameters,
-                                                                                  final String expectedSource) {
-        when(parser.parseDate()).thenReturn(Optional.of(givenDate));
-        when(parser.parseTime()).thenReturn(Optional.of(givenTime));
-        when(parser.parseLatitude()).thenReturn(OptionalDouble.of(givenLatitude));
-        when(parser.parseLongitude()).thenReturn(OptionalDouble.of(givenLongitude));
-        when(parser.parseSpeed()).thenReturn(OptionalDouble.of(givenSpeed));
-        when(parser.parseCourse()).thenReturn(OptionalInt.of(givenCourse));
-        when(parser.parseAltitude()).thenReturn(OptionalInt.of(givenAltitude));
-        when(parser.parseSatelliteCount()).thenReturn(OptionalInt.of(givenSatelliteCount));
-        when(parser.parseHdop()).thenReturn(OptionalDouble.of(givenHdop));
-        when(parser.parseInputs()).thenReturn(OptionalInt.of(givenInputs));
-        when(parser.parseOutputs()).thenReturn(OptionalInt.of(givenOutputs));
-        when(parser.parseAnalogInputs()).thenReturn(givenAnalogInputs);
-        when(parser.parseDriverKeyCode()).thenReturn(Optional.of(givenDriverKeyCode));
-        when(parser.parseParameters()).thenReturn(givenParameters);
-        assertEquals(List.of(givenSource), context.arguments());
+    @Test
+    public void locationWithNotDefinedComponentsShouldBeParsed() {
+        final String givenSource = "source";
+        final double[] givenAnalogInputs = {};
+        final Set<Parameter> givenParameters = emptySet();
+        try (
+                final var ignored = mockComponentParserConstruction(
+                        Optional.empty(),
+                        Optional.empty(),
+                        OptionalDouble.empty(),
+                        OptionalDouble.empty(),
+                        OptionalDouble.empty(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        OptionalDouble.empty(),
+                        OptionalInt.empty(),
+                        OptionalInt.empty(),
+                        givenAnalogInputs,
+                        Optional.empty(),
+                        givenParameters,
+                        givenSource
+                )
+        ) {
+            final WialonLocation actual = parser.parse(givenSource);
+            final WialonLocation expected = WialonLocation.builder()
+                    .analogInputs(givenAnalogInputs)
+                    .parameters(givenParameters)
+                    .build();
+            assertEquals(expected, actual);
+        }
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private MockedConstruction<WialonLocationComponentParser> mockComponentParserConstruction(final Optional<LocalDate> date,
+                                                                                              final Optional<LocalTime> time,
+                                                                                              final OptionalDouble latitude,
+                                                                                              final OptionalDouble longitude,
+                                                                                              final OptionalDouble speed,
+                                                                                              final OptionalInt course,
+                                                                                              final OptionalInt altitude,
+                                                                                              final OptionalInt satelliteCount,
+                                                                                              final OptionalDouble hdop,
+                                                                                              final OptionalInt inputs,
+                                                                                              final OptionalInt outputs,
+                                                                                              final double[] analogInputs,
+                                                                                              final Optional<String> driverKeyCode,
+                                                                                              final Set<Parameter> parameters,
+                                                                                              final String expectedSource) {
+        return mockConstruction(
+                WialonLocationComponentParser.class,
+                (parser, context) -> {
+                    when(parser.parseDate()).thenReturn(date);
+                    when(parser.parseTime()).thenReturn(time);
+                    when(parser.parseLatitude()).thenReturn(latitude);
+                    when(parser.parseLongitude()).thenReturn(longitude);
+                    when(parser.parseSpeed()).thenReturn(speed);
+                    when(parser.parseCourse()).thenReturn(course);
+                    when(parser.parseAltitude()).thenReturn(altitude);
+                    when(parser.parseSatelliteCount()).thenReturn(satelliteCount);
+                    when(parser.parseHdop()).thenReturn(hdop);
+                    when(parser.parseInputs()).thenReturn(inputs);
+                    when(parser.parseOutputs()).thenReturn(outputs);
+                    when(parser.parseAnalogInputs()).thenReturn(analogInputs);
+                    when(parser.parseDriverKeyCode()).thenReturn(driverKeyCode);
+                    when(parser.parseParameters()).thenReturn(parameters);
+                    assertEquals(List.of(expectedSource), context.arguments());
+                }
+        );
     }
 }
