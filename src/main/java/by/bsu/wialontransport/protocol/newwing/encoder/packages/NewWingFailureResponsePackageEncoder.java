@@ -9,5 +9,4 @@ public final class NewWingFailureResponsePackageEncoder extends NewWingPackageEn
     public NewWingFailureResponsePackageEncoder() {
         super(NewWingFailureResponsePackage.class);
     }
-
 }
