@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.encoder.packages;
+package by.bsu.wialontransport.protocol.newwing.encoder;
 
 import by.bsu.wialontransport.protocol.newwing.model.response.NewWingSuccessResponsePackage;
 import org.springframework.stereotype.Component;
