@@ -1,7 +1,6 @@
 package by.bsu.wialontransport.protocol.wialon.decoder.location;
 
 import by.bsu.wialontransport.protocol.wialon.decoder.location.parser.WialonLocationParser;
-import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,8 @@ public final class WialonRequestBulkLocationPackageDecoder extends WialonRequest
     }
 
     @Override
-    protected WialonPackage decodeMessageInternal(final String message, final WialonLocationParser locationParser) {
+    protected WialonRequestBulkLocationPackage decodeMessageInternal(final String message,
+                                                                     final WialonLocationParser locationParser) {
         return stream(message.split(LOCATION_DELIMITER_REGEX))
                 .map(locationParser::parse)
                 .collect(collectingAndThen(toList(), WialonRequestBulkLocationPackage::new));
