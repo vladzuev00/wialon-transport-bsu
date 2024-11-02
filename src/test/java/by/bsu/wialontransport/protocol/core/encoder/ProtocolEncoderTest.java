@@ -1,31 +1,22 @@
 package by.bsu.wialontransport.protocol.core.encoder;
 
-import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder.NoSuitablePackageEncoderException;
 import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import nl.altindag.log.LogCaptor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static nl.altindag.log.LogCaptor.forClass;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public final class ProtocolEncoderTest {
-    private static final Charset EXPECTED_ENCODED_RESPONSE_CHARSET = UTF_8;
-
-    private final LogCaptor logCaptor = forClass(ProtocolEncoder.class);
 
     @Mock
     private PackageEncoder<?> firstMockedPackageEncoder;
@@ -38,9 +29,9 @@ public final class ProtocolEncoderTest {
 
     private ProtocolEncoder protocolEncoder;
 
-    @Before
+    @BeforeEach
     public void initializeProtocolEncoder() {
-        protocolEncoder = new TestProtocolEncoder(
+        protocolEncoder = new ProtocolEncoder(
                 List.of(
                         firstMockedPackageEncoder,
                         secondMockedPackageEncoder,
@@ -52,48 +43,39 @@ public final class ProtocolEncoderTest {
     @Test
     public void responseShouldBeEncoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Package givenResponse = new Package() {
-        };
-        final ByteBuf givenOutBuffer = mock(ByteBuf.class);
+        final Object givenResponse = new Object();
+        final ByteBuf givenOut = mock(ByteBuf.class);
 
-        when(firstMockedPackageEncoder.isAbleToEncode(same(givenResponse))).thenReturn(false);
-        when(secondMockedPackageEncoder.isAbleToEncode(same(givenResponse))).thenReturn(true);
+        when(firstMockedPackageEncoder.isAbleEncode(same(givenResponse))).thenReturn(false);
+        when(secondMockedPackageEncoder.isAbleEncode(same(givenResponse))).thenReturn(true);
 
-        final String givenEncodedResponse = "response";
-        when(secondMockedPackageEncoder.encode(same(givenResponse))).thenReturn(givenEncodedResponse);
+        final byte[] givenResponseBytes = {1, 2, 3, 4, 5};
+        when(secondMockedPackageEncoder.encode(same(givenResponse))).thenReturn(givenResponseBytes);
 
-        protocolEncoder.encode(givenContext, givenResponse, givenOutBuffer);
+        protocolEncoder.encode(givenContext, givenResponse, givenOut);
 
-        verify(givenOutBuffer, times(1)).writeCharSequence(
-                same(givenEncodedResponse),
-                same(EXPECTED_ENCODED_RESPONSE_CHARSET)
-        );
+        verify(givenOut, times(1)).writeBytes(same(givenResponseBytes));
+        verify(firstMockedPackageEncoder, times(0)).encode(any());
         verifyNoInteractions(thirdMockedPackageEncoder);
-
-        final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("Response was encoded to 'response'");
-        assertEquals(expectedLogs, actualLogs);
+        verifyNoInteractions(givenContext);
     }
 
-    @Test(expected = NoSuitablePackageEncoderException.class)
-    public void responseShouldNotBeEncodedBecauseOfNoSuitableEncoded() {
+    @Test
+    public void responseShouldNotBeEncoded() {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-        final Package givenResponse = new Package() {
-        };
-        final ByteBuf givenOutBuffer = mock(ByteBuf.class);
+        final Object givenResponse = new Object();
+        final ByteBuf givenOut = mock(ByteBuf.class);
 
-        when(firstMockedPackageEncoder.isAbleToEncode(same(givenResponse))).thenReturn(false);
-        when(secondMockedPackageEncoder.isAbleToEncode(same(givenResponse))).thenReturn(false);
-        when(thirdMockedPackageEncoder.isAbleToEncode(same(givenResponse))).thenReturn(false);
+        when(firstMockedPackageEncoder.isAbleEncode(same(givenResponse))).thenReturn(false);
+        when(secondMockedPackageEncoder.isAbleEncode(same(givenResponse))).thenReturn(false);
+        when(thirdMockedPackageEncoder.isAbleEncode(same(givenResponse))).thenReturn(false);
 
-        protocolEncoder.encode(givenContext, givenResponse, givenOutBuffer);
-    }
+        assertThrows(IllegalStateException.class, () -> protocolEncoder.encode(givenContext, givenResponse, givenOut));
 
-    private static final class TestProtocolEncoder extends ProtocolEncoder {
-
-        public TestProtocolEncoder(final List<PackageEncoder<?>> packageEncoders) {
-            super(packageEncoders);
-        }
-
+        verify(firstMockedPackageEncoder, times(0)).encode(any());
+        verify(secondMockedPackageEncoder, times(0)).encode(any());
+        verify(thirdMockedPackageEncoder, times(0)).encode(any());
+        verifyNoInteractions(givenContext);
+        verifyNoInteractions(givenOut);
     }
 }

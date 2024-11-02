@@ -10,7 +10,8 @@ public abstract class NewWingPackageEncoder<PACKAGE extends NewWingResponsePacka
     }
 
     @Override
-    protected final String encodeInternal(final PACKAGE response) {
-        return response.getValue();
+    protected final byte[] encodeInternal(final PACKAGE response) {
+        throw new UnsupportedOperationException();
+//        return response.getValue();
     }
 }

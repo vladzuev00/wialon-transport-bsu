@@ -10,8 +10,9 @@ public abstract class WialonPackageEncoder<PACKAGE extends WialonPackage> extend
     }
 
     @Override
-    protected final String encodeInternal(final PACKAGE response) {
-        return response.getPrefix() + encodeMessage(response) + WialonPackage.POSTFIX;
+    protected final byte[] encodeInternal(final PACKAGE response) {
+        throw new UnsupportedOperationException();
+//        return response.getPrefix() + encodeMessage(response) + WialonPackage.POSTFIX;
     }
 
     protected abstract String encodeMessage(final PACKAGE response);

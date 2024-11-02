@@ -5,9 +5,3 @@ import by.bsu.wialontransport.protocol.newwing.encoder.packages.NewWingPackageEn
 
 import java.util.List;
 
-public final class NewWingProtocolEncoder extends ProtocolEncoder {
-
-    public NewWingProtocolEncoder(final List<NewWingPackageEncoder<?>> packageEncoders) {
-        super(packageEncoders);
-    }
-}

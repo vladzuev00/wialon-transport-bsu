@@ -1,20 +1,19 @@
 package by.bsu.wialontransport.protocol.core.encoder.packages;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class PackageEncoder<PACKAGE> {
-    private final Class<PACKAGE> encodedPackageType;
+    private final Class<PACKAGE> responseType;
 
-    public final boolean isAbleToEncode(final Package response) {
-        return encodedPackageType.isInstance(response);
+    public final boolean isAbleEncode(final Object response) {
+        return responseType.isInstance(response);
     }
 
-    public final String encode(final Package response) {
-        final PACKAGE castedResponse = encodedPackageType.cast(response);
-        return encodeInternal(castedResponse);
+    public final byte[] encode(final Object response) {
+        final PACKAGE castedPACKAGE = responseType.cast(response);
+        return encodeInternal(castedPACKAGE);
     }
 
-    protected abstract String encodeInternal(final PACKAGE response);
+    protected abstract byte[] encodeInternal(final PACKAGE PACKAGE);
 }

@@ -5,9 +5,3 @@ import by.bsu.wialontransport.protocol.wialon.encoder.packages.WialonPackageEnco
 
 import java.util.List;
 
-public final class WialonProtocolEncoder extends ProtocolEncoder {
-
-    public WialonProtocolEncoder(final List<WialonPackageEncoder<?>> packageEncoders) {
-        super(packageEncoders);
-    }
-}
