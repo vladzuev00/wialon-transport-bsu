@@ -11,9 +11,9 @@ public abstract class PackageEncoder<PACKAGE> {
     }
 
     public final byte[] encode(final Object response) {
-        final PACKAGE castedPACKAGE = responseType.cast(response);
-        return encodeInternal(castedPACKAGE);
+        final PACKAGE castedResponse = responseType.cast(response);
+        return encodeInternal(castedResponse);
     }
 
-    protected abstract byte[] encodeInternal(final PACKAGE PACKAGE);
+    protected abstract byte[] encodeInternal(final PACKAGE response);
 }
