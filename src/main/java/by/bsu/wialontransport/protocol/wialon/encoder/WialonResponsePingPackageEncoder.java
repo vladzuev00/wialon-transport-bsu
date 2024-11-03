@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class WialonResponsePingPackageEncoder extends WialonPackageEncoder<WialonResponsePingPackage> {
-    private static final String ENCODED_MESSAGE = "";
+    static final String ENCODED_MESSAGE = "";
 
     public WialonResponsePingPackageEncoder() {
         super(WialonResponsePingPackage.class);

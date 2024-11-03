@@ -1,9 +1,10 @@
 package by.bsu.wialontransport.protocol.wialon.encoder;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static by.bsu.wialontransport.protocol.wialon.encoder.WialonResponsePingPackageEncoder.ENCODED_MESSAGE;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class WialonResponsePingPackageEncoderTest {
     private final WialonResponsePingPackageEncoder encoder = new WialonResponsePingPackageEncoder();
@@ -13,7 +14,6 @@ public final class WialonResponsePingPackageEncoderTest {
         final WialonResponsePingPackage givenResponse = new WialonResponsePingPackage();
 
         final String actual = encoder.encodeMessage(givenResponse);
-        final String expected = "";
-        assertEquals(expected, actual);
+        assertSame(ENCODED_MESSAGE, actual);
     }
 }
