@@ -1,10 +1,10 @@
 package by.bsu.wialontransport.protocol.wialon.encoder;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.SUCCESS_AUTHORIZATION;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class WialonResponseLoginPackageEncoderTest {
     private final WialonResponseLoginPackageEncoder encoder = new WialonResponseLoginPackageEncoder();

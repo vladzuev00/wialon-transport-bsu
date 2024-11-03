@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public final class WialonResponseLoginPackageEncoder extends WialonPackageEncoder<WialonResponseLoginPackage> {
 
-
     public WialonResponseLoginPackageEncoder() {
         super(WialonResponseLoginPackage.class);
     }
