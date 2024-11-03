@@ -13,7 +13,7 @@ import lombok.ToString;
 public final class WialonResponseBulkLocationPackage extends WialonPackage {
     public static final String PREFIX = "#AB#";
 
-    private final int fixedMessageCount;
+    private final int fixedLocationCount;
 
     @Override
     public String getPrefix() {

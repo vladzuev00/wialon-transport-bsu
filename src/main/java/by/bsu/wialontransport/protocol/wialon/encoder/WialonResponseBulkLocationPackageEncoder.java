@@ -4,14 +4,14 @@ import by.bsu.wialontransport.protocol.wialon.model.packages.location.response.W
 import org.springframework.stereotype.Component;
 
 @Component
-public final class WialonResponseBlackBoxPackageEncoder extends WialonPackageEncoder<WialonResponseBulkLocationPackage> {
+public final class WialonResponseBulkLocationPackageEncoder extends WialonPackageEncoder<WialonResponseBulkLocationPackage> {
 
-    public WialonResponseBlackBoxPackageEncoder() {
+    public WialonResponseBulkLocationPackageEncoder() {
         super(WialonResponseBulkLocationPackage.class);
     }
 
     @Override
     protected String encodeMessage(final WialonResponseBulkLocationPackage response) {
-        return Integer.toString(response.getFixedMessageCount());
+        return Integer.toString(response.getFixedLocationCount());
     }
 }

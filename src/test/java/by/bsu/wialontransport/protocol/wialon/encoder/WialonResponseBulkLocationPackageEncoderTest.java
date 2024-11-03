@@ -1,12 +1,12 @@
 package by.bsu.wialontransport.protocol.wialon.encoder;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.location.response.WialonResponseBulkLocationPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class WialonResponseBulkLocationPackageEncoderTest {
-    private final WialonResponseBlackBoxPackageEncoder encoder = new WialonResponseBlackBoxPackageEncoder();
+    private final WialonResponseBulkLocationPackageEncoder encoder = new WialonResponseBulkLocationPackageEncoder();
 
     @Test
     public void messageShouldBeEncoded() {
