@@ -4,9 +4,9 @@ import by.bsu.wialontransport.protocol.wialon.model.packages.location.response.W
 import org.springframework.stereotype.Component;
 
 @Component
-public final class WialonResponseDataPackageEncoder extends WialonPackageEncoder<WialonResponseSingleLocationPackage> {
+public final class WialonResponseSingleLocationPackageEncoder extends WialonPackageEncoder<WialonResponseSingleLocationPackage> {
 
-    public WialonResponseDataPackageEncoder() {
+    public WialonResponseSingleLocationPackageEncoder() {
         super(WialonResponseSingleLocationPackage.class);
     }
 

@@ -7,11 +7,11 @@ import static by.bsu.wialontransport.protocol.wialon.model.packages.location.res
 import static org.junit.Assert.assertEquals;
 
 public final class WialonResponseSingleLocationPackageEncoderTest {
-    private final WialonResponseDataPackageEncoder encoder = new WialonResponseDataPackageEncoder();
+    private final WialonResponseSingleLocationPackageEncoder encoder = new WialonResponseSingleLocationPackageEncoder();
 
     @Test
     public void messageShouldBeEncoded() {
-        final WialonResponseSingleLocationPackage givenResponse = new WialonResponseSingleLocationPackage(PACKAGE_FIX_SUCCESS);
+        final var givenResponse = new WialonResponseSingleLocationPackage(PACKAGE_FIX_SUCCESS);
 
         final String actual = encoder.encodeMessage(givenResponse);
         final String expected = "1";
