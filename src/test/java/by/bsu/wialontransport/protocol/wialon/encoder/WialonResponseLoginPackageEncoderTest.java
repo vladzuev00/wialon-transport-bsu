@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.wialon.encoder.packages;
+package by.bsu.wialontransport.protocol.wialon.encoder;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.junit.Test;
