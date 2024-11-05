@@ -1,72 +1,66 @@
-//package by.bsu.wialontransport.protocol.core.handler.packages;
-//
-//import by.bsu.wialontransport.protocol.core.model.packages.Package;
-//import io.netty.channel.ChannelHandlerContext;
-//import lombok.Getter;
-//import lombok.Setter;
-//import org.junit.Test;
-//
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-//import static org.mockito.Mockito.*;
-//
-//public final class PackageHandlerTest {
-//    private static final Package GIVEN_RESPONSE = new Package() {
-//    };
-//
-//    private final TestPackageHandler handler = new TestPackageHandler();
-//
-//    @Test
-//    public void handlerShouldBeAbleToHandle() {
-//        final Package givenRequest = new TestPackage();
-//
-//        final boolean actual = handler.isAbleToHandle(givenRequest);
-//        assertTrue(actual);
-//    }
-//
-//    @Test
-//    public void handlerShouldNotBeAbleToHandle() {
-//        final Package givenRequest = new Package() {
-//        };
-//
-//        final boolean actual = handler.isAbleToHandle(givenRequest);
-//        assertFalse(actual);
-//    }
-//
-//    @Test
-//    public void requestShouldBeHandled() {
-//        final Package givenRequest = new TestPackage();
-//        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-//
-//        handler.handle(givenRequest, givenContext);
-//
-//        verify(givenContext, times(1)).writeAndFlush(same(GIVEN_RESPONSE));
-//    }
-//
-//    @Test(expected = ClassCastException.class)
-//    public void requestShouldNotBeHandledBecauseOfNotSuitableType() {
-//        final Package givenRequest = new Package() {
-//        };
-//        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
-//
-//        handler.handle(givenRequest, givenContext);
-//    }
-//
-//    private static final class TestPackage implements Package {
-//
-//    }
-//
-//    @Setter
-//    @Getter
-//    private static final class TestPackageHandler extends PackageHandler<TestPackage> {
-//
-//        public TestPackageHandler() {
-//            super(TestPackage.class);
-//        }
-//
-//        @Override
-//        protected Package handleInternal(final TestPackage request, final ChannelHandlerContext context) {
-//            return GIVEN_RESPONSE;
-//        }
-//    }
-//}
+package by.bsu.wialontransport.protocol.core.handler.packages;
+
+import io.netty.channel.ChannelHandlerContext;
+import lombok.Value;
+import org.junit.jupiter.api.Test;
+
+import static java.lang.Integer.MAX_VALUE;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public final class PackageHandlerTest {
+    private final TestPackageHandler handler = new TestPackageHandler();
+
+    @Test
+    public void handlerShouldBeAbleHandleRequest() {
+        final TestPackage givenRequest = new TestPackage(MAX_VALUE);
+
+        assertTrue(handler.isAbleHandle(givenRequest));
+    }
+
+    @Test
+    public void handlerShouldNotBeAbleHandleRequest() {
+        final Object givenRequest = new Object();
+
+        assertFalse(handler.isAbleHandle(givenRequest));
+    }
+
+    @Test
+    public void requestShouldBeHandled() {
+        final TestPackage givenRequest = new TestPackage(5);
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+
+        handler.handle(givenRequest, givenContext);
+
+        final TestPackage expectedResponse = new TestPackage(6);
+        verify(givenContext, times(1)).writeAndFlush(eq(expectedResponse));
+    }
+
+    @Test
+    public void requestShouldNotBeHandled() {
+        final Object givenRequest = new Object();
+        final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+
+        assertThrows(ClassCastException.class, () -> handler.handle(givenRequest, givenContext));
+
+        verifyNoInteractions(givenContext);
+    }
+
+    @Value
+    private static class TestPackage {
+        int value;
+    }
+
+    private static final class TestPackageHandler extends PackageHandler<TestPackage> {
+
+        public TestPackageHandler() {
+            super(TestPackage.class);
+        }
+
+        @Override
+        protected TestPackage handleInternal(final TestPackage request, final ChannelHandlerContext context) {
+            final int responseValue = request.getValue() + 1;
+            return new TestPackage(responseValue);
+        }
+    }
+}

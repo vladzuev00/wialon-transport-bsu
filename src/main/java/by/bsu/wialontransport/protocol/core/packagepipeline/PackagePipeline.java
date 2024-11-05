@@ -11,6 +11,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public final class PackagePipeline<REQUEST extends Package, RESPONSE extends Package> {
     private final PackageDecoder decoder;
-    private final PackageHandler<REQUEST, RESPONSE> handler;
+//    private final PackageHandler<REQUEST, RESPONSE> handler;
     private final PackageEncoder<RESPONSE> encoder;
 }
