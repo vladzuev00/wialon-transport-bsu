@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.connectionmanager;
+package by.bsu.wialontransport.protocol.core.contextmanager;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
@@ -12,10 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Optional.ofNullable;
 
+//TODO: refactor with tests
 @Component
 @RequiredArgsConstructor
-public final class ConnectionManager {
-    private final ContextAttributeManager contextAttributeManager;
+public final class ChannelHandlerContextManager {
+    private final ContextAttributeManager attributeManager;
     private final Map<Long, ChannelHandlerContext> contextsByTrackerIds = new ConcurrentHashMap<>();
 
     public void add(final ChannelHandlerContext context) {
@@ -38,30 +39,8 @@ public final class ConnectionManager {
     }
 
     private Long getTrackerId(final ChannelHandlerContext context) {
-        return contextAttributeManager.findTracker(context)
+        return attributeManager.findTracker(context)
                 .map(Tracker::getId)
-                .orElseThrow(NoTrackerInContextException::new);
-    }
-
-    static final class NoTrackerInContextException extends RuntimeException {
-
-        public NoTrackerInContextException() {
-
-        }
-
-        @SuppressWarnings("unused")
-        public NoTrackerInContextException(final String description) {
-            super(description);
-        }
-
-        @SuppressWarnings("unused")
-        public NoTrackerInContextException(final Exception cause) {
-            super(cause);
-        }
-
-        @SuppressWarnings("unused")
-        public NoTrackerInContextException(final String description, final Exception cause) {
-            super(description, cause);
-        }
+                .orElseThrow(() -> new IllegalArgumentException("No tracker in context"));
     }
 }
