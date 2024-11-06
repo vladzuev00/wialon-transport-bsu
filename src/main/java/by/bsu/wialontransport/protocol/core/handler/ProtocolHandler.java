@@ -1,8 +1,8 @@
 package by.bsu.wialontransport.protocol.core.handler;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -16,8 +16,8 @@ import java.util.List;
 public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     private static final String MESSAGE_RECEIVE_REQUEST = "Start handling request: '{}'";
     private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
-    private static final String MESSAGE_INACTIVE_CHANNEL = "Tracker with imei '{}' was disconnected";
-    private static final String NOT_DEFINED_IMEI = "not defined imei";
+    private static final String MESSAGE_INACTIVE_CHANNEL = "Tracker '{}' was disconnected";
+    private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
 
     private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
@@ -37,7 +37,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(final ChannelHandlerContext context) {
         logInactiveChannel(context);
-        close(context);
+        remove(context);
     }
 
     private void logReceivingRequest(final Object request) {
@@ -49,8 +49,11 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void logInactiveChannel(final ChannelHandlerContext context) {
-        final String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_IMEI);
-        log.info(MESSAGE_INACTIVE_CHANNEL, trackerImei);
+        log.info(MESSAGE_INACTIVE_CHANNEL, getTrackerImei(context));
+    }
+
+    private String getTrackerImei(final ChannelHandlerContext context) {
+        return contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
     }
 
     private void handle(final Object request, final ChannelHandlerContext context) {
@@ -61,31 +64,9 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
                 .handle(request, context);
     }
 
-    private void close(final ChannelHandlerContext context) {
+    private void remove(final ChannelHandlerContext context) {
         contextAttributeManager.findTracker(context)
                 .map(Tracker::getId)
                 .ifPresent(contextManager::remove);
-    }
-
-    static final class NoSuitablePackageHandlerException extends RuntimeException {
-
-        @SuppressWarnings("unused")
-        public NoSuitablePackageHandlerException() {
-
-        }
-
-        public NoSuitablePackageHandlerException(final String description) {
-            super(description);
-        }
-
-        @SuppressWarnings("unused")
-        public NoSuitablePackageHandlerException(final Exception cause) {
-            super(cause);
-        }
-
-        @SuppressWarnings("unused")
-        public NoSuitablePackageHandlerException(final String description, final Exception cause) {
-            super(description, cause);
-        }
     }
 }
