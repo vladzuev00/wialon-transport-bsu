@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Optional.ofNullable;
 
-//TODO: refactor with tests
 @Component
 @RequiredArgsConstructor
 public final class ChannelHandlerContextManager {
