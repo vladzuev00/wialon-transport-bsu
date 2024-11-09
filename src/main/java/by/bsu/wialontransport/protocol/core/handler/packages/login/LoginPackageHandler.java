@@ -31,8 +31,8 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
 
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
-        memorizeImei(context, request);
-        return loginByImei(context, request);
+        memorizeImei(request, context);
+        return loginByImei(request, context);
     }
 
     protected abstract Object createNoSuchImeiResponse();
@@ -41,32 +41,32 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
 
     protected abstract Object createSuccessResponse();
 
-    private void memorizeImei(final ChannelHandlerContext context, final REQUEST request) {
+    private void memorizeImei(final REQUEST request, final ChannelHandlerContext context) {
         contextAttributeManager.putTrackerImei(context, request.getImei());
     }
 
-    private void memorizeTracker(final ChannelHandlerContext context, final Tracker tracker) {
+    private void memorizeTracker(final Tracker tracker, final ChannelHandlerContext context) {
         contextAttributeManager.putTracker(context, tracker);
     }
 
-    private void memorizeLastLocation(final ChannelHandlerContext context, final Tracker tracker) {
+    private void memorizeLastLocation(final Tracker tracker, final ChannelHandlerContext context) {
         locationService.findLastLocationFetchingParameters(tracker)
                 .ifPresent(location -> contextAttributeManager.putLastLocation(context, location));
     }
 
-    private Object loginByImei(final ChannelHandlerContext context, final REQUEST request) {
+    private Object loginByImei(final REQUEST request, final ChannelHandlerContext context) {
         return trackerService.findByImei(request.getImei())
-                .map(tracker -> login(context, tracker, request))
+                .map(tracker -> login(tracker, request, context))
                 .orElseGet(this::createNoSuchImeiResponse);
     }
 
-    private Object login(final ChannelHandlerContext context, final Tracker tracker, final REQUEST request) {
-        return loginCreatingFailedResponse(tracker, request).orElseGet(() -> handleSuccessLogin(context, tracker));
+    private Object login(final Tracker tracker, final REQUEST request, final ChannelHandlerContext context) {
+        return loginCreatingFailedResponse(tracker, request).orElseGet(() -> handleSuccessLogin(tracker, context));
     }
 
-    private Object handleSuccessLogin(final ChannelHandlerContext context, final Tracker tracker) {
-        memorizeTracker(context, tracker);
-        memorizeLastLocation(context, tracker);
+    private Object handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
+        memorizeTracker(tracker, context);
+        memorizeLastLocation(tracker, context);
         contextManager.add(context);
         return createSuccessResponse();
     }
