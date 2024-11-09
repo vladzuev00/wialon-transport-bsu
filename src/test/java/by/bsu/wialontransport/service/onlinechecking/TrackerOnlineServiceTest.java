@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.onlinechecking;
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.online.TrackerOnline;
 import by.bsu.wialontransport.model.online.TrackerOnline.LastData;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public final class TrackerOnlineServiceTest extends AbstractSpringBootTest {
 
     @MockBean
-    private DataService mockedDataService;
+    private LocationService mockedDataService;
 
     @Autowired
     private TrackerOnlineService service;

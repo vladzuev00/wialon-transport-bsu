@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public final class DataServiceTest extends AbstractSpringBootTest {
 
     @Autowired
-    private DataService service;
+    private LocationService service;
 
     @Autowired
     private GeometryFactory geometryFactory;
@@ -38,7 +38,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldBeFoundFetchingParameters() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findLastLocationFetchingParameters(givenTracker);
         assertTrue(optionalActual.isPresent());
         final Location actual = optionalActual.get();
 
@@ -51,7 +51,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsNoDataFromGivenTracker() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findLastLocationFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 
@@ -59,7 +59,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
     public void trackerLastDataShouldNotBeFoundFetchingParametersBecauseOfThereIsSuchTracker() {
         final Tracker givenTracker = createTracker(MIN_VALUE);
 
-        final Optional<Location> optionalActual = service.findTrackerLastDataFetchingParameters(givenTracker);
+        final Optional<Location> optionalActual = service.findLastLocationFetchingParameters(givenTracker);
         assertTrue(optionalActual.isEmpty());
     }
 

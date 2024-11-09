@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
@@ -19,7 +19,7 @@ import static by.bsu.wialontransport.util.CollectionUtil.concat;
 @Service
 @RequiredArgsConstructor
 public final class MileageIncreasingService {
-    private final DataService dataService;
+    private final LocationService dataService;
     private final MileageCalculator mileageCalculator;
     private final TrackerMileageService trackerMileageService;
 
@@ -37,6 +37,6 @@ public final class MileageIncreasingService {
     }
 
     private Optional<Coordinate> findLastCoordinate(final Tracker tracker) {
-        return dataService.findTrackerLastDataFetchingParameters(tracker).map(Location::getCoordinate);
+        return dataService.findLastLocationFetchingParameters(tracker).map(Location::getCoordinate);
     }
 }

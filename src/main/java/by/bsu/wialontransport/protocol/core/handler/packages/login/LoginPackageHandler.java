@@ -1,65 +1,73 @@
-//package by.bsu.wialontransport.protocol.core.handler.packages.login;
-//
-//import by.bsu.wialontransport.crud.dto.Tracker;
-//import by.bsu.wialontransport.crud.service.DataService;
-//import by.bsu.wialontransport.crud.service.TrackerService;
-//import by.bsu.wialontransport.protocol.core.connectionmanager.ConnectionManager;
-//import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
-//import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-//import by.bsu.wialontransport.protocol.core.model.packages.Package;
-//import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
-//import io.netty.channel.ChannelHandlerContext;
-//
-//import java.util.Optional;
-//
-////TODO: запонять imei дополнительными нулями
-//public abstract class LoginPackageHandler<PACKAGE extends LoginPackage> extends PackageHandler<PACKAGE> {
-//    private final ContextAttributeManager contextAttributeManager;
-//    private final TrackerService trackerService;
-//    private final ConnectionManager connectionManager;
-//    private final DataService dataService;
-//
-//    public LoginPackageHandler(final Class<PACKAGE> handledPackageType,
-//                               final ContextAttributeManager contextAttributeManager,
-//                               final TrackerService trackerService,
-//                               final ConnectionManager connectionManager,
-//                               final DataService dataService) {
-//        super(handledPackageType);
-//        this.contextAttributeManager = contextAttributeManager;
-//        this.trackerService = trackerService;
-//        this.connectionManager = connectionManager;
-//        this.dataService = dataService;
-//    }
-//
-//    @Override
-//    protected final Package handleInternal(final PACKAGE request, final ChannelHandlerContext context) {
-//        final String imei = request.getImei();
-//        contextAttributeManager.putTrackerImei(context, imei);
-//        return trackerService.findByImei(imei)
-//                .map(tracker -> login(tracker, request, context))
-//                .orElseGet(this::createNoSuchImeiResponse);
-//    }
-//
-//    protected abstract Optional<Package> loginCreatingResponseIfFailed(final Tracker tracker, final PACKAGE request);
-//
-//    protected abstract Package createNoSuchImeiResponse();
-//
-//    protected abstract Package createSuccessResponse();
-//
-//    private Package login(final Tracker tracker, final PACKAGE request, final ChannelHandlerContext context) {
-//        return loginCreatingResponseIfFailed(tracker, request).orElseGet(() -> handleSuccessLogin(tracker, context));
-//    }
-//
-//    private Package handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
-//        contextAttributeManager.putTracker(context, tracker);
-//        //TODO: do after putLastDataInContext(tracker, context);
-//        connectionManager.add(context);
-//        putLastDataInContext(tracker, context);
-//        return createSuccessResponse();
-//    }
-//
-//    private void putLastDataInContext(final Tracker tracker, final ChannelHandlerContext context) {
-//        dataService.findTrackerLastDataFetchingParameters(tracker)
-//                .ifPresent(data -> contextAttributeManager.putLastData(context, data));
-//    }
-//}
+package by.bsu.wialontransport.protocol.core.handler.packages.login;
+
+import by.bsu.wialontransport.crud.dto.Tracker;
+import by.bsu.wialontransport.crud.service.LocationService;
+import by.bsu.wialontransport.crud.service.TrackerService;
+import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
+import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
+import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
+import io.netty.channel.ChannelHandlerContext;
+
+import java.util.Optional;
+
+public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends PackageHandler<REQUEST> {
+    private final ContextAttributeManager contextAttributeManager;
+    private final TrackerService trackerService;
+    private final ChannelHandlerContextManager contextManager;
+    private final LocationService locationService;
+
+    public LoginPackageHandler(final Class<REQUEST> requestType,
+                               final ContextAttributeManager contextAttributeManager,
+                               final TrackerService trackerService,
+                               final ChannelHandlerContextManager contextManager,
+                               final LocationService locationService) {
+        super(requestType);
+        this.contextAttributeManager = contextAttributeManager;
+        this.trackerService = trackerService;
+        this.contextManager = contextManager;
+        this.locationService = locationService;
+    }
+
+    @Override
+    protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
+        memorizeImei(context, request);
+        return loginByImei(context, request);
+    }
+
+    protected abstract Object createNoSuchImeiResponse();
+
+    protected abstract Optional<Object> loginCreatingFailedResponse(final Tracker tracker, final REQUEST request);
+
+    protected abstract Object createSuccessResponse();
+
+    private void memorizeImei(final ChannelHandlerContext context, final REQUEST request) {
+        contextAttributeManager.putTrackerImei(context, request.getImei());
+    }
+
+    private void memorizeTracker(final ChannelHandlerContext context, final Tracker tracker) {
+        contextAttributeManager.putTracker(context, tracker);
+    }
+
+    private void memorizeLastLocation(final ChannelHandlerContext context, final Tracker tracker) {
+        locationService.findLastLocationFetchingParameters(tracker)
+                .ifPresent(location -> contextAttributeManager.putLastLocation(context, location));
+    }
+
+    private Object loginByImei(final ChannelHandlerContext context, final REQUEST request) {
+        return trackerService.findByImei(request.getImei())
+                .map(tracker -> login(context, tracker, request))
+                .orElseGet(this::createNoSuchImeiResponse);
+    }
+
+    private Object login(final ChannelHandlerContext context, final Tracker tracker, final REQUEST request) {
+        return loginCreatingFailedResponse(tracker, request).orElseGet(() -> handleSuccessLogin(context, tracker));
+    }
+
+    private Object handleSuccessLogin(final ChannelHandlerContext context, final Tracker tracker) {
+        memorizeTracker(context, tracker);
+        memorizeLastLocation(context, tracker);
+        contextManager.add(context);
+        return createSuccessResponse();
+    }
+}

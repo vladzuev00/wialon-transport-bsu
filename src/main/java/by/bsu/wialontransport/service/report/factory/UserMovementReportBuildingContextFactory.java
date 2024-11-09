@@ -3,7 +3,7 @@ package by.bsu.wialontransport.service.report.factory;
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.model.DateInterval;
 import by.bsu.wialontransport.model.TempTrack;
@@ -33,7 +33,7 @@ public final class UserMovementReportBuildingContextFactory {
     private static final Color BORDER_COLOR = WHITE;
 
     private final TrackerService trackerService;
-    private final DataService dataService;
+    private final LocationService dataService;
     private final TrackFactory trackFactory;
 //    private final MileageCalculatingService mileageCalculatingService;
 

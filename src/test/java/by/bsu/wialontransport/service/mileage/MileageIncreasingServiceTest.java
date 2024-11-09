@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.mileage;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
 import by.bsu.wialontransport.model.Coordinate;
 import by.bsu.wialontransport.model.Mileage;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 public final class MileageIncreasingServiceTest {
 
     @Mock
-    private DataService mockedDataService;
+    private LocationService mockedDataService;
 
     @Mock
     private MileageCalculator mockedMileageCalculator;
@@ -62,7 +62,7 @@ public final class MileageIncreasingServiceTest {
 
         final Coordinate givenLastDataCoordinate = new Coordinate(4.4, 4.4);
         final Location givenLastData = createData(256L, givenLastDataCoordinate);
-        when(mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker)))
+        when(mockedDataService.findLastLocationFetchingParameters(same(givenTracker)))
                 .thenReturn(Optional.of(givenLastData));
 
         final List<Coordinate> expectedPathCoordinates = List.of(
@@ -97,7 +97,7 @@ public final class MileageIncreasingServiceTest {
 
         final Track givenTrack = new Track(givenTracker, givenCoordinates);
 
-        when(mockedDataService.findTrackerLastDataFetchingParameters(same(givenTracker))).thenReturn(empty());
+        when(mockedDataService.findLastLocationFetchingParameters(same(givenTracker))).thenReturn(empty());
 
         final Mileage givenMileageDelta = new Mileage(10.1, 20.2);
         when(mockedMileageCalculator.calculate(same(givenCoordinates))).thenReturn(givenMileageDelta);

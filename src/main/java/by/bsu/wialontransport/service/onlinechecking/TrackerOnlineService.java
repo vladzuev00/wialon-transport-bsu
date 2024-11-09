@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.onlinechecking;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.model.online.OnlineStatus;
 import by.bsu.wialontransport.model.online.TrackerOnline;
 import by.bsu.wialontransport.model.online.TrackerOnline.LastData;
@@ -17,10 +17,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Service
 public final class TrackerOnlineService {
-    private final DataService dataService;
+    private final LocationService dataService;
     private final long lastDataSecondThreshold;
 
-    public TrackerOnlineService(final DataService dataService,
+    public TrackerOnlineService(final LocationService dataService,
                                 @Value("${tracker-online.last-data-second-threshold}") final long lastDataSecondThreshold) {
         this.dataService = dataService;
         this.lastDataSecondThreshold = lastDataSecondThreshold;

@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.crud.service.DataService;
+import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
@@ -28,14 +28,14 @@ import static java.util.stream.Collectors.*;
 @Component
 public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
     private final GeocodingManager geocodingManager;
-    private final DataService dataService;
+    private final LocationService dataService;
     private final MileageIncreasingService mileageIncreasingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
                                     final TrackerService trackerService,
                                     final GeocodingManager geocodingManager,
-                                    final DataService dataService,
+                                    final LocationService dataService,
                                     final MileageIncreasingService mileageIncreasingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         super(objectMapper, trackerService, InboundParameterView.class);

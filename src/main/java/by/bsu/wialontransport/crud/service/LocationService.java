@@ -15,14 +15,14 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class DataService extends CRUDService<Long, DataEntity, Location, DataMapper, DataRepository> {
+public class LocationService extends CRUDService<Long, DataEntity, Location, DataMapper, DataRepository> {
 
-    public DataService(final DataMapper mapper, final DataRepository repository) {
+    public LocationService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Location> findTrackerLastDataFetchingParameters(final Tracker tracker) {
+    public Optional<Location> findLastLocationFetchingParameters(final Tracker tracker) {
         return findUniqueDto(
                 repository -> repository.findTrackerLastDataByTrackerIdFetchingParameters(
                         tracker.getId()
