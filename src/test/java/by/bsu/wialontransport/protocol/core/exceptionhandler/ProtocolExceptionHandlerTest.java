@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.core.exceptionhandler;
 
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exception.AnswerableException;
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.Package;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
 import nl.altindag.log.LogCaptor;

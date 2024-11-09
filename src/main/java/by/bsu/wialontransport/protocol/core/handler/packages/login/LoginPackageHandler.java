@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-import by.bsu.wialontransport.protocol.core.model.packages.login.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;

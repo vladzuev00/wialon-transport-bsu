@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.model.packages.login;
+package by.bsu.wialontransport.protocol.core.model.login;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

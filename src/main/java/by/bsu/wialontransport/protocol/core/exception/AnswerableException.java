@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.exception;
 
-import by.bsu.wialontransport.protocol.core.model.packages.Package;
+import by.bsu.wialontransport.protocol.core.model.Package;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

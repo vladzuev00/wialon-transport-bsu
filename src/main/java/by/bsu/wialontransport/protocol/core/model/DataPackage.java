@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.model.packages;
+package by.bsu.wialontransport.protocol.core.model;
 
 import by.bsu.wialontransport.crud.dto.Location;
 
