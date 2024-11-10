@@ -29,7 +29,7 @@ public final class ProtectedLoginPackageHandlerTest {
     }
 
     @Test
-    public void loginExistingTrackerShouldBeSuccess() {
+    public void loginShouldBeSuccess() {
         final String givenTrackerPassword = "sdffsdsj324243sdsfsdf";
         final Tracker givenTracker = Tracker.builder().password(givenTrackerPassword).build();
         final String givenRequestPassword = "111";
@@ -42,7 +42,7 @@ public final class ProtectedLoginPackageHandlerTest {
     }
 
     @Test
-    public void loginExistingTrackerShouldBeFailed() {
+    public void loginShouldBeFailed() {
         final String givenTrackerPassword = "sdffsdsj324243sdsfsdf";
         final Tracker givenTracker = Tracker.builder().password(givenTrackerPassword).build();
         final String givenRequestPassword = "111";
