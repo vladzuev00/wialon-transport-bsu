@@ -12,7 +12,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;
 
-//TODO: test
 public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends PackageHandler<REQUEST> {
     private final TrackerImeiFactory imeiFactory;
     private final ContextAttributeManager contextAttributeManager;
