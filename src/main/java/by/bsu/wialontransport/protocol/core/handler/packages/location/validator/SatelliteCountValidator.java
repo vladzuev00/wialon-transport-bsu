@@ -22,7 +22,7 @@ public final class SatelliteCountValidator extends LocationPropertyValidator<Int
 
     @Override
     protected Integer getMaxAllowable() {
-        return validationProperty.getGetMaxSatelliteCount();
+        return validationProperty.getMaxSatelliteCount();
     }
 
     @Override
