@@ -21,14 +21,13 @@ public final class NewWingUtil {
     private static final int LONGITUDE_FIRST_PART_INTEGER_PART_NEXT_LAST_INDEX = 3;
     private static final String POINT = ".";
 
-    //TODO: test
+    public static short decodeShort(final ByteBuf buffer) {
+        return buffer.readShortLE();
+    }
+
     public static String decodeImei(final ByteBuf buffer) {
         final short imei = decodeShort(buffer);
         return Short.toString(imei);
-    }
-
-    public static short decodeShort(final ByteBuf buffer) {
-        return buffer.readShortLE();
     }
 
     public static LocalDate decodeDate(final ByteBuf buffer) {

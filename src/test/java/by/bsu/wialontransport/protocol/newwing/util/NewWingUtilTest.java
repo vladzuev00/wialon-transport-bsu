@@ -26,6 +26,15 @@ public final class NewWingUtilTest {
     }
 
     @Test
+    public void imeiShouldBeDecoded() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("0301"));
+
+        final String actual = decodeImei(givenBuffer);
+        final String expected = "259";
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void dateShouldBeDecoded() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("090807"));
 
