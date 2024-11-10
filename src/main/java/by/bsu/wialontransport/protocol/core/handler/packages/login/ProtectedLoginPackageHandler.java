@@ -10,8 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
-import static java.util.Optional.empty;
-
 public abstract class ProtectedLoginPackageHandler<REQUEST extends ProtectedLoginPackage> extends LoginPackageHandler<REQUEST> {
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -27,12 +25,15 @@ public abstract class ProtectedLoginPackageHandler<REQUEST extends ProtectedLogi
 
     @Override
     protected final Optional<Object> loginCreatingFailedResponse(final Tracker tracker, final REQUEST request) {
-        return isPasswordCorrect(tracker, request) ? empty() : Optional.of(createWrongPasswordResponse());
+        return Optional.of(request)
+                .map(ProtectedLoginPackage::getPassword)
+                .filter(password -> !isPasswordCorrect(password, tracker))
+                .map(password -> createWrongPasswordResponse());
     }
 
     protected abstract Object createWrongPasswordResponse();
 
-    private boolean isPasswordCorrect(final Tracker tracker, final REQUEST request) {
-        return passwordEncoder.matches(request.getPassword(), tracker.getPassword());
+    private boolean isPasswordCorrect(final String password, final Tracker tracker) {
+        return passwordEncoder.matches(password, tracker.getPassword());
     }
 }
