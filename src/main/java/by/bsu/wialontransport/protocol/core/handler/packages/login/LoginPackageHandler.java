@@ -54,6 +54,10 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
                 .ifPresent(location -> contextAttributeManager.putLastLocation(context, location));
     }
 
+    private void memorizeContext(final ChannelHandlerContext context) {
+        contextManager.add(context);
+    }
+
     private Object loginByImei(final REQUEST request, final ChannelHandlerContext context) {
         return trackerService.findByImei(request.getImei())
                 .map(tracker -> login(tracker, request, context))
@@ -67,7 +71,7 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     private Object handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
         memorizeTracker(tracker, context);
         memorizeLastLocation(tracker, context);
-        contextManager.add(context);
+        memorizeContext(context);
         return createSuccessResponse();
     }
 }
