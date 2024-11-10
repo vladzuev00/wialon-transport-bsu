@@ -1,11 +1,11 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.ping;
+package by.bsu.wialontransport.protocol.core.handler.packages.ignored;
 
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 
-public abstract class PingPackageHandler<PACKAGE> extends PackageHandler<PACKAGE> {
+public abstract class IgnoredPackageHandler<PACKAGE> extends PackageHandler<PACKAGE> {
 
-    public PingPackageHandler(final Class<PACKAGE> requestType) {
+    public IgnoredPackageHandler(final Class<PACKAGE> requestType) {
         super(requestType);
     }
 

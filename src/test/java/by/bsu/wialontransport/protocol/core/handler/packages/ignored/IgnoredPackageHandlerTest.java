@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.ping;
+package by.bsu.wialontransport.protocol.core.handler.packages.ignored;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public final class PingPackageHandlerTest {
-    private final TestPingPackageHandler handler = new TestPingPackageHandler();
+public final class IgnoredPackageHandlerTest {
+    private final TestIgnoredPackageHandler handler = new TestIgnoredPackageHandler();
 
     @Test
     public void requestShouldBeHandledInternally() {
@@ -22,9 +22,9 @@ public final class PingPackageHandlerTest {
 
     }
 
-    private static final class TestPingPackageHandler extends PingPackageHandler<Object> {
+    private static final class TestIgnoredPackageHandler extends IgnoredPackageHandler<Object> {
 
-        public TestPingPackageHandler() {
+        public TestIgnoredPackageHandler() {
             super(Object.class);
         }
 
