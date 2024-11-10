@@ -18,13 +18,13 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @ToString
 @ConfigurationProperties("data.validation")
-public final class DataValidationConfig {
+public final class LocationValidationProperty {
 
     @AmountOfSatellites
-    private final Integer minAmountOfSatellites;
+    private final Integer minSatelliteCount;
 
     @AmountOfSatellites
-    private final Integer maxAmountOfSatellites;
+    private final Integer getMaxSatelliteCount;
 
     @NotNull
     @Past
@@ -36,13 +36,13 @@ public final class DataValidationConfig {
 
     @Builder
     @ConstructorBinding
-    public DataValidationConfig(final Integer minAmountOfSatellites,
-                                final Integer maxAmountOfSatellites,
-                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minDateTime,
-                                final Integer maxDateTimeDeltaSecondsFromNow) {
-        validateAmountOfSatellitesRange(minAmountOfSatellites, maxAmountOfSatellites);
-        this.minAmountOfSatellites = minAmountOfSatellites;
-        this.maxAmountOfSatellites = maxAmountOfSatellites;
+    public LocationValidationProperty(final Integer minSatelliteCount,
+                                      final Integer getMaxSatelliteCount,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minDateTime,
+                                      final Integer maxDateTimeDeltaSecondsFromNow) {
+        validateAmountOfSatellitesRange(minSatelliteCount, getMaxSatelliteCount);
+        this.minSatelliteCount = minSatelliteCount;
+        this.getMaxSatelliteCount = getMaxSatelliteCount;
         this.minDateTime = minDateTime;
         this.maxDateTimeDeltaSecondsFromNow = maxDateTimeDeltaSecondsFromNow;
     }

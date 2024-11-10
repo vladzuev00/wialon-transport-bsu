@@ -18,7 +18,7 @@ public class Location implements Dto<Long> {
     int course;
     double speed;
     int altitude;
-    int amountOfSatellites;
+    int satelliteCount;
     double hdop;
     int inputs;
     int outputs;

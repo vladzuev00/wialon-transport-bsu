@@ -48,7 +48,7 @@ public final class KafkaSavedDataConsumer extends KafkaDataConsumer<SavedParamet
                 .course(context.getCourse())
                 .speed(context.getSpeed())
                 .altitude(context.getAltitude())
-                .amountOfSatellites(context.getAmountOfSatellites())
+                .satelliteCount(context.getAmountOfSatellites())
                 .hdop(context.getHdop())
                 .inputs(context.getInputs())
                 .outputs(context.getOutputs())

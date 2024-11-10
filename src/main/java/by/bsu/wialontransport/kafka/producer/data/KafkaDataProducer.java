@@ -115,7 +115,7 @@ public abstract class KafkaDataProducer extends GenericRecordKafkaProducer<Long,
         }
 
         public int getAmountOfSatellites() {
-            return data.getAmountOfSatellites();
+            return data.getSatelliteCount();
         }
 
         public double getHdop() {
