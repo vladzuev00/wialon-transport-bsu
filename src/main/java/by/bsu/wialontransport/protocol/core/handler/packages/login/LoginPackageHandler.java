@@ -12,6 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.Optional;
 
 public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends PackageHandler<REQUEST> {
+    private static final String IMEI_TEMPLATE = "%20s";
+    private static final char SPACE = ' ';
+    private static final char
+
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ChannelHandlerContextManager contextManager;
@@ -40,6 +44,10 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     protected abstract Optional<Object> loginCreatingFailedResponse(final Tracker tracker, final REQUEST request);
 
     protected abstract Object createSuccessResponse();
+
+    private String getImei(final REQUEST request) {
+        return IMEI_TEMPLATE.formatted(request.getImei()).replace(' ', '0');
+    }
 
     private void memorizeImei(final REQUEST request, final ChannelHandlerContext context) {
         contextAttributeManager.putTrackerImei(context, request.getImei());
