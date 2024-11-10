@@ -24,4 +24,14 @@ public final class SatelliteCountValidator extends LocationPropertyValidator<Int
     protected Integer getMaxAllowable() {
         return validationProperty.getGetMaxSatelliteCount();
     }
+
+    @Override
+    protected boolean isLessOrEqual(final Integer first, final Integer second) {
+        return first.compareTo(second) <= 0;
+    }
+
+    @Override
+    protected boolean isBiggerOrEqual(final Integer first, final Integer second) {
+        return first.compareTo(second) >= 0;
+    }
 }

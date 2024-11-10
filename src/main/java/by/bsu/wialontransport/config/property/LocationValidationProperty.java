@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,20 +32,19 @@ public final class LocationValidationProperty {
     private final LocalDateTime minDateTime;
 
     @NotNull
-    @Positive
-    private final Integer maxDateTimeDeltaSecondsFromNow;
+    private final Duration maxDateTimeDeltaFromNow;
 
     @Builder
     @ConstructorBinding
     public LocationValidationProperty(final Integer minSatelliteCount,
                                       final Integer getMaxSatelliteCount,
                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minDateTime,
-                                      final Integer maxDateTimeDeltaSecondsFromNow) {
+                                      final Duration maxDateTimeDeltaFromNow) {
         validateAmountOfSatellitesRange(minSatelliteCount, getMaxSatelliteCount);
         this.minSatelliteCount = minSatelliteCount;
         this.getMaxSatelliteCount = getMaxSatelliteCount;
         this.minDateTime = minDateTime;
-        this.maxDateTimeDeltaSecondsFromNow = maxDateTimeDeltaSecondsFromNow;
+        this.maxDateTimeDeltaFromNow = maxDateTimeDeltaFromNow;
     }
 
     private void validateAmountOfSatellitesRange(final Integer min, final Integer max) {

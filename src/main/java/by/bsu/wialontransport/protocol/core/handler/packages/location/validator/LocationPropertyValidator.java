@@ -4,13 +4,13 @@ import by.bsu.wialontransport.crud.dto.Location;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class LocationPropertyValidator<T extends Comparable<T>> {
+public abstract class LocationPropertyValidator<T> {
 
     public final boolean isValid(final Location location) {
         final T value = getValue(location);
         final T minAllowable = getMinAllowable();
         final T maxAllowable = getMaxAllowable();
-        return value.compareTo(minAllowable) >= 0 && value.compareTo(maxAllowable) <= 0;
+        return isBiggerOrEqual(value, minAllowable) && isLessOrEqual(value, maxAllowable);
     }
 
     protected abstract T getValue(final Location location);
@@ -18,4 +18,8 @@ public abstract class LocationPropertyValidator<T extends Comparable<T>> {
     protected abstract T getMinAllowable();
 
     protected abstract T getMaxAllowable();
+
+    protected abstract boolean isLessOrEqual(final T first, final T second);
+
+    protected abstract boolean isBiggerOrEqual(final T first, final T second);
 }
