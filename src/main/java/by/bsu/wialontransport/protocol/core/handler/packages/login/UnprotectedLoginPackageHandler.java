@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
-//TODO: test
 public abstract class UnprotectedLoginPackageHandler<REQUEST extends LoginPackage> extends LoginPackageHandler<REQUEST> {
 
     public UnprotectedLoginPackageHandler(final Class<REQUEST> requestType,
