@@ -6,27 +6,28 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
+import by.bsu.wialontransport.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;
 
+//TODO: test
 public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends PackageHandler<REQUEST> {
-    private static final String IMEI_TEMPLATE = "%20s";
-    private static final char SPACE = ' ';
-    private static final char
-
+    private final TrackerImeiFactory imeiFactory;
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
     private final ChannelHandlerContextManager contextManager;
     private final LocationService locationService;
 
     public LoginPackageHandler(final Class<REQUEST> requestType,
+                               final TrackerImeiFactory imeiFactory,
                                final ContextAttributeManager contextAttributeManager,
                                final TrackerService trackerService,
                                final ChannelHandlerContextManager contextManager,
                                final LocationService locationService) {
         super(requestType);
+        this.imeiFactory = imeiFactory;
         this.contextAttributeManager = contextAttributeManager;
         this.trackerService = trackerService;
         this.contextManager = contextManager;
@@ -35,8 +36,9 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
 
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
-        memorizeImei(request, context);
-        return loginByImei(request, context);
+        final String imei = imeiFactory.create(request);
+        memorizeImei(imei, context);
+        return loginByImei(imei, request, context);
     }
 
     protected abstract Object createNoSuchImeiResponse();
@@ -45,12 +47,8 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
 
     protected abstract Object createSuccessResponse();
 
-    private String getImei(final REQUEST request) {
-        return IMEI_TEMPLATE.formatted(request.getImei()).replace(' ', '0');
-    }
-
-    private void memorizeImei(final REQUEST request, final ChannelHandlerContext context) {
-        contextAttributeManager.putTrackerImei(context, request.getImei());
+    private void memorizeImei(final String imei, final ChannelHandlerContext context) {
+        contextAttributeManager.putTrackerImei(context, imei);
     }
 
     private void memorizeTracker(final Tracker tracker, final ChannelHandlerContext context) {
@@ -66,8 +64,8 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
         contextManager.add(context);
     }
 
-    private Object loginByImei(final REQUEST request, final ChannelHandlerContext context) {
-        return trackerService.findByImei(request.getImei())
+    private Object loginByImei(final String imei, final REQUEST request, final ChannelHandlerContext context) {
+        return trackerService.findByImei(imei)
                 .map(tracker -> login(tracker, request, context))
                 .orElseGet(this::createNoSuchImeiResponse);
     }
