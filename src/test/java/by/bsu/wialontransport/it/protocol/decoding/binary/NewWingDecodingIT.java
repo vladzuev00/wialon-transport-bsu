@@ -22,7 +22,7 @@ public final class NewWingDecodingIT extends BinaryProtocolDecodingIT {
         return Stream.of(
                 new TestArgument(
                         "475052534743c10bb00de70e",
-                        new NewWingLoginPackage((short) 3009)
+                        new NewWingLoginPackage("3009")
                 ),
                 new TestArgument(
                         "475052534749c10cc10cb00de70e",
