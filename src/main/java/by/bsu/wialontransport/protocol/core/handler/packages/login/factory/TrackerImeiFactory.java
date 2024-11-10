@@ -3,7 +3,6 @@ package by.bsu.wialontransport.protocol.core.handler.packages.login.factory;
 import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
 import org.springframework.stereotype.Component;
 
-//TODO: test
 @Component
 public final class TrackerImeiFactory {
     private static final String IMEI_TEMPLATE = "%20s";
