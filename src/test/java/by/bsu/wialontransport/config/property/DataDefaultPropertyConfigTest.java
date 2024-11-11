@@ -15,14 +15,14 @@ import static org.junit.Assert.assertTrue;
 public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest {
 
     @Autowired
-    private DataDefaultPropertyConfig config;
+    private LocationDefaultProperty config;
 
     @Autowired
     private Validator validator;
 
     @Test
     public void configShouldBeCreated() {
-        final DataDefaultPropertyConfig expected = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty expected = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -37,7 +37,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
 
     @Test
     public void configShouldBeValid() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -48,13 +48,13 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfCourseIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .altitude(0)
                 .speed(0.)
                 .amountOfSatellites(3)
@@ -64,14 +64,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfAltitudeIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .speed(0.)
                 .amountOfSatellites(3)
@@ -81,14 +81,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfSpeedIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .amountOfSatellites(3)
@@ -98,14 +98,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfSpeedIsNegative() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(-0.0000001)
@@ -116,14 +116,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfAmountOfSatellitesIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -133,14 +133,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfAmountOfSatellitesIsNotPositive() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -151,14 +151,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must be greater than 0", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfHdopIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -168,14 +168,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfHdopIsLessThanMinimalAllowable() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -186,14 +186,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfHdopIsBiggerThanMaximalAllowable() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -204,14 +204,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("Not valid double", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfInputsIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -221,14 +221,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfInputsIsNegative() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -239,14 +239,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfOutputsIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -256,14 +256,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be null", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfOutputsIsNegative() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -274,14 +274,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("not defined")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must be greater than or equal to 0", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfDriverKeyCodeIsNull() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -291,14 +291,14 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .outputs(0)
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be blank", findFirstMessage(violations));
     }
 
     @Test
     public void configShouldNotBeValidBecauseOfDriverKeyCodeIsBlank() {
-        final DataDefaultPropertyConfig givenConfig = DataDefaultPropertyConfig.builder()
+        final LocationDefaultProperty givenConfig = LocationDefaultProperty.builder()
                 .course(0)
                 .altitude(0)
                 .speed(0.)
@@ -309,7 +309,7 @@ public final class DataDefaultPropertyConfigTest extends AbstractSpringBootTest 
                 .driverKeyCode("      \n\t")
                 .build();
 
-        final Set<ConstraintViolation<DataDefaultPropertyConfig>> violations = validator.validate(givenConfig);
+        final Set<ConstraintViolation<LocationDefaultProperty>> violations = validator.validate(givenConfig);
         assertEquals(1, violations.size());
         assertEquals("must not be blank", findFirstMessage(violations));
     }

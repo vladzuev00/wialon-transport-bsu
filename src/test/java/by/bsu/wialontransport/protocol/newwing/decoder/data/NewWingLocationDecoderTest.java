@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static by.bsu.wialontransport.protocol.newwing.util.NewWingUtil.*;
@@ -51,7 +50,8 @@ public final class NewWingLocationDecoderTest {
 
             final NewWingLocation actual = decoder.decode(givenBuffer);
             final NewWingLocation expected = new NewWingLocation(
-                    LocalDateTime.of(givenDate, givenTime),
+                    givenDate,
+                    givenTime,
                     givenLatitude,
                     givenLongitude,
                     givenCourse,

@@ -7,7 +7,8 @@ import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLocationPack
 import by.bsu.wialontransport.protocol.newwing.model.request.NewWingLoginPackage;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,7 +34,8 @@ public final class NewWingDecodingIT extends BinaryProtocolDecodingIT {
                         new NewWingLocationPackage(
                                 List.of(
                                         new NewWingLocation(
-                                                LocalDateTime.of(2023, 10, 31, 18, 51, 43),
+                                                LocalDate.of(2023, 10, 31),
+                                                LocalTime.of(18, 51, 43),
                                                 53.91630172729492,
                                                 27.56231689453125,
                                                 (short) 182,
@@ -42,7 +44,8 @@ public final class NewWingDecodingIT extends BinaryProtocolDecodingIT {
                                                 new double[]{0, 0, 0, 439}
                                         ),
                                         new NewWingLocation(
-                                                LocalDateTime.of(2023, 10, 31, 18, 51, 43),
+                                                LocalDate.of(2023, 10, 31),
+                                                LocalTime.of(18, 51, 43),
                                                 53.91630172729492,
                                                 27.56231689453125,
                                                 (short) 182,

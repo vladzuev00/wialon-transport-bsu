@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static by.bsu.wialontransport.protocol.newwing.util.NewWingUtil.*;
@@ -21,12 +20,11 @@ public final class NewWingLocationDecoder {
         final short course = decodeShort(buffer);
         final double speed = decodeSpeed(buffer);
         final LocalDate date = decodeDate(buffer);
-        final LocalDateTime dateTime = LocalDateTime.of(date, time);
         final double[] analogInputs = decodeAnalogInputs(buffer);
         skipFlagByte(buffer);
         skipDiscreteInputStateByte(buffer);
         skipChecksum(buffer);
-        return new NewWingLocation(dateTime, latitude, longitude, course, speed, hdop, analogInputs);
+        return new NewWingLocation(date, time, latitude, longitude, course, speed, hdop, analogInputs);
     }
 
     private void skipFlagByte(final ByteBuf buffer) {

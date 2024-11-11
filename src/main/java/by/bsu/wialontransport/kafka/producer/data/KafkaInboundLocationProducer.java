@@ -12,12 +12,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class KafkaInboundDataProducer extends KafkaDataProducer {
+public final class KafkaInboundLocationProducer extends KafkaDataProducer {
 
-    public KafkaInboundDataProducer(@Qualifier("kafkaTemplateInboundData") final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
-                                    @Value("${kafka.topic.inbound-data.name}") final String topicName,
-                                    @Qualifier("transportableDataSchema") final Schema schema,
-                                    final ObjectMapper objectMapper) {
+    public KafkaInboundLocationProducer(@Qualifier("kafkaTemplateInboundData") final KafkaTemplate<Long, GenericRecord> kafkaTemplate,
+                                        @Value("${kafka.topic.inbound-data.name}") final String topicName,
+                                        @Qualifier("transportableDataSchema") final Schema schema,
+                                        final ObjectMapper objectMapper) {
         super(kafkaTemplate, topicName, schema, objectMapper);
     }
 

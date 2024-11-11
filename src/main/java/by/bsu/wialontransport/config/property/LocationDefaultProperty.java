@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @Builder
 @ConstructorBinding
 @ConfigurationProperties("tracker-server.data-default-property")
-public final class DataDefaultPropertyConfig {
+public final class LocationDefaultProperty {
 
     @Course
     private final Integer course;
