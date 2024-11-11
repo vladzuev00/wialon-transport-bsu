@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.util.GeometryTestUtil;
 import org.junit.Test;
@@ -73,8 +73,8 @@ public final class SearchingCitiesProcessControllerMapperTest extends AbstractSp
 
         final AreaCoordinate actual = mapper.mapToAreaCoordinate(givenRequest);
         final AreaCoordinate expected = new AreaCoordinate(
-                new Coordinate(1.1, 2.2),
-                new Coordinate(3.3, 4.4)
+                new GpsCoordinate(1.1, 2.2),
+                new GpsCoordinate(3.3, 4.4)
         );
         assertEquals(expected, actual);
     }

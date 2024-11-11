@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.controller.trackeronline;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.online.TrackerOnline;
 import by.bsu.wialontransport.model.online.TrackerOnline.LastData;
 import by.bsu.wialontransport.service.onlinechecking.TrackerOnlineService;
@@ -43,7 +43,7 @@ public final class TrackerOnlineControllerTest extends AbstractSpringBootTest {
                 .lastData(
                         new LastData(
                                 LocalDateTime.of(2024, 10, 3, 14, 2, 3),
-                                new Coordinate(5.5, 6.6)
+                                new GpsCoordinate(5.5, 6.6)
                         )
                 )
                 .status(ONLINE)

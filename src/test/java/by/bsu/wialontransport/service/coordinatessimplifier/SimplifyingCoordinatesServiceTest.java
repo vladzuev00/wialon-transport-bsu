@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.coordinatessimplifier;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.coordinatessimplifier.simplifier.CoordinatesSimplifier;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,19 +29,19 @@ public final class SimplifyingCoordinatesServiceTest {
 
     @Test
     public void coordinatesShouldBeSimplified() {
-        final Coordinate firstGivenCoordinate = new Coordinate(1, 1);
-        final Coordinate secondGivenCoordinate = new Coordinate(2, 2);
-        final Coordinate thirdGivenCoordinate = new Coordinate(3, 3);
-        final List<Coordinate> givenCoordinates = List.of(
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(1, 1);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(2, 2);
+        final GpsCoordinate thirdGivenCoordinate = new GpsCoordinate(3, 3);
+        final List<GpsCoordinate> givenCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate,
                 thirdGivenCoordinate
         );
 
-        final List<Coordinate> givenSimplifiedCoordinates = List.of(firstGivenCoordinate, thirdGivenCoordinate);
+        final List<GpsCoordinate> givenSimplifiedCoordinates = List.of(firstGivenCoordinate, thirdGivenCoordinate);
         when(mockedCoordinatesSimplifier.simplify(same(givenCoordinates))).thenReturn(givenSimplifiedCoordinates);
 
-        final List<Coordinate> actual = service.simplify(givenCoordinates);
+        final List<GpsCoordinate> actual = service.simplify(givenCoordinates);
         assertSame(givenSimplifiedCoordinates, actual);
     }
 

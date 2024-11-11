@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.nominatim;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class NominatimService {
         this.restTemplate = restTemplate;
     }
 
-    public Optional<NominatimReverseResponse> reverse(final Coordinate coordinate) {
+    public Optional<NominatimReverseResponse> reverse(final GpsCoordinate coordinate) {
         final String url = createReverseUrl(coordinate);
         log.info(TEMPLATE_REQUESTING_MESSAGE, url);
         final ResponseEntity<NominatimReverseResponse> responseEntity = restTemplate.exchange(
@@ -48,7 +48,7 @@ public class NominatimService {
         return ofNullable(responseEntity.getBody());
     }
 
-    private String createReverseUrl(final Coordinate coordinate) {
+    private String createReverseUrl(final GpsCoordinate coordinate) {
         return format(reverseUrlTemplate, coordinate.getLatitude(), coordinate.getLongitude());
     }
 

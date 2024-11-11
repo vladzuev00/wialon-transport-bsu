@@ -9,7 +9,7 @@ import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
 import by.bsu.wialontransport.crud.entity.TrackerEntity;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.mockito.MockedStatic;
@@ -37,7 +37,7 @@ public final class DataMapperTest extends AbstractSpringBootTest {
         final Location givenDto = Location.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                .coordinate(new Coordinate(5.5, 6.6))
+                .coordinate(new GpsCoordinate(5.5, 6.6))
                 .speed(26)
                 .course(27)
                 .altitude(28)
@@ -114,7 +114,7 @@ public final class DataMapperTest extends AbstractSpringBootTest {
         final Location expected = Location.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                .coordinate(new Coordinate(5.5, 6.6))
+                .coordinate(new GpsCoordinate(5.5, 6.6))
                 .speed(26)
                 .course(27)
                 .altitude(28)
@@ -172,7 +172,7 @@ public final class DataMapperTest extends AbstractSpringBootTest {
             final Location expected = Location.builder()
                     .id(255L)
                     .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                    .coordinate(new Coordinate(5.5, 6.6))
+                    .coordinate(new GpsCoordinate(5.5, 6.6))
                     .speed(26)
                     .course(27)
                     .altitude(28)

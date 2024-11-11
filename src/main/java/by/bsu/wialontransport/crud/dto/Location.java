@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.crud.dto;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class Location implements Dto<Long> {
     Long id;
     LocalDateTime dateTime;
-    Coordinate coordinate;
+    GpsCoordinate coordinate;
     int course;
     double speed;
     int altitude;

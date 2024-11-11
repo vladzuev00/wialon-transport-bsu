@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.nominatim.aspect;
 
 import by.bsu.wialontransport.config.RestTemplateConfig;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public final class NominatimServiceAspectTest {
     @Test
     public void reverseRequestsShouldBeSentProtectingFrequentRequests() {
         final int givenRequestCount = 50;
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         registerInterceptor();
         configureExpectation(givenRequestCount, givenCoordinate);
@@ -71,19 +71,19 @@ public final class NominatimServiceAspectTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void doRequestsCheckingResponseNotNull(final int requestCount, final Coordinate coordinate) {
+    private void doRequestsCheckingResponseNotNull(final int requestCount, final GpsCoordinate coordinate) {
         range(0, requestCount)
                 .mapToObj(i -> nominatimService.reverse(coordinate))
                 .forEach(Assert::assertNotNull);
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void configureExpectation(final int requestCount, final Coordinate coordinate) {
+    private void configureExpectation(final int requestCount, final GpsCoordinate coordinate) {
         final String expectedUrl = createUrl(coordinate);
         server.expect(times(requestCount), requestTo(expectedUrl)).andRespond(withSuccess());
     }
 
-    private String createUrl(final Coordinate coordinate) {
+    private String createUrl(final GpsCoordinate coordinate) {
         return format(urlTemplate, coordinate.getLatitude(), coordinate.getLongitude());
     }
 

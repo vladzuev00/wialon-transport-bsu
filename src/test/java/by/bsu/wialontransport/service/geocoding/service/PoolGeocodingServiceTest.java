@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public final class PoolGeocodingServiceTest {
 
     @Test
     public void addressShouldBeReceived() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         final Address givenAddress = createAddress(255L);
         when(mockedAddressService.findByGpsCoordinates(givenCoordinate)).thenReturn(Optional.of(givenAddress));
@@ -44,7 +44,7 @@ public final class PoolGeocodingServiceTest {
 
     @Test
     public void addressShouldNotBeReceived() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         when(mockedAddressService.findByGpsCoordinates(givenCoordinate)).thenReturn(empty());
 

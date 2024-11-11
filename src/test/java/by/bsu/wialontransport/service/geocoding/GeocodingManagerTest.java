@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public final class GeocodingManagerTest {
 
     @Test
     public void alreadyExistingAddressShouldBeFound() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         final Address givenAddress = createAddress(255L);
         when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
@@ -59,7 +59,7 @@ public final class GeocodingManagerTest {
 
     @Test
     public void newAddressShouldBeFound() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());
 
@@ -79,7 +79,7 @@ public final class GeocodingManagerTest {
 
     @Test
     public void addressShouldNotBeFound() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());
         when(secondMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());

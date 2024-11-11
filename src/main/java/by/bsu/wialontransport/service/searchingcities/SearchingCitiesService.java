@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.searchingcities;
 
 import by.bsu.wialontransport.crud.dto.City;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -21,7 +21,7 @@ public final class SearchingCitiesService {
     private final NominatimService nominatimService;
     private final ReverseResponseMapper responseMapper;
 
-    public List<City> findByCoordinates(final List<Coordinate> coordinates) {
+    public List<City> findByCoordinates(final List<GpsCoordinate> coordinates) {
         return coordinates.stream()
                 .map(this::reverseInterruptibly)
                 .filter(SearchingCitiesService::isCity)
@@ -30,7 +30,7 @@ public final class SearchingCitiesService {
                 .toList();
     }
 
-    private NominatimReverseResponse reverseInterruptibly(final Coordinate coordinate) {
+    private NominatimReverseResponse reverseInterruptibly(final GpsCoordinate coordinate) {
         checkInterrupted();
         return nominatimService.reverse(coordinate)
                 .orElseThrow(

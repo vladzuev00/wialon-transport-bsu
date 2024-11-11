@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -27,7 +27,7 @@ public class NominatimGeocodingService implements GeocodingService {
     }
 
     @Override
-    public Optional<Address> receive(final Coordinate coordinate) {
+    public Optional<Address> receive(final GpsCoordinate coordinate) {
         return nominatimService.reverse(coordinate).map(this::mapToPossiblySavedAddress);
     }
 

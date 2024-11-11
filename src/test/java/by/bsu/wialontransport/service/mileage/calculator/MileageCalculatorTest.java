@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.mileage.calculator;
 
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
@@ -58,18 +58,18 @@ public final class MileageCalculatorTest {
 
     @Test
     public void mileageShouldBeCalculated() {
-        final Coordinate firstGivenCoordinate = new Coordinate(1.1, 1.1);
-        final Coordinate secondGivenCoordinate = new Coordinate(3.3, 3.3);
-        final Coordinate thirdGivenCoordinate = new Coordinate(5.5, 5.5);
-        final Coordinate fourthGivenCoordinate = new Coordinate(7.7, 7.7);
-        final List<Coordinate> givenCoordinates = List.of(
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(1.1, 1.1);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(3.3, 3.3);
+        final GpsCoordinate thirdGivenCoordinate = new GpsCoordinate(5.5, 5.5);
+        final GpsCoordinate fourthGivenCoordinate = new GpsCoordinate(7.7, 7.7);
+        final List<GpsCoordinate> givenCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate,
                 thirdGivenCoordinate,
                 fourthGivenCoordinate
         );
 
-        final List<Coordinate> givenSimplifiedCoordinates = List.of(
+        final List<GpsCoordinate> givenSimplifiedCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate
         );
@@ -120,7 +120,7 @@ public final class MileageCalculatorTest {
 
     @Test
     public void zeroMileageShouldBeCalculatedByOneCoordinate() {
-        final List<Coordinate> givenCoordinates = List.of(new Coordinate(7.7, 7.7));
+        final List<GpsCoordinate> givenCoordinates = List.of(new GpsCoordinate(7.7, 7.7));
 
         final Mileage actual = calculator.calculate(givenCoordinates);
         final Mileage expected = new Mileage(0, 0);
@@ -129,14 +129,14 @@ public final class MileageCalculatorTest {
 
     @Test
     public void zeroMileageShouldBeCalculatedByEmptyCoordinates() {
-        final List<Coordinate> givenCoordinates = emptyList();
+        final List<GpsCoordinate> givenCoordinates = emptyList();
 
         final Mileage actual = calculator.calculate(givenCoordinates);
         final Mileage expected = new Mileage(0, 0);
         assertEquals(expected, actual);
     }
 
-    private Point createPoint(final Coordinate coordinate) {
+    private Point createPoint(final GpsCoordinate coordinate) {
         return geometryFactory.createPoint(
                 new CoordinateXY(
                         coordinate.getLatitude(),

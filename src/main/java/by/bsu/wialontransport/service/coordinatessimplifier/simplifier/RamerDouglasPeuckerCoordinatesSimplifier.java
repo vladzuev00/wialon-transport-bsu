@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.coordinatessimplifier.simplifier;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,11 +27,11 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
     }
 
     @Override
-    public List<Coordinate> simplify(final List<Coordinate> coordinates) {
+    public List<GpsCoordinate> simplify(final List<GpsCoordinate> coordinates) {
         if (!isAbleToBeSimplified(coordinates)) {
             return coordinates;
         }
-        final List<Coordinate> accumulator = createSimplifyingAccumulator(coordinates);
+        final List<GpsCoordinate> accumulator = createSimplifyingAccumulator(coordinates);
         simplify(coordinates, accumulator, 0, coordinates.size() - 1);
         accumulator.add(coordinates.get(coordinates.size() - 1));
         return accumulator;
@@ -43,18 +43,18 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
         }
     }
 
-    private static boolean isAbleToBeSimplified(final List<Coordinate> coordinates) {
+    private static boolean isAbleToBeSimplified(final List<GpsCoordinate> coordinates) {
         return coordinates != null && coordinates.size() >= MINIMAL_COUNT_TO_BE_SIMPLIFIED;
     }
 
-    private static List<Coordinate> createSimplifyingAccumulator(final List<Coordinate> coordinates) {
-        final List<Coordinate> accumulator = new ArrayList<>();
+    private static List<GpsCoordinate> createSimplifyingAccumulator(final List<GpsCoordinate> coordinates) {
+        final List<GpsCoordinate> accumulator = new ArrayList<>();
         accumulator.add(coordinates.get(0));
         return accumulator;
     }
 
-    private void simplify(final List<Coordinate> coordinates,
-                          final List<Coordinate> accumulator,
+    private void simplify(final List<GpsCoordinate> coordinates,
+                          final List<GpsCoordinate> accumulator,
                           final int startIndex,
                           final int endIndex) {
         if (startIndex + 1 == endIndex) {
@@ -69,7 +69,7 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
         }
     }
 
-    private FurthestCoordinate findFurthestCoordinate(final List<Coordinate> coordinates,
+    private FurthestCoordinate findFurthestCoordinate(final List<GpsCoordinate> coordinates,
                                                       final int startIndex,
                                                       final int endIndex) {
         final Line line = new Line(coordinates.get(startIndex), coordinates.get(endIndex));
@@ -79,15 +79,15 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
                 .orElseThrow(() -> new IllegalArgumentException("There is no coordinates"));
     }
 
-    private static double findDistance(final Line line, final Coordinate coordinate) {
+    private static double findDistance(final Line line, final GpsCoordinate coordinate) {
         final double triangleDoubleArea = findTriangleDoubleArea(line.first, line.second, coordinate);
         final double lineLength = findLength(line);
         return triangleDoubleArea / lineLength;
     }
 
-    private static double findTriangleDoubleArea(final Coordinate first,
-                                                 final Coordinate second,
-                                                 final Coordinate third) {
+    private static double findTriangleDoubleArea(final GpsCoordinate first,
+                                                 final GpsCoordinate second,
+                                                 final GpsCoordinate third) {
         return abs(
                 (second.getLongitude() - first.getLongitude()) * third.getLatitude()
                         - (second.getLatitude() - first.getLatitude()) * third.getLongitude()
@@ -109,8 +109,8 @@ public final class RamerDouglasPeuckerCoordinatesSimplifier implements Coordinat
 
     @lombok.Value
     private static class Line {
-        Coordinate first;
-        Coordinate second;
+        GpsCoordinate first;
+        GpsCoordinate second;
     }
 
     @lombok.Value

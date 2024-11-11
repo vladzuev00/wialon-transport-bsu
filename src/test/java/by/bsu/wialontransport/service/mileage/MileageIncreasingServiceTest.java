@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.mileage.calculator.MileageCalculator;
@@ -49,10 +49,10 @@ public final class MileageIncreasingServiceTest {
     public void mileageShouldBeIncreasedInCaseExistingLastData() {
         final Tracker givenTracker = createTracker(255L);
 
-        final Coordinate firstGivenCoordinate = new Coordinate(1.1, 1.1);
-        final Coordinate secondGivenCoordinate = new Coordinate(2.2, 2.2);
-        final Coordinate thirdGivenCoordinate = new Coordinate(3.3, 3.3);
-        final List<Coordinate> givenCoordinates = List.of(
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(1.1, 1.1);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(2.2, 2.2);
+        final GpsCoordinate thirdGivenCoordinate = new GpsCoordinate(3.3, 3.3);
+        final List<GpsCoordinate> givenCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate,
                 thirdGivenCoordinate
@@ -60,12 +60,12 @@ public final class MileageIncreasingServiceTest {
 
         final Track givenTrack = new Track(givenTracker, givenCoordinates);
 
-        final Coordinate givenLastDataCoordinate = new Coordinate(4.4, 4.4);
+        final GpsCoordinate givenLastDataCoordinate = new GpsCoordinate(4.4, 4.4);
         final Location givenLastData = createData(256L, givenLastDataCoordinate);
         when(mockedDataService.findLastLocationFetchingParameters(same(givenTracker)))
                 .thenReturn(Optional.of(givenLastData));
 
-        final List<Coordinate> expectedPathCoordinates = List.of(
+        final List<GpsCoordinate> expectedPathCoordinates = List.of(
                 givenLastDataCoordinate,
                 firstGivenCoordinate,
                 secondGivenCoordinate,
@@ -86,10 +86,10 @@ public final class MileageIncreasingServiceTest {
     public void mileageShouldBeIncreasedInCaseNotExistingLastData() {
         final Tracker givenTracker = createTracker(256L);
 
-        final Coordinate firstGivenCoordinate = new Coordinate(1.1, 1.1);
-        final Coordinate secondGivenCoordinate = new Coordinate(2.2, 2.2);
-        final Coordinate thirdGivenCoordinate = new Coordinate(3.3, 3.3);
-        final List<Coordinate> givenCoordinates = List.of(
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(1.1, 1.1);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(2.2, 2.2);
+        final GpsCoordinate thirdGivenCoordinate = new GpsCoordinate(3.3, 3.3);
+        final List<GpsCoordinate> givenCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate,
                 thirdGivenCoordinate
@@ -117,7 +117,7 @@ public final class MileageIncreasingServiceTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static Location createData(final Long id, final Coordinate coordinate) {
+    private static Location createData(final Long id, final GpsCoordinate coordinate) {
         return Location.builder()
                 .id(id)
                 .coordinate(coordinate)

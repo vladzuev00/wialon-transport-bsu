@@ -4,7 +4,7 @@ import by.bsu.wialontransport.controller.searchingcities.model.SearchingCitiesPr
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.CoordinateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,8 +28,8 @@ public final class SearchingCitiesProcessControllerMapper {
     }
 
     public AreaCoordinate mapToAreaCoordinate(final AreaCoordinateRequest request) {
-        final Coordinate leftBottom = mapToCoordinate(request.getLeftBottom());
-        final Coordinate rightUpper = mapToCoordinate(request.getRightUpper());
+        final GpsCoordinate leftBottom = mapToCoordinate(request.getLeftBottom());
+        final GpsCoordinate rightUpper = mapToCoordinate(request.getRightUpper());
         return new AreaCoordinate(leftBottom, rightUpper);
     }
 
@@ -37,7 +37,7 @@ public final class SearchingCitiesProcessControllerMapper {
         return geoJSONWriter.write(source.getBounds());
     }
 
-    private static Coordinate mapToCoordinate(final CoordinateRequest request) {
-        return new Coordinate(request.getLatitude(), request.getLongitude());
+    private static GpsCoordinate mapToCoordinate(final CoordinateRequest request) {
+        return new GpsCoordinate(request.getLatitude(), request.getLongitude());
     }
 }

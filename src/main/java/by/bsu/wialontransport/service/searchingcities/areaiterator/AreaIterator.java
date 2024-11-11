@@ -1,17 +1,17 @@
 package by.bsu.wialontransport.service.searchingcities.areaiterator;
 
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static java.lang.Double.compare;
 
-public final class AreaIterator implements Iterator<Coordinate> {
+public final class AreaIterator implements Iterator<GpsCoordinate> {
     private final AreaCoordinate areaCoordinate;
     private final double searchStep;
-    private Coordinate currentCoordinate;
+    private GpsCoordinate currentCoordinate;
 
     public AreaIterator(final AreaCoordinate areaCoordinate, final double searchStep) {
         this.areaCoordinate = areaCoordinate;
@@ -25,7 +25,7 @@ public final class AreaIterator implements Iterator<Coordinate> {
     }
 
     @Override
-    public Coordinate next() {
+    public GpsCoordinate next() {
         if (hasNextLatitude()) {
             return nextLatitude();
         } else if (hasNextLongitude()) {
@@ -34,11 +34,11 @@ public final class AreaIterator implements Iterator<Coordinate> {
         throw new NoSuchElementException();
     }
 
-    private static Coordinate findInitialCurrentCoordinate(final AreaCoordinate areaCoordinate,
-                                                           final double searchStep) {
+    private static GpsCoordinate findInitialCurrentCoordinate(final AreaCoordinate areaCoordinate,
+                                                              final double searchStep) {
         final double latitude = areaCoordinate.getLeftBottom().getLatitude() - searchStep;
         final double longitude = areaCoordinate.getLeftBottom().getLongitude();
-        return new Coordinate(latitude, longitude);
+        return new GpsCoordinate(latitude, longitude);
     }
 
     private boolean hasNextLatitude() {
@@ -55,16 +55,16 @@ public final class AreaIterator implements Iterator<Coordinate> {
         ) <= 0;
     }
 
-    private Coordinate nextLatitude() {
-        currentCoordinate = new Coordinate(
+    private GpsCoordinate nextLatitude() {
+        currentCoordinate = new GpsCoordinate(
                 currentCoordinate.getLatitude() + searchStep,
                 currentCoordinate.getLongitude()
         );
         return currentCoordinate;
     }
 
-    private Coordinate nextLongitude() {
-        currentCoordinate = new Coordinate(
+    private GpsCoordinate nextLongitude() {
+        currentCoordinate = new GpsCoordinate(
                 areaCoordinate.getLeftBottom().getLatitude(),
                 currentCoordinate.getLongitude() + searchStep
         );

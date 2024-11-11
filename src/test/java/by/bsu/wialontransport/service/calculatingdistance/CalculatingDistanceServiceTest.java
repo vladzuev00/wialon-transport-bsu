@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.calculatingdistance;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Test;
 
 import java.util.List;
@@ -16,8 +16,8 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void twoCoordinatesDistanceShouldBeCalculated() {
-        final Coordinate firstGivenCoordinate = new Coordinate(55.534343, 23.54545);
-        final Coordinate secondGivenCoordinate = new Coordinate(55.554344, 23.57544);
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(55.534343, 23.54545);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(55.554344, 23.57544);
 
         final double actual = service.calculate(firstGivenCoordinate, secondGivenCoordinate);
         final double expected = 2.919738716964184;
@@ -27,7 +27,7 @@ public final class CalculatingDistanceServiceTest {
     @Test
     public void bigDistanceShouldBeCalculated()
             throws Exception {
-        final List<Coordinate> givenCoordinates = readCoordinates(FILE_PATH_WITH_COORDINATES);
+        final List<GpsCoordinate> givenCoordinates = readCoordinates(FILE_PATH_WITH_COORDINATES);
 
         final double actual = service.calculate(givenCoordinates);
         final double expected = 2231133.2720121145;
@@ -36,7 +36,7 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void distanceCalculatedByZeroCoordinatesShouldBeEqualZero() {
-        final List<Coordinate> givenCoordinates = emptyList();
+        final List<GpsCoordinate> givenCoordinates = emptyList();
 
         final double actual = service.calculate(givenCoordinates);
         final double expected = 0.;
@@ -45,7 +45,7 @@ public final class CalculatingDistanceServiceTest {
 
     @Test
     public void distanceCalculatedByOneCoordinatesShouldBeEqualZero() {
-        final List<Coordinate> givenCoordinates = List.of(new Coordinate(55.534343, 23.54545));
+        final List<GpsCoordinate> givenCoordinates = List.of(new GpsCoordinate(55.534343, 23.54545));
 
         final double actual = service.calculate(givenCoordinates);
         final double expected = 0.;

@@ -2,7 +2,7 @@ package by.bsu.wialontransport.crud.service;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -30,7 +30,7 @@ public final class AddressServiceTest extends AbstractSpringBootTest {
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldBeFoundByGpsCoordinates() {
-        final Coordinate givenCoordinate = new Coordinate(1, 1);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(1, 1);
 
         final Optional<Address> optionalActual = addressService.findByGpsCoordinates(givenCoordinate);
         assertTrue(optionalActual.isPresent());
@@ -44,7 +44,7 @@ public final class AddressServiceTest extends AbstractSpringBootTest {
     @Test
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void addressShouldNotBeFoundByGpsCoordinates() {
-        final Coordinate givenCoordinate = new Coordinate(20, 20);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(20, 20);
 
         final Optional<Address> optionalActual = addressService.findByGpsCoordinates(givenCoordinate);
         assertTrue(optionalActual.isEmpty());

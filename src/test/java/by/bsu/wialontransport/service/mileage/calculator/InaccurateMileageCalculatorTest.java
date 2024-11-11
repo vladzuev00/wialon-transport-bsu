@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.mileage.calculator;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.mileage.calculator.MileageCalculator.TrackSlicesCreatingContext;
 import by.bsu.wialontransport.service.mileage.model.TrackSlice;
 import org.junit.Test;
@@ -27,10 +27,10 @@ public final class InaccurateMileageCalculatorTest {
     public void trackSliceLocatedInCityShouldBeCreated() {
         final TrackSlicesCreatingContext givenContext = mock(TrackSlicesCreatingContext.class);
 
-        final Coordinate firstGivenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(5.5, 6.6);
         when(givenContext.getFirstCoordinate()).thenReturn(firstGivenCoordinate);
 
-        final Coordinate secondGivenCoordinate = new Coordinate(7.7, 8.8);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(7.7, 8.8);
         when(givenContext.getSecondCoordinate()).thenReturn(secondGivenCoordinate);
 
         final Point secondGivenCoordinatePoint = mock(Point.class);
@@ -56,10 +56,10 @@ public final class InaccurateMileageCalculatorTest {
     public void trackSliceNotLocatedInCityShouldBeCreated() {
         final TrackSlicesCreatingContext givenContext = mock(TrackSlicesCreatingContext.class);
 
-        final Coordinate firstGivenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(5.5, 6.6);
         when(givenContext.getFirstCoordinate()).thenReturn(firstGivenCoordinate);
 
-        final Coordinate secondGivenCoordinate = new Coordinate(7.7, 8.8);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(7.7, 8.8);
         when(givenContext.getSecondCoordinate()).thenReturn(secondGivenCoordinate);
 
         final Point secondGivenCoordinatePoint = mock(Point.class);

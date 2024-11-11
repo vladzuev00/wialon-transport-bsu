@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.searchingcities;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.City;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -43,10 +43,10 @@ public final class SearchingCitiesServiceTest {
 
     @Test
     public void citiesShouldBeFoundByCoordinates() {
-        final Coordinate firstGivenCoordinate = new Coordinate(4.4, 5.5);
-        final Coordinate secondGivenCoordinate = new Coordinate(6.6, 7.7);
-        final Coordinate thirdGivenCoordinate = new Coordinate(8.8, 9.9);
-        final List<Coordinate> givenCoordinates = List.of(
+        final GpsCoordinate firstGivenCoordinate = new GpsCoordinate(4.4, 5.5);
+        final GpsCoordinate secondGivenCoordinate = new GpsCoordinate(6.6, 7.7);
+        final GpsCoordinate thirdGivenCoordinate = new GpsCoordinate(8.8, 9.9);
+        final List<GpsCoordinate> givenCoordinates = List.of(
                 firstGivenCoordinate,
                 secondGivenCoordinate,
                 thirdGivenCoordinate
@@ -77,7 +77,7 @@ public final class SearchingCitiesServiceTest {
 
     @Test(expected = SearchingCitiesException.class)
     public void searchingCitiesShouldBeInterrupted() {
-        final List<Coordinate> givenCoordinates = List.of(new Coordinate(4.4, 5.5));
+        final List<GpsCoordinate> givenCoordinates = List.of(new GpsCoordinate(4.4, 5.5));
 
         currentThread().interrupt();
 
@@ -86,8 +86,8 @@ public final class SearchingCitiesServiceTest {
 
     @Test(expected = SearchingCitiesException.class)
     public void citiesShouldNotBeFoundByCoordinatesBecauseOfThereIsNoResponseFromNominatim() {
-        final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
-        final List<Coordinate> givenCoordinates = singletonList(givenCoordinate);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
+        final List<GpsCoordinate> givenCoordinates = singletonList(givenCoordinate);
 
         when(mockedNominatimService.reverse(same(givenCoordinate))).thenReturn(empty());
 

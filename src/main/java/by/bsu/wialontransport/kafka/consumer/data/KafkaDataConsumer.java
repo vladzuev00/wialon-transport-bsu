@@ -7,7 +7,7 @@ import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.consumer.KafkaGenericRecordConsumer;
 import by.bsu.wialontransport.kafka.model.view.ParameterView;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.generic.GenericRecord;
@@ -57,8 +57,8 @@ public abstract class KafkaDataConsumer<P extends ParameterView> extends KafkaGe
             return extractDateTime(record, epochSeconds);
         }
 
-        public Coordinate getCoordinate() {
-            return new Coordinate(
+        public GpsCoordinate getCoordinate() {
+            return new GpsCoordinate(
                     extractLatitude(),
                     extractLongitude()
             );

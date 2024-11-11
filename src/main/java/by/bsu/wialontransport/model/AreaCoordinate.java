@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class AreaCoordinate {
-    Coordinate leftBottom;
-    Coordinate rightUpper;
+    GpsCoordinate leftBottom;
+    GpsCoordinate rightUpper;
 }

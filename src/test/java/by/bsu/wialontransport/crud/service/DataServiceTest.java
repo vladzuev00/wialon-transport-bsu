@@ -5,7 +5,7 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.dto.User;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.DateInterval;
 import org.junit.Test;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -83,7 +83,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
                     Location.builder()
                             .id(254L)
                             .dateTime(LocalDateTime.of(2019, 10, 23, 14, 39, 50))
-                            .coordinate(new Coordinate(53.233, 27.3434))
+                            .coordinate(new GpsCoordinate(53.233, 27.3434))
                             .speed(8)
                             .course(9)
                             .altitude(10)
@@ -115,7 +115,7 @@ public final class DataServiceTest extends AbstractSpringBootTest {
                     Location.builder()
                             .id(255L)
                             .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 51))
-                            .coordinate(new Coordinate(53.232, 27.3433))
+                            .coordinate(new GpsCoordinate(53.232, 27.3433))
                             .speed(8)
                             .course(9)
                             .altitude(10)

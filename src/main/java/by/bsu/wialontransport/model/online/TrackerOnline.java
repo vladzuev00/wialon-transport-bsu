@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.model.online;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -19,6 +19,6 @@ public class TrackerOnline {
     @Value
     public static class LastData {
         LocalDateTime dateTime;
-        Coordinate coordinate;
+        GpsCoordinate coordinate;
     }
 }

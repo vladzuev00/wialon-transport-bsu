@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.entity.AddressEntity;
 import by.bsu.wialontransport.crud.mapper.AddressMapper;
 import by.bsu.wialontransport.crud.repository.AddressRepository;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
@@ -26,7 +26,7 @@ public class AddressService extends CRUDService<Long, AddressEntity, Address, Ad
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findByGpsCoordinates(final Coordinate coordinate) {
+    public Optional<Address> findByGpsCoordinates(final GpsCoordinate coordinate) {
         return findUniqueDto(
                 repository -> repository.findByGpsCoordinates(
                         coordinate.getLatitude(),

@@ -5,7 +5,7 @@ import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService.SearchingCitiesException;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService.SubtaskSearchingCities;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService.TaskSearchingAllCities;
@@ -84,10 +84,10 @@ public final class StartingSearchingCitiesProcessServiceTest {
 
     @Test
     public void subtaskShouldSuccessfullySearchCities() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1.1, 1.1),
-                new Coordinate(2.2, 2.2),
-                new Coordinate(3.3, 3.3)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1.1, 1.1),
+                new GpsCoordinate(2.2, 2.2),
+                new GpsCoordinate(3.3, 3.3)
         );
         final SearchingCitiesProcess givenProcess = createProcess(255L);
         final SubtaskSearchingCities givenSubtask = startingProcessService.new SubtaskSearchingCities(
@@ -122,10 +122,10 @@ public final class StartingSearchingCitiesProcessServiceTest {
 
     @Test
     public void subtaskShouldFailSearchingCities() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1.1, 1.1),
-                new Coordinate(2.2, 2.2),
-                new Coordinate(3.3, 3.3)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1.1, 1.1),
+                new GpsCoordinate(2.2, 2.2),
+                new GpsCoordinate(3.3, 3.3)
         );
         final SearchingCitiesProcess givenProcess = createProcess(256L);
         final SubtaskSearchingCities givenSubtask = startingProcessService.new SubtaskSearchingCities(
@@ -160,8 +160,8 @@ public final class StartingSearchingCitiesProcessServiceTest {
     @Test
     public void taskShouldSuccessfullySearchAllCities() {
         final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                new Coordinate(5., 5.),
-                new Coordinate(6.2, 6.2)
+                new GpsCoordinate(5., 5.),
+                new GpsCoordinate(6.2, 6.2)
         );
         final double givenSearchStep = 0.5;
 
@@ -199,28 +199,28 @@ public final class StartingSearchingCitiesProcessServiceTest {
                 )
         );
 
-        final List<Coordinate> expectedFirstSubtaskCoordinates = List.of(
-                new Coordinate(5., 5.),
-                new Coordinate(5.5, 5.),
-                new Coordinate(6., 5.)
+        final List<GpsCoordinate> expectedFirstSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 5.),
+                new GpsCoordinate(5.5, 5.),
+                new GpsCoordinate(6., 5.)
         );
         final List<City> givenFirstSubtaskCities = List.of(firstGivenCity, secondGivenCity, thirdGivenCity);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedFirstSubtaskCoordinates)))
                 .thenReturn(givenFirstSubtaskCities);
 
-        final List<Coordinate> expectedSecondSubtaskCoordinates = List.of(
-                new Coordinate(5., 5.5),
-                new Coordinate(5.5, 5.5),
-                new Coordinate(6., 5.5)
+        final List<GpsCoordinate> expectedSecondSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 5.5),
+                new GpsCoordinate(5.5, 5.5),
+                new GpsCoordinate(6., 5.5)
         );
         final List<City> givenSecondSubtaskCities = List.of(secondGivenCity, thirdGivenCity, fourthGivenCity);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedSecondSubtaskCoordinates)))
                 .thenReturn(givenSecondSubtaskCities);
 
-        final List<Coordinate> expectedThirdSubtaskCoordinates = List.of(
-                new Coordinate(5., 6.),
-                new Coordinate(5.5, 6.),
-                new Coordinate(6., 6.)
+        final List<GpsCoordinate> expectedThirdSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 6.),
+                new GpsCoordinate(5.5, 6.),
+                new GpsCoordinate(6., 6.)
         );
         final List<City> givenThirdSubtaskCities = List.of(thirdGivenCity, fourthGivenCity, firstGivenCity);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedThirdSubtaskCoordinates)))
@@ -260,8 +260,8 @@ public final class StartingSearchingCitiesProcessServiceTest {
     @Test
     public void taskShouldFailSearchingCities() {
         final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                new Coordinate(5., 5.),
-                new Coordinate(6.2, 6.2)
+                new GpsCoordinate(5., 5.),
+                new GpsCoordinate(6.2, 6.2)
         );
         final double givenSearchStep = 0.5;
 
@@ -299,28 +299,28 @@ public final class StartingSearchingCitiesProcessServiceTest {
                 )
         );
 
-        final List<Coordinate> expectedFirstSubtaskCoordinates = List.of(
-                new Coordinate(5., 5.),
-                new Coordinate(5.5, 5.),
-                new Coordinate(6., 5.)
+        final List<GpsCoordinate> expectedFirstSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 5.),
+                new GpsCoordinate(5.5, 5.),
+                new GpsCoordinate(6., 5.)
         );
         final List<City> givenFirstSubtaskCities = List.of(firstGivenCity, secondGivenCity, thirdGivenCity);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedFirstSubtaskCoordinates)))
                 .thenReturn(givenFirstSubtaskCities);
 
-        final List<Coordinate> expectedSecondSubtaskCoordinates = List.of(
-                new Coordinate(5., 5.5),
-                new Coordinate(5.5, 5.5),
-                new Coordinate(6., 5.5)
+        final List<GpsCoordinate> expectedSecondSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 5.5),
+                new GpsCoordinate(5.5, 5.5),
+                new GpsCoordinate(6., 5.5)
         );
         final Exception givenException = mock(RuntimeException.class);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedSecondSubtaskCoordinates)))
                 .thenThrow(givenException);
 
-        final List<Coordinate> expectedThirdSubtaskCoordinates = List.of(
-                new Coordinate(5., 6.),
-                new Coordinate(5.5, 6.),
-                new Coordinate(6., 6.)
+        final List<GpsCoordinate> expectedThirdSubtaskCoordinates = List.of(
+                new GpsCoordinate(5., 6.),
+                new GpsCoordinate(5.5, 6.),
+                new GpsCoordinate(6., 6.)
         );
         final List<City> givenThirdSubtaskCities = List.of(thirdGivenCity, fourthGivenCity, firstGivenCity);
         when(mockedSearchingCitiesService.findByCoordinates(eq(expectedThirdSubtaskCoordinates)))
@@ -358,8 +358,8 @@ public final class StartingSearchingCitiesProcessServiceTest {
     public void processShouldBeStarted() {
         try (@SuppressWarnings("rawtypes") final MockedStatic<CompletableFuture> mockedStaticFuture = mockStatic(CompletableFuture.class)) {
             final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                    new Coordinate(1.1, 1.1),
-                    new Coordinate(4.4, 4.4)
+                    new GpsCoordinate(1.1, 1.1),
+                    new GpsCoordinate(4.4, 4.4)
             );
             final double givenSearchStep = 0.5;
 

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.util;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.TempTrack;
 import com.opencsv.CSVReader;
 import lombok.experimental.UtilityClass;
@@ -23,7 +23,7 @@ public final class CsvReadingTestUtil {
         return null;
     }
 
-    public static List<Coordinate> readCoordinates(final String filePath)
+    public static List<GpsCoordinate> readCoordinates(final String filePath)
             throws Exception {
         try (final CSVReader reader = new CSVReader(new FileReader(filePath))) {
             return reader.readAll()
@@ -37,10 +37,10 @@ public final class CsvReadingTestUtil {
         private static final int INDEX_READ_PROPERTY_LATITUDE = 0;
         private static final int INDEX_READ_PROPERTY_LONGITUDE = 1;
 
-        public Coordinate create(final String[] readProperties) {
+        public GpsCoordinate create(final String[] readProperties) {
             final double latitude = parseDouble(readProperties[INDEX_READ_PROPERTY_LATITUDE]);
             final double longitude = parseDouble(readProperties[INDEX_READ_PROPERTY_LONGITUDE]);
-            return new Coordinate(latitude, longitude);
+            return new GpsCoordinate(latitude, longitude);
         }
     }
 }

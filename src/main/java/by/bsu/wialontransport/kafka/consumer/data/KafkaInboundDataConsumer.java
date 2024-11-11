@@ -8,7 +8,7 @@ import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.kafka.model.view.InboundParameterView;
 import by.bsu.wialontransport.kafka.producer.data.KafkaSavedDataProducer;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.geocoding.GeocodingManager;
 import by.bsu.wialontransport.service.mileage.MileageIncreasingService;
@@ -106,7 +106,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
                 .forEach(mileageIncreasingService::increase);
     }
 
-    private static Map<Tracker, List<Coordinate>> groupCoordinatesByTrackers(final List<Location> data) {
+    private static Map<Tracker, List<GpsCoordinate>> groupCoordinatesByTrackers(final List<Location> data) {
         return data.stream()
                 .collect(
                         groupingBy(

@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.service.coordinatessimplifier;
 
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.coordinatessimplifier.simplifier.CoordinatesSimplifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 public final class SimplifyingCoordinatesService {
     private final CoordinatesSimplifier trackSimplifier;
 
-    public List<Coordinate> simplify(final List<Coordinate> coordinates) {
+    public List<GpsCoordinate> simplify(final List<GpsCoordinate> coordinates) {
         return trackSimplifier.simplify(coordinates);
     }
 }

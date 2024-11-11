@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.mileage.calculator;
 
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.service.calculatingdistance.CalculatingDistanceService;
 import by.bsu.wialontransport.service.geometrycreating.GeometryCreatingService;
@@ -31,24 +31,24 @@ public abstract class MileageCalculator {
     private final CalculatingDistanceService calculatingDistanceService;
     private final AddressService addressService;
 
-    public final Mileage calculate(final List<Coordinate> coordinates) {
+    public final Mileage calculate(final List<GpsCoordinate> coordinates) {
         return !isZeroMileage(coordinates) ? calculateNotZeroMileage(coordinates) : ZERO_MILEAGE;
     }
 
     protected abstract Stream<TrackSlice> createTrackSlices(final TrackSlicesCreatingContext context);
 
-    private static boolean isZeroMileage(final List<Coordinate> coordinates) {
+    private static boolean isZeroMileage(final List<GpsCoordinate> coordinates) {
         return coordinates.isEmpty() || coordinates.size() == 1;
     }
 
-    private Mileage calculateNotZeroMileage(final List<Coordinate> coordinates) {
+    private Mileage calculateNotZeroMileage(final List<GpsCoordinate> coordinates) {
         final Map<Boolean, Double> mileagesByLocatedInCity = calculateMileagesByLocatedInCity(coordinates);
         final double urban = mileagesByLocatedInCity.get(true);
         final double country = mileagesByLocatedInCity.get(false);
         return new Mileage(urban, country);
     }
 
-    private Map<Boolean, Double> calculateMileagesByLocatedInCity(final List<Coordinate> coordinates) {
+    private Map<Boolean, Double> calculateMileagesByLocatedInCity(final List<GpsCoordinate> coordinates) {
         final Set<PreparedGeometry> intersectedCityGeometries = findIntersectedCityGeometries(coordinates);
         return range(0, coordinates.size() - 1)
                 .mapToObj(i -> createContext(coordinates.get(i), coordinates.get(i + 1), intersectedCityGeometries))
@@ -61,18 +61,18 @@ public abstract class MileageCalculator {
                 );
     }
 
-    private Set<PreparedGeometry> findIntersectedCityGeometries(final List<Coordinate> coordinates) {
+    private Set<PreparedGeometry> findIntersectedCityGeometries(final List<GpsCoordinate> coordinates) {
         final LineString lineString = createLineStringSimplifyingCoordinates(coordinates);
         return addressService.findCitiesPreparedGeometriesIntersectedByLineString(lineString);
     }
 
-    private LineString createLineStringSimplifyingCoordinates(final List<Coordinate> coordinates) {
-        final List<Coordinate> simplifiedCoordinates = simplifyingCoordinatesService.simplify(coordinates);
+    private LineString createLineStringSimplifyingCoordinates(final List<GpsCoordinate> coordinates) {
+        final List<GpsCoordinate> simplifiedCoordinates = simplifyingCoordinatesService.simplify(coordinates);
         return geometryCreatingService.createLineString(simplifiedCoordinates);
     }
 
-    private TrackSlicesCreatingContext createContext(final Coordinate firstCoordinate,
-                                                     final Coordinate secondCoordinate,
+    private TrackSlicesCreatingContext createContext(final GpsCoordinate firstCoordinate,
+                                                     final GpsCoordinate secondCoordinate,
                                                      final Set<PreparedGeometry> cityGeometries) {
         return new TrackSlicesCreatingContext(
                 firstCoordinate,
@@ -90,10 +90,10 @@ public abstract class MileageCalculator {
     protected static final class TrackSlicesCreatingContext {
 
         @Getter
-        private final Coordinate firstCoordinate;
+        private final GpsCoordinate firstCoordinate;
 
         @Getter
-        private final Coordinate secondCoordinate;
+        private final GpsCoordinate secondCoordinate;
 
         @Getter
         private final Set<PreparedGeometry> cityGeometries;

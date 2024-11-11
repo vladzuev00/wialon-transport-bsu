@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -21,7 +21,7 @@ public final class GeocodingServiceTest {
     private static final class TestGeocodingService implements GeocodingService {
 
         @Override
-        public Optional<Address> receive(final Coordinate coordinate) {
+        public Optional<Address> receive(final GpsCoordinate coordinate) {
             throw new UnsupportedOperationException();
         }
     }

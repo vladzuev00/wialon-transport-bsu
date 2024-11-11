@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.coordinatessimplifier.simplifier;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,100 +46,100 @@ public final class RamerDouglasPeuckerCoordinatesSimplifierTest extends Abstract
 
     @Test
     public void coordinatesShouldBeSimplified() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1., 5.),
-                new Coordinate(2., 3.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(11., 4.),
-                new Coordinate(13., 3.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(2., 3.),
+                new GpsCoordinate(5., 1.),
+                new GpsCoordinate(6., 4.),
+                new GpsCoordinate(9., 6.),
+                new GpsCoordinate(11., 4.),
+                new GpsCoordinate(13., 3.),
+                new GpsCoordinate(14., 2.),
+                new GpsCoordinate(18., 5.)
         );
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
-        final List<Coordinate> expected = List.of(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> expected = List.of(
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(5., 1.),
+                new GpsCoordinate(6., 4.),
+                new GpsCoordinate(9., 6.),
+                new GpsCoordinate(14., 2.),
+                new GpsCoordinate(18., 5.)
         );
         assertEquals(expected, actual);
     }
 
     @Test
     public void coordinatesWithDuplicationShouldBeSimplified() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1., 5.),
-                new Coordinate(1., 5.),
-                new Coordinate(2., 3.),
-                new Coordinate(2., 3.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(11., 4.),
-                new Coordinate(13., 3.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.),
-                new Coordinate(18., 5.)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(2., 3.),
+                new GpsCoordinate(2., 3.),
+                new GpsCoordinate(5., 1.),
+                new GpsCoordinate(6., 4.),
+                new GpsCoordinate(9., 6.),
+                new GpsCoordinate(11., 4.),
+                new GpsCoordinate(13., 3.),
+                new GpsCoordinate(14., 2.),
+                new GpsCoordinate(18., 5.),
+                new GpsCoordinate(18., 5.)
         );
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
-        final List<Coordinate> expected = List.of(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.),
-                new Coordinate(6., 4.),
-                new Coordinate(9., 6.),
-                new Coordinate(14., 2.),
-                new Coordinate(18., 5.)
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> expected = List.of(
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(5., 1.),
+                new GpsCoordinate(6., 4.),
+                new GpsCoordinate(9., 6.),
+                new GpsCoordinate(14., 2.),
+                new GpsCoordinate(18., 5.)
         );
         assertEquals(expected, actual);
     }
 
     @Test
     public void nullCoordinatesShouldBeSimplified() {
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(null);
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(null);
         assertNull(actual);
     }
 
     @Test
     public void emptyCoordinatesShouldBeSimplified() {
-        final List<Coordinate> givenCoordinates = emptyList();
+        final List<GpsCoordinate> givenCoordinates = emptyList();
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
         assertSame(givenCoordinates, actual);
     }
 
     @Test
     public void twoCoordinatesShouldBeSimplified() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1., 5.),
-                new Coordinate(5., 1.)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1., 5.),
+                new GpsCoordinate(5., 1.)
         );
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
         assertSame(givenCoordinates, actual);
     }
 
     @Test
     public void coordinatesBelongingOneStraightLineShouldBeSimplified() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1, 1),
-                new Coordinate(2, 2),
-                new Coordinate(3, 3),
-                new Coordinate(4, 4),
-                new Coordinate(5, 5),
-                new Coordinate(6, 6),
-                new Coordinate(7, 7)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1, 1),
+                new GpsCoordinate(2, 2),
+                new GpsCoordinate(3, 3),
+                new GpsCoordinate(4, 4),
+                new GpsCoordinate(5, 5),
+                new GpsCoordinate(6, 6),
+                new GpsCoordinate(7, 7)
         );
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
-        final List<Coordinate> expected = List.of(
-                new Coordinate(1, 1),
-                new Coordinate(7, 7)
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> expected = List.of(
+                new GpsCoordinate(1, 1),
+                new GpsCoordinate(7, 7)
         );
         assertEquals(expected, actual);
     }
@@ -147,10 +147,10 @@ public final class RamerDouglasPeuckerCoordinatesSimplifierTest extends Abstract
     @Test
     public void bigTrackShouldBeSimplified()
             throws Exception {
-        final List<Coordinate> givenCoordinates = readCoordinates(FILE_PATH_COORDINATES_BEFORE);
+        final List<GpsCoordinate> givenCoordinates = readCoordinates(FILE_PATH_COORDINATES_BEFORE);
 
-        final List<Coordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
-        final List<Coordinate> expected = readCoordinates(FILE_PATH_COORDINATES_AFTER);
+        final List<GpsCoordinate> actual = coordinatesSimplifier.simplify(givenCoordinates);
+        final List<GpsCoordinate> expected = readCoordinates(FILE_PATH_COORDINATES_AFTER);
         assertEquals(expected, actual);
     }
 

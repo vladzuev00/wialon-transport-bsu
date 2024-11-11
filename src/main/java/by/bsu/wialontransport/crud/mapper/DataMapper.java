@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.dto.Parameter;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.entity.DataEntity;
 import by.bsu.wialontransport.crud.entity.ParameterEntity;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -49,13 +49,13 @@ public final class DataMapper extends Mapper<DataEntity, Location> {
         mapParameters(source, destination);
     }
 
-    private static Coordinate mapNullableCoordinate(final DataEntity source) {
+    private static GpsCoordinate mapNullableCoordinate(final DataEntity source) {
         final DataEntity.Coordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static Coordinate map(final DataEntity.Coordinate source) {
-        return new Coordinate(source.getLatitude(), source.getLongitude());
+    private static GpsCoordinate map(final DataEntity.Coordinate source) {
+        return new GpsCoordinate(source.getLatitude(), source.getLongitude());
     }
 
     private Map<String, Parameter> mapParameters(final DataEntity source) {
@@ -79,11 +79,11 @@ public final class DataMapper extends Mapper<DataEntity, Location> {
     }
 
     private static DataEntity.Coordinate mapNullableCoordinate(final Location source) {
-        final Coordinate sourceCoordinate = source.getCoordinate();
+        final GpsCoordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static DataEntity.Coordinate map(final Coordinate source) {
+    private static DataEntity.Coordinate map(final GpsCoordinate source) {
         return new DataEntity.Coordinate(source.getLatitude(), source.getLongitude());
     }
 

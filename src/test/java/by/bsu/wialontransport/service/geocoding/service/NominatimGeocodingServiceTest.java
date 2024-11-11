@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding.service;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService;
 import by.bsu.wialontransport.service.nominatim.mapper.ReverseResponseMapper;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
@@ -46,7 +46,7 @@ public final class NominatimGeocodingServiceTest {
 
     @Test
     public void alreadySavedAddressShouldBeReceived() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         final NominatimReverseResponse givenResponse = createResponse();
         when(mockedNominatimService.reverse(same(givenCoordinate))).thenReturn(Optional.of(givenResponse));
@@ -66,7 +66,7 @@ public final class NominatimGeocodingServiceTest {
 
     @Test
     public void newAddressShouldBeFound() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         final NominatimReverseResponse givenResponse = createResponse();
         when(mockedNominatimService.reverse(same(givenCoordinate))).thenReturn(Optional.of(givenResponse));
@@ -85,7 +85,7 @@ public final class NominatimGeocodingServiceTest {
 
     @Test
     public void addressShouldNotBeFound() {
-        final Coordinate givenCoordinate = new Coordinate(5.5, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         when(mockedNominatimService.reverse(same(givenCoordinate))).thenReturn(empty());
 

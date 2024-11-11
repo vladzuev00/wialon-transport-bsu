@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.crud.service.LocationService;
 import by.bsu.wialontransport.crud.service.TrackerMileageService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.Mileage;
 import by.bsu.wialontransport.model.Track;
 import by.bsu.wialontransport.service.mileage.calculator.MileageCalculator;
@@ -25,18 +25,18 @@ public final class MileageIncreasingService {
 
     //TODO inject last data before(see in diplom doc)
     public void increase(final Track track) {
-        final List<Coordinate> pathCoordinates = findPathCoordinates(track);
+        final List<GpsCoordinate> pathCoordinates = findPathCoordinates(track);
         final Mileage mileageDelta = mileageCalculator.calculate(pathCoordinates);
         trackerMileageService.increaseMileage(track.getTracker(), mileageDelta);
     }
 
-    private List<Coordinate> findPathCoordinates(final Track track) {
+    private List<GpsCoordinate> findPathCoordinates(final Track track) {
         return findLastCoordinate(track.getTracker())
                 .map(lastCoordinate -> concat(lastCoordinate, track.getCoordinates()))
                 .orElse(track.getCoordinates());
     }
 
-    private Optional<Coordinate> findLastCoordinate(final Tracker tracker) {
+    private Optional<GpsCoordinate> findLastCoordinate(final Tracker tracker) {
         return dataService.findLastLocationFetchingParameters(tracker).map(Location::getCoordinate);
     }
 }

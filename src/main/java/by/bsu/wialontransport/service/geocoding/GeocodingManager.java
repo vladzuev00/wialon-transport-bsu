@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding;
 
 import by.bsu.wialontransport.crud.dto.Address;
 import by.bsu.wialontransport.crud.service.AddressService;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public final class GeocodingManager {
     private final AddressService addressService;
 
     //TODO: возможно здесь стоит возвращать просто адрес
-    public Optional<Address> findSavedAddress(final Coordinate coordinate) {
+    public Optional<Address> findSavedAddress(final GpsCoordinate coordinate) {
         return geocodingServices.stream()
                 .map(geocodingService -> geocodingService.receive(coordinate))
                 .filter(Optional::isPresent)

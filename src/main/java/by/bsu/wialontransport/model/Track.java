@@ -8,5 +8,5 @@ import java.util.List;
 @Value
 public class Track {
     Tracker tracker;
-    List<Coordinate> coordinates;
+    List<GpsCoordinate> coordinates;
 }

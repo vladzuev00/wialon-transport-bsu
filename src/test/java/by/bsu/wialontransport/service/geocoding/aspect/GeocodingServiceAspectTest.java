@@ -2,7 +2,7 @@ package by.bsu.wialontransport.service.geocoding.aspect;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.crud.dto.Address;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.geocoding.service.GeocodingService;
 import nl.altindag.log.LogCaptor;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
     @Test
     public void successReceivingShouldBeLogged() {
         try (final LogCaptor givenLogCaptor = createLogCaptor()) {
-            final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
+            final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
 
             successReceivingService.receive(givenCoordinate);
 
@@ -50,7 +50,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
     @Test
     public void failedReceivingShouldBeLogged() {
         try (final LogCaptor givenLogCaptor = createLogCaptor()) {
-            final Coordinate givenCoordinate = new Coordinate(4.4, 6.6);
+            final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 6.6);
 
             failedReceivingService.receive(givenCoordinate);
 
@@ -68,7 +68,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
     public static class SuccessReceivingService implements GeocodingService {
 
         @Override
-        public Optional<Address> receive(final Coordinate coordinate) {
+        public Optional<Address> receive(final GpsCoordinate coordinate) {
             final Address address = Address.builder().build();
             return Optional.of(address);
         }
@@ -78,7 +78,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
     public static class FailedReceivingService implements GeocodingService {
 
         @Override
-        public Optional<Address> receive(final Coordinate coordinate) {
+        public Optional<Address> receive(final GpsCoordinate coordinate) {
             return empty();
         }
     }

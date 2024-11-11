@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.nominatim;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.nominatim.NominatimService.NominatimException;
 import by.bsu.wialontransport.service.nominatim.model.NominatimReverseResponse;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
     @Test
     @SuppressWarnings("unchecked")
     public void coordinateShouldBeReversed() {
-        final Coordinate givenCoordinate = new Coordinate(4.4, 6.6);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 6.6);
 
         final String givenUrl = createReverseUrl(givenCoordinate);
         final NominatimReverseResponse givenResponse = createReverseResponse();
@@ -61,7 +61,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
     @Test
     @SuppressWarnings("unchecked")
     public void coordinateShouldNotBeReversed() {
-        final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
 
         final String givenUrl = createReverseUrl(givenCoordinate);
         final ResponseEntity<?> givenResponseEntity = ok().build();
@@ -80,7 +80,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
     @SuppressWarnings("unchecked")
     @Test(expected = NominatimException.class)
     public void coordinateShouldNotBeReversedBecauseOfBadHttpStatus() {
-        final Coordinate givenCoordinate = new Coordinate(4.4, 5.5);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
 
         final String givenUrl = createReverseUrl(givenCoordinate);
         final ResponseEntity<?> givenResponseEntity = status(BAD_REQUEST).build();
@@ -96,7 +96,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
         nominatimService.reverse(givenCoordinate);
     }
 
-    private String createReverseUrl(final Coordinate coordinate) {
+    private String createReverseUrl(final GpsCoordinate coordinate) {
         return format(reverseUrlTemplate, coordinate.getLatitude(), coordinate.getLongitude());
     }
 

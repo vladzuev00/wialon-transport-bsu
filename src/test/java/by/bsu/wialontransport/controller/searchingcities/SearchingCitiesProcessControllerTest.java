@@ -11,7 +11,7 @@ import by.bsu.wialontransport.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinate;
 import by.bsu.wialontransport.model.AreaCoordinateRequest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.model.CoordinateRequest;
 import by.bsu.wialontransport.service.searchingcities.StartingSearchingCitiesProcessService;
 import org.junit.Test;
@@ -513,8 +513,8 @@ public final class SearchingCitiesProcessControllerTest extends AbstractSpringBo
         final String url = createUrlToStartProcess();
 
         final AreaCoordinate givenAreaCoordinate = new AreaCoordinate(
-                new Coordinate(53.669375, 27.053689),
-                new Coordinate(53.896085, 27.443176)
+                new GpsCoordinate(53.669375, 27.053689),
+                new GpsCoordinate(53.896085, 27.443176)
         );
         when(mockedMapper.mapToAreaCoordinate(eq(givenAreaCoordinateRequest))).thenReturn(givenAreaCoordinate);
 

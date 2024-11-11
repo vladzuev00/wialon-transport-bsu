@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.service.geometrycreating;
 
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import org.junit.Test;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -25,11 +25,11 @@ public final class GeometryCreatingServiceTest extends AbstractSpringBootTest {
 
     @Test
     public void lineStringShouldBeCreatedByCoordinates() {
-        final List<Coordinate> givenCoordinates = List.of(
-                new Coordinate(1., 2.),
-                new Coordinate(3., 4.),
-                new Coordinate(5., 6.),
-                new Coordinate(7., 8.)
+        final List<GpsCoordinate> givenCoordinates = List.of(
+                new GpsCoordinate(1., 2.),
+                new GpsCoordinate(3., 4.),
+                new GpsCoordinate(5., 6.),
+                new GpsCoordinate(7., 8.)
         );
 
         final LineString actual = geometryCreatingService.createLineString(givenCoordinates);
@@ -49,7 +49,7 @@ public final class GeometryCreatingServiceTest extends AbstractSpringBootTest {
 
     @Test
     public void lineStringShouldBeCreatedByEmptyCoordinates() {
-        final List<Coordinate> givenCoordinates = emptyList();
+        final List<GpsCoordinate> givenCoordinates = emptyList();
 
         final LineString actual = geometryCreatingService.createLineString(givenCoordinates);
         final LineString expected = new LineString(new CoordinateArraySequence(new CoordinateXY[]{}), geometryFactory);
@@ -58,7 +58,7 @@ public final class GeometryCreatingServiceTest extends AbstractSpringBootTest {
 
     @Test
     public void pointShouldBeCreatedByCoordinate() {
-        final Coordinate givenCoordinate = new Coordinate(1., 2.);
+        final GpsCoordinate givenCoordinate = new GpsCoordinate(1., 2.);
 
         final Point actual = geometryCreatingService.createPoint(givenCoordinate);
         final Point expected = geometryFactory.createPoint(new CoordinateXY(2., 1.));

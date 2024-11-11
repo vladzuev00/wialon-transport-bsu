@@ -4,7 +4,7 @@ import by.bsu.wialontransport.crud.dto.City;
 import by.bsu.wialontransport.crud.dto.SearchingCitiesProcess;
 import by.bsu.wialontransport.crud.service.SearchingCitiesProcessService;
 import by.bsu.wialontransport.model.AreaCoordinate;
-import by.bsu.wialontransport.model.Coordinate;
+import by.bsu.wialontransport.model.GpsCoordinate;
 import by.bsu.wialontransport.service.searchingcities.areaiterator.AreaIterator;
 import by.bsu.wialontransport.service.searchingcities.eventlistener.event.*;
 import by.bsu.wialontransport.service.searchingcities.factory.SearchingCitiesProcessFactory;
@@ -87,8 +87,8 @@ public final class StartingSearchingCitiesProcessService {
             }
         }
 
-        private Stream<List<Coordinate>> splitArea() {
-            final List<Coordinate> coordinates = findCoordinates();
+        private Stream<List<GpsCoordinate>> splitArea() {
+            final List<GpsCoordinate> coordinates = findCoordinates();
             final int subAreaCount = findSubAreaCount();
             return range(0, subAreaCount).mapToObj(i -> extractSubAreaCoordinates(coordinates, i));
         }
@@ -97,19 +97,19 @@ public final class StartingSearchingCitiesProcessService {
             return (int) ceil(((double) process.getTotalPoints()) / handledPointCountToSaveState);
         }
 
-        private List<Coordinate> findCoordinates() {
+        private List<GpsCoordinate> findCoordinates() {
             final AreaIterator areaIterator = new AreaIterator(areaCoordinate, searchStep);
             return collectToList(areaIterator);
         }
 
-        private List<Coordinate> extractSubAreaCoordinates(final List<Coordinate> coordinates, final int subAreaIndex) {
+        private List<GpsCoordinate> extractSubAreaCoordinates(final List<GpsCoordinate> coordinates, final int subAreaIndex) {
             return coordinates.subList(
                     subAreaIndex * handledPointCountToSaveState,
                     min(handledPointCountToSaveState * (subAreaIndex + 1), coordinates.size())
             );
         }
 
-        private SubtaskSearchingCities createSubtask(final List<Coordinate> coordinates) {
+        private SubtaskSearchingCities createSubtask(final List<GpsCoordinate> coordinates) {
             return new SubtaskSearchingCities(coordinates, process);
         }
 
@@ -154,7 +154,7 @@ public final class StartingSearchingCitiesProcessService {
 
     @RequiredArgsConstructor
     final class SubtaskSearchingCities implements Supplier<List<City>> {
-        private final List<Coordinate> coordinates;
+        private final List<GpsCoordinate> coordinates;
         private final SearchingCitiesProcess process;
 
         @Override
