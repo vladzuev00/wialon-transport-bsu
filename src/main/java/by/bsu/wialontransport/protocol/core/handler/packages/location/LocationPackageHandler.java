@@ -45,18 +45,10 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
 
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
-        final Tracker tracker = getTracker(context);
-        final LocalDateTime lastReceivingDateTime = getLastReceivingDateTime(context);
         final List<LOCATION_SOURCE> locationSources = getLocationSources(request);
-        locationSources.stream()
-                .map(source -> createLocation(source, tracker))
-                .filter(locationValidator::isValid)
-                .sorted(DATE_TIME_COMPARATOR)
-                .dropWhile(location -> location.getDateTime().isBefore(lastReceivingDateTime))
-                .peek(locationProducer::produce)
-                .reduce((first, second) -> second)
-                .ifPresent(lastLocation -> contextAttributeManager.putLastLocation(context, lastLocation));
-        return createResponse(locationSources.size());
+        handleLocations(locationSources, context);
+        final int locationCount = locationSources.size();
+        return createResponse(locationCount);
     }
 
     protected abstract List<LOCATION_SOURCE> getLocationSources(final REQUEST request);
@@ -90,6 +82,19 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
     protected abstract Stream<Parameter> getParameters(final LOCATION_SOURCE source);
 
     protected abstract Object createResponse(final int locationCount);
+
+    private void handleLocations(final List<LOCATION_SOURCE> sources, final ChannelHandlerContext context) {
+        final Tracker tracker = getTracker(context);
+        final LocalDateTime lastReceivingDateTime = getLastReceivingDateTime(context);
+        sources.stream()
+                .map(source -> createLocation(source, tracker))
+                .filter(locationValidator::isValid)
+                .sorted(DATE_TIME_COMPARATOR)
+                .dropWhile(location -> location.getDateTime().isBefore(lastReceivingDateTime))
+                .peek(locationProducer::produce)
+                .reduce((first, second) -> second)
+                .ifPresent(lastLocation -> contextAttributeManager.putLastLocation(context, lastLocation));
+    }
 
     private Tracker getTracker(final ChannelHandlerContext context) {
         return contextAttributeManager.findTracker(context)
