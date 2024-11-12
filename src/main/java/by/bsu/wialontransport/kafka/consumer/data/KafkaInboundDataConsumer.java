@@ -117,6 +117,6 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
     }
 
     private void sendToSavedDataTopic(final List<Location> data) {
-        data.forEach(savedDataProducer::send);
+        data.forEach(savedDataProducer::produce);
     }
 }

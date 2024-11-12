@@ -37,7 +37,7 @@ public final class KafkaProducerTest {
         final String givenText = "text";
         final TestSource givenSource = new TestSource(givenId, givenPhoneNumber, givenText);
 
-        producer.send(givenSource);
+        producer.produce(givenSource);
 
         final TestValue expectedValue = new TestValue(givenId, givenPhoneNumber, givenText);
         final ProducerRecord<String, TestValue> expectedProducerRecord = new ProducerRecord<>(

@@ -10,7 +10,7 @@ public abstract class KafkaProducer<K, V, T extends Transportable<K>, S> {
     private final KafkaTemplate<K, V> kafkaTemplate;
     private final String topicName;
 
-    public final void send(final S source) {
+    public final void produce(final S source) {
         final T transportable = mapToTransportable(source);
         final K key = transportable.findTopicKey();
         final V value = mapToValue(transportable);
