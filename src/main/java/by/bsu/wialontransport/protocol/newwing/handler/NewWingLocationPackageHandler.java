@@ -111,7 +111,7 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
     }
 
     @Override
-    protected Object createResponse(final int locationCount) {
+    protected NewWingSuccessResponsePackage createResponse(final int locationCount) {
         return new NewWingSuccessResponsePackage();
     }
 }
