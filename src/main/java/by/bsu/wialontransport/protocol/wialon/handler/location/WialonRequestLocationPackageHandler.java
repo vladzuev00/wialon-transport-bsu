@@ -106,7 +106,4 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
     protected Stream<Parameter> getParameters(final WialonLocation location) {
         return location.getParameters().stream();
     }
-
-    @Override
-    protected abstract WialonRequestLocationPackage createResponse(final int locationCount);
 }
