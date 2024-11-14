@@ -49,8 +49,17 @@ public final class LocationPackageHandlerTest {
     }
 
     @Test
-    public void temp() {
-        throw new RuntimeException();
+    public void requestWithDefinedPropertiesShouldBeHandledInternallyInCaseExistingLastData() {
+        final TestLocationSource firstGivenLocation = new TestLocationSource(
+                LocalDate.of(2024, 11, 15),
+                LocalTime.of(12, 36, 37),
+                55.3432,
+                27.5643,
+                10,
+                60.,
+                50,
+
+        );
     }
 
     @Value
