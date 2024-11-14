@@ -68,42 +68,42 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
     }
 
     @Override
-    protected OptionalInt findAltitude(final WialonLocation location) {
+    protected final OptionalInt findAltitude(final WialonLocation location) {
         return ofNullableInt(location.getAltitude());
     }
 
     @Override
-    protected OptionalInt findSatelliteCount(final WialonLocation location) {
+    protected final OptionalInt findSatelliteCount(final WialonLocation location) {
         return ofNullableInt(location.getSatelliteCount());
     }
 
     @Override
-    protected OptionalDouble findHdop(final WialonLocation location) {
+    protected final OptionalDouble findHdop(final WialonLocation location) {
         return ofNullableDouble(location.getHdop());
     }
 
     @Override
-    protected OptionalInt findInputs(final WialonLocation location) {
+    protected final OptionalInt findInputs(final WialonLocation location) {
         return ofNullableInt(location.getInputs());
     }
 
     @Override
-    protected OptionalInt findOutputs(final WialonLocation location) {
+    protected final OptionalInt findOutputs(final WialonLocation location) {
         return ofNullableInt(location.getOutputs());
     }
 
     @Override
-    protected double[] getAnalogInputs(final WialonLocation location) {
+    protected final double[] getAnalogInputs(final WialonLocation location) {
         return location.getAnalogInputs();
     }
 
     @Override
-    protected Optional<String> findDriverKeyCode(final WialonLocation location) {
+    protected final Optional<String> findDriverKeyCode(final WialonLocation location) {
         return ofNullable(location.getDriverKeyCode());
     }
 
     @Override
-    protected Stream<Parameter> getParameters(final WialonLocation location) {
+    protected final Stream<Parameter> getParameters(final WialonLocation location) {
         return location.getParameters().stream();
     }
 }
