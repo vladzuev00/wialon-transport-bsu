@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import static by.bsu.wialontransport.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 
-//TODO: test
 @Component
 public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler<WialonRequestLoginPackage> {
 
