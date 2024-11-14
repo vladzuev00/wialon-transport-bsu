@@ -23,9 +23,9 @@ public final class WialonPackageEncoderTest {
 
     @RequiredArgsConstructor
     @Getter
-    @EqualsAndHashCode(callSuper = true)
-    @ToString(callSuper = true)
-    private static final class TestPackage extends WialonPackage {
+    @EqualsAndHashCode
+    @ToString
+    private static final class TestPackage implements WialonPackage {
         private static final String PREFIX = "#PREFIX#";
 
         private final String value;

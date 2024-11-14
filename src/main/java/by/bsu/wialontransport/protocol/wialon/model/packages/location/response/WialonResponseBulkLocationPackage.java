@@ -8,9 +8,9 @@ import lombok.ToString;
 
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public final class WialonResponseBulkLocationPackage extends WialonPackage {
+@EqualsAndHashCode
+@ToString
+public final class WialonResponseBulkLocationPackage implements WialonPackage {
     public static final String PREFIX = "#AB#";
 
     private final int fixedLocationCount;

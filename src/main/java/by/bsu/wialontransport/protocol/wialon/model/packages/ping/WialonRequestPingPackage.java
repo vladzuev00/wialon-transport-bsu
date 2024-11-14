@@ -2,7 +2,7 @@ package by.bsu.wialontransport.protocol.wialon.model.packages.ping;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
 
-public final class WialonRequestPingPackage extends WialonPackage {
+public final class WialonRequestPingPackage implements WialonPackage {
     public static final String PREFIX = "#P#";
 
     @Override

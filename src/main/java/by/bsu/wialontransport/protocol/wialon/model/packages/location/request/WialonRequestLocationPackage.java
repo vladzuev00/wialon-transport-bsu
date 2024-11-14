@@ -11,8 +11,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public abstract class WialonRequestLocationPackage extends WialonPackage {
+@EqualsAndHashCode
+@ToString
+public abstract class WialonRequestLocationPackage implements WialonPackage {
     private final List<WialonLocation> locations;
 }

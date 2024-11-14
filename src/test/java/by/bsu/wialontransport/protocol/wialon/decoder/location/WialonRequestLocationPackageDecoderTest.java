@@ -43,9 +43,9 @@ public final class WialonRequestLocationPackageDecoderTest {
     }
 
     @RequiredArgsConstructor
-    @EqualsAndHashCode(callSuper = true)
-    @ToString(callSuper = true)
-    private static class TestWialonPackage extends WialonPackage {
+    @EqualsAndHashCode
+    @ToString
+    private static class TestWialonPackage implements WialonPackage {
         private final WialonLocation location;
 
         @Override

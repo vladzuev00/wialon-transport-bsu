@@ -23,9 +23,9 @@ public final class WialonPackageDecoderTest {
 
     @RequiredArgsConstructor
     @Getter
-    @EqualsAndHashCode(callSuper = true)
-    @ToString(callSuper = true)
-    private static final class TestPackage extends WialonPackage {
+    @EqualsAndHashCode
+    @ToString
+    private static final class TestPackage implements WialonPackage {
         private final String message;
 
         @Override
