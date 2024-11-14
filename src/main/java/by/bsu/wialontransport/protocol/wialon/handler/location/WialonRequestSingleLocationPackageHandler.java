@@ -12,7 +12,6 @@ import static by.bsu.wialontransport.protocol.wialon.model.packages.location.res
 
 @Component
 public final class WialonRequestSingleLocationPackageHandler extends WialonRequestLocationPackageHandler<WialonRequestLocationPackage> {
-    private static final int REQUIRED_LOCATION_COUNT = 1;
 
     public WialonRequestSingleLocationPackageHandler(final ContextAttributeManager contextAttributeManager,
                                                      final LocationDefaultProperty locationDefaultProperty,
@@ -29,15 +28,6 @@ public final class WialonRequestSingleLocationPackageHandler extends WialonReque
 
     @Override
     protected WialonResponseSingleLocationPackage createResponse(final int locationCount) {
-        validateLocationCount(locationCount);
         return new WialonResponseSingleLocationPackage(PACKAGE_FIX_SUCCESS);
-    }
-
-    private void validateLocationCount(final int locationCount) {
-        if (locationCount != REQUIRED_LOCATION_COUNT) {
-            throw new IllegalArgumentException(
-                    "Location was %d, but expected %d".formatted(locationCount, REQUIRED_LOCATION_COUNT)
-            );
-        }
     }
 }
