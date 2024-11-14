@@ -5,7 +5,6 @@ import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonRequestP
 import by.bsu.wialontransport.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
 import org.springframework.stereotype.Component;
 
-//TODO: test
 @Component
 public final class WialonRequestPingPackageHandler extends IgnoredPackageHandler<WialonRequestPingPackage> {
 
