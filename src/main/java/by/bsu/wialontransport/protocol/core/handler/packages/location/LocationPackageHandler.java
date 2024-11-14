@@ -22,7 +22,6 @@ import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-//TODO: refactor and test
 public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends PackageHandler<REQUEST> {
     private static final Comparator<Location> DATE_TIME_COMPARATOR = comparing(Location::getDateTime);
 
