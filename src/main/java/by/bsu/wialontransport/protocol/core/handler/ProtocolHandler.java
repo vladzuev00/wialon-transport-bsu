@@ -14,10 +14,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
-    private static final String MESSAGE_RECEIVE_REQUEST = "Start handling request: '{}'";
-    private static final String MESSAGE_ACTIVE_CHANNEL = "New tracker is connected";
-    private static final String MESSAGE_INACTIVE_CHANNEL = "Tracker '{}' was disconnected";
-    private static final String NOT_DEFINED_TRACKER_IMEI = "not defined imei";
+    private static final String NOT_DEFINED_TRACKER_IMEI = "imei-not-defined";
 
     private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
@@ -41,26 +38,23 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void logReceivingRequest(final Object request) {
-        log.info(MESSAGE_RECEIVE_REQUEST, request);
+        log.info("Start handling request: {}", request);
     }
 
     private void logActiveChannel() {
-        log.info(MESSAGE_ACTIVE_CHANNEL);
+        log.info("New tracker is connected");
     }
 
     private void logInactiveChannel(final ChannelHandlerContext context) {
-        log.info(MESSAGE_INACTIVE_CHANNEL, getTrackerImei(context));
-    }
-
-    private String getTrackerImei(final ChannelHandlerContext context) {
-        return contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
+        String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
+        log.info("Tracker '{}' was disconnected", trackerImei);
     }
 
     private void handle(final Object request, final ChannelHandlerContext context) {
         packageHandlers.stream()
                 .filter(handler -> handler.isAbleHandle(request))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No handler for request '%s'"))
+                .orElseThrow(() -> new IllegalArgumentException("No handler for request '%s'".formatted(request)))
                 .handle(request, context);
     }
 

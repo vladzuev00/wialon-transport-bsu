@@ -64,7 +64,7 @@ public final class ProtocolHandlerTest {
         protocolHandler.channelRead(givenContext, givenRequest);
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("Start handling request: 'ProtocolHandlerTest.TestPackage(message=test-message)'");
+        final List<String> expectedLogs = List.of("Start handling request: ProtocolHandlerTest.TestPackage(message=test-message)");
         assertEquals(expectedLogs, actualLogs);
 
         verify(secondMockedPackageHandler, times(1)).handle(same(givenRequest), same(givenContext));
@@ -84,7 +84,7 @@ public final class ProtocolHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> protocolHandler.channelRead(givenContext, givenRequest));
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("Start handling request: 'ProtocolHandlerTest.TestPackage(message=test-message)'");
+        final List<String> expectedLogs = List.of("Start handling request: ProtocolHandlerTest.TestPackage(message=test-message)");
         assertEquals(expectedLogs, actualLogs);
 
         verify(firstMockedPackageHandler, times(0)).handle(any(Object.class), any(ChannelHandlerContext.class));
