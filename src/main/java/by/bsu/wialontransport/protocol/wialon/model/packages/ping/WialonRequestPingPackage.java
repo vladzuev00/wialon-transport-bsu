@@ -1,8 +1,10 @@
 package by.bsu.wialontransport.protocol.wialon.model.packages.ping;
 
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
+import lombok.Value;
 
-public final class WialonRequestPingPackage implements WialonPackage {
+@Value
+public class WialonRequestPingPackage implements WialonPackage {
     public static final String PREFIX = "#P#";
 
     @Override

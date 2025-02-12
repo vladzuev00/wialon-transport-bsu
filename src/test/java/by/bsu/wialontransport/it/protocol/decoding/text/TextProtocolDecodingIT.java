@@ -12,7 +12,7 @@ public abstract class TextProtocolDecodingIT extends ProtocolDecodingIT {
     }
 
     @Override
-    protected byte[] getBytes(final String source) {
+    protected final byte[] getBytes(final String source) {
         return source.getBytes(US_ASCII);
     }
 }

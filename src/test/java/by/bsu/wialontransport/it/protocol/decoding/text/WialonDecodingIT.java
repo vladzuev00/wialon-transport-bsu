@@ -30,10 +30,7 @@ public final class WialonDecodingIT extends TextProtocolDecodingIT {
                         "#L#11112222333344445555;password\r\n",
                         new WialonRequestLoginPackage("11112222333344445555", "password")
                 ),
-                new TestArgument(
-                        "#P#\r\n",
-                        new WialonRequestPingPackage()
-                ),
+                new TestArgument("#P#\r\n", new WialonRequestPingPackage()),
                 new TestArgument(
                         "#D#151122;145643;5354.173;N;02731.335;E;100;15;10;177;545.4554;17;18;5.5,4343.454544334,454.433,1;keydrivercode;122:1:5,123:2:6,124:2:7,par1:3:str,116:2:0.5\r\n",
                         new WialonRequestSingleLocationPackage(
