@@ -17,7 +17,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
         buffer.retain();
         try {
             final SOURCE source = createSource(buffer);
-            final Object request = decode(source);
+            final Object request = decodePackage(source);
             out.add(request);
             skipRemaining(buffer);
         } finally {
@@ -27,7 +27,7 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
 
     protected abstract SOURCE createSource(final ByteBuf buffer);
 
-    private Object decode(final SOURCE source) {
+    private Object decodePackage(final SOURCE source) {
         return packageDecoders.stream()
                 .filter(decoder -> decoder.isAbleDecode(source))
                 .findFirst()

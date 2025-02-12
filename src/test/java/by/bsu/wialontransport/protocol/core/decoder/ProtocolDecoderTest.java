@@ -26,7 +26,7 @@ public final class ProtocolDecoderTest {
     @Mock
     private PackageDecoder<ByteBuf> thirdMockedPackageDecoder;
 
-    private ProtocolDecoder<ByteBuf> protocolDecoder;
+    private TestProtocolDecoder protocolDecoder;
 
     @BeforeEach
     public void initializeProtocolDecoder() {
