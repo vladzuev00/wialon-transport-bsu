@@ -8,9 +8,9 @@ public abstract class LocationPropertyValidator<T> {
 
     public final boolean isValid(final Location location) {
         final T value = getValue(location);
-        final T minAllowable = getMin();
-        final T maxAllowable = getMax();
-        return isBiggerOrEqual(value, minAllowable) && isLessOrEqual(value, maxAllowable);
+        final T min = getMin();
+        final T max = getMax();
+        return isBiggerOrEqual(value, min) && isLessOrEqual(value, max);
     }
 
     protected abstract T getValue(final Location location);

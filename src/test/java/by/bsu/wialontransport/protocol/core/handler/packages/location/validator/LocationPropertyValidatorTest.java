@@ -31,8 +31,8 @@ public final class LocationPropertyValidatorTest {
     }
 
     private static final class TestLocationPropertyValidator extends LocationPropertyValidator<Double> {
-        private static final Double MIN_ALLOWABLE = 10.;
-        private static final Double MAX_ALLOWABLE = 20.;
+        private static final Double MIN = 10.;
+        private static final Double MAX = 20.;
 
         @Override
         protected Double getValue(final Location location) {
@@ -41,12 +41,12 @@ public final class LocationPropertyValidatorTest {
 
         @Override
         protected Double getMin() {
-            return MIN_ALLOWABLE;
+            return MIN;
         }
 
         @Override
         protected Double getMax() {
-            return MAX_ALLOWABLE;
+            return MAX;
         }
 
         @Override
