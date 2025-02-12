@@ -3,7 +3,7 @@ package by.bsu.wialontransport.protocol.core.handler.packages.ignored;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.mock;
 
 public final class IgnoredPackageHandlerTest {
@@ -15,7 +15,7 @@ public final class IgnoredPackageHandlerTest {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         final Object actual = handler.handleInternal(givenRequest, givenContext);
-        assertTrue(actual instanceof TestPackage);
+        assertInstanceOf(TestPackage.class, actual);
     }
 
     private static class TestPackage {
