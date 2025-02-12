@@ -62,7 +62,7 @@ public final class MileageIncreasingServiceTest {
 
         final GpsCoordinate givenLastDataCoordinate = new GpsCoordinate(4.4, 4.4);
         final Location givenLastData = createData(256L, givenLastDataCoordinate);
-        when(mockedDataService.findLastLocationFetchingParameters(same(givenTracker)))
+        when(mockedDataService.findLastFetchingParameters(same(givenTracker)))
                 .thenReturn(Optional.of(givenLastData));
 
         final List<GpsCoordinate> expectedPathCoordinates = List.of(
@@ -97,7 +97,7 @@ public final class MileageIncreasingServiceTest {
 
         final Track givenTrack = new Track(givenTracker, givenCoordinates);
 
-        when(mockedDataService.findLastLocationFetchingParameters(same(givenTracker))).thenReturn(empty());
+        when(mockedDataService.findLastFetchingParameters(same(givenTracker))).thenReturn(empty());
 
         final Mileage givenMileageDelta = new Mileage(10.1, 20.2);
         when(mockedMileageCalculator.calculate(same(givenCoordinates))).thenReturn(givenMileageDelta);

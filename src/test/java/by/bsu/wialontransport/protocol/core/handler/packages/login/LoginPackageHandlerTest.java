@@ -148,7 +148,7 @@ public final class LoginPackageHandlerTest {
 
     private Location mockLastLocationExistence(final Tracker tracker) {
         final Location location = Location.builder().build();
-        when(mockedLocationService.findLastLocationFetchingParameters(same(tracker))).thenReturn(Optional.of(location));
+        when(mockedLocationService.findLastFetchingParameters(same(tracker))).thenReturn(Optional.of(location));
         return location;
     }
 
@@ -157,7 +157,7 @@ public final class LoginPackageHandlerTest {
     }
 
     private void mockLastLocationAbsence(final Tracker tracker) {
-        when(mockedLocationService.findLastLocationFetchingParameters(same(tracker))).thenReturn(empty());
+        when(mockedLocationService.findLastFetchingParameters(same(tracker))).thenReturn(empty());
     }
 
     private void verifyMemorizingImei(final ChannelHandlerContext context, final String imei) {

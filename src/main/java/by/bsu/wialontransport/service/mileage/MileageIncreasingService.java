@@ -37,6 +37,6 @@ public final class MileageIncreasingService {
     }
 
     private Optional<GpsCoordinate> findLastCoordinate(final Tracker tracker) {
-        return dataService.findLastLocationFetchingParameters(tracker).map(Location::getCoordinate);
+        return dataService.findLastFetchingParameters(tracker).map(Location::getCoordinate);
     }
 }

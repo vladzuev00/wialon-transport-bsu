@@ -22,7 +22,7 @@ public class LocationService extends CRUDService<Long, DataEntity, Location, Dat
     }
 
     @Transactional(readOnly = true)
-    public Optional<Location> findLastLocationFetchingParameters(final Tracker tracker) {
+    public Optional<Location> findLastFetchingParameters(final Tracker tracker) {
         return findUniqueDto(
                 repository -> repository.findTrackerLastDataByTrackerIdFetchingParameters(
                         tracker.getId()
