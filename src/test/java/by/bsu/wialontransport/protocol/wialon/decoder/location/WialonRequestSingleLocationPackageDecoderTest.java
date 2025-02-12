@@ -22,7 +22,7 @@ public final class WialonRequestSingleLocationPackageDecoderTest {
         when(givenLocationParser.parse(same(givenMessage))).thenReturn(givenLocation);
 
         final var actual = decoder.decodeMessageInternal(givenMessage, givenLocationParser);
-        final var expected = new WialonRequestSingleLocationPackage(givenLocation);
+        final WialonRequestSingleLocationPackage expected = new WialonRequestSingleLocationPackage(givenLocation);
         assertEquals(expected, actual);
     }
 }
