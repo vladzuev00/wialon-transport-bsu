@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.location;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
 import io.netty.buffer.ByteBuf;
@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.NoSuchElementException;
 
-import static by.bsu.wialontransport.protocol.newwing.decoder.data.NewWingLocationIterator.LOCATION_BYTE_COUNT;
+import static by.bsu.wialontransport.protocol.newwing.decoder.location.NewWingLocationIterator.LOCATION_BYTE_COUNT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;

@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.location;
 
 import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
 import io.netty.buffer.ByteBuf;

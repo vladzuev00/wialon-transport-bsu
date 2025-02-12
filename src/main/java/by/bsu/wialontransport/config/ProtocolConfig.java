@@ -6,7 +6,7 @@ import by.bsu.wialontransport.protocol.core.encoder.ProtocolEncoder;
 import by.bsu.wialontransport.protocol.jt808.decoder.JT808PackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingEventCountPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.decoder.NewWingLoginPackageDecoder;
-import by.bsu.wialontransport.protocol.newwing.decoder.data.NewWingLocationPackageDecoder;
+import by.bsu.wialontransport.protocol.newwing.decoder.location.NewWingLocationPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.encoder.NewWingPackageEncoder;
 import by.bsu.wialontransport.protocol.wialon.decoder.WialonPackageDecoder;
 import org.springframework.context.annotation.Bean;

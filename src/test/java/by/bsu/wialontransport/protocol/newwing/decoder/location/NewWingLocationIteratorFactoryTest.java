@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.location;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;

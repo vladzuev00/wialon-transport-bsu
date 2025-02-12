@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.newwing.decoder.data;
+package by.bsu.wialontransport.protocol.newwing.decoder.location;
 
 import by.bsu.wialontransport.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
 import by.bsu.wialontransport.protocol.newwing.model.NewWingLocation;
@@ -23,8 +23,7 @@ public final class NewWingLocationPackageDecoder extends PrefixedByStringBinaryP
 
     @Override
     protected NewWingLocationPackage decodeInternal(final ByteBuf buffer) {
-        final NewWingLocationIterator locationIterator = locationIteratorFactory.create(buffer);
-        final List<NewWingLocation> locations = toList(locationIterator);
+        final List<NewWingLocation> locations = toList(locationIteratorFactory.create(buffer));
         return new NewWingLocationPackage(locations);
     }
 }
