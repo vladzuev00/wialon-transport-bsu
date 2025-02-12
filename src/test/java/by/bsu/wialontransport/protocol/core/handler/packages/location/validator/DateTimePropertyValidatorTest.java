@@ -19,13 +19,13 @@ import static org.mockito.Mockito.when;
 public final class DateTimePropertyValidatorTest {
 
     @Mock
-    private LocationValidationProperty mockedValidationProperty;
+    private LocationValidationProperty mockedProperty;
 
     private DateTimePropertyValidator validator;
 
     @BeforeEach
     public void initializeValidator() {
-        validator = new DateTimePropertyValidator(mockedValidationProperty);
+        validator = new DateTimePropertyValidator(mockedProperty);
     }
 
     @Test
@@ -40,7 +40,7 @@ public final class DateTimePropertyValidatorTest {
     @Test
     public void minAllowableShouldBeGot() {
         final LocalDateTime givenDateTime = LocalDateTime.of(2024, 11, 11, 10, 12, 13);
-        when(mockedValidationProperty.getMinDateTime()).thenReturn(givenDateTime);
+        when(mockedProperty.getMinDateTime()).thenReturn(givenDateTime);
 
         final LocalDateTime actual = validator.getMin();
         assertSame(givenDateTime, actual);
@@ -49,7 +49,7 @@ public final class DateTimePropertyValidatorTest {
     @Test
     public void maxAllowableShouldBeGot() {
         final Duration givenMaxDateTimeDeltaFromNow = Duration.of(5, SECONDS);
-        when(mockedValidationProperty.getMaxDateTimeDeltaFromNow()).thenReturn(givenMaxDateTimeDeltaFromNow);
+        when(mockedProperty.getMaxDateTimeDeltaFromNow()).thenReturn(givenMaxDateTimeDeltaFromNow);
 
         final LocalDateTime actual = validator.getMax();
         assertNotNull(actual);
