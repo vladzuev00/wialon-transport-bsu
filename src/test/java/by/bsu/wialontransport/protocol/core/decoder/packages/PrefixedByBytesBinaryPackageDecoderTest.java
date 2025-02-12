@@ -11,10 +11,10 @@ public final class PrefixedByBytesBinaryPackageDecoderTest {
     private final TestPrefixedByBytesBinaryPackageDecoder decoder = new TestPrefixedByBytesBinaryPackageDecoder();
 
     @Test
-    public void requiredPrefixLengthShouldBeGot() {
-        final byte[] givenRequiredPrefix = {1, 2, 3};
+    public void prefixLengthShouldBeGot() {
+        final byte[] givenPrefix = {1, 2, 3};
 
-        final int actual = decoder.getLength(givenRequiredPrefix);
+        final int actual = decoder.getLength(givenPrefix);
         final int expected = 3;
         assertEquals(expected, actual);
     }

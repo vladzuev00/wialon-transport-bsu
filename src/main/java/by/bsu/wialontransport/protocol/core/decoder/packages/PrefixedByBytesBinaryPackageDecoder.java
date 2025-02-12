@@ -11,8 +11,8 @@ public abstract class PrefixedByBytesBinaryPackageDecoder extends PrefixedBinary
     }
 
     @Override
-    protected final int getLength(final byte[] requiredPrefix) {
-        return requiredPrefix.length;
+    protected final int getLength(final byte[] prefix) {
+        return prefix.length;
     }
 
     @Override
