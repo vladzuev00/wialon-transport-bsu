@@ -10,9 +10,9 @@ public final class TrackerImeiFactoryTest {
 
     @Test
     public void imeiShouldBeCreated() {
-        final LoginPackage givenPackage = new TestPackage("2323");
+        final LoginPackage givenRequest = new TestPackage("2323");
 
-        final String actual = factory.create(givenPackage);
+        final String actual = factory.create(givenRequest);
         final String expected = "00000000000000002323";
         assertEquals(expected, actual);
     }
