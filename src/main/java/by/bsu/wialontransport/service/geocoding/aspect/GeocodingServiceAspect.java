@@ -37,7 +37,7 @@ public final class GeocodingServiceAspect {
             "execution("
                     + "public java.util.Optional<by.bsu.wialontransport.crud.dto.Address> "
                     + "by.bsu.wialontransport.service.geocoding.service.GeocodingService.receive("
-                    + "by.bsu.wialontransport.model.Coordinate))"
+                    + "by.bsu.wialontransport.model.GpsCoordinate))"
     )
     private void receiveMethod() {
 

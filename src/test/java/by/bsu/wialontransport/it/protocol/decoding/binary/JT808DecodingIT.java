@@ -41,10 +41,7 @@ public final class JT808DecodingIT extends BinaryProtocolDecodingIT {
                                 )
                         )
                 ),
-                new TestArgument(
-                        "7e000200000072610190040378ff7e",
-                        new JT808HeartBeatPackage()
-                ),
+                new TestArgument("7e000200000072610190040378ff7e", new JT808HeartBeatPackage()),
                 new TestArgument(
                         "7e07040047070061952865004a00010100420001000000000001015881c906ca8e0500000000000023072707091430011f31010051080000000000000000560231005708000200000000000063020000fd020026107e",
                         new JT808LocationPackage(
@@ -60,10 +57,7 @@ public final class JT808DecodingIT extends BinaryProtocolDecodingIT {
                                 )
                         )
                 ),
-                new TestArgument(
-                        "7e0102000c07006195286504fc3037303036313935323836354c7e",
-                        new JT808AuthPackage()
-                )
+                new TestArgument("7e0102000c07006195286504fc3037303036313935323836354c7e", new JT808AuthPackage())
         );
     }
 }
