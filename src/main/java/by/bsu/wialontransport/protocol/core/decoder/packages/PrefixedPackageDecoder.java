@@ -16,8 +16,8 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
     @Override
     public final Object decode(final SOURCE source) {
         final int prefixLength = getLength(requiredPrefix);
-        final SOURCE sourceWithoutPrefix = skip(source, prefixLength);
-        return decodeInternal(sourceWithoutPrefix);
+        final SOURCE unprefixedSource = skip(source, prefixLength);
+        return decodeInternal(unprefixedSource);
     }
 
     protected abstract int getLength(final PREFIX prefix);
