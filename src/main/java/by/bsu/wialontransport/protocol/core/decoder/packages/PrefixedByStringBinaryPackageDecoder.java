@@ -13,8 +13,8 @@ public abstract class PrefixedByStringBinaryPackageDecoder extends PrefixedBinar
     }
 
     @Override
-    protected final int getLength(final String requiredPrefix) {
-        return requiredPrefix.length();
+    protected final int getLength(final String prefix) {
+        return prefix.length();
     }
 
     @Override
