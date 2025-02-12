@@ -13,18 +13,18 @@ public final class WialonPackageDecoderTest {
     private final TestWialonPackageDecoder decoder = new TestWialonPackageDecoder();
 
     @Test
-    public void contentShouldBeDecodedInternally() {
-        final String givenContent = "message\r\n";
+    public void sourceShouldBeDecodedInternally() {
+        final String givenSource = "message\r\n";
 
-        final WialonPackage actual = decoder.decodeInternal(givenContent);
+        final WialonPackage actual = decoder.decodeInternal(givenSource);
         final TestPackage expected = new TestPackage("message");
         assertEquals(expected, actual);
     }
 
-    @RequiredArgsConstructor
     @Getter
-    @EqualsAndHashCode
     @ToString
+    @EqualsAndHashCode
+    @RequiredArgsConstructor
     private static final class TestPackage implements WialonPackage {
         private final String message;
 
