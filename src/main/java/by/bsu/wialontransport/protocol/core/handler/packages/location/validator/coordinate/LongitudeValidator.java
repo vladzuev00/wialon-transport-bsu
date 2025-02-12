@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class LongitudeValidator extends GpsCoordinateValidator {
-    private static final Double MIN_ALLOWABLE = -180.;
-    private static final Double MAX_ALLOWABLE = 180.;
+    private static final Double MIN = -180.;
+    private static final Double MAX = 180.;
 
     public LongitudeValidator() {
-        super(MIN_ALLOWABLE, MAX_ALLOWABLE);
+        super(MIN, MAX);
     }
 
     @Override
