@@ -15,13 +15,13 @@ import static org.mockito.Mockito.when;
 public final class SatelliteCountValidatorTest {
 
     @Mock
-    private LocationValidationProperty mockedValidationProperty;
+    private LocationValidationProperty mockedProperty;
 
     private SatelliteCountValidator validator;
 
     @BeforeEach
     public void initializeValidator() {
-        validator = new SatelliteCountValidator(mockedValidationProperty);
+        validator = new SatelliteCountValidator(mockedProperty);
     }
 
     @Test
@@ -36,7 +36,7 @@ public final class SatelliteCountValidatorTest {
     @Test
     public void minAllowableShouldBeGot() {
         final int givenMinSatelliteCount = 10;
-        when(mockedValidationProperty.getMinSatelliteCount()).thenReturn(givenMinSatelliteCount);
+        when(mockedProperty.getMinSatelliteCount()).thenReturn(givenMinSatelliteCount);
 
         final Integer actual = validator.getMin();
         assertEquals(givenMinSatelliteCount, actual);
@@ -45,7 +45,7 @@ public final class SatelliteCountValidatorTest {
     @Test
     public void maxAllowableShouldBeGot() {
         final int givenMaxSatelliteCount = 10;
-        when(mockedValidationProperty.getMaxSatelliteCount()).thenReturn(givenMaxSatelliteCount);
+        when(mockedProperty.getMaxSatelliteCount()).thenReturn(givenMaxSatelliteCount);
 
         final Integer actual = validator.getMax();
         assertEquals(givenMaxSatelliteCount, actual);

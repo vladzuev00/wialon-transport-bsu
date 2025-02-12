@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public final class SatelliteCountValidator extends LocationPropertyValidator<Integer> {
-    private final LocationValidationProperty validationProperty;
+    private final LocationValidationProperty property;
 
     @Override
     protected Integer getValue(final Location location) {
@@ -17,12 +17,12 @@ public final class SatelliteCountValidator extends LocationPropertyValidator<Int
 
     @Override
     protected Integer getMin() {
-        return validationProperty.getMinSatelliteCount();
+        return property.getMinSatelliteCount();
     }
 
     @Override
     protected Integer getMax() {
-        return validationProperty.getMaxSatelliteCount();
+        return property.getMaxSatelliteCount();
     }
 
     @Override
