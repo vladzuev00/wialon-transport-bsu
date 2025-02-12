@@ -2,9 +2,9 @@ package by.bsu.wialontransport.protocol.core.decoder.packages;
 
 import java.util.Objects;
 
-public abstract class PrefixedByStringTextPackageDecoder extends PrefixedPackageDecoder<String, String> {
+public abstract class PrefixedTextPackageDecoder extends PrefixedPackageDecoder<String, String> {
 
-    public PrefixedByStringTextPackageDecoder(final String requiredPrefix) {
+    public PrefixedTextPackageDecoder(final String requiredPrefix) {
         super(requiredPrefix);
     }
 
@@ -19,8 +19,8 @@ public abstract class PrefixedByStringTextPackageDecoder extends PrefixedPackage
     }
 
     @Override
-    protected final int getLength(final String requiredPrefix) {
-        return requiredPrefix.length();
+    protected final int getLength(final String prefix) {
+        return prefix.length();
     }
 
     @Override

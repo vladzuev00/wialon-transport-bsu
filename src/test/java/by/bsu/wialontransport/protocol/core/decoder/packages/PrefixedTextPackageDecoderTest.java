@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class PrefixedByStringTextPackageDecoderTest {
-    private final TestPrefixedByStringTextPackageDecoder decoder = new TestPrefixedByStringTextPackageDecoder();
+public final class PrefixedTextPackageDecoderTest {
+    private final TestPrefixedTextPackageDecoder decoder = new TestPrefixedTextPackageDecoder();
 
     @Test
     public void prefixShouldBeRead() {
@@ -35,9 +35,9 @@ public final class PrefixedByStringTextPackageDecoderTest {
 
     @Test
     public void prefixLengthShouldBeGot() {
-        final String givenRequiredPrefix = "#PREFIX#";
+        final String givenPrefix = "#PREFIX#";
 
-        final int actual = decoder.getLength(givenRequiredPrefix);
+        final int actual = decoder.getLength(givenPrefix);
         final int expected = 8;
         assertEquals(expected, actual);
     }
@@ -52,9 +52,9 @@ public final class PrefixedByStringTextPackageDecoderTest {
         assertEquals(expected, actual);
     }
 
-    private static final class TestPrefixedByStringTextPackageDecoder extends PrefixedByStringTextPackageDecoder {
+    private static final class TestPrefixedTextPackageDecoder extends PrefixedTextPackageDecoder {
 
-        public TestPrefixedByStringTextPackageDecoder() {
+        public TestPrefixedTextPackageDecoder() {
             super(null);
         }
 
