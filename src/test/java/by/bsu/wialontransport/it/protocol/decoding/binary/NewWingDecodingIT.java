@@ -21,14 +21,8 @@ public final class NewWingDecodingIT extends BinaryProtocolDecodingIT {
     @Override
     protected Stream<TestArgument> provideArguments() {
         return Stream.of(
-                new TestArgument(
-                        "475052534743c10bb00de70e",
-                        new NewWingLoginPackage("3009")
-                ),
-                new TestArgument(
-                        "475052534749c10cc10cb00de70e",
-                        new NewWingEventCountPackage()
-                ),
+                new TestArgument("475052534743c10bb00de70e", new NewWingLoginPackage("3009")),
+                new TestArgument("475052534749c10cc10cb00de70e", new NewWingEventCountPackage()),
                 new TestArgument(
                         "47505253534912332bea14ba07ad0acb06027bb60000000a1f0a17000000000000b701ea7fdd7812332bea14ba07ad0acb06027bb60000000a1f0a17000000000000b712ea7fdd78e710d2a5",
                         new NewWingLocationPackage(
