@@ -3,7 +3,6 @@ package by.bsu.wialontransport.protocol.jt808.decoder;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
-import static by.bsu.wialontransport.protocol.jt808.decoder.JT808SingleLocationPackageDecoder.LOCATION_COUNT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -16,7 +15,8 @@ public final class JT808SingleLocationPackageDecoderTest {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
         final int actual = decoder.decodeLocationCount(givenBuffer);
-        assertEquals(LOCATION_COUNT, actual);
+        final int expected = 1;
+        assertEquals(expected, actual);
 
         verifyNoInteractions(givenBuffer);
     }

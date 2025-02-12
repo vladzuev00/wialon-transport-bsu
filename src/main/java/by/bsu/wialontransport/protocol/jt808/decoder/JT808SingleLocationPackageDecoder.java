@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class JT808SingleLocationPackageDecoder extends JT808LocationPackageDecoder {
-    static final int LOCATION_COUNT = 1;
+    private static final int LOCATION_COUNT = 1;
     private static final byte[] REQUIRED_PREFIX = {126, 2, 0};
 
     public JT808SingleLocationPackageDecoder() {
