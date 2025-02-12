@@ -13,7 +13,7 @@ import static java.time.LocalDateTime.now;
 @Component
 @RequiredArgsConstructor
 public final class DateTimePropertyValidator extends LocationPropertyValidator<LocalDateTime> {
-    private final LocationValidationProperty validationProperty;
+    private final LocationValidationProperty property;
 
     @Override
     protected LocalDateTime getValue(final Location location) {
@@ -22,12 +22,12 @@ public final class DateTimePropertyValidator extends LocationPropertyValidator<L
 
     @Override
     protected LocalDateTime getMin() {
-        return validationProperty.getMinDateTime();
+        return property.getMinDateTime();
     }
 
     @Override
     protected LocalDateTime getMax() {
-        return now().plus(validationProperty.getMaxDateTimeDeltaFromNow());
+        return now().plus(property.getMaxDateTimeDeltaFromNow());
     }
 
     @Override
