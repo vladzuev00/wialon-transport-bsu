@@ -4,11 +4,11 @@ import by.bsu.wialontransport.protocol.core.handler.packages.location.validator.
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 public abstract class GpsCoordinateValidator extends LocationPropertyValidator<Double> {
-    private final Double minAllowable;
-    private final Double maxAllowable;
+    private final Double min;
+    private final Double max;
 
     @Override
     protected final boolean isLessOrEqual(final Double first, final Double second) {

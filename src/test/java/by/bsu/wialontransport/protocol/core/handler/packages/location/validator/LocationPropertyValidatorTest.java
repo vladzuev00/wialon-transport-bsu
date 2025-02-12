@@ -40,12 +40,12 @@ public final class LocationPropertyValidatorTest {
         }
 
         @Override
-        protected Double getMinAllowable() {
+        protected Double getMin() {
             return MIN_ALLOWABLE;
         }
 
         @Override
-        protected Double getMaxAllowable() {
+        protected Double getMax() {
             return MAX_ALLOWABLE;
         }
 

@@ -21,12 +21,12 @@ public final class DateTimePropertyValidator extends LocationPropertyValidator<L
     }
 
     @Override
-    protected LocalDateTime getMinAllowable() {
+    protected LocalDateTime getMin() {
         return validationProperty.getMinDateTime();
     }
 
     @Override
-    protected LocalDateTime getMaxAllowable() {
+    protected LocalDateTime getMax() {
         return now().plus(validationProperty.getMaxDateTimeDeltaFromNow());
     }
 

@@ -38,7 +38,7 @@ public final class SatelliteCountValidatorTest {
         final int givenMinSatelliteCount = 10;
         when(mockedValidationProperty.getMinSatelliteCount()).thenReturn(givenMinSatelliteCount);
 
-        final Integer actual = validator.getMinAllowable();
+        final Integer actual = validator.getMin();
         assertEquals(givenMinSatelliteCount, actual);
     }
 
@@ -47,7 +47,7 @@ public final class SatelliteCountValidatorTest {
         final int givenMaxSatelliteCount = 10;
         when(mockedValidationProperty.getMaxSatelliteCount()).thenReturn(givenMaxSatelliteCount);
 
-        final Integer actual = validator.getMaxAllowable();
+        final Integer actual = validator.getMax();
         assertEquals(givenMaxSatelliteCount, actual);
     }
 

@@ -42,7 +42,7 @@ public final class DateTimePropertyValidatorTest {
         final LocalDateTime givenDateTime = LocalDateTime.of(2024, 11, 11, 10, 12, 13);
         when(mockedValidationProperty.getMinDateTime()).thenReturn(givenDateTime);
 
-        final LocalDateTime actual = validator.getMinAllowable();
+        final LocalDateTime actual = validator.getMin();
         assertSame(givenDateTime, actual);
     }
 
@@ -51,7 +51,7 @@ public final class DateTimePropertyValidatorTest {
         final Duration givenMaxDateTimeDeltaFromNow = Duration.of(5, SECONDS);
         when(mockedValidationProperty.getMaxDateTimeDeltaFromNow()).thenReturn(givenMaxDateTimeDeltaFromNow);
 
-        final LocalDateTime actual = validator.getMaxAllowable();
+        final LocalDateTime actual = validator.getMax();
         assertNotNull(actual);
     }
 
