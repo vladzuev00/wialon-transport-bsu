@@ -3,6 +3,6 @@ package by.bsu.wialontransport.protocol.jt808.model;
 import lombok.Value;
 
 @Value
-public class JT808AuthenticationPackage {
+public class JT808AuthPackage {
 
 }

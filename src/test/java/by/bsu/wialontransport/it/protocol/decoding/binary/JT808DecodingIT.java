@@ -62,7 +62,7 @@ public final class JT808DecodingIT extends BinaryProtocolDecodingIT {
                 ),
                 new TestArgument(
                         "7e0102000c07006195286504fc3037303036313935323836354c7e",
-                        new JT808AuthenticationPackage()
+                        new JT808AuthPackage()
                 )
         );
     }
