@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
 public abstract class JT808LocationPackageDecoder extends JT808PackageDecoder {
-    private static final int ADDITIONAL_INFORMATION_BYTE_COUNT = 38;
+    private static final int EXTRA_DATA_BYTE_COUNT = 38;
 
     public JT808LocationPackageDecoder(final byte[] requiredPrefix) {
         super(requiredPrefix);
@@ -47,7 +47,7 @@ public abstract class JT808LocationPackageDecoder extends JT808PackageDecoder {
         final short speed = decodeSpeed(buffer);
         final short course = decodeCourse(buffer);
         final LocalDateTime dateTime = decodeDateTime(buffer);
-        skipAdditionalInformationByteCount(buffer);
+        skipExtraData(buffer);
         return new JT808Location(dateTime, latitude, longitude, altitude, speed, course);
     }
 
@@ -71,7 +71,7 @@ public abstract class JT808LocationPackageDecoder extends JT808PackageDecoder {
         return buffer.readShort();
     }
 
-    private void skipAdditionalInformationByteCount(final ByteBuf buffer) {
-        buffer.skipBytes(ADDITIONAL_INFORMATION_BYTE_COUNT);
+    private void skipExtraData(final ByteBuf buffer) {
+        buffer.skipBytes(EXTRA_DATA_BYTE_COUNT);
     }
 }
