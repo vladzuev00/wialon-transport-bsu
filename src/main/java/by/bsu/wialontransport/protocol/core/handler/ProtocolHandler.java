@@ -46,7 +46,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void logInactiveChannel(final ChannelHandlerContext context) {
-        String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
+        final String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
         log.info("Tracker '{}' was disconnected", trackerImei);
     }
 
