@@ -74,6 +74,22 @@ public final class LocationPackageHandlerTest {
         final TestLocationPackage givenRequest = new TestLocationPackage(
                 List.of(
                         new TestLocationSource(
+                                LocalDate.of(2024, 11, 16),
+                                LocalTime.of(12, 36, 38),
+                                55.3433,
+                                27.5644,
+                                11,
+                                61.,
+                                51,
+                                16,
+                                7.8,
+                                21,
+                                22,
+                                new double[]{4, 5, 6, 7},
+                                "test-driver-key-code",
+                                Set.of(new Parameter(255L, "test-name", ParameterType.INTEGER, "10"))
+                        ),
+                        new TestLocationSource(
                                 LocalDate.of(2024, 11, 15),
                                 LocalTime.of(12, 36, 37),
                                 55.3432,
@@ -90,22 +106,6 @@ public final class LocationPackageHandlerTest {
                                 Set.of(new Parameter(255L, "test-name", ParameterType.INTEGER, "10"))
                         ),
                         TestLocationSource.builder().build(),
-                        new TestLocationSource(
-                                LocalDate.of(2024, 11, 16),
-                                LocalTime.of(12, 36, 38),
-                                55.3433,
-                                27.5644,
-                                11,
-                                61.,
-                                51,
-                                16,
-                                7.8,
-                                21,
-                                22,
-                                new double[]{4, 5, 6, 7},
-                                "test-driver-key-code",
-                                Set.of(new Parameter(255L, "test-name", ParameterType.INTEGER, "10"))
-                        ),
                         new TestLocationSource(
                                 LocalDate.of(2024, 11, 17),
                                 LocalTime.of(12, 36, 39),
