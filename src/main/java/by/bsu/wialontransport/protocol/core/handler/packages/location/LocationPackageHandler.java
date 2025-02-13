@@ -101,9 +101,7 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
     }
 
     private LocalDateTime getLastReceivingDateTime(final ChannelHandlerContext context) {
-        return contextAttributeManager.findLastLocation(context)
-                .map(Location::getDateTime)
-                .orElse(MIN);
+        return contextAttributeManager.findLastLocation(context).map(Location::getDateTime).orElse(MIN);
     }
 
     private Location createLocation(final LOCATION_SOURCE source, final Tracker tracker) {
