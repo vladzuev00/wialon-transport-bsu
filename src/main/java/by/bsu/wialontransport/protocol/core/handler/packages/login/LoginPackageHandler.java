@@ -49,10 +49,10 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     protected abstract Object createSuccessResponse();
 
     private Object login(final Tracker tracker, final REQUEST request, final ChannelHandlerContext context) {
-        return loginCreatingFailedResponse(tracker, request).orElseGet(() -> handleSuccessLogin(tracker, context));
+        return loginCreatingFailedResponse(tracker, request).orElseGet(() -> handleSuccess(tracker, context));
     }
 
-    private Object handleSuccessLogin(final Tracker tracker, final ChannelHandlerContext context) {
+    private Object handleSuccess(final Tracker tracker, final ChannelHandlerContext context) {
         contextAttributeManager.putTracker(context, tracker);
         locationService.findLastFetchingParameters(tracker)
                 .ifPresent(location -> contextAttributeManager.putLastLocation(context, location));
