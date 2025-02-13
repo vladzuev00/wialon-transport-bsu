@@ -19,10 +19,7 @@ public final class WialonRequestLocationPackageHandlerTest {
 
     @Test
     public void locationSourcesShouldBeGot() {
-        final List<WialonLocation> givenSources = List.of(
-                WialonLocation.builder().build(),
-                WialonLocation.builder().build()
-        );
+        final var givenSources = List.of(WialonLocation.builder().build(), WialonLocation.builder().build());
         final TestPackage givenRequest = new TestPackage(givenSources);
 
         final List<WialonLocation> actual = handler.getLocationSources(givenRequest);
