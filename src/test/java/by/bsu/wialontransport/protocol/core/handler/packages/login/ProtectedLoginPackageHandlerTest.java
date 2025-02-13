@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;
@@ -33,7 +34,7 @@ public final class ProtectedLoginPackageHandlerTest {
         final Tracker givenTracker = Tracker.builder().password("sdffsdsj324243sdsfsdf").build();
         final TestRequest givenRequest = new TestRequest("111");
 
-        mockPasswordMatching(givenTracker, givenRequest, true);
+        when(mockedPasswordEncoder.matches(same(givenRequest.getPassword()), same(givenTracker.getPassword()))).thenReturn(true);
 
         final Optional<Object> optionalActual = handler.loginCreatingFailedResponse(givenTracker, givenRequest);
         assertTrue(optionalActual.isEmpty());
@@ -44,16 +45,12 @@ public final class ProtectedLoginPackageHandlerTest {
         final Tracker givenTracker = Tracker.builder().password("sdffsdsj324243sdsfsdf").build();
         final TestRequest givenRequest = new TestRequest("111");
 
-        mockPasswordMatching(givenTracker, givenRequest, false);
+        when(mockedPasswordEncoder.matches(same(givenRequest.getPassword()), same(givenTracker.getPassword()))).thenReturn(false);
 
         final Optional<Object> optionalActual = handler.loginCreatingFailedResponse(givenTracker, givenRequest);
         assertTrue(optionalActual.isPresent());
         final Object actual = optionalActual.get();
-        assertTrue(actual instanceof TestWrongPasswordResponse);
-    }
-
-    private void mockPasswordMatching(final Tracker tracker, final TestRequest request, final boolean match) {
-        when(mockedPasswordEncoder.matches(same(request.getPassword()), same(tracker.getPassword()))).thenReturn(match);
+        assertInstanceOf(TestWrongPasswordResponse.class, actual);
     }
 
     private static final class TestRequest extends ProtectedLoginPackage {
