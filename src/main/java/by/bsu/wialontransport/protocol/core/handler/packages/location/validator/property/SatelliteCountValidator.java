@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.location.validator;
+package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property;
 
 import by.bsu.wialontransport.config.property.LocationValidationProperty;
 import by.bsu.wialontransport.crud.dto.Location;

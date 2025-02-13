@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.location.validator;
 
 import by.bsu.wialontransport.crud.dto.Location;
+import by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property.LocationPropertyValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

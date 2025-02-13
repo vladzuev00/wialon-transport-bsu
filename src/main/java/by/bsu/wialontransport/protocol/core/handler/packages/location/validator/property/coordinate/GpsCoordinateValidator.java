@@ -1,6 +1,6 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.coordinate;
+package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property.coordinate;
 
-import by.bsu.wialontransport.protocol.core.handler.packages.location.validator.LocationPropertyValidator;
+import by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property.LocationPropertyValidator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

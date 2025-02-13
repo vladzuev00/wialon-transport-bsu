@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.coordinate;
+package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property.coordinate;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import org.springframework.stereotype.Component;

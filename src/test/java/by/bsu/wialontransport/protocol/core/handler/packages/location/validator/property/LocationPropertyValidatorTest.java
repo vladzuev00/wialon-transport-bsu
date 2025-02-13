@@ -1,4 +1,4 @@
-package by.bsu.wialontransport.protocol.core.handler.packages.location.validator;
+package by.bsu.wialontransport.protocol.core.handler.packages.location.validator.property;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import org.junit.jupiter.api.Test;
