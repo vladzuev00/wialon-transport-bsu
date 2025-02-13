@@ -21,10 +21,7 @@ public final class NewWingLocationPackageHandlerTest {
 
     @Test
     public void locationSourcesShouldBeGot() {
-        final List<NewWingLocation> givenLocations = List.of(
-                NewWingLocation.builder().build(),
-                NewWingLocation.builder().build()
-        );
+        final var givenLocations = List.of(NewWingLocation.builder().build(), NewWingLocation.builder().build());
         final NewWingLocationPackage givenRequest = new NewWingLocationPackage(givenLocations);
 
         final List<NewWingLocation> actual = handler.getLocationSources(givenRequest);
