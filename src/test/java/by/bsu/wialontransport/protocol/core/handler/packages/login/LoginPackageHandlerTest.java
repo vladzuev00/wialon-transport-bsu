@@ -64,18 +64,18 @@ public final class LoginPackageHandlerTest {
         final TestPackage givenRequest = new TestPackage(givenPassword);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final String givenImei = mockImeiCreation("00000000000000006308", givenRequest);
-        final Tracker givenTracker = mockTrackerExistence(givenImei, givenPassword);
-        final Location givenLocation = mockLastLocationExistence(givenTracker);
+        final String givenImei = mockImei("00000000000000006308", givenRequest);
+        final Tracker givenTracker = mockTracker(givenImei, givenPassword);
+        final Location givenLocation = mockLastLocation(givenTracker);
 
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
 
-        verifyMemorizingImei(givenContext, givenImei);
-        verifyMemorizingTracker(givenContext, givenTracker);
-        verifyMemorizingLastLocation(givenContext, givenLocation);
-        verifyMemorizingContext(givenContext);
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
+        verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), same(givenLocation));
+        verify(mockedContextManager, times(1)).add(same(givenContext));
     }
 
     @Test
@@ -84,36 +84,36 @@ public final class LoginPackageHandlerTest {
         final TestPackage givenRequest = new TestPackage(givenPassword);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final String givenImei = mockImeiCreation("00000000000000006308", givenRequest);
-        final Tracker givenTracker = mockTrackerExistence(givenImei, givenPassword);
-        mockLastLocationAbsence(givenTracker);
+        final String givenImei = mockImei("00000000000000006308", givenRequest);
+        final Tracker givenTracker = mockTracker(givenImei, givenPassword);
+        mockNoLastLocation(givenTracker);
 
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
 
-        verifyMemorizingImei(givenContext, givenImei);
-        verifyMemorizingTracker(givenContext, givenTracker);
-        verifyNotMemorizingLastLocation();
-        verifyMemorizingContext(givenContext);
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
+        verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
+        verify(mockedContextManager, times(1)).add(same(givenContext));
     }
 
     @Test
-    public void requestShouldBeHandledInternallyFailureBecauseOfNoSuchImei() {
+    public void requestShouldBeHandledInternallyFailureBecauseOfNoSuchTracker() {
         final String givenPassword = "111";
         final TestPackage givenRequest = new TestPackage(givenPassword);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final String givenImei = mockImeiCreation("00000000000000006308", givenRequest);
-        mockTrackerAbsence(givenImei);
+        final String givenImei = mockImei("00000000000000006308", givenRequest);
+        mockNoTracker(givenImei);
 
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.NO_SUCH_IMEI);
         assertEquals(expected, actual);
 
-        verifyMemorizingImei(givenContext, givenImei);
-        verifyNotMemorizingTracker();
-        verifyNotMemorizingLastLocation();
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
+        verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
         verifyNoInteractions(mockedContextManager, mockedLocationService);
     }
 
@@ -122,71 +122,47 @@ public final class LoginPackageHandlerTest {
         final TestPackage givenRequest = new TestPackage("111");
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        final String givenImei = mockImeiCreation("00000000000000006309", givenRequest);
-        mockTrackerExistence(givenImei, "1111");
+        final String givenImei = mockImei("00000000000000006309", givenRequest);
+        mockTracker(givenImei, "1111");
 
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.WRONG_PASSWORD);
         assertEquals(expected, actual);
 
-        verifyMemorizingImei(givenContext, givenImei);
-        verifyNotMemorizingTracker();
-        verifyNotMemorizingLastLocation();
+        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
+        verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
         verifyNoInteractions(mockedContextManager, mockedLocationService);
     }
 
-    private String mockImeiCreation(final String value, final LoginPackage request) {
-        when(mockedImeiFactory.create(same(request))).thenReturn(value);
-        return value;
+    private String mockImei(final String imei, final LoginPackage request) {
+        when(mockedImeiFactory.create(same(request))).thenReturn(imei);
+        return imei;
     }
 
-    private Tracker mockTrackerExistence(final String imei, final String password) {
+    private Tracker mockTracker(final String imei, final String password) {
         final Tracker tracker = Tracker.builder().imei(imei).password(password).build();
         when(mockedTrackerService.findByImei(same(imei))).thenReturn(Optional.of(tracker));
         return tracker;
     }
 
-    private Location mockLastLocationExistence(final Tracker tracker) {
+    private Location mockLastLocation(final Tracker tracker) {
         final Location location = Location.builder().build();
         when(mockedLocationService.findLastFetchingParameters(same(tracker))).thenReturn(Optional.of(location));
         return location;
     }
 
-    private void mockTrackerAbsence(@SuppressWarnings("SameParameterValue") final String imei) {
+    private void mockNoTracker(@SuppressWarnings("SameParameterValue") final String imei) {
         when(mockedTrackerService.findByImei(same(imei))).thenReturn(empty());
     }
 
-    private void mockLastLocationAbsence(final Tracker tracker) {
+    private void mockNoLastLocation(final Tracker tracker) {
         when(mockedLocationService.findLastFetchingParameters(same(tracker))).thenReturn(empty());
     }
 
-    private void verifyMemorizingImei(final ChannelHandlerContext context, final String imei) {
-        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(context), same(imei));
-    }
-
-    private void verifyMemorizingTracker(final ChannelHandlerContext context, final Tracker tracker) {
-        verify(mockedContextAttributeManager, times(1)).putTracker(same(context), same(tracker));
-    }
-
-    private void verifyMemorizingLastLocation(final ChannelHandlerContext context, final Location location) {
-        verify(mockedContextAttributeManager, times(1)).putLastLocation(same(context), same(location));
-    }
-
-    private void verifyMemorizingContext(final ChannelHandlerContext context) {
-        verify(mockedContextManager, times(1)).add(same(context));
-    }
-
-    private void verifyNotMemorizingTracker() {
-        verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
-    }
-
-    private void verifyNotMemorizingLastLocation() {
-        verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
-    }
-
     @Getter
-    @EqualsAndHashCode(callSuper = true)
     @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
     private static final class TestPackage extends LoginPackage {
         private final String password;
 
