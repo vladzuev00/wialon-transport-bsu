@@ -13,9 +13,12 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,6 +30,7 @@ import java.util.stream.Stream;
 
 import static by.bsu.wialontransport.util.OptionalUtil.ofNullableDouble;
 import static by.bsu.wialontransport.util.OptionalUtil.ofNullableInt;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,6 +55,9 @@ public final class LocationPackageHandlerTest {
     private KafkaInboundLocationProducer mockedLocationProducer;
 
     private TestLocationPackageHandler handler;
+
+    @Captor
+    private ArgumentCaptor<Location> locationCaptor;
 
     @BeforeEach
     public void initializeHandler() {
@@ -143,7 +150,7 @@ public final class LocationPackageHandlerTest {
         final int givenDefaultCourse = 70;
         when(mockedLocationDefaultProperty.getCourse()).thenReturn(givenDefaultCourse);
 
-        final double givenDefaultSpeed = 80.;
+        final double givenDefaultSpeed = 80;
         when(mockedLocationDefaultProperty.getSpeed()).thenReturn(givenDefaultSpeed);
 
         final int givenDefaultAltitude = 90;
@@ -164,7 +171,7 @@ public final class LocationPackageHandlerTest {
         final String givenDefaultDriverKeyCode = "default-driver-key-code";
         when(mockedLocationDefaultProperty.getDriverKeyCode()).thenReturn(givenDefaultDriverKeyCode);
 
-        Location expectedFirstLocation = Location.builder()
+        final Location expectedFirstLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 15, 12, 36, 37))
                 .coordinate(new GpsCoordinate(55.3432, 27.5643))
                 .course(10)
@@ -181,7 +188,7 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedFirstLocation))).thenReturn(true);
 
-        Location expectedSecondLocation = Location.builder()
+        final Location expectedSecondLocation = Location.builder()
                 .dateTime(LocalDateTime.of(givenDefaultDate, givenDefaultTime))
                 .coordinate(new GpsCoordinate(givenDefaultLatitude, givenDefaultLongitude))
                 .course(givenDefaultCourse)
@@ -192,16 +199,16 @@ public final class LocationPackageHandlerTest {
                 .inputs(givenDefaultInputs)
                 .outputs(givenDefaultOutputs)
                 .driverKeyCode(givenDefaultDriverKeyCode)
-                .parametersByNames(Map.of("test-name", new Parameter(255L, "test-name", ParameterType.INTEGER, "10")))
                 .tracker(givenTracker)
+                .parametersByNames(emptyMap())
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedSecondLocation))).thenReturn(true);
 
-        Location expectedThirdLocation = Location.builder()
+        final Location expectedThirdLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 16, 12, 36, 38))
                 .coordinate(new GpsCoordinate(55.3433, 27.5644))
                 .course(11)
-                .speed(61.)
+                .speed(61)
                 .altitude(51)
                 .satelliteCount(16)
                 .hdop(7.8)
@@ -214,11 +221,11 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedThirdLocation))).thenReturn(true);
 
-        Location expectedFourthLocation = Location.builder()
+        final Location expectedFourthLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 17, 12, 36, 39))
                 .coordinate(new GpsCoordinate(55.3434, 27.5645))
                 .course(12)
-                .speed(62.)
+                .speed(62)
                 .altitude(52)
                 .satelliteCount(17)
                 .hdop(7.9)
@@ -231,13 +238,15 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedFourthLocation))).thenReturn(false);
 
-        Object actual = handler.handleInternal(givenRequest, givenContext);
-        TestResponse expected = new TestResponse(4);
+        final Object actual = handler.handleInternal(givenRequest, givenContext);
+        final TestResponse expected = new TestResponse(4);
         assertEquals(expected, actual);
 
-        //TODO: verify location producing
-        //TODO: verify put last location in context
-        throw new UnsupportedOperationException();
+        verify(mockedLocationProducer, times(2)).produce(locationCaptor.capture());
+        verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), locationCaptor.capture());
+        List<Location> actualCapturedLocations = locationCaptor.getAllValues();
+        var expectedCapturedLocations = List.of(expectedSecondLocation, expectedThirdLocation, expectedThirdLocation);
+        Assertions.assertEquals(expectedCapturedLocations, actualCapturedLocations);
     }
 
     @Test
@@ -300,8 +309,7 @@ public final class LocationPackageHandlerTest {
         final Tracker givenTracker = Tracker.builder().id(255L).build();
         when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(Optional.of(givenTracker));
 
-        when(mockedContextAttributeManager.findLastLocation(same(givenContext)))
-                .thenReturn(empty());
+        when(mockedContextAttributeManager.findLastLocation(same(givenContext))).thenReturn(Optional.empty());
 
         final LocalDate givenDefaultDate = LocalDate.of(2024, 11, 15);
         when(mockedLocationDefaultProperty.getDate()).thenReturn(givenDefaultDate);
@@ -318,7 +326,7 @@ public final class LocationPackageHandlerTest {
         final int givenDefaultCourse = 70;
         when(mockedLocationDefaultProperty.getCourse()).thenReturn(givenDefaultCourse);
 
-        final double givenDefaultSpeed = 80.;
+        final double givenDefaultSpeed = 80;
         when(mockedLocationDefaultProperty.getSpeed()).thenReturn(givenDefaultSpeed);
 
         final int givenDefaultAltitude = 90;
@@ -339,7 +347,7 @@ public final class LocationPackageHandlerTest {
         final String givenDefaultDriverKeyCode = "default-driver-key-code";
         when(mockedLocationDefaultProperty.getDriverKeyCode()).thenReturn(givenDefaultDriverKeyCode);
 
-        Location expectedFirstLocation = Location.builder()
+        final Location expectedFirstLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 15, 12, 36, 37))
                 .coordinate(new GpsCoordinate(55.3432, 27.5643))
                 .course(10)
@@ -356,7 +364,7 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedFirstLocation))).thenReturn(true);
 
-        Location expectedSecondLocation = Location.builder()
+        final Location expectedSecondLocation = Location.builder()
                 .dateTime(LocalDateTime.of(givenDefaultDate, givenDefaultTime))
                 .coordinate(new GpsCoordinate(givenDefaultLatitude, givenDefaultLongitude))
                 .course(givenDefaultCourse)
@@ -367,16 +375,16 @@ public final class LocationPackageHandlerTest {
                 .inputs(givenDefaultInputs)
                 .outputs(givenDefaultOutputs)
                 .driverKeyCode(givenDefaultDriverKeyCode)
-                .parametersByNames(Map.of("test-name", new Parameter(255L, "test-name", ParameterType.INTEGER, "10")))
                 .tracker(givenTracker)
+                .parametersByNames(emptyMap())
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedSecondLocation))).thenReturn(true);
 
-        Location expectedThirdLocation = Location.builder()
+        final Location expectedThirdLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 16, 12, 36, 38))
                 .coordinate(new GpsCoordinate(55.3433, 27.5644))
                 .course(11)
-                .speed(61.)
+                .speed(61)
                 .altitude(51)
                 .satelliteCount(16)
                 .hdop(7.8)
@@ -389,11 +397,11 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedThirdLocation))).thenReturn(true);
 
-        Location expectedFourthLocation = Location.builder()
+        final Location expectedFourthLocation = Location.builder()
                 .dateTime(LocalDateTime.of(2024, 11, 17, 12, 36, 39))
                 .coordinate(new GpsCoordinate(55.3434, 27.5645))
                 .course(12)
-                .speed(62.)
+                .speed(62)
                 .altitude(52)
                 .satelliteCount(17)
                 .hdop(7.9)
@@ -406,13 +414,20 @@ public final class LocationPackageHandlerTest {
                 .build();
         when(mockedLocationValidator.isValid(eq(expectedFourthLocation))).thenReturn(false);
 
-        Object actual = handler.handleInternal(givenRequest, givenContext);
-        TestResponse expected = new TestResponse(4);
+        final Object actual = handler.handleInternal(givenRequest, givenContext);
+        final TestResponse expected = new TestResponse(4);
         assertEquals(expected, actual);
 
-        //TODO: verify location producing
-        //TODO: verify put last location in context
-        throw new UnsupportedOperationException();
+        verify(mockedLocationProducer, times(3)).produce(locationCaptor.capture());
+        verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), locationCaptor.capture());
+        List<Location> actualCapturedLocations = locationCaptor.getAllValues();
+        List<Location> expectedCapturedLocations = List.of(
+                expectedFirstLocation,
+                expectedSecondLocation,
+                expectedThirdLocation,
+                expectedThirdLocation
+        );
+        Assertions.assertEquals(expectedCapturedLocations, actualCapturedLocations);
     }
 
     @Test
