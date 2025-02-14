@@ -6,7 +6,7 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
-import by.bsu.wialontransport.protocol.core.model.login.ProtectedLoginPackage;
+import by.bsu.wialontransport.protocol.core.model.ProtectedLoginPackage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;

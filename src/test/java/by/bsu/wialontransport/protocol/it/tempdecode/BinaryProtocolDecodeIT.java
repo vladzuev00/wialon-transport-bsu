@@ -3,7 +3,6 @@ package by.bsu.wialontransport.protocol.it.tempdecode;
 import by.bsu.wialontransport.base.AbstractSpringBootTest;
 import by.bsu.wialontransport.protocol.core.decoder.BinaryProtocolDecoder;
 import by.bsu.wialontransport.protocol.core.decoder.packages.PackageDecoder;
-import by.bsu.wialontransport.protocol.core.model.Package;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 

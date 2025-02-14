@@ -1,7 +1,7 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
-import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.LoginPackage;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

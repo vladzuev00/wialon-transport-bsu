@@ -7,7 +7,7 @@ import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttri
 import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
-import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Optional;

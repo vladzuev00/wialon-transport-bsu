@@ -1,6 +1,5 @@
 package by.bsu.wialontransport.protocol.newwing.model.response;
 
-import by.bsu.wialontransport.protocol.core.model.Package;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,6 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public abstract class NewWingResponsePackage implements Package {
+public abstract class NewWingResponsePackage {
     private final String value;
 }

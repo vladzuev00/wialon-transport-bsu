@@ -1,6 +1,6 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login.factory;
 
-import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.LoginPackage;
 import org.springframework.stereotype.Component;
 
 @Component

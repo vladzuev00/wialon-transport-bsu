@@ -7,7 +7,7 @@ import by.bsu.wialontransport.crud.service.TrackerService;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContextManager;
 import by.bsu.wialontransport.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
-import by.bsu.wialontransport.protocol.core.model.login.LoginPackage;
+import by.bsu.wialontransport.protocol.core.model.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
