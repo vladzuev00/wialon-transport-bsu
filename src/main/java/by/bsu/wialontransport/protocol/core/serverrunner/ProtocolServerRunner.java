@@ -3,8 +3,8 @@ package by.bsu.wialontransport.protocol.core.serverrunner;
 import by.bsu.wialontransport.protocol.core.contextattributemanager.ContextAttributeManager;
 import by.bsu.wialontransport.protocol.core.exceptionhandler.ProtocolExceptionHandler;
 import by.bsu.wialontransport.protocol.core.model.ProtocolServer;
+import by.bsu.wialontransport.protocol.core.property.ProtocolServerProperty;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import static java.lang.Thread.currentThread;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Component
@@ -31,38 +32,46 @@ public final class ProtocolServerRunner {
                 .forEach(Thread::start);
     }
 
-    private void run(ProtocolServer server) {
-        EventLoopGroup parentGroup = new NioEventLoopGroup(server.getProperty().getThreadCountProcessingConnection());
-        EventLoopGroup childGroup = new NioEventLoopGroup(server.getProperty().getThreadCountProcessingData());
+    private void run(final ProtocolServer server) {
+        final ProtocolServerProperty property = server.getProperty();
+        final EventLoopGroup parentGroup = new NioEventLoopGroup(property.getThreadCountProcessingConnection());
+        final EventLoopGroup childGroup = new NioEventLoopGroup(property.getThreadCountProcessingData());
         try {
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(parentGroup, childGroup)
+            new ServerBootstrap()
+                    .group(parentGroup, childGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(
                             new ChannelInitializer<SocketChannel>() {
+
                                 @Override
-                                public void initChannel(SocketChannel ch) {
-                                    ch.pipeline().addLast(
-                                            server.getDecoder(),
-                                            createReadTimeoutHandler(server),
-                                            server.getEncoder(),
-                                            server.getHandler(),
-                                            createExceptionHandler()
-                                    );
+                                public void initChannel(final SocketChannel channel) {
+                                    channel.pipeline()
+                                            .addLast(
+                                                    server.getDecoder(),
+                                                    createReadTimeoutHandler(property),
+                                                    server.getEncoder(),
+                                                    server.getHandler(),
+                                                    createExceptionHandler()
+                                            );
                                 }
                             }
-                    ).localAddress(new InetSocketAddress(server.getProperty().getHost(), server.getProperty().getPort()));
-
-            ChannelFuture f = bootstrap.bind(server.getProperty().getPort()).sync();
-            f.channel().closeFuture().sync();
+                    )
+                    .localAddress(new InetSocketAddress(property.getHost(), property.getPort()))
+                    .bind(property.getPort())
+                    .sync()
+                    .channel()
+                    .closeFuture()
+                    .sync();
+        } catch (final InterruptedException exception) {
+            currentThread().interrupt();
         } finally {
             parentGroup.shutdownGracefully();
             childGroup.shutdownGracefully();
         }
     }
 
-    private ReadTimeoutHandler createReadTimeoutHandler(ProtocolServer server) {
-        return new ReadTimeoutHandler(server.getProperty().getConnectionLifeTimeoutSeconds(), SECONDS);
+    private ReadTimeoutHandler createReadTimeoutHandler(ProtocolServerProperty property) {
+        return new ReadTimeoutHandler(property.getConnectionLifeTimeoutSeconds(), SECONDS);
     }
 
     private ProtocolExceptionHandler createExceptionHandler() {
