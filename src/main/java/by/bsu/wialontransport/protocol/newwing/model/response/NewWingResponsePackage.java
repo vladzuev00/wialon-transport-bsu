@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public abstract class NewWingResponsePackage {
     private final String value;
 }
