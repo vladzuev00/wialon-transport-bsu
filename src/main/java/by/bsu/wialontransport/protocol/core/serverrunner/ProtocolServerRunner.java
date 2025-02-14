@@ -31,40 +31,29 @@ public final class ProtocolServerRunner {
                 .forEach(Thread::start);
     }
 
-    public void stop() {
-//        shutdown(loopGroupProcessingConnection);
-//        shutdown(loopGroupProcessingData);
-    }
-
-    //    private static void shutdown(final EventLoopGroup eventLoopGroup) {
-//        try {
-//            eventLoopGroup.shutdownGracefully().sync();
-//        } catch (final InterruptedException exception) {
-//            currentThread().interrupt();
-//        }
-//    }
-
     private void run(ProtocolServer server) {
         EventLoopGroup parentGroup = new NioEventLoopGroup(server.getProperty().getThreadCountProcessingConnection());
         EventLoopGroup childGroup = new NioEventLoopGroup(server.getProperty().getThreadCountProcessingData());
         try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(parentGroup, childGroup)
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(parentGroup, childGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch) {
-                            ch.pipeline().addLast(
-                                    server.getDecoder(),
-                                    createReadTimeoutHandler(server),
-                                    server.getEncoder(),
-                                    server.getHandler(),
-                                    createExceptionHandler()
-                            );
-                        }
-                    }).localAddress(new InetSocketAddress(server.getProperty().getHost(), server.getProperty().getPort()));
+                    .childHandler(
+                            new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                public void initChannel(SocketChannel ch) {
+                                    ch.pipeline().addLast(
+                                            server.getDecoder(),
+                                            createReadTimeoutHandler(server),
+                                            server.getEncoder(),
+                                            server.getHandler(),
+                                            createExceptionHandler()
+                                    );
+                                }
+                            }
+                    ).localAddress(new InetSocketAddress(server.getProperty().getHost(), server.getProperty().getPort()));
 
-            ChannelFuture f = b.bind(server.getProperty().getPort()).sync();
+            ChannelFuture f = bootstrap.bind(server.getProperty().getPort()).sync();
             f.channel().closeFuture().sync();
         } finally {
             parentGroup.shutdownGracefully();
