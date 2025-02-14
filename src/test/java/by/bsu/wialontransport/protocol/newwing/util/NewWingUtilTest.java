@@ -18,7 +18,7 @@ public final class NewWingUtilTest {
     public void shortShouldBeDecoded() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("0301"));
 
-        final short actual = NewWingUtil.decodeShort(givenBuffer);
+        final short actual = decodeShort(givenBuffer);
         final short expected = 259;
         assertEquals(expected, actual);
 
