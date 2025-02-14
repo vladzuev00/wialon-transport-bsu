@@ -5,6 +5,7 @@ import by.bsu.wialontransport.protocol.core.exceptionhandler.ProtocolExceptionHa
 import by.bsu.wialontransport.protocol.core.model.ProtocolServer;
 import by.bsu.wialontransport.protocol.core.property.ProtocolServerProperty;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -40,22 +41,7 @@ public final class ProtocolServerRunner {
             new ServerBootstrap()
                     .group(parentGroup, childGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(
-                            new ChannelInitializer<SocketChannel>() {
-
-                                @Override
-                                public void initChannel(final SocketChannel channel) {
-                                    channel.pipeline()
-                                            .addLast(
-                                                    server.getDecoder(),
-                                                    createReadTimeoutHandler(property),
-                                                    server.getEncoder(),
-                                                    server.getHandler(),
-                                                    createExceptionHandler()
-                                            );
-                                }
-                            }
-                    )
+                    .childHandler(createChildHandler(server))
                     .localAddress(new InetSocketAddress(property.getHost(), property.getPort()))
                     .bind(property.getPort())
                     .sync()
@@ -68,6 +54,23 @@ public final class ProtocolServerRunner {
             parentGroup.shutdownGracefully();
             childGroup.shutdownGracefully();
         }
+    }
+
+    private ChannelHandler createChildHandler(final ProtocolServer server) {
+        return new ChannelInitializer<SocketChannel>() {
+
+            @Override
+            public void initChannel(final SocketChannel channel) {
+                channel.pipeline()
+                        .addLast(
+                                server.getDecoder(),
+                                createReadTimeoutHandler(server.getProperty()),
+                                server.getEncoder(),
+                                server.getHandler(),
+                                createExceptionHandler()
+                        );
+            }
+        };
     }
 
     private ReadTimeoutHandler createReadTimeoutHandler(ProtocolServerProperty property) {
