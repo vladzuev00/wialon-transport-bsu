@@ -1,10 +1,9 @@
 package by.bsu.wialontransport.protocol.newwing.model.request;
 
 import by.bsu.wialontransport.protocol.core.model.LoginPackage;
+import lombok.Value;
 
-public final class NewWingLoginPackage extends LoginPackage {
-
-    public NewWingLoginPackage(final String imei) {
-        super(imei);
-    }
+@Value
+public class NewWingLoginPackage implements LoginPackage {
+    String imei;
 }
