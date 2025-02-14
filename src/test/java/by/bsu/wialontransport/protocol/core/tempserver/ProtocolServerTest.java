@@ -9,7 +9,7 @@
 //import by.bsu.wialontransport.protocol.core.encoder.packages.PackageEncoder;
 //import by.bsu.wialontransport.protocol.core.handler.ProtocolHandler;
 //import by.bsu.wialontransport.protocol.core.handler.packages.PackageHandler;
-//import by.bsu.wialontransport.protocol.core.server.ProtocolServer.ServerRunningContext;
+//import by.bsu.wialontransport.protocol.core.model.ProtocolServer.ServerRunningContext;
 //import io.netty.channel.EventLoopGroup;
 //import io.netty.channel.nio.NioEventLoopGroup;
 //import org.junit.Before;
