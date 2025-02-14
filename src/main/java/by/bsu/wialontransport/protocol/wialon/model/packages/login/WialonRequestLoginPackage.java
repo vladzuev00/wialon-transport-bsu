@@ -2,13 +2,14 @@ package by.bsu.wialontransport.protocol.wialon.model.packages.login;
 
 import by.bsu.wialontransport.protocol.core.model.ProtectedLoginPackage;
 import by.bsu.wialontransport.protocol.wialon.model.packages.WialonPackage;
+import lombok.Value;
 
-public final class WialonRequestLoginPackage extends ProtectedLoginPackage implements WialonPackage {
+@Value
+public class WialonRequestLoginPackage implements WialonPackage, ProtectedLoginPackage {
     public static final String PREFIX = "#L#";
 
-    public WialonRequestLoginPackage(final String imei, final String password) {
-        super(imei, password);
-    }
+    String imei;
+    String password;
 
     @Override
     public String getPrefix() {
