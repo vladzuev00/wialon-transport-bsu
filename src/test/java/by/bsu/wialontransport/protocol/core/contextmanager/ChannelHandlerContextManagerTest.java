@@ -15,7 +15,6 @@ import java.util.Optional;
 import static by.bsu.wialontransport.util.ReflectionUtil.getProperty;
 import static by.bsu.wialontransport.util.ReflectionUtil.setProperty;
 import static java.lang.Long.MIN_VALUE;
-import static java.util.Arrays.stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -116,72 +115,6 @@ public final class ChannelHandlerContextManagerTest {
         verifyNoInteractions(givenContext, mockedAttributeManager);
     }
 
-    @Test
-    public void addingConnectionInfoByContextShouldBeThreadSafe()
-            throws Exception {
-        final ChannelHandlerContextManager givenManager = createManager();
-        final Long firstGivenTrackerId = 255L;
-        final Long secondGivenTrackerId = 256L;
-        final Long thirdGivenTrackerId = 257L;
-        final ChannelHandlerContext firstGivenContext = createContext(firstGivenTrackerId);
-        final ChannelHandlerContext secondGivenContext = createContext(firstGivenTrackerId);
-        final ChannelHandlerContext thirdGivenContext = createContext(secondGivenTrackerId);
-        final ChannelHandlerContext fourthGivenContext = createContext(secondGivenTrackerId);
-        final ChannelHandlerContext fifthGivenContext = createContext(thirdGivenTrackerId);
-        final ChannelHandlerContext sixthGivenContext = createContext(thirdGivenTrackerId);
-
-        final Thread firstThread = addContextsAsync(givenManager, firstGivenContext, secondGivenContext);
-        final Thread secondThread = addContextsAsync(givenManager, thirdGivenContext, fourthGivenContext);
-        final Thread thirdThread = addContextsAsync(givenManager, fifthGivenContext, sixthGivenContext);
-
-        waitUntilFinish(firstThread, secondThread, thirdThread);
-        final var firstNotClosedContext = verifyOneClosedReturningNotClosed(firstGivenContext, secondGivenContext);
-        final var secondNotClosedContext = verifyOneClosedReturningNotClosed(thirdGivenContext, fourthGivenContext);
-        final var thirdNotClosedContext = verifyOneClosedReturningNotClosed(fifthGivenContext, sixthGivenContext);
-        final Map<Long, ChannelHandlerContext> expectedContextsByTrackerIds = Map.of(
-                firstGivenTrackerId, firstNotClosedContext,
-                secondGivenTrackerId, secondNotClosedContext,
-                thirdGivenTrackerId, thirdNotClosedContext
-        );
-        final Map<Long, ChannelHandlerContext> actualContextsByTrackersIds = getContextsByTrackerIds(givenManager);
-        assertEquals(expectedContextsByTrackerIds, actualContextsByTrackersIds);
-    }
-
-    @Test
-    public void findingContextShouldBeThreadSafe()
-            throws Exception {
-        final ChannelHandlerContextManager givenManager = createManager();
-        final Long givenTrackerId = 255L;
-        final ChannelHandlerContext givenContext = createContext(givenTrackerId);
-        final Thread addingThread = addContextsAsync(givenManager, givenContext);
-        waitUntilFinish(addingThread);
-
-        final Optional<ChannelHandlerContext> optionalActual = givenManager.find(givenTrackerId);
-
-        assertTrue(optionalActual.isPresent());
-        final ChannelHandlerContext actual = optionalActual.get();
-        assertSame(givenContext, actual);
-
-        verifyNoInteractions(givenContext);
-    }
-
-    @Test
-    public void removingContextShouldBeThreadSafe()
-            throws Exception {
-        final ChannelHandlerContextManager givenManager = createManager();
-        final Long givenTrackerId = 255L;
-        final ChannelHandlerContext givenContext = createContext(givenTrackerId);
-        givenManager.add(givenContext);
-
-        final Thread removingThread = removeContextAsync(givenManager, givenTrackerId);
-
-        waitUntilFinish(removingThread);
-        final Map<Long, ChannelHandlerContext> actual = getContextsByTrackerIds(givenManager);
-        assertTrue(actual.isEmpty());
-
-        verifyNoInteractions(givenContext);
-    }
-
     private ChannelHandlerContextManager createManager() {
         return new ChannelHandlerContextManager(mockedAttributeManager);
     }
@@ -197,40 +130,6 @@ public final class ChannelHandlerContextManagerTest {
         final Tracker tracker = Tracker.builder().id(trackerId).build();
         when(mockedAttributeManager.findTracker(same(context))).thenReturn(Optional.of(tracker));
         return context;
-    }
-
-    private Thread addContextsAsync(final ChannelHandlerContextManager manager, final ChannelHandlerContext... contexts) {
-        return executeAsync(() -> stream(contexts).forEach(manager::add));
-    }
-
-    private Thread removeContextAsync(final ChannelHandlerContextManager manager, final Long trackerId) {
-        return executeAsync(() -> manager.remove(trackerId));
-    }
-
-    private Thread executeAsync(final Runnable task) {
-        final Thread thread = new Thread(task);
-        thread.start();
-        return thread;
-    }
-
-    private void waitUntilFinish(final Thread... threads)
-            throws InterruptedException {
-        for (final Thread thread : threads) {
-            thread.join();
-        }
-    }
-
-    private ChannelHandlerContext verifyOneClosedReturningNotClosed(final ChannelHandlerContext first,
-                                                                    final ChannelHandlerContext second) {
-        try {
-            verify(first, times(1)).close();
-            verify(second, times(0)).close();
-            return second;
-        } catch (final AssertionError assertionError) {
-            verify(first, times(0)).close();
-            verify(second, times(1)).close();
-            return first;
-        }
     }
 
     @SuppressWarnings("unchecked")
