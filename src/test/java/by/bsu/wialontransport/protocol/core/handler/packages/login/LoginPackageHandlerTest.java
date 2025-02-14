@@ -9,9 +9,6 @@ import by.bsu.wialontransport.protocol.core.contextmanager.ChannelHandlerContext
 import by.bsu.wialontransport.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.bsu.wialontransport.protocol.core.model.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -160,15 +157,13 @@ public final class LoginPackageHandlerTest {
         when(mockedLocationService.findLastFetchingParameters(same(tracker))).thenReturn(empty());
     }
 
-    @Getter
-    @ToString(callSuper = true)
-    @EqualsAndHashCode(callSuper = true)
-    private static final class TestPackage extends LoginPackage {
-        private final String password;
+    @Value
+    private static class TestPackage implements LoginPackage {
+        String password;
 
-        public TestPackage(final String password) {
-            super(null);
-            this.password = password;
+        @Override
+        public String getImei() {
+            throw new UnsupportedOperationException();
         }
     }
 

@@ -2,6 +2,7 @@ package by.bsu.wialontransport.protocol.core.handler.packages.login;
 
 import by.bsu.wialontransport.crud.dto.Tracker;
 import by.bsu.wialontransport.protocol.core.model.ProtectedLoginPackage;
+import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,10 +54,13 @@ public final class ProtectedLoginPackageHandlerTest {
         assertInstanceOf(TestWrongPasswordResponse.class, actual);
     }
 
-    private static final class TestRequest extends ProtectedLoginPackage {
+    @Value
+    private static class TestRequest implements ProtectedLoginPackage {
+        String password;
 
-        public TestRequest(final String password) {
-            super(null, password);
+        @Override
+        public String getImei() {
+            throw new UnsupportedOperationException();
         }
     }
 

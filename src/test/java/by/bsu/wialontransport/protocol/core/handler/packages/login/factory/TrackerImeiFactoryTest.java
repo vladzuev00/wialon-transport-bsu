@@ -1,6 +1,7 @@
 package by.bsu.wialontransport.protocol.core.handler.packages.login.factory;
 
 import by.bsu.wialontransport.protocol.core.model.LoginPackage;
+import lombok.Value;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,10 +18,8 @@ public final class TrackerImeiFactoryTest {
         assertEquals(expected, actual);
     }
 
-    private static final class TestPackage extends LoginPackage {
-
-        public TestPackage(final String imei) {
-            super(imei);
-        }
+    @Value
+    private static class TestPackage implements LoginPackage {
+        String imei;
     }
 }
