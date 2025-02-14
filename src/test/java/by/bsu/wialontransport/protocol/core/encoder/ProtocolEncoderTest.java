@@ -56,8 +56,7 @@ public final class ProtocolEncoderTest {
 
         verify(givenOut, times(1)).writeBytes(same(givenResponseBytes));
         verify(firstMockedPackageEncoder, times(0)).encode(any());
-        verifyNoInteractions(thirdMockedPackageEncoder);
-        verifyNoInteractions(givenContext);
+        verifyNoInteractions(thirdMockedPackageEncoder, givenContext);
     }
 
     @Test
@@ -75,7 +74,6 @@ public final class ProtocolEncoderTest {
         verify(firstMockedPackageEncoder, times(0)).encode(any());
         verify(secondMockedPackageEncoder, times(0)).encode(any());
         verify(thirdMockedPackageEncoder, times(0)).encode(any());
-        verifyNoInteractions(givenContext);
-        verifyNoInteractions(givenOut);
+        verifyNoInteractions(givenContext, givenOut);
     }
 }
