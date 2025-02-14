@@ -2,7 +2,9 @@ package by.bsu.wialontransport.protocol.core.contextattributemanager;
 
 import by.bsu.wialontransport.crud.dto.Location;
 import by.bsu.wialontransport.crud.dto.Tracker;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +15,9 @@ import static java.util.Optional.ofNullable;
 
 @Component
 public final class ContextAttributeManager {
-    static final String NAME_KEY_TRACKER_IMEI = "tracker_imei";
-    static final String NAME_KEY_TRACKER = "tracker";
-    static final String NAME_KEY_LAST_LOCATION = "last_location";
-    static final AttributeKey<String> KEY_TRACKER_IMEI = valueOf(NAME_KEY_TRACKER_IMEI);
-    static final AttributeKey<Tracker> KEY_TRACKER = valueOf(NAME_KEY_TRACKER);
-    static final AttributeKey<Location> KEY_LAST_LOCATION = valueOf(NAME_KEY_LAST_LOCATION);
+    static final AttributeKey<String> KEY_TRACKER_IMEI = valueOf("tracker_imei");
+    static final AttributeKey<Tracker> KEY_TRACKER = valueOf("tracker");
+    static final AttributeKey<Location> KEY_LAST_LOCATION = valueOf("last_location");
 
     public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
         putAttributeValue(context, KEY_TRACKER_IMEI, imei);
@@ -45,15 +44,13 @@ public final class ContextAttributeManager {
     }
 
     private <V> Optional<V> findAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key) {
-        final V value = context.channel()
-                .attr(key)
-                .get();
-        return ofNullable(value);
+        return Optional.of(context)
+                .map(ChannelHandlerContext::channel)
+                .map(channel -> channel.attr(key))
+                .map(Attribute::get);
     }
 
     private <V> void putAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key, final V value) {
-        context.channel()
-                .attr(key)
-                .set(value);
+        context.channel().attr(key).set(value);
     }
 }

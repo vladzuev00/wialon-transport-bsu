@@ -72,7 +72,7 @@ public final class ContextAttributeManagerTest {
 
     private <T> void testPuttingAttribute(final T givenObject,
                                           final AttributeKey<T> expectedKey,
-                                          final PuttingAttributeOperation<T> operation) {
+                                          final PutAttributeOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
         operation.execute(manager, givenContext, givenObject);
@@ -89,7 +89,7 @@ public final class ContextAttributeManagerTest {
 
     private <T> void testSuccessFindingAttribute(final T expectedObject,
                                                  final AttributeKey<T> expectedKey,
-                                                 final FindingAttributeOperation<T> operation) {
+                                                 final FindAttributeOperation<T> operation) {
         final Optional<T> optionalActual = testFindingAttribute(expectedObject, expectedKey, operation);
         assertTrue(optionalActual.isPresent());
         final T actual = optionalActual.get();
@@ -97,14 +97,14 @@ public final class ContextAttributeManagerTest {
     }
 
     private <T> void testFailFindingAttribute(final AttributeKey<T> expectedKey,
-                                              final FindingAttributeOperation<T> operation) {
+                                              final FindAttributeOperation<T> operation) {
         final Optional<T> optionalActual = testFindingAttribute(null, expectedKey, operation);
         assertTrue(optionalActual.isEmpty());
     }
 
     private <T> Optional<T> testFindingAttribute(final T expectedObject,
                                                  final AttributeKey<T> expectedKey,
-                                                 final FindingAttributeOperation<T> operation) {
+                                                 final FindAttributeOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
         when(givenAttribute.get()).thenReturn(expectedObject);
@@ -112,12 +112,12 @@ public final class ContextAttributeManagerTest {
     }
 
     @FunctionalInterface
-    private interface PuttingAttributeOperation<T> {
+    private interface PutAttributeOperation<T> {
         void execute(ContextAttributeManager manager, ChannelHandlerContext context, T object);
     }
 
     @FunctionalInterface
-    private interface FindingAttributeOperation<T> {
+    private interface FindAttributeOperation<T> {
         Optional<T> execute(ContextAttributeManager manager, ChannelHandlerContext context);
     }
 }
