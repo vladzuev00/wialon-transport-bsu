@@ -23,6 +23,4 @@ public final class NewWingClient extends BinaryClient {
         }
         return bytes;
     }
-
-
 }
