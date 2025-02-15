@@ -10,7 +10,7 @@ public abstract class PrefixedPackageDecoder<SOURCE, PREFIX> implements PackageD
     public final boolean isAbleDecode(final SOURCE source) {
         final int prefixLength = getLength(prefix);
         final PREFIX prefix = readPrefix(source, prefixLength);
-        return isEqual(prefix, prefix);
+        return isEqual(prefix, this.prefix);
     }
 
     @Override
