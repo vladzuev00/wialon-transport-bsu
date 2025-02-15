@@ -1,0 +1,35 @@
+package by.vladzuev.locationreceiver.util.entity;
+
+import by.vladzuev.locationreceiver.crud.entity.CityEntity;
+import by.vladzuev.locationreceiver.util.HibernateUtil;
+import lombok.experimental.UtilityClass;
+
+import static org.junit.Assert.assertEquals;
+
+@UtilityClass
+public final class CityEntityUtil {
+
+    public static void checkEquals(final CityEntity expected, final CityEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getAddress(), actual.getAddress());
+        assertEquals(expected.getSearchingCitiesProcess(), actual.getSearchingCitiesProcess());
+    }
+
+    public static void checkDeepEquals(final CityEntity expected, final CityEntity actual) {
+        assertEquals(expected.getId(), actual.getId());
+        AddressEntityUtil.checkEquals(expected.getAddress(), actual.getAddress());
+        SearchingCitiesProcessEntityUtil.checkEquals(
+                expected.getSearchingCitiesProcess(),
+                actual.getSearchingCitiesProcess()
+        );
+    }
+
+    public static boolean isAddressFetched(final CityEntity city) {
+        return HibernateUtil.isPropertyFetched(city, CityEntity::getAddress);
+    }
+
+    public static boolean isSearchingCitiesProcessFetched(final CityEntity city) {
+        return HibernateUtil.isPropertyFetched(city, CityEntity::getSearchingCitiesProcess);
+    }
+
+}

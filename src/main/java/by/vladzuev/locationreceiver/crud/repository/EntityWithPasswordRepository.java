@@ -1,0 +1,11 @@
+package by.vladzuev.locationreceiver.crud.repository;
+
+import by.vladzuev.locationreceiver.crud.entity.EntityWithPassword;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+
+@NoRepositoryBean
+public interface EntityWithPasswordRepository<ID, ENTITY extends EntityWithPassword<ID>>
+        extends JpaRepository<ENTITY, ID> {
+    int updatePassword(final ID id, final String newEncryptedPassword);
+}
