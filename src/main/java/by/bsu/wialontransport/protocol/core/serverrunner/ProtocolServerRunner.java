@@ -12,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,11 +36,9 @@ public final class ProtocolServerRunner {
 
     private void run(final ProtocolServer server) {
         final ProtocolServerProperty property = server.getProperty();
-        final EventLoopGroup parentGroup = new NioEventLoopGroup(property.getThreadCountProcessingConnection());
-        final EventLoopGroup childGroup = new NioEventLoopGroup(property.getThreadCountProcessingData());
-        try {
+        try (final EventLoops eventLoops = new EventLoops(property)) {
             new ServerBootstrap()
-                    .group(parentGroup, childGroup)
+                    .group(eventLoops.getParentGroup(), eventLoops.getChildGroup())
                     .channel(NioServerSocketChannel.class)
                     .childHandler(createChildHandler(server))
                     .localAddress(new InetSocketAddress(property.getHost(), property.getPort()))
@@ -50,9 +49,6 @@ public final class ProtocolServerRunner {
                     .sync();
         } catch (final InterruptedException exception) {
             currentThread().interrupt();
-        } finally {
-            parentGroup.shutdownGracefully();
-            childGroup.shutdownGracefully();
         }
     }
 
@@ -64,20 +60,30 @@ public final class ProtocolServerRunner {
                 channel.pipeline()
                         .addLast(
                                 server.getDecoder(),
-                                createReadTimeoutHandler(server.getProperty()),
+                                new ReadTimeoutHandler(server.getProperty().getConnectionLifeTimeoutSeconds(), SECONDS),
                                 server.getEncoder(),
                                 server.getHandler(),
-                                createExceptionHandler()
+                                new ProtocolExceptionHandler(contextAttributeManager)
                         );
             }
         };
     }
 
-    private ReadTimeoutHandler createReadTimeoutHandler(ProtocolServerProperty property) {
-        return new ReadTimeoutHandler(property.getConnectionLifeTimeoutSeconds(), SECONDS);
-    }
 
-    private ProtocolExceptionHandler createExceptionHandler() {
-        return new ProtocolExceptionHandler(contextAttributeManager);
+    @Getter
+    private static final class EventLoops implements AutoCloseable {
+        private final EventLoopGroup parentGroup;
+        private final EventLoopGroup childGroup;
+
+        public EventLoops(final ProtocolServerProperty property) {
+            parentGroup = new NioEventLoopGroup(property.getThreadCountProcessingConnection());
+            childGroup = new NioEventLoopGroup(property.getThreadCountProcessingData());
+        }
+
+        @Override
+        public void close() {
+            parentGroup.shutdownGracefully();
+            childGroup.shutdownGracefully();
+        }
     }
 }
