@@ -43,11 +43,11 @@ public final class PrefixedPackageDecoderTest {
     }
 
     private static final class TestPrefixedPackageDecoder extends PrefixedPackageDecoder<ByteBuf, String> {
-        private static final String REQUIRED_PREFIX = "PREFIX";
+        private static final String PREFIX = "PREFIX";
         private static final int MESSAGE_BYTE_COUNT = 12;
 
         public TestPrefixedPackageDecoder() {
-            super(REQUIRED_PREFIX);
+            super(PREFIX);
         }
 
         @Override

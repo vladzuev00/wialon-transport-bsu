@@ -7,8 +7,8 @@ import by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage
 public abstract class WialonRequestLocationPackageDecoder extends WialonPackageDecoder {
     private final WialonLocationParser locationParser;
 
-    public WialonRequestLocationPackageDecoder(final String requiredPrefix, final WialonLocationParser locationParser) {
-        super(requiredPrefix);
+    public WialonRequestLocationPackageDecoder(final String prefix, final WialonLocationParser locationParser) {
+        super(prefix);
         this.locationParser = locationParser;
     }
 

@@ -35,10 +35,10 @@ public final class WialonPackageDecoderTest {
     }
 
     private static final class TestWialonPackageDecoder extends WialonPackageDecoder {
-        private static final String REQUIRED_PREFIX = "#PREFIX#";
+        private static final String PREFIX = "#PREFIX#";
 
         public TestWialonPackageDecoder() {
-            super(REQUIRED_PREFIX);
+            super(PREFIX);
         }
 
         @Override

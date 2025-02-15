@@ -6,8 +6,8 @@ import java.util.Arrays;
 
 public abstract class PrefixedByBytesBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<byte[]> {
 
-    public PrefixedByBytesBinaryPackageDecoder(final byte[] requiredPrefix) {
-        super(requiredPrefix);
+    public PrefixedByBytesBinaryPackageDecoder(final byte[] prefix) {
+        super(prefix);
     }
 
     @Override

@@ -12,12 +12,12 @@ import static org.apache.commons.collections4.IteratorUtils.toList;
 
 @Component
 public final class NewWingLocationPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
-    private static final String REQUIRED_PREFIX = "GPRSSI";
+    private static final String PREFIX = "GPRSSI";
 
     private final NewWingLocationIteratorFactory locationIteratorFactory;
 
     public NewWingLocationPackageDecoder(final NewWingLocationIteratorFactory locationIteratorFactory) {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
         this.locationIteratorFactory = locationIteratorFactory;
     }
 

@@ -55,10 +55,10 @@ public final class WialonRequestLocationPackageDecoderTest {
     }
 
     private static final class TestWialonRequestLocationPackageDecoder extends WialonRequestLocationPackageDecoder {
-        private static final String REQUIRED_PREFIX = "#PREFIX#";
+        private static final String PREFIX = "#PREFIX#";
 
         public TestWialonRequestLocationPackageDecoder(final WialonLocationParser locationParser) {
-            super(REQUIRED_PREFIX, locationParser);
+            super(PREFIX, locationParser);
         }
 
         @Override

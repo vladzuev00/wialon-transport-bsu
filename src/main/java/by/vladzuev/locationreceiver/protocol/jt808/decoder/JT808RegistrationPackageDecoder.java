@@ -8,10 +8,10 @@ import static by.vladzuev.locationreceiver.protocol.jt808.util.JT808Util.decodeM
 
 @Component
 public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
-    private static final byte[] REQUIRED_PREFIX = {126, 1, 0};
+    private static final byte[] PREFIX = {126, 1, 0};
 
     public JT808RegistrationPackageDecoder() {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
     }
 
     @Override

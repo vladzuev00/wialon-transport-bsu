@@ -8,8 +8,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public abstract class PrefixedByStringBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<String> {
 
-    public PrefixedByStringBinaryPackageDecoder(final String requiredPrefix) {
-        super(requiredPrefix);
+    public PrefixedByStringBinaryPackageDecoder(final String prefix) {
+        super(prefix);
     }
 
     @Override

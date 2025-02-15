@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class JT808BulkLocationPackageDecoder extends JT808LocationPackageDecoder {
-    private static final byte[] REQUIRED_PREFIX = {126, 7, 4};
+    private static final byte[] PREFIX = {126, 7, 4};
 
     public JT808BulkLocationPackageDecoder() {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
     }
 
     @Override

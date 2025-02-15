@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class NewWingLoginPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
-    private static final String REQUIRED_PREFIX = "GPRSGC";
+    private static final String PREFIX = "GPRSGC";
 
     public NewWingLoginPackageDecoder() {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
     }
 
     @Override

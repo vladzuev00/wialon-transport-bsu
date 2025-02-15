@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class NewWingEventCountPackageDecoder extends PrefixedByStringBinaryPackageDecoder {
-    private static final String REQUIRED_PREFIX = "GPRSGI";
+    private static final String PREFIX = "GPRSGI";
 
     public NewWingEventCountPackageDecoder() {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
     }
 
     @Override

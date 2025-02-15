@@ -5,8 +5,8 @@ import by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage
 
 public abstract class WialonPackageDecoder extends PrefixedTextPackageDecoder {
 
-    public WialonPackageDecoder(final String requiredPrefix) {
-        super(requiredPrefix);
+    public WialonPackageDecoder(final String prefix) {
+        super(prefix);
     }
 
     @Override

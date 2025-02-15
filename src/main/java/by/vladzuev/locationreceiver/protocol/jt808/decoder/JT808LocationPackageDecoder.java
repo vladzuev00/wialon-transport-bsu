@@ -14,8 +14,8 @@ import static java.util.stream.IntStream.range;
 public abstract class JT808LocationPackageDecoder extends JT808PackageDecoder {
     private static final int EXTRA_DATA_BYTE_COUNT = 38;
 
-    public JT808LocationPackageDecoder(final byte[] requiredPrefix) {
-        super(requiredPrefix);
+    public JT808LocationPackageDecoder(final byte[] prefix) {
+        super(prefix);
     }
 
     @Override

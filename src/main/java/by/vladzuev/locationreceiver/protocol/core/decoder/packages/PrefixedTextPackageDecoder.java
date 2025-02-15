@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public abstract class PrefixedTextPackageDecoder extends PrefixedPackageDecoder<String, String> {
 
-    public PrefixedTextPackageDecoder(final String requiredPrefix) {
-        super(requiredPrefix);
+    public PrefixedTextPackageDecoder(final String prefix) {
+        super(prefix);
     }
 
     @Override

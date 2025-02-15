@@ -45,10 +45,10 @@ public final class JT808LocationPackageDecoderTest {
     }
 
     private static final class TestJT808LocationPackageDecoder extends JT808LocationPackageDecoder {
-        private static final byte[] REQUIRED_PREFIX = {126, 2, 0};
+        private static final byte[] PREFIX = {126, 2, 0};
 
         public TestJT808LocationPackageDecoder() {
-            super(REQUIRED_PREFIX);
+            super(PREFIX);
         }
 
         @Override

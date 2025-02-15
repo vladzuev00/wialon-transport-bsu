@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class JT808HeartBeatPackageDecoder extends JT808PackageDecoder {
-    private static final byte[] REQUIRED_PREFIX = {126, 0, 2};
+    private static final byte[] PREFIX = {126, 0, 2};
 
     public JT808HeartBeatPackageDecoder() {
-        super(REQUIRED_PREFIX);
+        super(PREFIX);
     }
 
     @Override

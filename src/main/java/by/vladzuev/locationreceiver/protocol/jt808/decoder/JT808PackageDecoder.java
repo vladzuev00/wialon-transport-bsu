@@ -7,8 +7,8 @@ import static by.vladzuev.locationreceiver.protocol.jt808.util.JT808Util.decodeP
 
 public abstract class JT808PackageDecoder extends PrefixedByBytesBinaryPackageDecoder {
 
-    public JT808PackageDecoder(final byte[] requiredPrefix) {
-        super(requiredPrefix);
+    public JT808PackageDecoder(final byte[] prefix) {
+        super(prefix);
     }
 
     @Override

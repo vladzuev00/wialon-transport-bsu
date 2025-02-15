@@ -29,7 +29,7 @@ public final class PrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected int getLength(final Short requiredPrefix) {
+        protected int getLength(final Short prefix) {
             throw new UnsupportedOperationException();
         }
 
