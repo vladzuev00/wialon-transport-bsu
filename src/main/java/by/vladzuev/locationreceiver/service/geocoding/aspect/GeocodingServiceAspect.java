@@ -35,9 +35,9 @@ public final class GeocodingServiceAspect {
 
     @Pointcut(
             "execution("
-                    + "public java.util.Optional<by.bsu.wialontransport.crud.dto.Address> "
-                    + "by.bsu.wialontransport.service.geocoding.service.GeocodingService.receive("
-                    + "by.bsu.wialontransport.model.GpsCoordinate))"
+                    + "public java.util.Optional<by.vladzuev.locationreceiver.crud.dto.Address> "
+                    + "by.vladzuev.locationreceiver.service.geocoding.service.GeocodingService.receive("
+                    + "by.vladzuev.locationreceiver.model.GpsCoordinate))"
     )
     private void receiveMethod() {
 
