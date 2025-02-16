@@ -20,11 +20,11 @@ public final class JT808DecodingIT extends BinaryProtocolDecodingIT {
         return Stream.of(
                 new TestArgument(
                         "7e0100003607006195286504fa0000000038363937374e5438303800000000000000000000000000000031393532383635004c42313233343536373839303132333435607e",
-                        new JT808RegistrationPackage("070061952865", "86977")
+                        new JT808RegistrationPackage("")
                 ),
                 new TestArgument(
                         "7e0100002c0182700570781022001f00000000000000434152564953204d442d34343453440000000000303035373037380142313233343536bc7e",
-                        new JT808RegistrationPackage("018270057078", "")
+                        new JT808RegistrationPackage("")
                 ),
                 new TestArgument(
                         "7e0200004207006195286500520001000000000001015881c906ca8e0500000000000023072707091430011f31010051080000000000000000560231005708000200000000000063020000fd020026157e",
