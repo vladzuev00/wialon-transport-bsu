@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.core.handler.packages.location;
 
-import by.vladzuev.locationreceiver.config.property.LocationDefaultProperty;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;

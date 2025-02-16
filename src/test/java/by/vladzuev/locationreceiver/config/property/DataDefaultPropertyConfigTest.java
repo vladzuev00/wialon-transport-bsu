@@ -1,6 +1,7 @@
 package by.vladzuev.locationreceiver.config.property;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.util.ConstraintViolationUtil;
 import org.junit.Assert;
 import org.junit.Test;

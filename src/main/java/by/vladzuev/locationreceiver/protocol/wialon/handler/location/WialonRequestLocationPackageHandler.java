@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
-import by.vladzuev.locationreceiver.config.property.LocationDefaultProperty;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
 import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
