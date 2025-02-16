@@ -8,6 +8,7 @@ import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.Loca
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808Location;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808LocationPackage;
+import by.vladzuev.locationreceiver.protocol.jt808.model.JT808ResponsePackage;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -110,7 +111,7 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
     }
 
     @Override
-    protected Object createResponse(final int locationCount) {
+    protected JT808ResponsePackage createResponse(final int locationCount) {
         throw new UnsupportedOperationException();
     }
 }
