@@ -2,6 +2,7 @@ package by.vladzuev.locationreceiver.base;
 
 import by.vladzuev.locationreceiver.base.containerinitializer.DataBaseContainerInitializer;
 import by.vladzuev.locationreceiver.base.containerinitializer.KafkaContainerInitializer;
+import by.vladzuev.locationreceiver.base.containerinitializer.RedisContainerInitializer;
 import com.yannbriancon.interceptor.HibernateQueryInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
@@ -24,7 +25,13 @@ import static org.junit.Assert.assertEquals;
 @Transactional
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = {DataBaseContainerInitializer.class, KafkaContainerInitializer.class})
+@ContextConfiguration(
+        initializers = {
+                DataBaseContainerInitializer.class,
+                KafkaContainerInitializer.class,
+                RedisContainerInitializer.class
+        }
+)
 public abstract class AbstractSpringBootTest {
 
     @PersistenceContext
