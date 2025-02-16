@@ -1,22 +1,16 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
 import by.vladzuev.locationreceiver.model.ParameterType;
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-import javax.persistence.*;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
-import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.SEQUENCE;
-
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "parameters")
-@TypeDef(
-        name = "pgsql_enum",
-        typeClass = PostgreSQLEnumType.class
-)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -34,9 +28,9 @@ public class ParameterEntity extends by.vladzuev.locationreceiver.crud.entity.En
     @Column(name = "name")
     private String name;
 
-    @Enumerated(STRING)
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "type")
-    @org.hibernate.annotations.Type(type = "pgsql_enum")
     private ParameterType type;
 
     @Column(name = "value")

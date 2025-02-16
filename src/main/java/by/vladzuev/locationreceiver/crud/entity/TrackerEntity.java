@@ -1,12 +1,11 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.*;
-
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "trackers")

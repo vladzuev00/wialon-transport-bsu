@@ -1,23 +1,17 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Geometry;
 
-import javax.persistence.*;
-
-import static javax.persistence.EnumType.STRING;
-import static javax.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 //TODO: remove
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "searching_cities_processes")
-@TypeDef(
-        name = "pgsql_enum",
-        typeClass = PostgreSQLEnumType.class
-)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -43,9 +37,9 @@ public class SearchingCitiesProcessEntity extends by.vladzuev.locationreceiver.c
     @Column(name = "handled_points")
     private long handledPoints;
 
-    @Enumerated(STRING)
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status")
-    @Type(type = "pgsql_enum")
     private Status status;
 
     public enum Status {

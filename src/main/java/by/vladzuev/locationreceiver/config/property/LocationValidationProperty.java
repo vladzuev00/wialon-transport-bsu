@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -34,7 +33,7 @@ public final class LocationValidationProperty {
     private final Duration maxDateTimeDeltaFromNow;
 
     @Builder
-    @ConstructorBinding
+//    @ConstructorBinding
     public LocationValidationProperty(final Integer minSatelliteCount,
                                       final Integer maxSatelliteCount,
                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") final LocalDateTime minDateTime,

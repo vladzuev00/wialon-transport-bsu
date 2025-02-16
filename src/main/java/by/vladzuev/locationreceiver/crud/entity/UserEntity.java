@@ -1,23 +1,17 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-
-import static javax.persistence.EnumType.STRING;
-import static javax.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 
 @Entity
 @Table(name = "users")
-@TypeDef(
-        name = "pgsql_enum",
-        typeClass = PostgreSQLEnumType.class
-)
 @NoArgsConstructor
 @Setter
 @Getter
@@ -32,9 +26,9 @@ public class UserEntity extends EntityWithPassword<Long> {
     @Column(name = "email")
     private String email;
 
-    @Enumerated(STRING)
     @Column(name = "role")
-    @Type(type = "pgsql_enum")
+    @Enumerated(STRING)
+    @JdbcTypeCode(NAMED_ENUM)
     private Role role;
 
     @Builder

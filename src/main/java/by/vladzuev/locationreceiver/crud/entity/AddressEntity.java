@@ -1,15 +1,16 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
-import static javax.persistence.GenerationType.SEQUENCE;
-
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +30,6 @@ public class AddressEntity extends by.vladzuev.locationreceiver.crud.entity.Enti
     private Geometry boundingBox;
 
     @Column(name = "center")
-    @Type(type = "jts_geometry")
     private Point center;
 
     @Column(name = "city_name")

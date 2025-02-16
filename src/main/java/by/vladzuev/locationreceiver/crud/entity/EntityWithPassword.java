@@ -1,9 +1,8 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.*;
-
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
 
 @NoArgsConstructor
 @AllArgsConstructor

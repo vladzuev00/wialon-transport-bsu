@@ -1,6 +1,8 @@
 package by.vladzuev.locationreceiver.service.nominatim.aspect;
 
 import by.vladzuev.locationreceiver.service.nominatim.model.NominatimReverseResponse;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Condition;

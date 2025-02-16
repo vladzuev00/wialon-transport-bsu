@@ -1,9 +1,9 @@
 package by.vladzuev.locationreceiver.service.searchingcities.threadpoolexecutor;
 
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 

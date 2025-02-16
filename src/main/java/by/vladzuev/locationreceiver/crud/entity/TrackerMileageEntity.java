@@ -1,15 +1,14 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "tracker_mileages")
 @NoArgsConstructor
 @AllArgsConstructor

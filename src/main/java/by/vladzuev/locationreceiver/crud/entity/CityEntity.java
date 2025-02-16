@@ -1,13 +1,12 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.SEQUENCE;
-
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 @Table(name = "cities")
 @NoArgsConstructor
 @AllArgsConstructor

@@ -53,12 +53,12 @@ public class NominatimService {
     }
 
     private static void validateResponseEntity(final ResponseEntity<?> responseEntity, final String url) {
-        final HttpStatus httpStatus = responseEntity.getStatusCode();
-        if (httpStatus != OK) {
-            throw new NominatimException(
-                    format("Http status after doing request to '%s' is '%s'", url, httpStatus)
-            );
-        }
+//        final HttpStatus httpStatus = responseEntity.getStatusCode();
+//        if (httpStatus != OK) {
+//            throw new NominatimException(
+//                    format("Http status after doing request to '%s' is '%s'", url, httpStatus)
+//            );
+//        }
     }
 
     static final class NominatimException extends RuntimeException {

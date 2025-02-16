@@ -1,24 +1,22 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
 import io.hypersistence.utils.hibernate.type.array.DoubleArrayType;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.type.SqlTypes;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
-@javax.persistence.Entity
+
+@jakarta.persistence.Entity
 @Table(name = "data")
-@TypeDef(
-        name = "double-array",
-        typeClass = DoubleArrayType.class
-)
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -60,7 +58,7 @@ public class DataEntity extends by.vladzuev.locationreceiver.crud.entity.Entity<
     @Column(name = "outputs")
     private int outputs;
 
-    @Type(type = "double-array")
+    @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "analog_inputs")
     private double[] analogInputs;
 

@@ -44,12 +44,12 @@ public class WebSecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/registration").not().fullyAuthenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasRole("USER")
+//                .antMatchers("/registration").not().fullyAuthenticated()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/user/**").hasRole("USER")
 
                 //TODO: /trackerOnline/** only for USER
-                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**", "/login", "/tracker/**").permitAll()
+//                .antMatchers("/", "/resources/**", "/searchCities/**", "/trackerOnline/**", "/login", "/tracker/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
