@@ -34,7 +34,7 @@ public final class GeocodingLoggingAspectTest extends AbstractSpringBootTest {
         successGeocoder.geocode(givenCoordinate);
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("");
+        final List<String> expectedLogs = List.of();
         assertEquals(expectedLogs, actualLogs);
     }
 
@@ -45,7 +45,7 @@ public final class GeocodingLoggingAspectTest extends AbstractSpringBootTest {
         failureGeocoder.geocode(givenCoordinate);
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("");
+        final List<String> expectedLogs = List.of();
         assertEquals(expectedLogs, actualLogs);
     }
 
