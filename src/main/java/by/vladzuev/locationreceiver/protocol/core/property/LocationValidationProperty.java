@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.config.property;
+package by.vladzuev.locationreceiver.protocol.core.property;
 
 import by.vladzuev.locationreceiver.validation.annotation.AmountOfSatellites;
 import lombok.Builder;
@@ -8,11 +8,10 @@ import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+//TODO: test
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -25,11 +24,11 @@ public final class LocationValidationProperty {
     @AmountOfSatellites
     private final Integer maxSatelliteCount;
 
-    @NotNull
-    @Past
+//    @NotNull
+//    @Past
     private final LocalDateTime minDateTime;
 
-    @NotNull
+//    @NotNull
     private final Duration maxDateTimeDeltaFromNow;
 
     @Builder

@@ -10,15 +10,14 @@ import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity.Sta
 import by.vladzuev.locationreceiver.crud.service.SearchingCitiesProcessService;
 import by.vladzuev.locationreceiver.model.AreaCoordinate;
 import by.vladzuev.locationreceiver.service.searchingcities.StartingSearchingCitiesProcessService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 import static java.lang.String.format;
 import static org.springframework.http.ResponseEntity.ok;

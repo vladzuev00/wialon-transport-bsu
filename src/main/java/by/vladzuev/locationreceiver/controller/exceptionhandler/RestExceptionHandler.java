@@ -4,6 +4,7 @@ import by.vladzuev.locationreceiver.controller.exception.CustomValidationExcepti
 import by.vladzuev.locationreceiver.controller.exception.NoSuchEntityException;
 import by.vladzuev.locationreceiver.service.registration.exception.RegistrationException;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.ConstraintViolationException;
 import lombok.Value;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;

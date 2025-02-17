@@ -3,11 +3,11 @@ package by.vladzuev.locationreceiver.controller.abstraction;
 import by.vladzuev.locationreceiver.controller.exception.NoSuchEntityException;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
 import by.vladzuev.locationreceiver.crud.service.CRUDService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;

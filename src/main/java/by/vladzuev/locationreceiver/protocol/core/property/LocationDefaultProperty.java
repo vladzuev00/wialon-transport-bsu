@@ -20,10 +20,12 @@ public class LocationDefaultProperty {
     Integer outputs;
     String driverKeyCode;
 
+    //TODO: test
     public LocalDate getDate() {
         return LocalDate.now();
     }
 
+    //TODO: test
     public LocalTime getTime() {
         return LocalTime.now();
     }

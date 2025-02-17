@@ -64,7 +64,7 @@ public class KafkaConsumerConfiguration {
         return createListenerContainerFactory(consumerFactorySavedData);
     }
 
-    private <K, V> ConsumerFactory<K, V> createConsumerFactory(final String groupId,
+    private <K, V> ConsumerFacotory<K, V> createConsumerFactory(final String groupId,
                                                                final int maxPollRecords,
                                                                final int fetchMaxWaitMs,
                                                                final int fetchMinBytes,

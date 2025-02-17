@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.property;
 
-import by.vladzuev.locationreceiver.config.property.LocationValidationProperty;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationValidationProperty;
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

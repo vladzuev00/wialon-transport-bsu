@@ -1,10 +1,9 @@
 package by.vladzuev.locationreceiver.model.form;
 
 import by.vladzuev.locationreceiver.validation.annotation.Password;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor

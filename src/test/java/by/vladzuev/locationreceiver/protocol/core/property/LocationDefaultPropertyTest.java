@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+//TODO: test LocationDefaultProperty::getDate LocationDefaultProperty::getTime
 public final class LocationDefaultPropertyTest extends AbstractSpringBootTest {
 
     @Autowired

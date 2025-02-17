@@ -6,14 +6,13 @@ import by.vladzuev.locationreceiver.model.sortingkey.TrackerSortingKey;
 import by.vladzuev.locationreceiver.service.useraction.UserActionService;
 import by.vladzuev.locationreceiver.service.useraction.changeinfo.exception.password.PasswordChangingException;
 import by.vladzuev.locationreceiver.service.useraction.exception.TrackerUniqueConstraintException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/user")
