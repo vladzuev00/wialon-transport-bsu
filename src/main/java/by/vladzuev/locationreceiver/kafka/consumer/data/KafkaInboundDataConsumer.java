@@ -87,7 +87,14 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
 
     @Override
     protected Optional<Address> findSavedAddress(final ConsumingContext context) {
-        return geocodingService.geocodeSavedAddress(context.getCoordinate());
+//TODO
+//         private Address saveIfNew(final Address address) {
+//        if (nonNull(address.getId())) {
+//            return address;
+//        }
+//        return addressService.findByGeometry(address.getGeometry()).orElseGet(() -> addressService.save(address));
+//    }
+        return geocodingService.geocode(context.getCoordinate());
     }
 
     @Override
