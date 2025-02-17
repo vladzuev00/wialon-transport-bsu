@@ -98,7 +98,7 @@ public final class NominatimServiceAspect implements AutoCloseable {
 
     @Pointcut(
             "execution(public java.util.Optional<by.vladzuev.locationreceiver.service.nominatim.model.NominatimReverseResponse> "
-                    + "by.vladzuev.locationreceiver.service.nominatim.NominatimService.reverse("
+                    + "by.vladzuev.locationreceiver.service.nominatim.NominatimClient.reverse("
                     + "by.vladzuev.locationreceiver.model.GpsCoordinate))"
     )
     private void reverseMethod() {

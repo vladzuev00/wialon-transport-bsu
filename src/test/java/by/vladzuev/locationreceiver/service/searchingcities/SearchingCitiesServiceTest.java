@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.service.searchingcities;
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.dto.City;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.service.nominatim.NominatimService;
+import by.vladzuev.locationreceiver.service.nominatim.NominatimClient;
 import by.vladzuev.locationreceiver.service.nominatim.mapper.ReverseResponseMapper;
 import by.vladzuev.locationreceiver.service.nominatim.model.NominatimReverseResponse;
 import org.junit.Before;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public final class SearchingCitiesServiceTest {
 
     @Mock
-    private NominatimService mockedNominatimService;
+    private NominatimClient mockedNominatimService;
 
     @Mock
     private ReverseResponseMapper mockedResponseMapper;

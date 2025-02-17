@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.service.searchingcities;
 
 import by.vladzuev.locationreceiver.crud.dto.City;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.service.nominatim.NominatimService;
+import by.vladzuev.locationreceiver.service.nominatim.NominatimClient;
 import by.vladzuev.locationreceiver.service.nominatim.mapper.ReverseResponseMapper;
 import by.vladzuev.locationreceiver.service.nominatim.model.NominatimReverseResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import static java.lang.Thread.currentThread;
 public final class SearchingCitiesService {
     private static final String REGEX_CITY_PLACE_VALUE_IN_JSON = "^(city)|(town)$";
 
-    private final NominatimService nominatimService;
+    private final NominatimClient nominatimService;
     private final ReverseResponseMapper responseMapper;
 
     public List<City> findByCoordinates(final List<GpsCoordinate> coordinates) {

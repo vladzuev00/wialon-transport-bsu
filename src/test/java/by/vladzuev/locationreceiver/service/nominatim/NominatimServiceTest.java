@@ -33,7 +33,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
     private RestTemplate mockedRestTemplate;
 
     @Autowired
-    private NominatimService nominatimService;
+    private NominatimClient nominatimService;
 
     @Test
     @SuppressWarnings("unchecked")
@@ -77,7 +77,7 @@ public final class NominatimServiceTest extends AbstractSpringBootTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NominatimService.NominatimException.class)
+    @Test(expected = NominatimClient.NominatimException.class)
     public void coordinateShouldNotBeReversedBecauseOfBadHttpStatus() {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
 

@@ -20,6 +20,7 @@ public final class GeocodingManager {
 
     //TODO: возможно здесь стоит возвращать просто адрес
     public Optional<Address> findSavedAddress(final GpsCoordinate coordinate) {
+        //TODO: check exist by geometry if id is null
         return geocodingServices.stream()
                 .map(geocodingService -> geocodingService.geocode(coordinate))
                 .filter(Optional::isPresent)

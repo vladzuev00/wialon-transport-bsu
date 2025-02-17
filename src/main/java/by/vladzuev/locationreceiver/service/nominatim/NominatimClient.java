@@ -5,7 +5,6 @@ import by.vladzuev.locationreceiver.service.nominatim.model.NominatimReverseResp
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -16,11 +15,10 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @Component
-public class NominatimService {
+public class NominatimClient {
     private static final String TEMPLATE_REQUESTING_MESSAGE = "Request to Nominatim: {}";
     private static final ParameterizedTypeReference<NominatimReverseResponse> PARAMETERIZED_TYPE_REFERENCE_REVERSE
             = new ParameterizedTypeReference<>() {
@@ -29,8 +27,8 @@ public class NominatimService {
     private final String reverseUrlTemplate;
     private final RestTemplate restTemplate;
 
-    public NominatimService(@Value("${nominatim.reverse.url.template}") final String reverseUrlTemplate,
-                            final RestTemplate restTemplate) {
+    public NominatimClient(@Value("${nominatim.reverse.url.template}") final String reverseUrlTemplate,
+                           final RestTemplate restTemplate) {
         this.reverseUrlTemplate = reverseUrlTemplate;
         this.restTemplate = restTemplate;
     }

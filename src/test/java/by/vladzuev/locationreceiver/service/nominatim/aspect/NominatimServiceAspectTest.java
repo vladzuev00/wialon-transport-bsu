@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.service.nominatim.aspect;
 
 import by.vladzuev.locationreceiver.config.RestTemplateConfig;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.service.nominatim.NominatimService;
+import by.vladzuev.locationreceiver.service.nominatim.NominatimClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
                 NominatimServiceAspect.class
         }
 )
-@RestClientTest(NominatimService.class)
+@RestClientTest(NominatimClient.class)
 public final class NominatimServiceAspectTest {
 
     @Value("${nominatim.millis-between-requests}")
@@ -49,7 +49,7 @@ public final class NominatimServiceAspectTest {
     private RestTemplate restTemplate;
 
     @Autowired
-    private NominatimService nominatimService;
+    private NominatimClient nominatimService;
 
     @Autowired
     private MockRestServiceServer server;
