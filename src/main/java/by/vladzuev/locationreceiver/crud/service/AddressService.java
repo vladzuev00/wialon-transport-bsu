@@ -26,7 +26,7 @@ public class AddressService extends CRUDService<Long, AddressEntity, Address, Ad
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findByGpsCoordinates(final GpsCoordinate coordinate) {
+    public Optional<Address> findByCoordinate(final GpsCoordinate coordinate) {
         return findUniqueDto(
                 repository -> repository.findByGpsCoordinates(
                         coordinate.getLatitude(),
