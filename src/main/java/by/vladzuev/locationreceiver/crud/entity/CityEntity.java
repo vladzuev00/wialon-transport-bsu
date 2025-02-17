@@ -14,7 +14,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class CityEntity extends by.vladzuev.locationreceiver.crud.entity.Entity<Long> {
+public class CityEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

@@ -9,8 +9,8 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void entitiesShouldBeEqual() {
-        final Entity<Long> firstGivenEntity = createEntity(255L);
-        final Entity<Long> secondGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> firstGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> secondGivenEntity = createEntity(255L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertTrue(actual);
@@ -19,7 +19,7 @@ public final class EntityTest extends AbstractSpringBootTest {
     @Test
     @SuppressWarnings("EqualsWithItself")
     public void sameEntitiesShouldBeEqual() {
-        final Entity<Long> firstGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> firstGivenEntity = createEntity(255L);
 
         final boolean actual = firstGivenEntity.equals(firstGivenEntity);
         assertTrue(actual);
@@ -27,8 +27,8 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void notProxyEntityShouldBeEqualProxyEntity() {
-        final Entity<Long> firstGivenEntity = createTracker(255L);
-        final Entity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
+        final AbstractEntity<Long> firstGivenEntity = createTracker(255L);
+        final AbstractEntity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertTrue(actual);
@@ -36,8 +36,8 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void entitiesShouldNotBeEqualBecauseOfOtherEntityIsNull() {
-        final Entity<Long> firstGivenEntity = createEntity(255L);
-        final Entity<Long> secondGivenEntity = null;
+        final AbstractEntity<Long> firstGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> secondGivenEntity = null;
 
         @SuppressWarnings("all") final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertFalse(actual);
@@ -45,8 +45,8 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void entitiesShouldNotBeEqualBecauseOfDifferentNotProxyTypes() {
-        final Entity<Long> firstGivenEntity = createEntity(255L);
-        final Entity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
+        final AbstractEntity<Long> firstGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertFalse(actual);
@@ -54,8 +54,8 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void entitiesShouldNotBeEqual() {
-        final Entity<Long> firstGivenEntity = createEntity(255L);
-        final Entity<Long> secondGivenEntity = createEntity(256L);
+        final AbstractEntity<Long> firstGivenEntity = createEntity(255L);
+        final AbstractEntity<Long> secondGivenEntity = createEntity(256L);
 
         final boolean actual = firstGivenEntity.equals(secondGivenEntity);
         assertFalse(actual);
@@ -63,15 +63,15 @@ public final class EntityTest extends AbstractSpringBootTest {
 
     @Test
     public void hashCodeShouldBeFound() {
-        final Entity<Long> givenEntity = createEntity(255L);
+        final AbstractEntity<Long> givenEntity = createEntity(255L);
 
         final int actual = givenEntity.hashCode();
         final int expected = 286;
         assertEquals(expected, actual);
     }
 
-    private static Entity<Long> createEntity(final Long id) {
-        final Entity<Long> entity = new TestEntity();
+    private static AbstractEntity<Long> createEntity(final Long id) {
+        final AbstractEntity<Long> entity = new TestEntity();
         entity.setId(id);
         return entity;
     }
@@ -83,7 +83,7 @@ public final class EntityTest extends AbstractSpringBootTest {
                 .build();
     }
 
-    private static final class TestEntity extends Entity<Long> {
+    private static final class TestEntity extends AbstractEntity<Long> {
         private Long id;
 
         @Override

@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import lombok.*;
 import org.junit.Before;
@@ -419,7 +419,7 @@ public final class CRUDServiceTest {
     @Setter
     @Getter
     @ToString
-    private static final class TestPersonEntity extends Entity<Long> {
+    private static final class TestPersonEntity extends AbstractEntity<Long> {
         private Long id;
     }
 

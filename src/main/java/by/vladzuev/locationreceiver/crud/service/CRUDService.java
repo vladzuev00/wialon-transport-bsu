@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import by.vladzuev.locationreceiver.util.CollectionUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public abstract class CRUDService<
         ID,
-        ENTITY extends Entity<ID>,
+        ENTITY extends AbstractEntity<ID>,
         DTO extends Dto<ID>,
         MAPPER extends Mapper<ENTITY, DTO>,
         REPOSITORY extends JpaRepository<ENTITY, ID>

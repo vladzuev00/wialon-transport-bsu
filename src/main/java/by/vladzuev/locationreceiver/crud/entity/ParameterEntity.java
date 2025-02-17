@@ -17,7 +17,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class ParameterEntity extends by.vladzuev.locationreceiver.crud.entity.Entity<Long> {
+public class ParameterEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.crud.mapper;
 
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.util.HibernateUtil;
 import by.vladzuev.locationreceiver.util.CollectionUtil;
 import org.modelmapper.Converter;
@@ -23,7 +23,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
-public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
+public abstract class Mapper<ENTITY extends AbstractEntity<?>, DTO extends Dto<?>> {
     private final ModelMapper modelMapper;
     private final Class<ENTITY> entityType;
     private final Class<DTO> dtoType;
@@ -55,18 +55,18 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         return mapIfMatchOrElseNull(source, Objects::nonNull, destinationType);
     }
 
-    protected final <S extends Entity<?>, D extends Dto<?>> D mapLazy(final S source, final Class<D> destinationType) {
+    protected final <S extends AbstractEntity<?>, D extends Dto<?>> D mapLazy(final S source, final Class<D> destinationType) {
         return mapIfMatchOrElseNull(source, HibernateUtil::isFetched, destinationType);
     }
 
-    protected final <S extends Entity<?>, E extends Dto<?>> List<E> mapLazyToList(final Collection<S> source,
-                                                                                  final Class<E> destinationValueType) {
+    protected final <S extends AbstractEntity<?>, E extends Dto<?>> List<E> mapLazyToList(final Collection<S> source,
+                                                                                          final Class<E> destinationValueType) {
         return mapLazyCollection(source, destinationValueType, toUnmodifiableList());
     }
 
-    protected final <S extends Entity<?>, E extends Dto<?>, K> Map<K, E> mapLazyToMap(final Collection<S> source,
-                                                                                      final Class<E> destinationValueType,
-                                                                                      final Function<E, K> keyExtractor) {
+    protected final <S extends AbstractEntity<?>, E extends Dto<?>, K> Map<K, E> mapLazyToMap(final Collection<S> source,
+                                                                                              final Class<E> destinationValueType,
+                                                                                              final Function<E, K> keyExtractor) {
         return mapLazyCollection(source, destinationValueType, toMap(keyExtractor, identity()));
     }
 
@@ -96,9 +96,9 @@ public abstract class Mapper<ENTITY extends Entity<?>, DTO extends Dto<?>> {
         return matcher.test(source) ? map(source, destinationType) : null;
     }
 
-    private <S extends Entity<?>, E extends Dto<?>, D> D mapLazyCollection(final Collection<S> source,
-                                                                           final Class<E> destinationElementType,
-                                                                           final Collector<E, ?, D> collector) {
+    private <S extends AbstractEntity<?>, E extends Dto<?>, D> D mapLazyCollection(final Collection<S> source,
+                                                                                   final Class<E> destinationElementType,
+                                                                                   final Collector<E, ?, D> collector) {
         return mapIfMatchOrElseNull(source, HibernateUtil::isFetched, destinationElementType, collector);
     }
 

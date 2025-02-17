@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static java.util.Objects.hash;
 
-public abstract class Entity<ID> implements Serializable {
+public abstract class AbstractEntity<ID> implements Serializable {
 
     public abstract void setId(final ID id);
 
@@ -25,7 +25,7 @@ public abstract class Entity<ID> implements Serializable {
         if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
-        final Entity<ID> other = (Entity<ID>) otherObject;
+        final AbstractEntity<ID> other = (AbstractEntity<ID>) otherObject;
         return Objects.equals(getId(), other.getId());
     }
 

@@ -16,7 +16,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class TrackerMileageEntity extends Entity<Long> {
+public class TrackerMileageEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

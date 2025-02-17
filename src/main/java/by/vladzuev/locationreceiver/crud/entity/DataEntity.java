@@ -1,10 +1,8 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
-import io.hypersistence.utils.hibernate.type.array.DoubleArrayType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
@@ -23,7 +21,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Getter
 @ToString
 @Builder
-public class DataEntity extends by.vladzuev.locationreceiver.crud.entity.Entity<Long> {
+public class DataEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

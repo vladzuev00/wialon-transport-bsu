@@ -14,7 +14,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @ToString
 @Builder
-public class TrackerLastDataEntity extends by.vladzuev.locationreceiver.crud.entity.Entity<Long> {
+public class TrackerLastDataEntity extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

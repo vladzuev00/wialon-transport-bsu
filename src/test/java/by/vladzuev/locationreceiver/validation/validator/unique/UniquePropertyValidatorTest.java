@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.validation.validator.unique;
 
 import by.vladzuev.locationreceiver.controller.abstraction.View;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import by.vladzuev.locationreceiver.crud.service.CRUDService;
 import lombok.AllArgsConstructor;
@@ -148,7 +148,7 @@ public final class UniquePropertyValidatorTest {
         }
     }
 
-    private static final class TestCRUDService extends CRUDService<Long, Entity<Long>, TestDto, Mapper<Entity<Long>, TestDto>, JpaRepository<Entity<Long>, Long>> {
+    private static final class TestCRUDService extends CRUDService<Long, AbstractEntity<Long>, TestDto, Mapper<AbstractEntity<Long>, TestDto>, JpaRepository<AbstractEntity<Long>, Long>> {
 
         public TestCRUDService() {
             super(null, null);
@@ -159,7 +159,7 @@ public final class UniquePropertyValidatorTest {
         }
 
         @Override
-        protected void configureBeforeSave(final Entity<Long> entity) {
+        protected void configureBeforeSave(final AbstractEntity<Long> entity) {
             throw new UnsupportedOperationException();
         }
     }

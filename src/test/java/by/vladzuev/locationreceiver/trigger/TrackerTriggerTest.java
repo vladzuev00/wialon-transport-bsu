@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.trigger;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerLastDataEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
@@ -41,7 +41,7 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
         return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", TrackerLastDataEntity.class);
     }
 
-    private <E extends Entity<?>> List<E> findEntities(final String query, final Class<E> entityType) {
+    private <E extends AbstractEntity<?>> List<E> findEntities(final String query, final Class<E> entityType) {
         try (final Stream<E> stream = entityManager.createQuery(query, entityType).getResultStream()) {
             return stream.toList();
         }

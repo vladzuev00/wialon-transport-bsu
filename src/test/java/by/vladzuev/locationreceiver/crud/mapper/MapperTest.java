@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.crud.mapper;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.Entity;
+import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.util.HibernateUtil;
 import lombok.*;
 import org.junit.Test;
@@ -245,7 +245,7 @@ public final class MapperTest extends AbstractSpringBootTest {
     @Setter
     @Getter
     @ToString
-    private static final class AddressEntity extends Entity<Long> {
+    private static final class AddressEntity extends AbstractEntity<Long> {
         private Long id;
     }
 
@@ -254,7 +254,7 @@ public final class MapperTest extends AbstractSpringBootTest {
     @Setter
     @Getter
     @ToString
-    private static final class PhoneEntity extends Entity<Long> {
+    private static final class PhoneEntity extends AbstractEntity<Long> {
         private Long id;
     }
 
@@ -264,7 +264,7 @@ public final class MapperTest extends AbstractSpringBootTest {
     @Getter
     @ToString
     @Builder
-    private static final class PersonEntity extends Entity<Long> {
+    private static final class PersonEntity extends AbstractEntity<Long> {
         private Long id;
         private String name;
         private String surname;

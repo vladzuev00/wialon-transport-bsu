@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @ToString
 @MappedSuperclass
-public abstract class EntityWithPassword<IdType> extends Entity<IdType> {
+public abstract class EntityWithPassword<IdType> extends AbstractEntity<IdType> {
 
     @Column(name = "encrypted_password")
     private String password;
