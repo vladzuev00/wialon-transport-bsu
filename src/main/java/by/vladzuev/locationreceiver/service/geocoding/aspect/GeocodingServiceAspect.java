@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.service.geocoding.aspect;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
-import by.vladzuev.locationreceiver.service.geocoding.service.GeocodingService;
+import by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -36,7 +36,7 @@ public final class GeocodingServiceAspect {
     @Pointcut(
             "execution("
                     + "public java.util.Optional<by.vladzuev.locationreceiver.crud.dto.Address> "
-                    + "by.vladzuev.locationreceiver.service.geocoding.service.GeocodingService.receive("
+                    + "by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder.geocode("
                     + "by.vladzuev.locationreceiver.model.GpsCoordinate))"
     )
     private void receiveMethod() {
@@ -44,8 +44,8 @@ public final class GeocodingServiceAspect {
     }
 
     private static String findServiceName(final JoinPoint joinPoint) {
-        final GeocodingService service = (GeocodingService) joinPoint.getTarget();
-        return service.findName();
+        final Geocoder service = (Geocoder) joinPoint.getTarget();
+        return service.getClass().getSimpleName();
     }
 
     private static String createSuccessReceivingMessage(final Address address, final String serviceName) {

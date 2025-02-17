@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.service.geocoding.aspect;
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.service.geocoding.service.GeocodingService;
+import by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder;
 import nl.altindag.log.LogCaptor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
         try (final LogCaptor givenLogCaptor = createLogCaptor()) {
             final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 5.5);
 
-            successReceivingService.receive(givenCoordinate);
+            successReceivingService.geocode(givenCoordinate);
 
             final List<String> actualLogs = givenLogCaptor.getLogs();
             final List<String> expectedLogs = List.of(
@@ -52,7 +52,7 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
         try (final LogCaptor givenLogCaptor = createLogCaptor()) {
             final GpsCoordinate givenCoordinate = new GpsCoordinate(4.4, 6.6);
 
-            failedReceivingService.receive(givenCoordinate);
+            failedReceivingService.geocode(givenCoordinate);
 
             final List<String> actualLogs = givenLogCaptor.getLogs();
             final List<String> expectedLogs = List.of("Address wasn't received by 'FailedReceivingService'");
@@ -65,20 +65,20 @@ public final class GeocodingServiceAspectTest extends AbstractSpringBootTest {
     }
 
     @Service
-    public static class SuccessReceivingService implements GeocodingService {
+    public static class SuccessReceivingService implements Geocoder {
 
         @Override
-        public Optional<Address> receive(final GpsCoordinate coordinate) {
+        public Optional<Address> geocode(final GpsCoordinate coordinate) {
             final Address address = Address.builder().build();
             return Optional.of(address);
         }
     }
 
     @Service
-    public static class FailedReceivingService implements GeocodingService {
+    public static class FailedReceivingService implements Geocoder {
 
         @Override
-        public Optional<Address> receive(final GpsCoordinate coordinate) {
+        public Optional<Address> geocode(final GpsCoordinate coordinate) {
             return empty();
         }
     }

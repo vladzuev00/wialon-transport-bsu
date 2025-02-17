@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.service.geocoding.service;
+package by.vladzuev.locationreceiver.service.geocoding.geocoder;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
@@ -9,7 +9,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 
 public final class GeocodingServiceTest {
-    private final GeocodingService geocodingService = new TestGeocodingService();
+    private final Geocoder geocodingService = new TestGeocodingService();
 
     @Test
     public void nameShouldBeFound() {
@@ -18,10 +18,10 @@ public final class GeocodingServiceTest {
         assertEquals(expected, actual);
     }
 
-    private static final class TestGeocodingService implements GeocodingService {
+    private static final class TestGeocodingService implements Geocoder {
 
         @Override
-        public Optional<Address> receive(final GpsCoordinate coordinate) {
+        public Optional<Address> geocode(final GpsCoordinate coordinate) {
             throw new UnsupportedOperationException();
         }
     }

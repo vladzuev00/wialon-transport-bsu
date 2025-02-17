@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.service.geocoding.service;
+package by.vladzuev.locationreceiver.service.geocoding.geocoder;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Order(2)
-public class NominatimGeocodingService implements GeocodingService {
+public class NominatimGeocodingService implements Geocoder {
     private final NominatimService nominatimService;
     private final ReverseResponseMapper responseMapper;
     private final AddressService addressService;
@@ -27,7 +27,7 @@ public class NominatimGeocodingService implements GeocodingService {
     }
 
     @Override
-    public Optional<Address> receive(final GpsCoordinate coordinate) {
+    public Optional<Address> geocode(final GpsCoordinate coordinate) {
         return nominatimService.reverse(coordinate).map(this::mapToPossiblySavedAddress);
     }
 

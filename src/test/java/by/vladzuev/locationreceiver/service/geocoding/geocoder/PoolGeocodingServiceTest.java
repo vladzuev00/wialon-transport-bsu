@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.service.geocoding.service;
+package by.vladzuev.locationreceiver.service.geocoding.geocoder;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
@@ -36,7 +36,7 @@ public final class PoolGeocodingServiceTest {
         final Address givenAddress = createAddress(255L);
         when(mockedAddressService.findByGpsCoordinates(givenCoordinate)).thenReturn(Optional.of(givenAddress));
 
-        final Optional<Address> optionalActual = geocodingService.receive(givenCoordinate);
+        final Optional<Address> optionalActual = geocodingService.geocode(givenCoordinate);
         assertTrue(optionalActual.isPresent());
         final Address actual = optionalActual.get();
         assertSame(givenAddress, actual);
@@ -48,7 +48,7 @@ public final class PoolGeocodingServiceTest {
 
         when(mockedAddressService.findByGpsCoordinates(givenCoordinate)).thenReturn(empty());
 
-        final Optional<Address> optionalActual = geocodingService.receive(givenCoordinate);
+        final Optional<Address> optionalActual = geocodingService.geocode(givenCoordinate);
         assertTrue(optionalActual.isEmpty());
     }
 

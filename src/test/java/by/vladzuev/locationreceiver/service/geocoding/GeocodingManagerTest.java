@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.service.geocoding;
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.service.geocoding.service.GeocodingService;
+import by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 public final class GeocodingManagerTest {
 
     @Mock
-    private GeocodingService firstMockedGeocodingService;
+    private Geocoder firstMockedGeocodingService;
 
     @Mock
-    private GeocodingService secondMockedGeocodingService;
+    private Geocoder secondMockedGeocodingService;
 
     @Mock
     private AddressService mockedAddressService;
@@ -46,7 +46,7 @@ public final class GeocodingManagerTest {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
         final Address givenAddress = createAddress(255L);
-        when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
+        when(firstMockedGeocodingService.geocode(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
 
         final Optional<Address> optionalActual = geocodingManager.findSavedAddress(givenCoordinate);
         assertTrue(optionalActual.isPresent());
@@ -61,10 +61,10 @@ public final class GeocodingManagerTest {
     public void newAddressShouldBeFound() {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
-        when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());
+        when(firstMockedGeocodingService.geocode(same(givenCoordinate))).thenReturn(empty());
 
         final Address givenAddress = createAddress();
-        when(secondMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
+        when(secondMockedGeocodingService.geocode(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
 
         final Address givenSavedAddress = createAddress(256L);
         when(mockedAddressService.save(same(givenAddress))).thenReturn(givenSavedAddress);
@@ -74,21 +74,21 @@ public final class GeocodingManagerTest {
         final Address actual = optionalActual.get();
         assertSame(givenSavedAddress, actual);
 
-        verify(firstMockedGeocodingService, times(1)).receive(same(givenCoordinate));
+        verify(firstMockedGeocodingService, times(1)).geocode(same(givenCoordinate));
     }
 
     @Test
     public void addressShouldNotBeFound() {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(5.5, 6.6);
 
-        when(firstMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());
-        when(secondMockedGeocodingService.receive(same(givenCoordinate))).thenReturn(empty());
+        when(firstMockedGeocodingService.geocode(same(givenCoordinate))).thenReturn(empty());
+        when(secondMockedGeocodingService.geocode(same(givenCoordinate))).thenReturn(empty());
 
         final Optional<Address> optionalActual = geocodingManager.findSavedAddress(givenCoordinate);
         assertTrue(optionalActual.isEmpty());
 
-        verify(firstMockedGeocodingService, times(1)).receive(same(givenCoordinate));
-        verify(secondMockedGeocodingService, times(1)).receive(same(givenCoordinate));
+        verify(firstMockedGeocodingService, times(1)).geocode(same(givenCoordinate));
+        verify(secondMockedGeocodingService, times(1)).geocode(same(givenCoordinate));
         verifyNoInteractions(mockedAddressService);
     }
 

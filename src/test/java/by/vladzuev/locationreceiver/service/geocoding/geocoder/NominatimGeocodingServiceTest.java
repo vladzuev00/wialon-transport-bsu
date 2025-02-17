@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.service.geocoding.service;
+package by.vladzuev.locationreceiver.service.geocoding.geocoder;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
@@ -58,7 +58,7 @@ public final class NominatimGeocodingServiceTest {
         final Address givenSavedAddress = createAddress(255L, givenGeometry);
         when(mockedAddressService.findByGeometry(same(givenGeometry))).thenReturn(Optional.of(givenSavedAddress));
 
-        final Optional<Address> optionalActual = geocodingService.receive(givenCoordinate);
+        final Optional<Address> optionalActual = geocodingService.geocode(givenCoordinate);
         assertTrue(optionalActual.isPresent());
         final Address actual = optionalActual.get();
         assertSame(givenSavedAddress, actual);
@@ -77,7 +77,7 @@ public final class NominatimGeocodingServiceTest {
 
         when(mockedAddressService.findByGeometry(same(givenGeometry))).thenReturn(empty());
 
-        final Optional<Address> optionalActual = geocodingService.receive(givenCoordinate);
+        final Optional<Address> optionalActual = geocodingService.geocode(givenCoordinate);
         assertTrue(optionalActual.isPresent());
         final Address actual = optionalActual.get();
         assertSame(givenAddress, actual);
@@ -89,7 +89,7 @@ public final class NominatimGeocodingServiceTest {
 
         when(mockedNominatimService.reverse(same(givenCoordinate))).thenReturn(empty());
 
-        final Optional<Address> optionalActual = geocodingService.receive(givenCoordinate);
+        final Optional<Address> optionalActual = geocodingService.geocode(givenCoordinate);
         assertTrue(optionalActual.isEmpty());
 
         verifyNoInteractions(mockedResponseMapper);

@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.service.geocoding.service;
+package by.vladzuev.locationreceiver.service.geocoding.geocoder;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
@@ -12,11 +12,11 @@ import java.util.Optional;
 @Service
 @Order(1)
 @RequiredArgsConstructor
-public class PoolGeocodingService implements GeocodingService {
+public class PoolGeocodingService implements Geocoder {
     private final AddressService addressService;
 
     @Override
-    public Optional<Address> receive(final GpsCoordinate coordinate) {
+    public Optional<Address> geocode(final GpsCoordinate coordinate) {
         return addressService.findByGpsCoordinates(coordinate);
     }
 }
