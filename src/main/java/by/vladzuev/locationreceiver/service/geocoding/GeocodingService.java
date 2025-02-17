@@ -10,26 +10,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.nonNull;
 import static java.util.function.Function.identity;
 
 @Service
 @RequiredArgsConstructor
-public final class GeocodingManager {
-    private final List<Geocoder> geocodingServices;
+public final class GeocodingService {
+    private final List<Geocoder> geocoders;
     private final AddressService addressService;
 
-    //TODO: возможно здесь стоит возвращать просто адрес
-    public Optional<Address> findSavedAddress(final GpsCoordinate coordinate) {
-        //TODO: check exist by geometry if id is null
-        return geocodingServices.stream()
-                .map(geocodingService -> geocodingService.geocode(coordinate))
+    public Optional<Address> geocodeSavedAddress(final GpsCoordinate coordinate) {
+        return geocoders.stream()
+                .map(geocoder -> geocoder.geocode(coordinate))
                 .filter(Optional::isPresent)
                 .findFirst()
                 .flatMap(identity())
-                .map(this::mapToSavedAddress);
+                .map(this::saveIfNew);
     }
 
-    private Address mapToSavedAddress(final Address address) {
-        return address.isNew() ? addressService.save(address) : address;
+    private Address saveIfNew(final Address address) {
+        if (nonNull(address.getId())) {
+            return address;
+        }
+        return addressService.findByGeometry(address.getGeometry()).orElseGet(() -> addressService.save(address));
     }
 }

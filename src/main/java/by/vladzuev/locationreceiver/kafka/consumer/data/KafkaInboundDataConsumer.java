@@ -10,7 +10,7 @@ import by.vladzuev.locationreceiver.kafka.model.view.InboundParameterView;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaSavedDataProducer;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import by.vladzuev.locationreceiver.model.Track;
-import by.vladzuev.locationreceiver.service.geocoding.GeocodingManager;
+import by.vladzuev.locationreceiver.service.geocoding.GeocodingService;
 import by.vladzuev.locationreceiver.service.mileage.MileageIncreasingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.generic.GenericRecord;
@@ -27,19 +27,19 @@ import static java.util.stream.Collectors.*;
 
 @Component
 public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameterView> {
-    private final GeocodingManager geocodingManager;
+    private final GeocodingService geocodingService;
     private final LocationService dataService;
     private final MileageIncreasingService mileageIncreasingService;
     private final KafkaSavedDataProducer savedDataProducer;
 
     public KafkaInboundDataConsumer(final ObjectMapper objectMapper,
                                     final TrackerService trackerService,
-                                    final GeocodingManager geocodingManager,
+                                    final GeocodingService geocodingService,
                                     final LocationService dataService,
                                     final MileageIncreasingService mileageIncreasingService,
                                     final KafkaSavedDataProducer savedDataProducer) {
         super(objectMapper, trackerService, InboundParameterView.class);
-        this.geocodingManager = geocodingManager;
+        this.geocodingService = geocodingService;
         this.dataService = dataService;
         this.mileageIncreasingService = mileageIncreasingService;
         this.savedDataProducer = savedDataProducer;
@@ -87,7 +87,7 @@ public class KafkaInboundDataConsumer extends KafkaDataConsumer<InboundParameter
 
     @Override
     protected Optional<Address> findSavedAddress(final ConsumingContext context) {
-        return geocodingManager.findSavedAddress(context.getCoordinate());
+        return geocodingService.geocodeSavedAddress(context.getCoordinate());
     }
 
     @Override
