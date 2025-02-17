@@ -37,10 +37,10 @@ public abstract class AbstractSpringBootTest {
 //    @Autowired
 //    protected HibernateQueryInterceptor queryInterceptor;
 
-    @BeforeClass
-    public static void setDefaultTimeZone() {
-        setDefault(getTimeZone(UTC));
-    }
+//    @BeforeClass
+//    public static void setDefaultTimeZone() {
+//        setDefault(getTimeZone(UTC));
+//    }
 
     protected final void startQueryCount() {
 //        log.info("======================= START QUERY COUNTER ====================================");
