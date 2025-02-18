@@ -30,7 +30,7 @@ public final class DataMapper extends Mapper<LocationEntity, Location> {
                 source.getCourse(),
                 source.getSpeed(),
                 source.getAltitude(),
-                source.getAmountOfSatellites(),
+                source.getSatelliteCount(),
                 source.getHdop(),
                 source.getInputs(),
                 source.getOutputs(),
