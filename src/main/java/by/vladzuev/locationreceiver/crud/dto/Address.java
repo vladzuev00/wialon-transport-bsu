@@ -1,12 +1,14 @@
 package by.vladzuev.locationreceiver.crud.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
 @Value
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class Address implements Dto<Long> {
     Long id;
     Geometry boundingBox;
