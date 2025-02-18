@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Value
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class Location implements Dto<Long> {
     Long id;
     LocalDateTime dateTime;
@@ -24,19 +24,7 @@ public class Location implements Dto<Long> {
     int outputs;
     double[] analogInputs;
     String driverKeyCode;
-
-    /**
-     * parameter's name to parameter
-     */
     Map<String, Parameter> parametersByNames;
     Tracker tracker;
     Address address;
-
-    public String findCityName() {
-        return address.getCityName();
-    }
-
-    public String findCountryName() {
-        return address.getCountryName();
-    }
 }
