@@ -7,14 +7,14 @@ import org.locationtech.jts.geom.Point;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
-@jakarta.persistence.Entity
-@Table(name = "addresses")
-@NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@Entity
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "addresses")
 public class AddressEntity extends AbstractEntity<Long> {
 
     @Id
