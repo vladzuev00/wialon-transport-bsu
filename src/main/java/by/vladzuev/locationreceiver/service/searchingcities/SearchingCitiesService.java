@@ -21,12 +21,13 @@ public final class SearchingCitiesService {
     private final ReverseResponseMapper responseMapper;
 
     public List<City> findByCoordinates(final List<GpsCoordinate> coordinates) {
-        return coordinates.stream()
-                .map(this::reverseInterruptibly)
-                .filter(SearchingCitiesService::isCity)
-                .map(responseMapper::map)
-                .map(City::createWithAddress)
-                .toList();
+        return null;
+//        return coordinates.stream()
+//                .map(this::reverseInterruptibly)
+//                .filter(SearchingCitiesService::isCity)
+//                .map(responseMapper::map)
+////                .map(City::createWithAddress)
+//                .toList();
     }
 
     private NominatimReverseResponse reverseInterruptibly(final GpsCoordinate coordinate) {
