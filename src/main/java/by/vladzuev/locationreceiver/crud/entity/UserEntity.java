@@ -29,17 +29,17 @@ public class UserEntity extends EntityWithPassword<Long> {
     @Column(name = "role")
     @Enumerated(STRING)
     @JdbcTypeCode(NAMED_ENUM)
-    private Role role;
+    private UserRole role;
 
     @Builder
-    public UserEntity(final Long id, final String email, final String password, final Role role) {
+    public UserEntity(final Long id, final String email, final String password, final UserRole role) {
         super(password);
         this.id = id;
         this.email = email;
         this.role = role;
     }
 
-    public enum Role implements GrantedAuthority {
+    public enum UserRole implements GrantedAuthority {
         USER, ADMIN;
 
         //TODO: test

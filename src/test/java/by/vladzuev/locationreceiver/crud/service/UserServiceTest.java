@@ -28,7 +28,7 @@ public final class UserServiceTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email(givenEmail)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         assertEquals(expected, actual);
     }
@@ -72,7 +72,7 @@ public final class UserServiceTest extends AbstractSpringBootTest {
                 .id(givenUserId)
                 .email(givenNewEmail)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         assertEquals(expected, actual);
     }

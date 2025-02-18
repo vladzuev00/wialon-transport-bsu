@@ -8,7 +8,7 @@ import lombok.Value;
 public class UserView {
     Long id;
     String email;
-    UserEntity.Role role;
+    UserEntity.UserRole role;
 
     //TODO: test
     public UserView(final User user) {

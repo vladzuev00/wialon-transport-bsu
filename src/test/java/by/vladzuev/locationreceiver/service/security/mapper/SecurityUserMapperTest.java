@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.service.security.model.SecurityUser;
 import org.junit.Test;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.Role.USER;
+import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
 import static org.junit.Assert.assertEquals;
 
 public final class SecurityUserMapperTest {

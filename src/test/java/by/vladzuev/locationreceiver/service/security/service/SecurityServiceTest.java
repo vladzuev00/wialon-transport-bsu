@@ -19,7 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.Role.USER;
+import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
 import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;

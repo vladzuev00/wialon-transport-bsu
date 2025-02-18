@@ -21,7 +21,7 @@ public final class UserMapperTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
 
         final UserEntity actual = mapper.mapToEntity(givenDto);
@@ -29,7 +29,7 @@ public final class UserMapperTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         assertNotNull(actual);
         UserEntityUtil.checkEquals(expected, actual);
@@ -41,7 +41,7 @@ public final class UserMapperTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
 
         final User actual = mapper.createDto(givenEntity);
@@ -49,7 +49,7 @@ public final class UserMapperTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email("vladzuev.00@mail.ru")
                 .password("password")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         assertEquals(expected, actual);
     }

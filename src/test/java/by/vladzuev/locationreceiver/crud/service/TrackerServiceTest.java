@@ -128,7 +128,7 @@ public final class TrackerServiceTest extends AbstractSpringBootTest {
                                 .id(255L)
                                 .email("vladzuev.00@mail.ru")
                                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                                .role(UserEntity.Role.USER)
+                                .role(UserEntity.UserRole.USER)
                                 .build()
                 )
                 .build();

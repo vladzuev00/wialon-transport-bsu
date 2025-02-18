@@ -42,7 +42,7 @@ public final class RegistrationControllerTest extends AbstractSpringBootTest {
         final RegisteredUserResponse givenResponse = RegisteredUserResponse.builder()
                 .id(255L)
                 .email(givenEmail)
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         when(mockedRegistrationService.checkIn(eq(givenBody))).thenReturn(givenResponse);
 
@@ -69,7 +69,7 @@ public final class RegistrationControllerTest extends AbstractSpringBootTest {
         final RegisteredUserResponse givenResponse = RegisteredUserResponse.builder()
                 .id(255L)
                 .email(givenEmail)
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         when(mockedRegistrationService.checkIn(eq(givenBody))).thenReturn(givenResponse);
 

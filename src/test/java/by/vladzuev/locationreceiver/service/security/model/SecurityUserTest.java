@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Set;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.Role.USER;
+import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
 import static org.junit.Assert.*;
 
 public final class SecurityUserTest {

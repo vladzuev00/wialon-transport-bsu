@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.model.form.UserForm;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import org.springframework.stereotype.Component;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.Role.USER;
+import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
 
 @Component
 public final class UserFormMapper {

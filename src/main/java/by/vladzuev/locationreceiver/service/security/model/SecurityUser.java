@@ -17,7 +17,7 @@ public class SecurityUser implements UserDetails {
     Long id;
     String email;
     String password;
-    UserEntity.Role role;
+    UserEntity.UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

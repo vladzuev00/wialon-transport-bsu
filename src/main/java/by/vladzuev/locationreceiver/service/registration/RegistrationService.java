@@ -44,7 +44,7 @@ public final class RegistrationService {
         return User.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
     }
 

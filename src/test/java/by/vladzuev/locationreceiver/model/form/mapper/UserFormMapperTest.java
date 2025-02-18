@@ -7,7 +7,7 @@ import by.vladzuev.locationreceiver.model.form.UserForm;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.Role.USER;
+import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
 import static org.junit.Assert.assertEquals;
 
 public final class UserFormMapperTest extends AbstractSpringBootTest {

@@ -30,7 +30,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
                 .id(givenId)
                 .email("vladzuev.00@mail.ru")
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         UserEntityUtil.checkEquals(expected, actual);
     }
@@ -40,7 +40,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
         final UserEntity givenUser = UserEntity.builder()
                 .email("test@mail.ru")
                 .password("password")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
 
         startQueryCount();
@@ -62,7 +62,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
                 .id(255L)
                 .email(givenEmail)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         UserEntityUtil.checkEquals(expected, actual);
     }
@@ -117,7 +117,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
                 .id(givenUserId)
                 .email(givenNewEmail)
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         UserEntityUtil.checkEquals(expected, actual);
     }
@@ -152,7 +152,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
                 .id(givenId)
                 .email("vladzuev.00@mail.ru")
                 .password(givenNewEncryptedPassword)
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         UserEntityUtil.checkEquals(expected, actual);
     }

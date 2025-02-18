@@ -47,19 +47,19 @@ public final class RegistrationServiceTest {
         final User expectedUser = User.builder()
                 .email(givenEmail)
                 .password(givenPassword)
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         final Long givenSavedUserId = 255L;
         final User givenSavedUser = User.builder()
                 .id(givenSavedUserId)
                 .email(givenEmail)
                 .password(givenPassword)
-                .role(UserEntity.Role.USER)
+                .role(UserEntity.UserRole.USER)
                 .build();
         when(mockedUserService.save(eq(expectedUser))).thenReturn(givenSavedUser);
 
         final RegisteredUserResponse actual = registrationService.checkIn(givenRequest);
-        final RegisteredUserResponse expected = new RegisteredUserResponse(givenSavedUserId, givenEmail, UserEntity.Role.USER);
+        final RegisteredUserResponse expected = new RegisteredUserResponse(givenSavedUserId, givenEmail, UserEntity.UserRole.USER);
         assertEquals(expected, actual);
     }
 

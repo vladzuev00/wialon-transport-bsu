@@ -11,5 +11,5 @@ import lombok.Value;
 public class RegisteredUserResponse {
     Long id;
     String email;
-    UserEntity.Role role;
+    UserEntity.UserRole role;
 }
