@@ -61,11 +61,29 @@ public final class AddressRepositoryTest extends AbstractSpringBootTest {
     @Test
     public void addressShouldBeSaved() {
         final AddressEntity givenAddress = AddressEntity.builder()
-//                .boundingBox(createPolygon(geometryFactory, 2, 3, 4, 5, 6, 7, 8, 9))
-//                .center(createPoint(geometryFactory, 53.050287, 24.873636))
-//                .cityName("city")
-//                .countryName("country")
-//                .geometry(createPolygon(geometryFactory, 1, 2, 3, 4, 5, 6))
+                .boundingBox(
+                        geometryFactory.createPolygon(
+                                new Coordinate[]{
+                                        new Coordinate(2, 3),
+                                        new Coordinate(4, 5),
+                                        new Coordinate(6, 7),
+                                        new Coordinate(8, 9),
+                                        new Coordinate(2, 3)
+                                }
+                        )
+                )
+                .center(geometryFactory.createPoint(new Coordinate(53.050287, 24.873636)))
+                .cityName("city")
+                .countryName("country")
+                .geometry(
+                        geometryFactory.createPolygon(
+                                new Coordinate[]{
+                                        new Coordinate(1, 2),
+                                        new Coordinate(3, 4),
+                                        new Coordinate(5, 6)
+                                }
+                        )
+                )
                 .build();
 
         final AddressEntity actual = repository.save(givenAddress);
