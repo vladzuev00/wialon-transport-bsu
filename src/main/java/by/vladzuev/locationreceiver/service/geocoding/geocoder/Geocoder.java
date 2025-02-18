@@ -7,6 +7,5 @@ import java.util.Optional;
 
 @FunctionalInterface
 public interface Geocoder {
-
     Optional<Address> geocode(final GpsCoordinate coordinate);
 }

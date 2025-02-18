@@ -1,9 +1,8 @@
 package by.vladzuev.locationreceiver.validation.annotation;
 
 import by.vladzuev.locationreceiver.validation.validator.byregex.ImeiValidator;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER, FIELD})
-@Constraint(validatedBy = ImeiValidator.class)
+//@Constraint(validatedBy = ImeiValidator.class)
 public @interface Imei {
     String message() default "Invalid imei";
 

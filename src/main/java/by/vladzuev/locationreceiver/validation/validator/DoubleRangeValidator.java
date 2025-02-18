@@ -1,10 +1,9 @@
 package by.vladzuev.locationreceiver.validation.validator;
 
 import by.vladzuev.locationreceiver.validation.annotation.DoubleRange;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 import static java.lang.Double.compare;
 

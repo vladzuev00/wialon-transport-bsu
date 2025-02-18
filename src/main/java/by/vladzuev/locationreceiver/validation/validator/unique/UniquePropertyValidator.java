@@ -3,10 +3,10 @@ package by.vladzuev.locationreceiver.validation.validator.unique;
 import by.vladzuev.locationreceiver.controller.abstraction.View;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
 import by.vladzuev.locationreceiver.crud.service.CRUDService;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.Optional;

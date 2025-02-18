@@ -1,7 +1,8 @@
 package by.vladzuev.locationreceiver.validation.validator.byregex;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.lang.annotation.Annotation;
 import java.util.regex.Pattern;
 

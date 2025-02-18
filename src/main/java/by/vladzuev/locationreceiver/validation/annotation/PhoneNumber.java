@@ -1,9 +1,8 @@
 package by.vladzuev.locationreceiver.validation.annotation;
 
 import by.vladzuev.locationreceiver.validation.validator.byregex.PhoneNumberValidator;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER, FIELD})
-@Constraint(validatedBy = PhoneNumberValidator.class)
+//@Constraint(validatedBy = PhoneNumberValidator.class)
 public @interface PhoneNumber {
     String message() default "Invalid phone number";
 

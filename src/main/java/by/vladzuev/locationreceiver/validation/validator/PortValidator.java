@@ -1,9 +1,8 @@
 package by.vladzuev.locationreceiver.validation.validator;
 
 import by.vladzuev.locationreceiver.validation.annotation.Port;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 //TODO: remove all validators and do as @Hdop
 public final class PortValidator implements ConstraintValidator<Port, Integer> {
