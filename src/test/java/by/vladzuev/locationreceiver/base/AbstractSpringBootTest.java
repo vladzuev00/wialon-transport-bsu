@@ -3,7 +3,6 @@ package by.vladzuev.locationreceiver.base;
 import by.vladzuev.locationreceiver.base.containerinitializer.DataBaseContainerInitializer;
 import by.vladzuev.locationreceiver.base.containerinitializer.KafkaContainerInitializer;
 import by.vladzuev.locationreceiver.base.containerinitializer.RedisContainerInitializer;
-import com.yannbriancon.interceptor.HibernateQueryInterceptor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
