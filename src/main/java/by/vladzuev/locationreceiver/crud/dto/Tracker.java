@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class Tracker implements Dto<Long> {
     Long id;
     String imei;

@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.crud.mapper;
 
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

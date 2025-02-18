@@ -1,7 +1,6 @@
 package by.vladzuev.locationreceiver.service.searchingcities;
 
 import by.vladzuev.locationreceiver.crud.dto.City;
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.crud.service.SearchingCitiesProcessService;
 import by.vladzuev.locationreceiver.model.AreaCoordinate;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;

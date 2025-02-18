@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.service.searchingcities.factory;
 
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.model.AreaCoordinate;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import lombok.RequiredArgsConstructor;

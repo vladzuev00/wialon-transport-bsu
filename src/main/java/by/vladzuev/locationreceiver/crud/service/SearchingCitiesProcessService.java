@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.crud.service;
 
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity;
 import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity.Status;
 import by.vladzuev.locationreceiver.crud.mapper.SearchingCitiesProcessMapper;

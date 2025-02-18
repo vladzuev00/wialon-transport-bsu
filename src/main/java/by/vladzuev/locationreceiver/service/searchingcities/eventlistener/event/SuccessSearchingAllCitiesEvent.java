@@ -1,7 +1,6 @@
 package by.vladzuev.locationreceiver.service.searchingcities.eventlistener.event;
 
 import by.vladzuev.locationreceiver.crud.dto.City;
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.service.searchingcities.StartingSearchingCitiesProcessService;
 import lombok.Getter;
 

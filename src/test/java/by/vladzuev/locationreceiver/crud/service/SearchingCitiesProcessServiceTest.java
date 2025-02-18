@@ -1,7 +1,6 @@
 package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity;
 import by.vladzuev.locationreceiver.util.GeometryTestUtil;
 import org.junit.Test;

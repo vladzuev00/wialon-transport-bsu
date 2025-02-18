@@ -2,7 +2,6 @@ package by.vladzuev.locationreceiver.service.searchingcities.eventlistener;
 
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.dto.City;
-import by.vladzuev.locationreceiver.crud.dto.SearchingCitiesProcess;
 import by.vladzuev.locationreceiver.crud.service.AddressService;
 import by.vladzuev.locationreceiver.crud.service.CityService;
 import by.vladzuev.locationreceiver.crud.service.SearchingCitiesProcessService;
