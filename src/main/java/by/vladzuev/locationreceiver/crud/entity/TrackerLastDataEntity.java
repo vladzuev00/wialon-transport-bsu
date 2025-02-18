@@ -29,5 +29,5 @@ public class TrackerLastDataEntity extends AbstractEntity<Long> {
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "data_id")
     @ToString.Exclude
-    private DataEntity data;
+    private LocationEntity data;
 }

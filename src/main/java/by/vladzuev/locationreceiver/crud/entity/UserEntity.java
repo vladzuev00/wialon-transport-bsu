@@ -16,7 +16,7 @@ import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class UserEntity extends EntityWithPassword<Long> {
+public class UserEntity extends SecuredEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

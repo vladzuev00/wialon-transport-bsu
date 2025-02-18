@@ -1,14 +1,14 @@
 package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.EntityWithPassword;
+import by.vladzuev.locationreceiver.crud.entity.SecuredEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import by.vladzuev.locationreceiver.crud.repository.EntityWithPasswordRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public abstract class CRUDEncryptingPasswordService<
         ID,
-        ENTITY extends EntityWithPassword<ID>,
+        ENTITY extends SecuredEntity<ID>,
         DTO extends Dto<ID>,
         MAPPER extends Mapper<ENTITY, DTO>,
         REPOSITORY extends EntityWithPasswordRepository<ID, ENTITY>

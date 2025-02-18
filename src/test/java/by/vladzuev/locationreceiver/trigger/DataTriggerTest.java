@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.trigger;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.AddressEntity;
-import by.vladzuev.locationreceiver.crud.entity.DataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerLastDataEntity;
 import org.junit.Test;
@@ -19,9 +19,9 @@ public final class DataTriggerTest extends AbstractSpringBootTest {
     @Sql("classpath:sql/cities/insert-cities.sql")
     public void trackerLastDataShouldBeUpdated() {
         final Long givenTrackerId = 255L;
-        final DataEntity givenData = DataEntity.builder()
+        final LocationEntity givenData = LocationEntity.builder()
                 .dateTime(LocalDateTime.of(2019, 10, 24, 14, 39, 53))
-                .coordinate(new DataEntity.Coordinate(53.233, 27.3434))
+                .coordinate(new LocationEntity.Coordinate(53.233, 27.3434))
                 .speed(8)
                 .course(9)
                 .altitude(10)

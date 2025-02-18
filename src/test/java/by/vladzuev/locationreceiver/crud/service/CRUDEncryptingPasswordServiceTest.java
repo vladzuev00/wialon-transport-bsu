@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.Dto;
-import by.vladzuev.locationreceiver.crud.entity.EntityWithPassword;
+import by.vladzuev.locationreceiver.crud.entity.SecuredEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import by.vladzuev.locationreceiver.crud.repository.EntityWithPasswordRepository;
 import lombok.*;
@@ -84,7 +84,7 @@ public final class CRUDEncryptingPasswordServiceTest {
     @Setter
     @Getter
     @ToString(callSuper = true)
-    private static final class TestPersonEntity extends EntityWithPassword<Long> {
+    private static final class TestPersonEntity extends SecuredEntity<Long> {
         private Long id;
 
         public TestPersonEntity(final Long id, final String password) {

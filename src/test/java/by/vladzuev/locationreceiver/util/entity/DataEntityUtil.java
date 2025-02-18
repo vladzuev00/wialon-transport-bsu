@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.util.entity;
 
-import by.vladzuev.locationreceiver.crud.entity.DataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.util.CollectionUtil;
 import by.vladzuev.locationreceiver.util.HibernateUtil;
@@ -15,14 +15,14 @@ import static org.junit.Assert.*;
 @UtilityClass
 public final class DataEntityUtil {
 
-    public static void checkEquals(final DataEntity expected, final DataEntity actual) {
+    public static void checkEquals(final LocationEntity expected, final LocationEntity actual) {
         checkEqualsExceptIdAndParameters(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
     }
 
     //TODO: remove
-    public static void checkEqualsExceptIdAndParameters(final DataEntity expected, final DataEntity actual) {
+    public static void checkEqualsExceptIdAndParameters(final LocationEntity expected, final LocationEntity actual) {
         assertEquals(expected.getDateTime(), actual.getDateTime());
         assertEquals(expected.getCoordinate(), actual.getCoordinate());
         assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
@@ -38,7 +38,7 @@ public final class DataEntityUtil {
         assertEquals(expected.getAddress(), actual.getAddress());
     }
 
-    public static void checkEqualsExceptParameters(final DataEntity expected, final DataEntity actual) {
+    public static void checkEqualsExceptParameters(final LocationEntity expected, final LocationEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getDateTime(), actual.getDateTime());
         assertEquals(expected.getCoordinate(), actual.getCoordinate());
@@ -55,27 +55,27 @@ public final class DataEntityUtil {
         assertEquals(expected.getAddress(), actual.getAddress());
     }
 
-    public static boolean areParametersFetched(final DataEntity data) {
-        return HibernateUtil.isPropertyFetched(data, DataEntity::getParameters);
+    public static boolean areParametersFetched(final LocationEntity data) {
+        return HibernateUtil.isPropertyFetched(data, LocationEntity::getParameters);
     }
 
-    public static boolean isTrackerFetched(final DataEntity data) {
-        return HibernateUtil.isPropertyFetched(data, DataEntity::getTracker);
+    public static boolean isTrackerFetched(final LocationEntity data) {
+        return HibernateUtil.isPropertyFetched(data, LocationEntity::getTracker);
     }
 
-    public static boolean isAddressFetched(final DataEntity data) {
-        return HibernateUtil.isPropertyFetched(data, DataEntity::getAddress);
+    public static boolean isAddressFetched(final LocationEntity data) {
+        return HibernateUtil.isPropertyFetched(data, LocationEntity::getAddress);
     }
 
-    public static boolean areParametersNotFetched(final Collection<DataEntity> entities) {
+    public static boolean areParametersNotFetched(final Collection<LocationEntity> entities) {
         return CollectionUtil.areAllMatch(entities, entity -> !areParametersFetched(entity));
     }
 
-    public static boolean areTrackersFetched(final Collection<DataEntity> entities) {
+    public static boolean areTrackersFetched(final Collection<LocationEntity> entities) {
         return CollectionUtil.areAllMatch(entities, DataEntityUtil::isTrackerFetched);
     }
 
-    public static boolean areAddressesFetched(final Collection<DataEntity> entities) {
+    public static boolean areAddressesFetched(final Collection<LocationEntity> entities) {
         return CollectionUtil.areAllMatch(entities, DataEntityUtil::isAddressFetched);
     }
 

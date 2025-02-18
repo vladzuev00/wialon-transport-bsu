@@ -6,7 +6,7 @@ import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.entity.AddressEntity;
-import by.vladzuev.locationreceiver.crud.entity.DataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
@@ -57,11 +57,11 @@ public final class DataMapperTest extends AbstractSpringBootTest {
                 .address(createAddressDto(259L))
                 .build();
 
-        final DataEntity actual = mapper.mapToEntity(givenDto);
-        final DataEntity expected = DataEntity.builder()
+        final LocationEntity actual = mapper.mapToEntity(givenDto);
+        final LocationEntity expected = LocationEntity.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                .coordinate(new DataEntity.Coordinate(5.5, 6.6))
+                .coordinate(new LocationEntity.Coordinate(5.5, 6.6))
                 .speed(26)
                 .course(27)
                 .altitude(28)
@@ -87,10 +87,10 @@ public final class DataMapperTest extends AbstractSpringBootTest {
 
     @Test
     public void entityWithLoadedPropertiesShouldBeMappedToDto() {
-        final DataEntity givenEntity = DataEntity.builder()
+        final LocationEntity givenEntity = LocationEntity.builder()
                 .id(255L)
                 .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                .coordinate(new DataEntity.Coordinate(5.5, 6.6))
+                .coordinate(new LocationEntity.Coordinate(5.5, 6.6))
                 .speed(26)
                 .course(27)
                 .altitude(28)
@@ -150,10 +150,10 @@ public final class DataMapperTest extends AbstractSpringBootTest {
                     .when(() -> isInitialized(same(givenAddress)))
                     .thenReturn(false);
 
-            final DataEntity givenEntity = DataEntity.builder()
+            final LocationEntity givenEntity = LocationEntity.builder()
                     .id(255L)
                     .dateTime(LocalDateTime.of(2023, 1, 8, 4, 18, 15))
-                    .coordinate(new DataEntity.Coordinate(5.5, 6.6))
+                    .coordinate(new LocationEntity.Coordinate(5.5, 6.6))
                     .speed(26)
                     .course(27)
                     .altitude(28)

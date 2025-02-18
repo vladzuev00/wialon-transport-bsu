@@ -39,5 +39,5 @@ public class ParameterEntity extends AbstractEntity<Long> {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "data_id")
     @ToString.Exclude
-    private DataEntity data;
+    private LocationEntity data;
 }

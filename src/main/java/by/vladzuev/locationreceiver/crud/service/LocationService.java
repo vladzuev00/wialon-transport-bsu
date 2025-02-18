@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.crud.service;
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.User;
-import by.vladzuev.locationreceiver.crud.entity.DataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.mapper.DataMapper;
 import by.vladzuev.locationreceiver.crud.repository.DataRepository;
 import by.vladzuev.locationreceiver.model.DateInterval;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class LocationService extends CRUDService<Long, DataEntity, Location, DataMapper, DataRepository> {
+public class LocationService extends CRUDService<Long, LocationEntity, Location, DataMapper, DataRepository> {
 
     public LocationService(final DataMapper mapper, final DataRepository repository) {
         super(mapper, repository);
@@ -58,7 +58,7 @@ public class LocationService extends CRUDService<Long, DataEntity, Location, Dat
     }
 
     @Override
-    protected void configureBeforeSave(final DataEntity entity) {
+    protected void configureBeforeSave(final LocationEntity entity) {
 
     }
 }

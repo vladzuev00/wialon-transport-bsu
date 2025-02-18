@@ -13,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class TrackerEntity extends EntityWithPassword<Long> {
+public class TrackerEntity extends SecuredEntity<Long> {
 
     @Id
     @Column(name = "id")

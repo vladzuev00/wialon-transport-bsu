@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.crud.entity.DataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import by.vladzuev.locationreceiver.util.CollectionUtil;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public final class DataMapper extends Mapper<DataEntity, Location> {
+public final class DataMapper extends Mapper<LocationEntity, Location> {
 
     public DataMapper(final ModelMapper modelMapper) {
-        super(modelMapper, DataEntity.class, Location.class);
+        super(modelMapper, LocationEntity.class, Location.class);
     }
 
     @Override
-    protected Location createDto(final DataEntity source) {
+    protected Location createDto(final LocationEntity source) {
         return new Location(
                 source.getId(),
                 source.getDateTime(),
@@ -43,47 +43,47 @@ public final class DataMapper extends Mapper<DataEntity, Location> {
     }
 
     @Override
-    protected void mapSpecificFields(final Location source, final DataEntity destination) {
+    protected void mapSpecificFields(final Location source, final LocationEntity destination) {
         mapCoordinate(source, destination);
         mapParameters(source, destination);
     }
 
-    private static GpsCoordinate mapNullableCoordinate(final DataEntity source) {
-        final DataEntity.Coordinate sourceCoordinate = source.getCoordinate();
+    private static GpsCoordinate mapNullableCoordinate(final LocationEntity source) {
+        final LocationEntity.Coordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static GpsCoordinate map(final DataEntity.Coordinate source) {
+    private static GpsCoordinate map(final LocationEntity.Coordinate source) {
         return new GpsCoordinate(source.getLatitude(), source.getLongitude());
     }
 
-    private Map<String, Parameter> mapParameters(final DataEntity source) {
+    private Map<String, Parameter> mapParameters(final LocationEntity source) {
         return mapLazyToMap(source.getParameters(), Parameter.class, Parameter::getName);
     }
 
-    private Tracker mapTracker(final DataEntity source) {
+    private Tracker mapTracker(final LocationEntity source) {
         return mapLazy(source.getTracker(), Tracker.class);
     }
 
-    private Address mapAddress(final DataEntity source) {
+    private Address mapAddress(final LocationEntity source) {
         return mapLazy(source.getAddress(), Address.class);
     }
 
-    private void mapCoordinate(final Location source, final DataEntity destination) {
+    private void mapCoordinate(final Location source, final LocationEntity destination) {
         destination.setCoordinate(mapNullableCoordinate(source));
     }
 
-    private void mapParameters(final Location source, final DataEntity destination) {
+    private void mapParameters(final Location source, final LocationEntity destination) {
         destination.setParameters(mapNullableParameters(source));
     }
 
-    private static DataEntity.Coordinate mapNullableCoordinate(final Location source) {
+    private static LocationEntity.Coordinate mapNullableCoordinate(final Location source) {
         final GpsCoordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static DataEntity.Coordinate map(final GpsCoordinate source) {
-        return new DataEntity.Coordinate(source.getLatitude(), source.getLongitude());
+    private static LocationEntity.Coordinate map(final GpsCoordinate source) {
+        return new LocationEntity.Coordinate(source.getLatitude(), source.getLongitude());
     }
 
     private List<ParameterEntity> mapNullableParameters(final Location source) {

@@ -13,20 +13,20 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 
-@jakarta.persistence.Entity
-@Table(name = "data")
-@NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@Entity
 @Builder
-public class DataEntity extends AbstractEntity<Long> {
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "location")
+public class LocationEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = SEQUENCE, generator = "data_id_seq")
-    @SequenceGenerator(name = "data_id_seq", sequenceName = "data_id_seq")
+    @GeneratedValue(strategy = SEQUENCE, generator = "location_id_seq")
+    @SequenceGenerator(name = "location_id_seq", sequenceName = "location_id_seq")
     private Long id;
 
     @Column(name = "date_time")
@@ -44,8 +44,8 @@ public class DataEntity extends AbstractEntity<Long> {
     @Column(name = "altitude")
     private int altitude;
 
-    @Column(name = "amount_of_satellites")
-    private int amountOfSatellites;
+    @Column(name = "satellite_count")
+    private int satelliteCount;
 
     @Column(name = "hdop")
     private double hdop;

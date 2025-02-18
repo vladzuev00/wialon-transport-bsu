@@ -8,11 +8,11 @@ import java.util.List;
 import static java.util.stream.IntStream.range;
 import static org.junit.Assert.*;
 
-public final class DataEntityTest {
+public final class LocationEntityTest {
 
     @Test
     public void parametersShouldBeSet() {
-        final DataEntity givenData = createData(255L);
+        final LocationEntity givenData = createData(255L);
         final List<ParameterEntity> givenParameters = List.of(
                 createParameter(256L),
                 createParameter(257L),
@@ -27,7 +27,7 @@ public final class DataEntityTest {
 
     @Test
     public void nullParametersShouldBeSet() {
-        final DataEntity givenData = createData(255L);
+        final LocationEntity givenData = createData(255L);
 
         givenData.setParameters(null);
 
@@ -36,7 +36,7 @@ public final class DataEntityTest {
 
     @Test
     public void parameterShouldBeAdd() {
-        final DataEntity givenData = createData(256L);
+        final LocationEntity givenData = createData(256L);
         final ParameterEntity givenParameter = createParameter(257L);
 
         givenData.addParameter(givenParameter);
@@ -45,8 +45,8 @@ public final class DataEntityTest {
         assertTrue(givenData.getParameters().stream().anyMatch(parameter -> parameter == givenParameter));
     }
 
-    private static DataEntity createData(final Long id) {
-        return DataEntity.builder()
+    private static LocationEntity createData(final Long id) {
+        return LocationEntity.builder()
                 .id(id)
                 .parameters(new ArrayList<>())
                 .build();
