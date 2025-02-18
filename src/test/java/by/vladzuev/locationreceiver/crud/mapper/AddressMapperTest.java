@@ -43,7 +43,7 @@ public final class AddressMapperTest extends AbstractSpringBootTest {
                 .geometry(GeometryTestUtil.createPolygon(geometryFactory, 1, 2, 3, 4, 5, 6))
                 .build();
         assertNotNull(actual);
-        AddressEntityUtil.checkEquals(expected, actual);
+        AddressEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
