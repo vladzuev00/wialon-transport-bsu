@@ -11,9 +11,10 @@ import java.util.stream.Stream;
 
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
-    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
-            + "FROM addresses WHERE ST_Intersects(geometry, ST_SetSRID(ST_Point(:longitude, :latitude), 4326))",
-            nativeQuery = true)
+    @Query("SELECT e FROM AddressEntity e WHERE INTERSECT(e.boundingBox, ) AND INTERSECT(e.geometry, )")
+//    @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "
+//            + "FROM addresses WHERE ST_Intersects(geometry, ST_SetSRID(ST_Point(:longitude, :latitude), 4326))",
+//            nativeQuery = true)
     Optional<AddressEntity> findByGpsCoordinates(final double latitude, final double longitude);
 
     @Query(value = "SELECT id, bounding_box, center, city_name, country_name, geometry "

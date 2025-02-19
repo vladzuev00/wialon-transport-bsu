@@ -27,34 +27,30 @@ public final class AddressRepositoryTest extends AbstractSpringBootTest {
         final Optional<AddressEntity> optionalActual = repository.findById(givenId);
         assertTrue(optionalActual.isPresent());
         final AddressEntity actual = optionalActual.get();
-        final AddressEntity expected = AddressEntity.builder()
-                .id(givenId)
-                .boundingBox(
-                        geometryFactory.createPolygon(
-                                new Coordinate[]{
-                                        new Coordinate(1, 1),
-                                        new Coordinate(1, 2),
-                                        new Coordinate(2, 2),
-                                        new Coordinate(2, 1),
-                                        new Coordinate(1, 1)
-                                }
-                        )
+        final AddressEntity expected = new AddressEntity(
+                givenId,
+                geometryFactory.createPolygon(
+                        new Coordinate[]{
+                                new Coordinate(1, 1),
+                                new Coordinate(1, 2),
+                                new Coordinate(2, 2),
+                                new Coordinate(2, 1),
+                                new Coordinate(1, 1)
+                        }
+                ),
+                geometryFactory.createPoint(new Coordinate(1.5, 1.5)),
+                "first-city",
+                "first-country",
+                geometryFactory.createPolygon(
+                        new Coordinate[]{
+                                new Coordinate(1, 1),
+                                new Coordinate(1, 2),
+                                new Coordinate(2, 2),
+                                new Coordinate(2, 1),
+                                new Coordinate(1, 1)
+                        }
                 )
-                .center(geometryFactory.createPoint(new Coordinate(1.5, 1.5)))
-                .cityName("first-city")
-                .countryName("first-country")
-                .geometry(
-                        geometryFactory.createPolygon(
-                                new Coordinate[]{
-                                        new Coordinate(1, 1),
-                                        new Coordinate(1, 2),
-                                        new Coordinate(2, 2),
-                                        new Coordinate(2, 1),
-                                        new Coordinate(1, 1)
-                                }
-                        )
-                )
-                .build();
+        );
         AddressEntityUtil.assertEquals(expected, actual);
     }
 
@@ -73,21 +69,47 @@ public final class AddressRepositoryTest extends AbstractSpringBootTest {
                         )
                 )
                 .center(geometryFactory.createPoint(new Coordinate(53.050287, 24.873636)))
-                .cityName("city")
-                .countryName("country")
+                .cityName("test-city")
+                .countryName("test-country")
                 .geometry(
                         geometryFactory.createPolygon(
                                 new Coordinate[]{
+                                        new Coordinate(1, 1),
                                         new Coordinate(1, 2),
-                                        new Coordinate(3, 4),
-                                        new Coordinate(5, 6)
+                                        new Coordinate(2, 2),
+                                        new Coordinate(2, 1),
+                                        new Coordinate(1, 1)
                                 }
                         )
                 )
                 .build();
 
         final AddressEntity actual = repository.save(givenAddress);
-        throw new UnsupportedOperationException();
+        final AddressEntity expected = new AddressEntity(
+                1L,
+                geometryFactory.createPolygon(
+                        new Coordinate[]{
+                                new Coordinate(2, 3),
+                                new Coordinate(4, 5),
+                                new Coordinate(6, 7),
+                                new Coordinate(8, 9),
+                                new Coordinate(2, 3)
+                        }
+                ),
+                geometryFactory.createPoint(new Coordinate(53.050287, 24.873636)),
+                "test-city",
+                "test-country",
+                geometryFactory.createPolygon(
+                        new Coordinate[]{
+                                new Coordinate(1, 1),
+                                new Coordinate(1, 2),
+                                new Coordinate(2, 2),
+                                new Coordinate(2, 1),
+                                new Coordinate(1, 1)
+                        }
+                )
+        );
+        AddressEntityUtil.assertEquals(expected, actual);
     }
 
 //    @Test
