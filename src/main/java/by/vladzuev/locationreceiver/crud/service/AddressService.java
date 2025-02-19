@@ -7,6 +7,7 @@ import by.vladzuev.locationreceiver.crud.repository.AddressRepository;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +27,14 @@ public class AddressService extends CRUDService<Long, AddressEntity, Address, Ad
     }
 
     @Transactional(readOnly = true)
-    public Optional<Address> findByCoordinate(final GpsCoordinate coordinate) {
-        return findUniqueDto(
-                repository -> repository.findByGpsCoordinates(
-                        coordinate.getLatitude(),
-                        coordinate.getLongitude()
-                )
-        );
+    public Optional<Address> findByPoint(final Point point) {
+        return Optional.empty();
+//        return findUniqueDto(
+//                repository -> repository.findByGpsCoordinates(
+//                        coordinate.getLatitude(),
+//                        coordinate.getLongitude()
+//                )
+//        );
     }
 
     @Transactional(readOnly = true)

@@ -35,7 +35,7 @@ public final class InternalGeocoderTest {
         final GpsCoordinate givenCoordinate = GpsCoordinate.builder().build();
 
         final Address givenAddress = Address.builder().build();
-        when(mockedAddressService.findByCoordinate(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
+        when(mockedAddressService.findByPoint(same(givenCoordinate))).thenReturn(Optional.of(givenAddress));
 
         final Optional<Address> optionalActual = geocoder.geocode(givenCoordinate);
         assertTrue(optionalActual.isPresent());
@@ -47,7 +47,7 @@ public final class InternalGeocoderTest {
     public void addressShouldNotBeGeocoded() {
         final GpsCoordinate givenCoordinate = GpsCoordinate.builder().build();
 
-        when(mockedAddressService.findByCoordinate(givenCoordinate)).thenReturn(empty());
+        when(mockedAddressService.findByPoint(givenCoordinate)).thenReturn(empty());
 
         final Optional<Address> optionalActual = geocoder.geocode(givenCoordinate);
         assertTrue(optionalActual.isEmpty());

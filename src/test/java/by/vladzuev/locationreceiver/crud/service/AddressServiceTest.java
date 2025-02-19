@@ -32,7 +32,7 @@ public final class AddressServiceTest extends AbstractSpringBootTest {
     public void addressShouldBeFoundByGpsCoordinates() {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(1, 1);
 
-        final Optional<Address> optionalActual = addressService.findByCoordinate(givenCoordinate);
+        final Optional<Address> optionalActual = addressService.findByPoint(givenCoordinate);
         assertTrue(optionalActual.isPresent());
         final Address actual = optionalActual.get();
 
@@ -46,7 +46,7 @@ public final class AddressServiceTest extends AbstractSpringBootTest {
     public void addressShouldNotBeFoundByGpsCoordinates() {
         final GpsCoordinate givenCoordinate = new GpsCoordinate(20, 20);
 
-        final Optional<Address> optionalActual = addressService.findByCoordinate(givenCoordinate);
+        final Optional<Address> optionalActual = addressService.findByPoint(givenCoordinate);
         assertTrue(optionalActual.isEmpty());
     }
 
