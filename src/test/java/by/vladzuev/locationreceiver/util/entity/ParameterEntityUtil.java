@@ -18,7 +18,7 @@ public final class ParameterEntityUtil {
         assertEquals(expected.getName(), actual.getName());
         assertSame(expected.getType(), actual.getType());
         assertEquals(expected.getValue(), actual.getValue());
-        assertEquals(expected.getData(), actual.getData());
+        assertEquals(expected.getLocation(), actual.getLocation());
     }
 
     public static void checkEquals(final List<ParameterEntity> expected, final List<ParameterEntity> actual) {
@@ -27,6 +27,6 @@ public final class ParameterEntityUtil {
     }
 
     public static boolean isDataFetched(final ParameterEntity entity) {
-        return HibernateUtil.isPropertyFetched(entity, ParameterEntity::getData);
+        return HibernateUtil.isPropertyFetched(entity, ParameterEntity::getLocation);
     }
 }

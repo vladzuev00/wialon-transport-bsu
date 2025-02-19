@@ -22,7 +22,7 @@ public final class LocationEntityTest {
         givenData.setParameters(givenParameters);
 
         assertSame(givenParameters, givenData.getParameters());
-        range(0, givenParameters.size()).forEach(i -> assertSame(givenParameters.get(i).getData(), givenData));
+        range(0, givenParameters.size()).forEach(i -> assertSame(givenParameters.get(i).getLocation(), givenData));
     }
 
     @Test
@@ -41,7 +41,7 @@ public final class LocationEntityTest {
 
         givenData.addParameter(givenParameter);
 
-        assertSame(givenData, givenParameter.getData());
+        assertSame(givenData, givenParameter.getLocation());
         assertTrue(givenData.getParameters().stream().anyMatch(parameter -> parameter == givenParameter));
     }
 

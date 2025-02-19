@@ -3,14 +3,13 @@ package by.vladzuev.locationreceiver.crud.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.SEQUENCE;
+import static org.hibernate.type.SqlTypes.ARRAY;
 
 
 @Setter
@@ -33,7 +32,7 @@ public class LocationEntity extends AbstractEntity<Long> {
     private LocalDateTime dateTime;
 
     @Embedded
-    private Coordinate coordinate;
+    private GpsCoordinate coordinate;
 
     @Column(name = "speed")
     private double speed;
@@ -56,7 +55,7 @@ public class LocationEntity extends AbstractEntity<Long> {
     @Column(name = "outputs")
     private int outputs;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
+    @JdbcTypeCode(ARRAY)
     @Column(name = "analog_inputs")
     private double[] analogInputs;
 
@@ -64,30 +63,18 @@ public class LocationEntity extends AbstractEntity<Long> {
     private String driverKeyCode;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "data", cascade = PERSIST)
+    @OneToMany(mappedBy = "location")
     private List<ParameterEntity> parameters;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "tracker_id")
-    @ToString.Exclude
     private TrackerEntity tracker;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "address_id")
-    @ToString.Exclude
     private AddressEntity address;
-
-    public void setParameters(final List<ParameterEntity> parameters) {
-        if (parameters != null) {
-            parameters.forEach(parameter -> parameter.setData(this));
-        }
-        this.parameters = parameters;
-    }
-
-    public void addParameter(final ParameterEntity parameter) {
-        parameter.setData(this);
-        parameters.add(parameter);
-    }
 
     @NoArgsConstructor
     @AllArgsConstructor
@@ -96,7 +83,7 @@ public class LocationEntity extends AbstractEntity<Long> {
     @EqualsAndHashCode
     @ToString
     @Embeddable
-    public static final class Coordinate {
+    public static final class GpsCoordinate {
         private double latitude;
         private double longitude;
     }

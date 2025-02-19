@@ -5,7 +5,7 @@ import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.mapper.DataMapper;
-import by.vladzuev.locationreceiver.crud.repository.DataRepository;
+import by.vladzuev.locationreceiver.crud.repository.LocationRepository;
 import by.vladzuev.locationreceiver.model.DateInterval;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,19 +15,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class LocationService extends CRUDService<Long, LocationEntity, Location, DataMapper, DataRepository> {
+public class LocationService extends CRUDService<Long, LocationEntity, Location, DataMapper, LocationRepository> {
 
-    public LocationService(final DataMapper mapper, final DataRepository repository) {
+    public LocationService(final DataMapper mapper, final LocationRepository repository) {
         super(mapper, repository);
     }
 
     @Transactional(readOnly = true)
     public Optional<Location> findLastFetchingParameters(final Tracker tracker) {
-        return findUniqueDto(
-                repository -> repository.findTrackerLastDataByTrackerIdFetchingParameters(
-                        tracker.getId()
-                )
-        );
+        return Optional.empty();
+//        return findUniqueDto(
+//                repository -> repository.findTrackerLastDataByTrackerIdFetchingParameters(
+//                        tracker.getId()
+//                )
+//        );
     }
 
     @Transactional(readOnly = true)
@@ -43,7 +44,8 @@ public class LocationService extends CRUDService<Long, LocationEntity, Location,
 
     @Transactional(readOnly = true)
     public Optional<LocalDateTime> findTrackerLastDataDateTime(final Tracker tracker) {
-        return execute(repository -> repository.findTrackerLastDataDateTimeByTrackerId(tracker.getId()));
+        return Optional.empty();
+//        return execute(repository -> repository.findTrackerLastDataDateTimeByTrackerId(tracker.getId()));
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +56,8 @@ public class LocationService extends CRUDService<Long, LocationEntity, Location,
     //TODO: test
     @Transactional(readOnly = true)
     public Optional<Location> findTrackerLastData(final Long trackerId) {
-        return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
+        return Optional.empty();
+//        return findUniqueDto(repository -> repository.findTrackerLastDataByTrackerId(trackerId));
     }
 
     @Override

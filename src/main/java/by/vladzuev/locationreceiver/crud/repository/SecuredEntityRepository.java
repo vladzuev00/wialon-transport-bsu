@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface EntityWithPasswordRepository<ID, ENTITY extends SecuredEntity<ID>>
+public interface SecuredEntityRepository<ID, ENTITY extends SecuredEntity<ID>>
         extends JpaRepository<ENTITY, ID> {
     int updatePassword(final ID id, final String newEncryptedPassword);
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface TrackerRepository extends EntityWithPasswordRepository<Long, TrackerEntity> {
+public interface TrackerRepository extends SecuredEntityRepository<Long, TrackerEntity> {
 
     @Query
     Optional<TrackerEntity> findByImei(final String imei);

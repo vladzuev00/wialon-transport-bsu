@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.crud.service;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
 import by.vladzuev.locationreceiver.crud.entity.SecuredEntity;
 import by.vladzuev.locationreceiver.crud.mapper.Mapper;
-import by.vladzuev.locationreceiver.crud.repository.EntityWithPasswordRepository;
+import by.vladzuev.locationreceiver.crud.repository.SecuredEntityRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public abstract class CRUDEncryptingPasswordService<
@@ -11,7 +11,7 @@ public abstract class CRUDEncryptingPasswordService<
         ENTITY extends SecuredEntity<ID>,
         DTO extends Dto<ID>,
         MAPPER extends Mapper<ENTITY, DTO>,
-        REPOSITORY extends EntityWithPasswordRepository<ID, ENTITY>
+        REPOSITORY extends SecuredEntityRepository<ID, ENTITY>
         >
         extends CRUDService<ID, ENTITY, DTO, MAPPER, REPOSITORY> {
     private final PasswordEncoder passwordEncoder;

@@ -49,11 +49,11 @@ public final class DataMapper extends Mapper<LocationEntity, Location> {
     }
 
     private static GpsCoordinate mapNullableCoordinate(final LocationEntity source) {
-        final LocationEntity.Coordinate sourceCoordinate = source.getCoordinate();
+        final LocationEntity.GpsCoordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static GpsCoordinate map(final LocationEntity.Coordinate source) {
+    private static GpsCoordinate map(final LocationEntity.GpsCoordinate source) {
         return new GpsCoordinate(source.getLatitude(), source.getLongitude());
     }
 
@@ -77,13 +77,13 @@ public final class DataMapper extends Mapper<LocationEntity, Location> {
         destination.setParameters(mapNullableParameters(source));
     }
 
-    private static LocationEntity.Coordinate mapNullableCoordinate(final Location source) {
+    private static LocationEntity.GpsCoordinate mapNullableCoordinate(final Location source) {
         final GpsCoordinate sourceCoordinate = source.getCoordinate();
         return sourceCoordinate != null ? map(sourceCoordinate) : null;
     }
 
-    private static LocationEntity.Coordinate map(final GpsCoordinate source) {
-        return new LocationEntity.Coordinate(source.getLatitude(), source.getLongitude());
+    private static LocationEntity.GpsCoordinate map(final GpsCoordinate source) {
+        return new LocationEntity.GpsCoordinate(source.getLatitude(), source.getLongitude());
     }
 
     private List<ParameterEntity> mapNullableParameters(final Location source) {

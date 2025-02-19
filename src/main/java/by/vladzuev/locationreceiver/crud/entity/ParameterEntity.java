@@ -4,19 +4,20 @@ import by.vladzuev.locationreceiver.model.ParameterType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.SEQUENCE;
+import static org.hibernate.type.SqlTypes.NAMED_ENUM;
 
-@jakarta.persistence.Entity
-@Table(name = "parameters")
-@NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@Entity
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "parameters")
 public class ParameterEntity extends AbstractEntity<Long> {
 
     @Id
@@ -28,16 +29,16 @@ public class ParameterEntity extends AbstractEntity<Long> {
     @Column(name = "name")
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Enumerated(STRING)
     @Column(name = "type")
+    @JdbcTypeCode(NAMED_ENUM)
     private ParameterType type;
 
     @Column(name = "value")
     private String value;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "data_id")
-    @ToString.Exclude
-    private LocationEntity data;
+    private LocationEntity location;
 }

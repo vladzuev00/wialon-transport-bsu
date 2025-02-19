@@ -27,13 +27,13 @@ DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
 ALTER TABLE IF EXISTS trackers
 DROP CONSTRAINT IF EXISTS fk_trackers_to_tracker_mileages;
 
-ALTER TABLE IF EXISTS data
+ALTER TABLE IF EXISTS location
 DROP
-CONSTRAINT IF EXISTS fk_data_to_trackers;
+CONSTRAINT IF EXISTS fk_location_to_trackers;
 
-ALTER TABLE IF EXISTS data
+ALTER TABLE IF EXISTS location
 DROP
-CONSTRAINT IF EXISTS fk_data_to_addresses;
+CONSTRAINT IF EXISTS fk_location_to_addresses;
 
 ALTER TABLE IF EXISTS cities
 DROP
@@ -44,15 +44,15 @@ DROP CONSTRAINT IF EXISTS parameter_name_should_be_correct;
 
 ALTER TABLE IF EXISTS parameters
 DROP
-CONSTRAINT IF EXISTS fk_parameters_to_data;
+CONSTRAINT IF EXISTS fk_parameters_to_location;
 
-ALTER TABLE IF EXISTS trackers_last_data
+ALTER TABLE IF EXISTS trackers_last_location
 DROP
-CONSTRAINT IF EXISTS fk_trackers_last_data_to_trackers;
+CONSTRAINT IF EXISTS fk_trackers_last_location_to_trackers;
 
-ALTER TABLE IF EXISTS trackers_last_data
+ALTER TABLE IF EXISTS trackers_last_location
 DROP
-CONSTRAINT IF EXISTS fk_trackers_last_data_to_data;
+CONSTRAINT IF EXISTS fk_trackers_last_location_to_location;
 
 ALTER TABLE IF EXISTS cities
 DROP
@@ -61,16 +61,16 @@ CONSTRAINT IF EXISTS fk_cities_to_addresses;
 --DROPPING tables
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
-DROP TABLE IF EXISTS data;
+DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS parameters;
-DROP TABLE IF EXISTS trackers_last_data;
+DROP TABLE IF EXISTS trackers_last_location;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS tracker_mileages;
 
 --DROPPING SEQUENCES
 DROP SEQUENCE IF EXISTS addresses_id_seq;
-DROP SEQUENCE IF EXISTS data_id_seq;
+DROP SEQUENCE IF EXISTS location_id_seq;
 DROP SEQUENCE IF EXISTS parameters_id_seq;
 
 --DROPPING TYPES
@@ -149,7 +149,7 @@ ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 
 CREATE INDEX ON addresses using GIST(geometry);
 
-CREATE TABLE data
+CREATE TABLE location
 (
     id                     BIGSERIAL    PRIMARY KEY,
     date_time              TIMESTAMP(0) NOT NULL,
@@ -168,14 +168,14 @@ CREATE TABLE data
     address_id             BIGINT       NOT NULL
 );
 
-ALTER SEQUENCE data_id_seq INCREMENT 50;
+ALTER SEQUENCE location_id_seq INCREMENT 50;
 
-ALTER TABLE data
-    ADD CONSTRAINT fk_data_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
+ALTER TABLE location
+    ADD CONSTRAINT fk_location_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
         ON DELETE CASCADE;
 
-ALTER TABLE data
-    ADD CONSTRAINT fk_data_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
+ALTER TABLE location
+    ADD CONSTRAINT fk_location_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
 
 CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');
 
@@ -185,34 +185,34 @@ CREATE TABLE parameters
     name    VARCHAR(256)   NOT NULL,
     type    parameter_type NOT NULL,
     value   VARCHAR(256)   NOT NULL,
-    data_id BIGINT         NOT NULL
+    location_id BIGINT         NOT NULL
 );
 
 ALTER SEQUENCE parameters_id_seq INCREMENT 50;
 
 ALTER TABLE parameters
-    ADD CONSTRAINT fk_parameters_to_data
-        FOREIGN KEY (data_id) REFERENCES data (id)
+    ADD CONSTRAINT fk_parameters_to_location
+        FOREIGN KEY (location_id) REFERENCES location (id)
             ON DELETE CASCADE;
 
 ALTER TABLE parameters
     ADD CONSTRAINT parameter_name_should_be_correct CHECK (char_length(name) != 0);
 
-CREATE TABLE trackers_last_data
+CREATE TABLE trackers_last_location
 (
     id         SERIAL  PRIMARY KEY,
     tracker_id INTEGER NOT NULL UNIQUE,
-    data_id    BIGINT UNIQUE
+    location_id    BIGINT UNIQUE
 );
 
-ALTER TABLE trackers_last_data
-    ADD CONSTRAINT fk_trackers_last_data_to_trackers FOREIGN KEY (tracker_id)
+ALTER TABLE trackers_last_location
+    ADD CONSTRAINT fk_trackers_last_location_to_trackers FOREIGN KEY (tracker_id)
         REFERENCES trackers (id)
         ON DELETE CASCADE;
 
-ALTER TABLE trackers_last_data
-    ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY (data_id)
-        REFERENCES data (id);
+ALTER TABLE trackers_last_location
+    ADD CONSTRAINT fk_trackers_last_location_to_location FOREIGN KEY (location_id)
+        REFERENCES location (id);
 
 CREATE TABLE cities
 (
@@ -245,10 +245,10 @@ CREATE TRIGGER tr_before_insert_tracker
     EXECUTE PROCEDURE before_insert_tracker();
 
 CREATE
-OR REPLACE FUNCTION insert_tracker_last_data() RETURNS TRIGGER AS
+OR REPLACE FUNCTION insert_tracker_last_location() RETURNS TRIGGER AS
 '
     BEGIN
-        INSERT INTO trackers_last_data(tracker_id)
+        INSERT INTO trackers_last_location(tracker_id)
         VALUES (NEW.id);
         RETURN NEW;
     END;
@@ -258,21 +258,21 @@ CREATE TRIGGER tr_after_insert_tracker
     AFTER INSERT
     ON trackers
     FOR EACH ROW
-    EXECUTE PROCEDURE insert_tracker_last_data();
+    EXECUTE PROCEDURE insert_tracker_last_location();
 
 CREATE
-OR REPLACE FUNCTION update_tracker_last_data() RETURNS TRIGGER AS
+OR REPLACE FUNCTION update_tracker_last_location() RETURNS TRIGGER AS
 '
     BEGIN
-		UPDATE trackers_last_data
-        SET data_id = NEW.id
-        WHERE trackers_last_data.tracker_id = NEW.tracker_id;
+		UPDATE trackers_last_location
+        SET location_id = NEW.id
+        WHERE trackers_last_location.tracker_id = NEW.tracker_id;
         RETURN NEW;
     END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_after_insert_data
+CREATE TRIGGER tr_after_insert_location
     AFTER INSERT
-    ON data
+    ON location
     FOR EACH ROW
-    EXECUTE PROCEDURE update_tracker_last_data();
+    EXECUTE PROCEDURE update_tracker_last_location();

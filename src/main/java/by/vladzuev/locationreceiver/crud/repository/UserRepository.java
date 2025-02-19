@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserRepository extends EntityWithPasswordRepository<Long, UserEntity> {
+public interface UserRepository extends SecuredEntityRepository<Long, UserEntity> {
 
     Optional<UserEntity> findByEmail(final String email);
 
