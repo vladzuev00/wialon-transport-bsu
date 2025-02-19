@@ -39,20 +39,23 @@ public class AddressService extends CRUDService<Long, AddressEntity, Address, Ad
 
     @Transactional(readOnly = true)
     public Optional<Address> findByGeometry(final Geometry geometry) {
-        return findUniqueDto(repository -> repository.findByGeometry(geometry));
+        return Optional.empty();
+//        return findUniqueDto(repository -> repository.findByGeometry(geometry));
     }
 
     @Transactional(readOnly = true)
     public boolean isExistByGeometry(final Geometry geometry) {
-        return findBoolean(repository -> repository.isExistByGeometry(geometry));
+        return false;
+//        return findBoolean(repository -> repository.isExistByGeometry(geometry));
     }
 
     @Transactional(readOnly = true)
     public Set<PreparedGeometry> findCitiesPreparedGeometriesIntersectedByLineString(final LineString lineString) {
-        return findEntityStreamAndCollect(
-                repository -> repository.findCityAddressesIntersectedByLineString(lineString),
-                mapping(AddressService::extractPreparedGeometry, toUnmodifiableSet())
-        );
+        return null;
+//        return findEntityStreamAndCollect(
+//                repository -> repository.findCityAddressesIntersectedByLineString(lineString),
+//                mapping(AddressService::extractPreparedGeometry, toUnmodifiableSet())
+//        );
     }
 
     @Override
