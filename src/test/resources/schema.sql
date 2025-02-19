@@ -58,10 +58,6 @@ ALTER TABLE IF EXISTS cities
 DROP
 CONSTRAINT IF EXISTS fk_cities_to_addresses;
 
-ALTER TABLE IF EXISTS cities
-DROP
-CONSTRAINT IF EXISTS fk_cities_to_searching_cities_processes;
-
 --DROPPING tables
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
@@ -69,7 +65,6 @@ DROP TABLE IF EXISTS data;
 DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS trackers_last_data;
 DROP TABLE IF EXISTS addresses;
-DROP TABLE IF EXISTS searching_cities_processes;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS tracker_mileages;
 
@@ -81,7 +76,6 @@ DROP SEQUENCE IF EXISTS parameters_id_seq;
 --DROPPING TYPES
 DROP TYPE IF EXISTS user_type;
 DROP TYPE IF EXISTS parameter_type;
-DROP TYPE IF EXISTS searching_cities_process_type;
 
 CREATE
 EXTENSION IF NOT EXISTS postgis;
@@ -220,23 +214,10 @@ ALTER TABLE trackers_last_data
     ADD CONSTRAINT fk_trackers_last_data_to_data FOREIGN KEY (data_id)
         REFERENCES data (id);
 
-CREATE TYPE searching_cities_process_type AS ENUM('HANDLING', 'SUCCESS', 'ERROR');
-
-CREATE TABLE searching_cities_processes
-(
-    id             BIGSERIAL PRIMARY KEY,
-    bounds         GEOMETRY NOT NULL,
-    search_step    DOUBLE PRECISION              NOT NULL,
-    total_points   BIGINT                        NOT NULL,
-    handled_points BIGINT                        NOT NULL,
-    status         searching_cities_process_type NOT NULL
-);
-
 CREATE TABLE cities
 (
     id                          BIGSERIAL PRIMARY KEY,
-    address_id                  BIGINT NOT NULL,
-    searching_cities_process_id BIGINT NOT NULL
+    address_id                  BIGINT UNIQUE NOT NULL
 );
 
 ALTER TABLE cities
@@ -247,12 +228,6 @@ ALTER TABLE cities
 ALTER TABLE cities
     ADD CONSTRAINT address_id_should_be_unique
         UNIQUE (address_id);
-
-ALTER TABLE cities
-    ADD CONSTRAINT fk_cities_to_searching_cities_processes
-        FOREIGN KEY (searching_cities_process_id)
-            REFERENCES searching_cities_processes (id)
-                ON DELETE CASCADE;
 
 CREATE
 OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
