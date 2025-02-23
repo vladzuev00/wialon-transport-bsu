@@ -5,7 +5,7 @@ import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.crud.entity.UserEntity;
 import by.vladzuev.locationreceiver.util.entity.TrackerEntityUtil;
 import org.hibernate.Hibernate;
@@ -76,7 +76,7 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
     public void entityWithNotLoadedPropertiesShouldBeMappedToDto() {
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
             final UserEntity givenUser = createUserEntity(256L);
-            final TrackerMileageEntity givenMileage = createTrackerMileageEntity(257L);
+            final MileageEntity givenMileage = createTrackerMileageEntity(257L);
             final TrackerEntity givenEntity = TrackerEntity.builder()
                     .id(255L)
                     .imei("11112222333344445555")
@@ -119,8 +119,8 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static TrackerMileageEntity createTrackerMileageEntity(final Long id) {
-        return TrackerMileageEntity.builder()
+    private static MileageEntity createTrackerMileageEntity(final Long id) {
+        return MileageEntity.builder()
                 .id(id)
                 .build();
     }

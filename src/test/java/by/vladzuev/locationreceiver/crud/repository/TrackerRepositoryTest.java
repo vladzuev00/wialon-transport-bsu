@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.crud.repository;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.crud.entity.UserEntity;
 import by.vladzuev.locationreceiver.util.entity.EntityUtil;
 import by.vladzuev.locationreceiver.util.entity.TrackerEntityUtil;
@@ -43,7 +43,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }
@@ -55,7 +55,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("password")
                 .phoneNumber("447336936")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
 
         startQueryCount();
@@ -82,7 +82,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }
@@ -149,7 +149,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }
@@ -185,7 +185,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber(givenPhoneNumber)
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }
@@ -220,7 +220,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password(givenNewPassword)
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }
@@ -257,7 +257,7 @@ public final class TrackerRepositoryTest extends AbstractSpringBootTest {
                 .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
                 .phoneNumber("447336934")
                 .user(entityManager.getReference(UserEntity.class, 255L))
-                .mileage(entityManager.getReference(TrackerMileageEntity.class, 1L))
+                .mileage(entityManager.getReference(MileageEntity.class, 1L))
                 .build();
         TrackerEntityUtil.checkEquals(expected, actual);
     }

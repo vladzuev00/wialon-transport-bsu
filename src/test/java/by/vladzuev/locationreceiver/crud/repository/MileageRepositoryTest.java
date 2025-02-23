@@ -1,18 +1,17 @@
 package by.vladzuev.locationreceiver.crud.repository;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
-import by.vladzuev.locationreceiver.util.entity.TrackerMileageEntityUtil;
-import org.junit.Test;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
+import by.vladzuev.locationreceiver.util.entity.MileageEntityUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
 
-import static by.vladzuev.locationreceiver.util.entity.TrackerMileageEntityUtil.checkEquals;
 import static java.lang.Long.MAX_VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class MileageRepositoryTest extends AbstractSpringBootTest {
 
@@ -20,34 +19,24 @@ public final class MileageRepositoryTest extends AbstractSpringBootTest {
     private MileageRepository repository;
 
     @Test
-    @Sql("classpath:sql/tracker-mileage/insert-tracker-mileages.sql")
+    @Sql(statements = "INSERT INTO tracker_mileages(id, urban, country) VALUES(255, 100.1, 200.2)")
     public void mileageShouldBeFoundById() {
         final Long givenId = 255L;
 
-        startQueryCount();
-        final Optional<TrackerMileageEntity> optionalActual = repository.findById(givenId);
-        checkQueryCount(1);
-
+        final Optional<MileageEntity> optionalActual = repository.findById(givenId);
         assertTrue(optionalActual.isPresent());
-        final TrackerMileageEntity actual = optionalActual.get();
-        final TrackerMileageEntity expected = TrackerMileageEntity.builder()
-                .id(255L)
-                .urban(100.1)
-                .country(200.2)
-                .build();
-        TrackerMileageEntityUtil.checkEquals(expected, actual);
+        final MileageEntity actual = optionalActual.get();
+        final MileageEntity expected = new MileageEntity(255L, 100.1, 200.2);
+        MileageEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
-    public void mileageShouldBeInserted() {
-        final TrackerMileageEntity givenMileage = TrackerMileageEntity.builder()
-                .urban(100.1)
-                .country(200.2)
-                .build();
+    public void mileageShouldBeSaved() {
+        final MileageEntity givenMileage = MileageEntity.builder().urban(100.1).country(200.2).build();
 
-        startQueryCount();
-        repository.save(givenMileage);
-        checkQueryCount(1);
+        final MileageEntity actual = repository.save(givenMileage);
+        final MileageEntity expected = new MileageEntity(4L, 100.1, 200.2);
+        MileageEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
@@ -56,41 +45,23 @@ public final class MileageRepositoryTest extends AbstractSpringBootTest {
         final double givenUrbanDelta = 50.5;
         final double givenCountryDelta = 60.6;
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.increaseMileage(
-                givenTrackerId,
-                givenUrbanDelta,
-                givenCountryDelta
-        );
-        checkQueryCount(1);
+        final int actual = repository.increaseMileage(givenTrackerId, givenUrbanDelta, givenCountryDelta);
+        final int expected = 1;
+        Assertions.assertEquals(expected, actual);
 
-        final int expectedCountUpdatedRows = 1;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
-
-        final TrackerMileageEntity actual = repository.findById(1L).orElseThrow();
-        final TrackerMileageEntity expected = TrackerMileageEntity.builder()
-                .id(1L)
-                .urban(givenUrbanDelta)
-                .country(givenCountryDelta)
-                .build();
-        TrackerMileageEntityUtil.checkEquals(expected, actual);
+        final MileageEntity actualMileage = repository.findById(1L).orElseThrow();
+        final MileageEntity expectedMileage = new MileageEntity(1L, givenUrbanDelta, givenCountryDelta);
+        MileageEntityUtil.assertEquals(expectedMileage, actualMileage);
     }
 
     @Test
-    public void mileageShouldNotBeIncreasedBecauseOfNotExistingTrackerId() {
+    public void mileageShouldNotBeIncreasedBecauseOfNoSuchTracker() {
         final Long givenTrackerId = MAX_VALUE;
         final double givenUrbanDelta = 50.5;
         final double givenCountryDelta = 60.6;
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.increaseMileage(
-                givenTrackerId,
-                givenUrbanDelta,
-                givenCountryDelta
-        );
-        checkQueryCount(1);
-
-        final int expectedCountUpdatedRows = 0;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+        final int actual = repository.increaseMileage(givenTrackerId, givenUrbanDelta, givenCountryDelta);
+        final int expected = 0;
+        Assertions.assertEquals(expected, actual);
     }
 }

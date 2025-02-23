@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.crud.mapper.TrackerMileageMapper;
 import by.vladzuev.locationreceiver.crud.repository.MileageRepository;
 import by.vladzuev.locationreceiver.model.Mileage;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrackerMileageService extends CRUDService<
         Long,
-        TrackerMileageEntity,
+        MileageEntity,
         TrackerMileage,
         TrackerMileageMapper,
         MileageRepository
@@ -32,7 +32,7 @@ public class TrackerMileageService extends CRUDService<
     }
 
     @Override
-    protected void configureBeforeSave(final TrackerMileageEntity entity) {
+    protected void configureBeforeSave(final MileageEntity entity) {
 
     }
 }

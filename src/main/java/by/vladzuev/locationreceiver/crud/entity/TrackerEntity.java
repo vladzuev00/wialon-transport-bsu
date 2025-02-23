@@ -34,7 +34,7 @@ public class TrackerEntity extends SecuredEntity<Long> {
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "mileage_id")
     @ToString.Exclude
-    private TrackerMileageEntity mileage;
+    private MileageEntity mileage;
 
     @Builder
     public TrackerEntity(final Long id,
@@ -42,7 +42,7 @@ public class TrackerEntity extends SecuredEntity<Long> {
                          final String password,
                          final String phoneNumber,
                          final UserEntity user,
-                         final TrackerMileageEntity mileage) {
+                         final MileageEntity mileage) {
         super(password);
         this.id = id;
         this.imei = imei;

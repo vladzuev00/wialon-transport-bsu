@@ -4,9 +4,9 @@ import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
 import by.vladzuev.locationreceiver.crud.entity.LastDataEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.util.entity.TrackerLastDataEntityUtil;
-import by.vladzuev.locationreceiver.util.entity.TrackerMileageEntityUtil;
+import by.vladzuev.locationreceiver.util.entity.MileageEntityUtil;
 import org.junit.Test;
 
 import java.util.List;
@@ -26,12 +26,12 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
 
     @Test
     public void zeroMileagesShouldBeInserted() {
-        final List<TrackerMileageEntity> actual = findAllMileagesOrderedById();
-        final List<TrackerMileageEntity> expected = List.of(
+        final List<MileageEntity> actual = findAllMileagesOrderedById();
+        final List<MileageEntity> expected = List.of(
                 createZeroMileage(1L),
                 createZeroMileage(2L)
         );
-        TrackerMileageEntityUtil.checkEquals(expected, actual);
+        MileageEntityUtil.assertEquals(expected, actual);
     }
 
     private List<LastDataEntity> findAllTrackerLastDataOrderedById() {
@@ -57,12 +57,12 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
                 .build();
     }
 
-    private List<TrackerMileageEntity> findAllMileagesOrderedById() {
-        return findEntities("SELECT e FROM TrackerMileageEntity e ORDER BY e.id", TrackerMileageEntity.class);
+    private List<MileageEntity> findAllMileagesOrderedById() {
+        return findEntities("SELECT e FROM TrackerMileageEntity e ORDER BY e.id", MileageEntity.class);
     }
 
-    private static TrackerMileageEntity createZeroMileage(final Long id) {
-        return TrackerMileageEntity.builder()
+    private static MileageEntity createZeroMileage(final Long id) {
+        return MileageEntity.builder()
                 .id(id)
                 .urban(0)
                 .country(0)
