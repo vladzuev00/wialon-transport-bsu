@@ -18,8 +18,8 @@ public class CityEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = SEQUENCE, generator = "addresses_id_seq")
-    @SequenceGenerator(name = "addresses_id_seq", sequenceName = "addresses_id_seq")
+    @GeneratedValue(strategy = SEQUENCE, generator = "cities_id_seq")
+    @SequenceGenerator(name = "cities_id_seq", sequenceName = "cities_id_seq")
     private Long id;
 
     @ToString.Exclude
