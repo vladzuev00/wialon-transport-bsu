@@ -158,7 +158,7 @@ CREATE TABLE location
     speed                  DECIMAL      NOT NULL,
     course                 INTEGER      NOT NULL,
     altitude               INTEGER      NOT NULL,
-    amount_of_satellites   INTEGER      NOT NULL,
+    satellite_count   INTEGER      NOT NULL,
     hdop    DECIMAL      NOT NULL,
     inputs                 INTEGER      NOT NULL,
     outputs                INTEGER      NOT NULL,
@@ -192,7 +192,7 @@ ALTER SEQUENCE parameters_id_seq INCREMENT 50;
 
 ALTER TABLE parameters
     ADD CONSTRAINT fk_parameters_to_location
-        FOREIGN KEY (location_id) REFERENCES location (id)
+        FOREIGN KEY (location_id) REFERENCES locations (id)
             ON DELETE CASCADE;
 
 ALTER TABLE parameters
@@ -211,8 +211,8 @@ ALTER TABLE tracker_last_locations
         ON DELETE CASCADE;
 
 ALTER TABLE tracker_last_locations
-    ADD CONSTRAINT fk_tracker_last_locations_to_location FOREIGN KEY (location_id)
-        REFERENCES location (id);
+    ADD CONSTRAINT fk_tracker_last_locations_to_locations FOREIGN KEY (location_id)
+        REFERENCES locations (id);
 
 CREATE TABLE cities
 (
@@ -273,6 +273,6 @@ OR REPLACE FUNCTION update_tracker_last_location() RETURNS TRIGGER AS
 
 CREATE TRIGGER tr_after_insert_location
     AFTER INSERT
-    ON location
+    ON locations
     FOR EACH ROW
     EXECUTE PROCEDURE update_tracker_last_location();
