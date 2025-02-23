@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
-import by.vladzuev.locationreceiver.model.ParameterType;
+import by.vladzuev.locationreceiver.crud.enumeration.ParameterType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

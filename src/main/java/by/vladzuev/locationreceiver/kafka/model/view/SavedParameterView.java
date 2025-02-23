@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.kafka.model.view;
 
-import by.vladzuev.locationreceiver.model.ParameterType;
+import by.vladzuev.locationreceiver.crud.enumeration.ParameterType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

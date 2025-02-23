@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static by.vladzuev.locationreceiver.model.ParameterType.*;
+import static by.vladzuev.locationreceiver.crud.enumeration.ParameterType.*;
 
 public final class WialonDecodingIT extends TextProtocolDecodingIT {
 

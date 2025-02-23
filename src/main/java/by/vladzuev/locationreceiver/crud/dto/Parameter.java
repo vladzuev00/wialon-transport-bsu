@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.crud.dto;
 
-import by.vladzuev.locationreceiver.model.ParameterType;
+import by.vladzuev.locationreceiver.crud.enumeration.ParameterType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;

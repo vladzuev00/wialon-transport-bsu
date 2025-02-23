@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-import static by.vladzuev.locationreceiver.model.ParameterType.INTEGER;
+import static by.vladzuev.locationreceiver.crud.enumeration.ParameterType.INTEGER;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
