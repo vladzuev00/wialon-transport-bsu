@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.crud.mapper;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
+import by.vladzuev.locationreceiver.crud.dto.Mileage;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
@@ -126,8 +126,8 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static TrackerMileage createTrackerMileageDto(final Long id) {
-        return TrackerMileage.builder()
+    private static Mileage createTrackerMileageDto(final Long id) {
+        return Mileage.builder()
                 .id(id)
                 .build();
     }

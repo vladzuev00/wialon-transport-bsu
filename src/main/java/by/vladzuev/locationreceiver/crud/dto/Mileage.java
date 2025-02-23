@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @Builder
 @AllArgsConstructor
-public class TrackerMileage implements Dto<Long> {
+public class Mileage implements Dto<Long> {
     Long id;
     double urban;
     double country;

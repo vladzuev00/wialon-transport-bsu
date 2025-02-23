@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.crud.mapper;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
+import by.vladzuev.locationreceiver.crud.dto.Mileage;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import org.modelmapper.ModelMapper;
@@ -35,7 +35,7 @@ public final class TrackerMapper extends Mapper<TrackerEntity, Tracker> {
         return mapLazy(source.getUser(), User.class);
     }
 
-    private TrackerMileage mapMileage(final TrackerEntity source) {
-        return mapLazy(source.getMileage(), TrackerMileage.class);
+    private Mileage mapMileage(final TrackerEntity source) {
+        return mapLazy(source.getMileage(), Mileage.class);
     }
 }
