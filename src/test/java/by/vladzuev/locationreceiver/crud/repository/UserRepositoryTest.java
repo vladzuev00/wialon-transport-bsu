@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-import static by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole.USER;
+import static by.vladzuev.locationreceiver.crud.enumeration.UserRole.USER;
 import static java.lang.Long.MAX_VALUE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -115,7 +115,7 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
     public void userPasswordShouldBeUpdatedBecauseOfNoSuchUser() {
         final Long givenId = MAX_VALUE;
         final String givenNewEncryptedPassword = "new-password";
-        
+
         final int actual = repository.updatePassword(givenId, givenNewEncryptedPassword);
         final int expected = 0;
         Assertions.assertEquals(expected, actual);

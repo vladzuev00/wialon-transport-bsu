@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.service.registration.model;
 
-import by.vladzuev.locationreceiver.crud.entity.UserEntity;
+import by.vladzuev.locationreceiver.crud.enumeration.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -11,5 +11,5 @@ import lombok.Value;
 public class RegisteredUserResponse {
     Long id;
     String email;
-    UserEntity.UserRole role;
+    UserRole role;
 }

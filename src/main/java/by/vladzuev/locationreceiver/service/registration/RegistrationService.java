@@ -1,12 +1,12 @@
 package by.vladzuev.locationreceiver.service.registration;
 
 import by.vladzuev.locationreceiver.crud.dto.User;
+import by.vladzuev.locationreceiver.crud.enumeration.UserRole;
 import by.vladzuev.locationreceiver.crud.service.UserService;
 import by.vladzuev.locationreceiver.service.registration.exception.EmailAlreadyExistsException;
 import by.vladzuev.locationreceiver.service.registration.exception.PasswordConfirmException;
 import by.vladzuev.locationreceiver.service.registration.model.RegisteredUserRequest;
 import by.vladzuev.locationreceiver.service.registration.model.RegisteredUserResponse;
-import by.vladzuev.locationreceiver.crud.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public final class RegistrationService {
         return User.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .role(UserEntity.UserRole.USER)
+                .role(UserRole.USER)
                 .build();
     }
 

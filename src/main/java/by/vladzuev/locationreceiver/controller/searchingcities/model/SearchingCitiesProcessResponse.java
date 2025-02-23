@@ -15,5 +15,4 @@ public class SearchingCitiesProcessResponse {
     double searchStep;
     long totalPoints;
     long handledPoints;
-    Status status;
 }
