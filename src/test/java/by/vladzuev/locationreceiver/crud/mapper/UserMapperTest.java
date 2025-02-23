@@ -32,7 +32,7 @@ public final class UserMapperTest extends AbstractSpringBootTest {
                 .role(UserEntity.UserRole.USER)
                 .build();
         assertNotNull(actual);
-        UserEntityUtil.checkEquals(expected, actual);
+        UserEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
