@@ -25,7 +25,7 @@ ALTER TABLE IF EXISTS trackers
 DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
 
 ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS fk_trackers_to_tracker_mileages;
+DROP CONSTRAINT IF EXISTS fk_trackers_to_mileages;
 
 ALTER TABLE IF EXISTS location
 DROP
@@ -66,7 +66,7 @@ DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS tracker_last_locations;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS cities;
-DROP TABLE IF EXISTS tracker_mileages;
+DROP TABLE IF EXISTS mileages;
 
 --DROPPING SEQUENCES
 DROP SEQUENCE IF EXISTS addresses_id_seq;
@@ -96,7 +96,7 @@ ALTER TABLE users
 ALTER TABLE users
     ADD CONSTRAINT email_should_be_unique UNIQUE(email);
 
-CREATE TABLE tracker_mileages(
+CREATE TABLE mileages(
 	id SERIAL PRIMARY KEY,
 	urban DOUBLE PRECISION NOT NULL,
 	country DOUBLE PRECISION NOT NULL
@@ -132,8 +132,8 @@ ALTER TABLE trackers
 	ADD CONSTRAINT mileage_id_should_be_unique UNIQUE(mileage_id);
 
 ALTER TABLE trackers
-	ADD CONSTRAINT fk_trackers_to_tracker_mileages
-		FOREIGN KEY (mileage_id) REFERENCES tracker_mileages(id);
+	ADD CONSTRAINT fk_trackers_to_mileages
+		FOREIGN KEY (mileage_id) REFERENCES mileages(id);
 
 CREATE TABLE addresses
 (
@@ -233,7 +233,7 @@ CREATE
 OR REPLACE FUNCTION before_insert_tracker() RETURNS TRIGGER AS
 '
     BEGIN
-		INSERT INTO tracker_mileages(urban, country) VALUES(0, 0) RETURNING id INTO NEW.mileage_id;
+		INSERT INTO mileages(urban, country) VALUES(0, 0) RETURNING id INTO NEW.mileage_id;
         RETURN NEW;
     END;
 ' LANGUAGE plpgsql;
