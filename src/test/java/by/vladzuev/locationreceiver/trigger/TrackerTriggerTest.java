@@ -2,8 +2,8 @@ package by.vladzuev.locationreceiver.trigger;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
+import by.vladzuev.locationreceiver.crud.entity.LastDataEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
-import by.vladzuev.locationreceiver.crud.entity.TrackerLastDataEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
 import by.vladzuev.locationreceiver.util.entity.TrackerLastDataEntityUtil;
 import by.vladzuev.locationreceiver.util.entity.TrackerMileageEntityUtil;
@@ -12,15 +12,12 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static by.vladzuev.locationreceiver.util.entity.TrackerLastDataEntityUtil.checkEquals;
-import static by.vladzuev.locationreceiver.util.entity.TrackerMileageEntityUtil.checkEquals;
-
 public final class TrackerTriggerTest extends AbstractSpringBootTest {
 
     @Test
     public void initialTrackerLastDataShouldBeInserted() {
-        final List<TrackerLastDataEntity> actual = findAllTrackerLastDataOrderedById();
-        final List<TrackerLastDataEntity> expected = List.of(
+        final List<LastDataEntity> actual = findAllTrackerLastDataOrderedById();
+        final List<LastDataEntity> expected = List.of(
                 createInitialTrackerLastDataEntity(1L, 255L),
                 createInitialTrackerLastDataEntity(2L, 256L)
         );
@@ -37,8 +34,8 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
         TrackerMileageEntityUtil.checkEquals(expected, actual);
     }
 
-    private List<TrackerLastDataEntity> findAllTrackerLastDataOrderedById() {
-        return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", TrackerLastDataEntity.class);
+    private List<LastDataEntity> findAllTrackerLastDataOrderedById() {
+        return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", LastDataEntity.class);
     }
 
     private <E extends AbstractEntity<?>> List<E> findEntities(final String query, final Class<E> entityType) {
@@ -47,8 +44,8 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
         }
     }
 
-    private static TrackerLastDataEntity createInitialTrackerLastDataEntity(final Long id, final Long trackerId) {
-        return TrackerLastDataEntity.builder()
+    private static LastDataEntity createInitialTrackerLastDataEntity(final Long id, final Long trackerId) {
+        return LastDataEntity.builder()
                 .id(id)
                 .tracker(createTracker(trackerId))
                 .build();
