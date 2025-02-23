@@ -6,28 +6,28 @@ import lombok.*;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@jakarta.persistence.Entity
-@Table(name = "trackers_last_locations")
-@NoArgsConstructor
-@AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@Entity
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "last_locations")
 public class LastLocationEntity extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "tracker_id")
-    @ToString.Exclude
     private TrackerEntity tracker;
 
+    @ToString.Exclude
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "location_id")
-    @ToString.Exclude
     private LocationEntity location;
 }
