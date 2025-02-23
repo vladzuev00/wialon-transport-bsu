@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.trigger;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
-import by.vladzuev.locationreceiver.crud.entity.LastDataEntity;
+import by.vladzuev.locationreceiver.crud.entity.LastLocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.util.entity.TrackerLastDataEntityUtil;
@@ -16,8 +16,8 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
 
     @Test
     public void initialTrackerLastDataShouldBeInserted() {
-        final List<LastDataEntity> actual = findAllTrackerLastDataOrderedById();
-        final List<LastDataEntity> expected = List.of(
+        final List<LastLocationEntity> actual = findAllTrackerLastDataOrderedById();
+        final List<LastLocationEntity> expected = List.of(
                 createInitialTrackerLastDataEntity(1L, 255L),
                 createInitialTrackerLastDataEntity(2L, 256L)
         );
@@ -34,8 +34,8 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
         MileageEntityUtil.assertEquals(expected, actual);
     }
 
-    private List<LastDataEntity> findAllTrackerLastDataOrderedById() {
-        return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", LastDataEntity.class);
+    private List<LastLocationEntity> findAllTrackerLastDataOrderedById() {
+        return findEntities("SELECT e FROM TrackerLastDataEntity e ORDER BY e.id", LastLocationEntity.class);
     }
 
     private <E extends AbstractEntity<?>> List<E> findEntities(final String query, final Class<E> entityType) {
@@ -44,8 +44,8 @@ public final class TrackerTriggerTest extends AbstractSpringBootTest {
         }
     }
 
-    private static LastDataEntity createInitialTrackerLastDataEntity(final Long id, final Long trackerId) {
-        return LastDataEntity.builder()
+    private static LastLocationEntity createInitialTrackerLastDataEntity(final Long id, final Long trackerId) {
+        return LastLocationEntity.builder()
                 .id(id)
                 .tracker(createTracker(trackerId))
                 .build();

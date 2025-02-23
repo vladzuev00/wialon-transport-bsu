@@ -7,14 +7,14 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @jakarta.persistence.Entity
-@Table(name = "trackers_last_data")
+@Table(name = "trackers_last_locations")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
 @Builder
-public class LastDataEntity extends AbstractEntity<Long> {
+public class LastLocationEntity extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -27,7 +27,7 @@ public class LastDataEntity extends AbstractEntity<Long> {
     private TrackerEntity tracker;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "data_id")
+    @JoinColumn(name = "location_id")
     @ToString.Exclude
-    private LocationEntity data;
+    private LocationEntity location;
 }

@@ -46,13 +46,13 @@ ALTER TABLE IF EXISTS parameters
 DROP
 CONSTRAINT IF EXISTS fk_parameters_to_location;
 
-ALTER TABLE IF EXISTS trackers_last_location
+ALTER TABLE IF EXISTS trackers_last_locations
 DROP
-CONSTRAINT IF EXISTS fk_trackers_last_location_to_trackers;
+CONSTRAINT IF EXISTS fk_trackers_last_locations_to_trackers;
 
-ALTER TABLE IF EXISTS trackers_last_location
+ALTER TABLE IF EXISTS trackers_last_locations
 DROP
-CONSTRAINT IF EXISTS fk_trackers_last_location_to_location;
+CONSTRAINT IF EXISTS fk_trackers_last_locations_to_location;
 
 ALTER TABLE IF EXISTS cities
 DROP
@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
 DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS parameters;
-DROP TABLE IF EXISTS trackers_last_location;
+DROP TABLE IF EXISTS trackers_last_locations;
 DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS tracker_mileages;
@@ -198,20 +198,20 @@ ALTER TABLE parameters
 ALTER TABLE parameters
     ADD CONSTRAINT parameter_name_should_be_correct CHECK (char_length(name) != 0);
 
-CREATE TABLE trackers_last_location
+CREATE TABLE trackers_last_locations
 (
     id         SERIAL  PRIMARY KEY,
     tracker_id INTEGER NOT NULL UNIQUE,
     location_id    BIGINT UNIQUE
 );
 
-ALTER TABLE trackers_last_location
-    ADD CONSTRAINT fk_trackers_last_location_to_trackers FOREIGN KEY (tracker_id)
+ALTER TABLE trackers_last_locations
+    ADD CONSTRAINT fk_trackers_last_locations_to_trackers FOREIGN KEY (tracker_id)
         REFERENCES trackers (id)
         ON DELETE CASCADE;
 
-ALTER TABLE trackers_last_location
-    ADD CONSTRAINT fk_trackers_last_location_to_location FOREIGN KEY (location_id)
+ALTER TABLE trackers_last_locations
+    ADD CONSTRAINT fk_trackers_last_locations_to_location FOREIGN KEY (location_id)
         REFERENCES location (id);
 
 CREATE TABLE cities
@@ -248,7 +248,7 @@ CREATE
 OR REPLACE FUNCTION insert_tracker_last_location() RETURNS TRIGGER AS
 '
     BEGIN
-        INSERT INTO trackers_last_location(tracker_id)
+        INSERT INTO trackers_last_locations(tracker_id)
         VALUES (NEW.id);
         RETURN NEW;
     END;
@@ -264,9 +264,9 @@ CREATE
 OR REPLACE FUNCTION update_tracker_last_location() RETURNS TRIGGER AS
 '
     BEGIN
-		UPDATE trackers_last_location
+		UPDATE trackers_last_locations
         SET location_id = NEW.id
-        WHERE trackers_last_location.tracker_id = NEW.tracker_id;
+        WHERE trackers_last_locations.tracker_id = NEW.tracker_id;
         RETURN NEW;
     END;
 ' LANGUAGE plpgsql;

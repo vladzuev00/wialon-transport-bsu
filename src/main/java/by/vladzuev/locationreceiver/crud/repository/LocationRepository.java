@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface LocationRepository extends JpaRepository<LocationEntity, Long> {
@@ -19,4 +20,19 @@ public interface LocationRepository extends JpaRepository<LocationEntity, Long> 
     Stream<LocationEntity> streamAllByUserIdFetchingTrackerAndAddress(final Long userId,
                                                                       final LocalDateTime startDateTime,
                                                                       final LocalDateTime endDateTime);
+
+    @Query(
+            """
+                    SELECT le FROM LocationEntity le
+                    WHERE le.id = (SELECT lle.location.id FROM LastLocationEntity lle WHERE lle.tracker.id = :trackerId)"""
+    )
+    Optional<LocationEntity> findTrackerLast(final Long trackerId);
+
+    @Query(
+            """
+                    SELECT le FROM LocationEntity le
+                    LEFT JOIN FETCH le.parameters
+                    WHERE le.id = (SELECT lle.location.id FROM LastLocationEntity lle WHERE lle.tracker.id = :trackerId)"""
+    )
+    Optional<LocationEntity> findTrackerLastFetchingParameters(final Long trackerId);
 }
