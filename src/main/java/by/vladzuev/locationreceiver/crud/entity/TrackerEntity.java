@@ -1,17 +1,16 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
-@Table(name = "trackers")
-@NoArgsConstructor
 @Setter
 @Getter
+@Entity
+@NoArgsConstructor
+@Table(name = "trackers")
 @ToString(callSuper = true)
 public class TrackerEntity extends SecuredEntity<Long> {
 
@@ -26,14 +25,14 @@ public class TrackerEntity extends SecuredEntity<Long> {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private UserEntity user;
 
+    @ToString.Exclude
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "mileage_id")
-    @ToString.Exclude
     private MileageEntity mileage;
 
     @Builder

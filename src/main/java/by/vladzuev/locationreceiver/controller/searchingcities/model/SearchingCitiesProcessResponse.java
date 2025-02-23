@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.controller.searchingcities.model;
 
-import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;

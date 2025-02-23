@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.util.entity;
 
-import by.vladzuev.locationreceiver.crud.entity.SearchingCitiesProcessEntity;
 import lombok.experimental.UtilityClass;
 
 import static org.junit.Assert.assertEquals;
