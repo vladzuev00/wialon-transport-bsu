@@ -10,6 +10,7 @@ import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
+import by.vladzuev.locationreceiver.util.entity.LocationEntityUtil;
 import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.mockito.MockedStatic;
@@ -19,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static by.vladzuev.locationreceiver.util.entity.DataEntityUtil.checkEquals;
 import static java.util.Collections.emptyList;
 import static org.hibernate.Hibernate.isInitialized;
 import static org.junit.Assert.assertEquals;
@@ -82,7 +82,7 @@ public final class DataMapperTest extends AbstractSpringBootTest {
                 .build();
 
         assertNotNull(actual);
-        checkEquals(expected, actual);
+        LocationEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
