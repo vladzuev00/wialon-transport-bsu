@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface TrackerMileageRepository extends JpaRepository<TrackerMileageEntity, Long> {
+public interface MileageRepository extends JpaRepository<TrackerMileageEntity, Long> {
 
     @Modifying
     @Query("UPDATE TrackerMileageEntity me SET me.urban = me.urban + :urbanDelta, me.country = me.country + :countryDelta "

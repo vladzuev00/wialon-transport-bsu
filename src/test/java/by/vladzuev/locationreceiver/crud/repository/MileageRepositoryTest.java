@@ -14,10 +14,10 @@ import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class TrackerMileageRepositoryTest extends AbstractSpringBootTest {
+public final class MileageRepositoryTest extends AbstractSpringBootTest {
 
     @Autowired
-    private TrackerMileageRepository repository;
+    private MileageRepository repository;
 
     @Test
     @Sql("classpath:sql/tracker-mileage/insert-tracker-mileages.sql")

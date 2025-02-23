@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
 import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
 import by.vladzuev.locationreceiver.crud.mapper.TrackerMileageMapper;
-import by.vladzuev.locationreceiver.crud.repository.TrackerMileageRepository;
+import by.vladzuev.locationreceiver.crud.repository.MileageRepository;
 import by.vladzuev.locationreceiver.model.Mileage;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +14,10 @@ public class TrackerMileageService extends CRUDService<
         TrackerMileageEntity,
         TrackerMileage,
         TrackerMileageMapper,
-        TrackerMileageRepository
+        MileageRepository
         > {
 
-    public TrackerMileageService(final TrackerMileageMapper mapper, final TrackerMileageRepository repository) {
+    public TrackerMileageService(final TrackerMileageMapper mapper, final MileageRepository repository) {
         super(mapper, repository);
     }
 
