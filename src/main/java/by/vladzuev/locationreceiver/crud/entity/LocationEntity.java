@@ -43,7 +43,7 @@ public class LocationEntity extends AbstractEntity<Long> {
     @Column(name = "altitude")
     private int altitude;
 
-    @Column(name = "satellite_count")
+    @Column(name = "amount_of_satellites")
     private int satelliteCount;
 
     @Column(name = "hdop")
