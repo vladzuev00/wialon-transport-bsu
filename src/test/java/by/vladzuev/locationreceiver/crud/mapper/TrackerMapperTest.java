@@ -46,7 +46,7 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
                 .build();
 
         assertNotNull(actual);
-        TrackerEntityUtil.checkEquals(expected, actual);
+        TrackerEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
