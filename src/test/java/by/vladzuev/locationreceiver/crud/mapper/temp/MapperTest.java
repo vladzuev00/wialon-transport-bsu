@@ -1,8 +1,9 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Dto;
 import by.vladzuev.locationreceiver.crud.entity.AbstractEntity;
+import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import by.vladzuev.locationreceiver.util.HibernateUtil;
 import lombok.*;
 import org.junit.Test;

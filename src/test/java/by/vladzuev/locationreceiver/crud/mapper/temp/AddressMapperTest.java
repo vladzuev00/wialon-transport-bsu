@@ -1,9 +1,8 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Address;
 import by.vladzuev.locationreceiver.crud.entity.AddressEntity;
-import by.vladzuev.locationreceiver.crud.mapper.temp.AddressMapper;
 import by.vladzuev.locationreceiver.util.GeometryTestUtil;
 import by.vladzuev.locationreceiver.util.entity.AddressEntityUtil;
 import org.junit.Test;

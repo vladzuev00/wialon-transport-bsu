@@ -1,7 +1,8 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
+import by.vladzuev.locationreceiver.crud.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

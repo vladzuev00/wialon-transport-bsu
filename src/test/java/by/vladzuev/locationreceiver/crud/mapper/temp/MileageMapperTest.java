@@ -1,8 +1,9 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Mileage;
 import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
+import by.vladzuev.locationreceiver.crud.mapper.TrackerMileageMapper;
 import by.vladzuev.locationreceiver.util.entity.MileageEntityUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

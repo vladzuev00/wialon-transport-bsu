@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Address;
@@ -9,6 +9,7 @@ import by.vladzuev.locationreceiver.crud.entity.AddressEntity;
 import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
 import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
+import by.vladzuev.locationreceiver.crud.mapper.LocationMapper;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import by.vladzuev.locationreceiver.util.entity.LocationEntityUtil;
 import org.hibernate.Hibernate;

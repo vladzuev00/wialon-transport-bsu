@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.crud.mapper;
+package by.vladzuev.locationreceiver.crud.mapper.temp;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
@@ -7,6 +7,7 @@ import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
 import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.crud.entity.UserEntity;
+import by.vladzuev.locationreceiver.crud.mapper.TrackerMapper;
 import by.vladzuev.locationreceiver.util.entity.TrackerEntityUtil;
 import org.hibernate.Hibernate;
 import org.junit.Test;
