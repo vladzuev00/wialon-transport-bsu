@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.crud.dto.City;
 import by.vladzuev.locationreceiver.crud.entity.CityEntity;
-import by.vladzuev.locationreceiver.crud.mapper.CityMapper;
+import by.vladzuev.locationreceiver.crud.mapper.temp.CityMapper;
 import by.vladzuev.locationreceiver.crud.repository.CityRepository;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Service;
