@@ -10,7 +10,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Set;
 
-import static by.vladzuev.locationreceiver.model.ParameterType.*;
+import static by.vladzuev.locationreceiver.crud.enumeration.ParameterType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class WialonLocationComponentParserTest {

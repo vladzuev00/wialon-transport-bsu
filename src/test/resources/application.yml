@@ -1,6 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:tc:postgresql:11.1:///integration-tests-db
   jpa:
     hibernate:
       ddl-auto: none
@@ -13,8 +11,6 @@ spring:
   sql:
     init:
       mode: always
-  kafka:
-    bootstrap-servers: 127.0.0.1:9092
 
 data:
   validation:

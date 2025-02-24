@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
-import by.vladzuev.locationreceiver.model.ParameterType;
+import by.vladzuev.locationreceiver.crud.enumeration.ParameterType;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.vladzuev.locationreceiver.model.ParameterType.*;
+import static by.vladzuev.locationreceiver.crud.enumeration.ParameterType.*;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.time.format.DateTimeFormatter.ofPattern;

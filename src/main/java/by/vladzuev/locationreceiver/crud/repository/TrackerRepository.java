@@ -14,7 +14,7 @@ public interface TrackerRepository extends SecuredEntityRepository<Long, Tracker
     Optional<TrackerEntity> findByImei(final String imei);
 
     @Query("SELECT e FROM TrackerEntity e WHERE e.user.id = :userId ORDER BY e.imei")
-    Page<TrackerEntity> findByUserIdOrderedByImei(final Long userId, final Pageable pageable);
+    Page<TrackerEntity> findByUserIdOrderingByImei(final Long userId, final Pageable pageable);
 
     @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.user WHERE e.id = :id")
     Optional<TrackerEntity> findByIdFetchingUser(final Long id);
@@ -29,11 +29,9 @@ public interface TrackerRepository extends SecuredEntityRepository<Long, Tracker
     @Query("SELECT e FROM TrackerEntity e JOIN FETCH e.mileage WHERE e.id = :id")
     Optional<TrackerEntity> findByIdFetchingMileage(final Long id);
 
-    //TODO: test
     @Query
     boolean existsByImei(final String imei);
 
-    //TODO: test
     @Query
     boolean existsByPhoneNumber(final String phoneNumber);
 }

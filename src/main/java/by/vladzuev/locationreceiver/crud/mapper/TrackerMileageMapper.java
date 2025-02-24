@@ -1,20 +1,20 @@
 package by.vladzuev.locationreceiver.crud.mapper;
 
-import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.dto.Mileage;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class TrackerMileageMapper extends Mapper<TrackerMileageEntity, TrackerMileage> {
+public final class TrackerMileageMapper extends Mapper<MileageEntity, Mileage> {
 
     public TrackerMileageMapper(final ModelMapper modelMapper) {
-        super(modelMapper, TrackerMileageEntity.class, TrackerMileage.class);
+        super(modelMapper, MileageEntity.class, Mileage.class);
     }
 
     @Override
-    protected TrackerMileage createDto(final TrackerMileageEntity source) {
-        return new TrackerMileage(
+    protected Mileage createDto(final MileageEntity source) {
+        return new Mileage(
                 source.getId(),
                 source.getUrban(),
                 source.getCountry()
@@ -22,7 +22,7 @@ public final class TrackerMileageMapper extends Mapper<TrackerMileageEntity, Tra
     }
 
     @Override
-    protected void mapSpecificFields(final TrackerMileage source, final TrackerMileageEntity destination) {
+    protected void mapSpecificFields(final Mileage source, final MileageEntity destination) {
 
     }
 }

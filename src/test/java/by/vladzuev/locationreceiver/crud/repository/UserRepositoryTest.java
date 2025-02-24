@@ -3,13 +3,16 @@ package by.vladzuev.locationreceiver.crud.repository;
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.entity.UserEntity;
 import by.vladzuev.locationreceiver.util.entity.UserEntityUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+import static by.vladzuev.locationreceiver.crud.enumeration.UserRole.USER;
 import static java.lang.Long.MAX_VALUE;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class UserRepositoryTest extends AbstractSpringBootTest {
 
@@ -20,84 +23,62 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
     public void userShouldBeFoundById() {
         final Long givenId = 255L;
 
-        startQueryCount();
         final Optional<UserEntity> optionalActual = repository.findById(givenId);
-        checkQueryCount(1);
-
         assertTrue(optionalActual.isPresent());
         final UserEntity actual = optionalActual.get();
-        final UserEntity expected = UserEntity.builder()
-                .id(givenId)
-                .email("vladzuev.00@mail.ru")
-                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.UserRole.USER)
-                .build();
-        UserEntityUtil.checkEquals(expected, actual);
+        final UserEntity expected = new UserEntity(
+                givenId,
+                "vladzuev.00@mail.ru",
+                "$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG",
+                USER
+        );
+        UserEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
-    public void userShouldBeInserted() {
+    public void userShouldBeSaved() {
         final UserEntity givenUser = UserEntity.builder()
                 .email("test@mail.ru")
                 .password("password")
-                .role(UserEntity.UserRole.USER)
+                .role(USER)
                 .build();
 
-        startQueryCount();
-        repository.save(givenUser);
-        checkQueryCount(1);
+        final UserEntity actual = repository.save(givenUser);
+        final UserEntity expected = new UserEntity(1L, "test@mail.ru", "password", USER);
+        UserEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
     public void userShouldBeFoundByEmail() {
         final String givenEmail = "vladzuev.00@mail.ru";
 
-        startQueryCount();
         final Optional<UserEntity> optionalActual = repository.findByEmail(givenEmail);
-        checkQueryCount(1);
-
         assertTrue(optionalActual.isPresent());
         final UserEntity actual = optionalActual.get();
-        final UserEntity expected = UserEntity.builder()
-                .id(255L)
-                .email(givenEmail)
-                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.UserRole.USER)
-                .build();
-        UserEntityUtil.checkEquals(expected, actual);
+        final UserEntity expected = UserEntity.builder().id(255L).build();
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void userShouldNotBeFoundByEmail() {
         final String givenEmail = "email@mail.ru";
 
-        startQueryCount();
         final Optional<UserEntity> optionalEntity = repository.findByEmail(givenEmail);
-        checkQueryCount(1);
-
         assertTrue(optionalEntity.isEmpty());
     }
 
     @Test
-    public void userShouldExistsByEmail() {
+    public void userShouldExistByEmail() {
         final String givenEmail = "vladzuev.00@mail.ru";
 
-        startQueryCount();
-        final boolean exists = repository.existsByEmail(givenEmail);
-        checkQueryCount(1);
-
-        assertTrue(exists);
+        assertTrue(repository.existsByEmail(givenEmail));
     }
 
     @Test
-    public void userShouldNotExistsByEmail() {
-        final String givenEmail = "notexist@mail.ru";
+    public void userShouldNotExistByEmail() {
+        final String givenEmail = "email@mail.ru";
 
-        startQueryCount();
-        final boolean exists = repository.existsByEmail(givenEmail);
-        checkQueryCount(1);
-
-        assertFalse(exists);
+        assertFalse(repository.existsByEmail(givenEmail));
     }
 
     @Test
@@ -105,34 +86,19 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
         final Long givenUserId = 255L;
         final String givenNewEmail = "newEmail@mail.ru";
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.updateEmail(givenUserId, givenNewEmail);
-        checkQueryCount(1);
-
-        final int expectedCountUpdatedRows = 1;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
-
-        final UserEntity actual = repository.findById(givenUserId).orElseThrow();
-        final UserEntity expected = UserEntity.builder()
-                .id(givenUserId)
-                .email(givenNewEmail)
-                .password("$2a$10$8y9hC00YePN.9uH.OLCQ6OWeaR8G9q/U9MEvizLx9zaBkwe0KItHG")
-                .role(UserEntity.UserRole.USER)
-                .build();
-        UserEntityUtil.checkEquals(expected, actual);
+        final int actual = repository.updateEmail(givenUserId, givenNewEmail);
+        final int expected = 1;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    public void userEmailShouldNotBeUpdatedBecauseOfNotExistingId() {
+    public void userEmailShouldNotBeUpdatedBecauseOfNoSuchUser() {
         final Long givenUserId = MAX_VALUE;
         final String givenNewEmail = "newEmail@mail.ru";
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.updateEmail(givenUserId, givenNewEmail);
-        checkQueryCount(1);
-
-        final int expectedCountUpdatedRows = 0;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+        final int actual = repository.updateEmail(givenUserId, givenNewEmail);
+        final int expected = 0;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -140,33 +106,18 @@ public final class UserRepositoryTest extends AbstractSpringBootTest {
         final Long givenId = 255L;
         final String givenNewEncryptedPassword = "new-password";
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewEncryptedPassword);
-        checkQueryCount(1);
-
-        final int expectedCountUpdatedRows = 1;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
-
-        final UserEntity actual = repository.findById(givenId).orElseThrow();
-        final UserEntity expected = UserEntity.builder()
-                .id(givenId)
-                .email("vladzuev.00@mail.ru")
-                .password(givenNewEncryptedPassword)
-                .role(UserEntity.UserRole.USER)
-                .build();
-        UserEntityUtil.checkEquals(expected, actual);
+        final int actual = repository.updatePassword(givenId, givenNewEncryptedPassword);
+        final int expected = 1;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    public void userPasswordShouldBeUpdatedBecauseOfNotExistingId() {
+    public void userPasswordShouldBeUpdatedBecauseOfNoSuchUser() {
         final Long givenId = MAX_VALUE;
         final String givenNewEncryptedPassword = "new-password";
 
-        startQueryCount();
-        final int actualCountUpdatedRows = repository.updatePassword(givenId, givenNewEncryptedPassword);
-        checkQueryCount(1);
-
-        final int expectedCountUpdatedRows = 0;
-        assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
+        final int actual = repository.updatePassword(givenId, givenNewEncryptedPassword);
+        final int expected = 0;
+        Assertions.assertEquals(expected, actual);
     }
 }

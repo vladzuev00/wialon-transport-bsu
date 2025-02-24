@@ -34,7 +34,7 @@ public class LocationService extends CRUDService<Long, LocationEntity, Location,
     @Transactional(readOnly = true)
     public Stream<Location> findDataByUserIdFetchingTrackerAndAddress(final User user, final DateInterval dateInterval) {
         return findDtoStream(
-                repository -> repository.findDataByUserIdFetchingTrackerAndAddress(
+                repository -> repository.streamAllByUserIdFetchingTrackerAndAddress(
                         user.getId(),
                         dateInterval.getStart(),
                         dateInterval.getEnd()

@@ -2,8 +2,7 @@ package by.vladzuev.locationreceiver.crud.service;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
-import by.vladzuev.locationreceiver.model.Mileage;
+import by.vladzuev.locationreceiver.crud.dto.Mileage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +12,7 @@ import static java.lang.Long.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public final class TrackerMileageServiceTest extends AbstractSpringBootTest {
+public final class MileageServiceTest extends AbstractSpringBootTest {
 
     @Autowired
     private TrackerMileageService service;
@@ -23,17 +22,17 @@ public final class TrackerMileageServiceTest extends AbstractSpringBootTest {
         final Tracker givenTracker = createTracker(255L);
         final double givenUrban = 5.5;
         final double givenCountry = 6.6;
-        final Mileage givenMileageDelta = new Mileage(givenUrban, givenCountry);
+        final by.vladzuev.locationreceiver.model.Mileage givenMileageDelta = new by.vladzuev.locationreceiver.model.Mileage(givenUrban, givenCountry);
 
         final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
         final int expectedCountUpdatedRows = 1;
         assertEquals(expectedCountUpdatedRows, actualCountUpdatedRows);
 
-        final Optional<TrackerMileage> optionalActual = service.findById(1L);
+        final Optional<Mileage> optionalActual = service.findById(1L);
         assertTrue(optionalActual.isPresent());
 
-        final TrackerMileage actual = optionalActual.get();
-        final TrackerMileage expected = TrackerMileage.builder()
+        final Mileage actual = optionalActual.get();
+        final Mileage expected = Mileage.builder()
                 .id(1L)
                 .urban(givenUrban)
                 .country(givenCountry)
@@ -46,7 +45,7 @@ public final class TrackerMileageServiceTest extends AbstractSpringBootTest {
         final Tracker givenTracker = createTracker(MAX_VALUE);
         final double givenUrban = 5.5;
         final double givenCountry = 6.6;
-        final Mileage givenMileageDelta = new Mileage(givenUrban, givenCountry);
+        final by.vladzuev.locationreceiver.model.Mileage givenMileageDelta = new by.vladzuev.locationreceiver.model.Mileage(givenUrban, givenCountry);
 
         final int actualCountUpdatedRows = service.increaseMileage(givenTracker, givenMileageDelta);
         final int expectedCountUpdatedRows = 0;

@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.service.security.model;
 
-import by.vladzuev.locationreceiver.crud.entity.UserEntity;
+import by.vladzuev.locationreceiver.crud.enumeration.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -17,7 +17,7 @@ public class SecurityUser implements UserDetails {
     Long id;
     String email;
     String password;
-    UserEntity.UserRole role;
+    UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

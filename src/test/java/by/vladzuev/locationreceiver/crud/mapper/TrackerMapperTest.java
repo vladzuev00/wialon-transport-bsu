@@ -2,10 +2,10 @@ package by.vladzuev.locationreceiver.crud.mapper;
 
 import by.vladzuev.locationreceiver.base.AbstractSpringBootTest;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.crud.dto.TrackerMileage;
+import by.vladzuev.locationreceiver.crud.dto.Mileage;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.TrackerEntity;
-import by.vladzuev.locationreceiver.crud.entity.TrackerMileageEntity;
+import by.vladzuev.locationreceiver.crud.entity.MileageEntity;
 import by.vladzuev.locationreceiver.crud.entity.UserEntity;
 import by.vladzuev.locationreceiver.util.entity.TrackerEntityUtil;
 import org.hibernate.Hibernate;
@@ -46,7 +46,7 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
                 .build();
 
         assertNotNull(actual);
-        TrackerEntityUtil.checkEquals(expected, actual);
+        TrackerEntityUtil.assertEquals(expected, actual);
     }
 
     @Test
@@ -76,7 +76,7 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
     public void entityWithNotLoadedPropertiesShouldBeMappedToDto() {
         try (final MockedStatic<Hibernate> mockedStatic = mockStatic(Hibernate.class)) {
             final UserEntity givenUser = createUserEntity(256L);
-            final TrackerMileageEntity givenMileage = createTrackerMileageEntity(257L);
+            final MileageEntity givenMileage = createTrackerMileageEntity(257L);
             final TrackerEntity givenEntity = TrackerEntity.builder()
                     .id(255L)
                     .imei("11112222333344445555")
@@ -119,15 +119,15 @@ public final class TrackerMapperTest extends AbstractSpringBootTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static TrackerMileageEntity createTrackerMileageEntity(final Long id) {
-        return TrackerMileageEntity.builder()
+    private static MileageEntity createTrackerMileageEntity(final Long id) {
+        return MileageEntity.builder()
                 .id(id)
                 .build();
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static TrackerMileage createTrackerMileageDto(final Long id) {
-        return TrackerMileage.builder()
+    private static Mileage createTrackerMileageDto(final Long id) {
+        return Mileage.builder()
                 .id(id)
                 .build();
     }

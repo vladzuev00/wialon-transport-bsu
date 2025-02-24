@@ -5,6 +5,7 @@ import by.vladzuev.locationreceiver.crud.entity.ParameterEntity;
 import by.vladzuev.locationreceiver.util.CollectionUtil;
 import by.vladzuev.locationreceiver.util.HibernateUtil;
 import lombok.experimental.UtilityClass;
+import org.junit.Assert;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,46 +14,46 @@ import static org.junit.Assert.*;
 
 //TODO: refactor
 @UtilityClass
-public final class DataEntityUtil {
+public final class LocationEntityUtil {
 
-    public static void checkEquals(final LocationEntity expected, final LocationEntity actual) {
+    public static void assertEquals(final LocationEntity expected, final LocationEntity actual) {
         checkEqualsExceptIdAndParameters(expected, actual);
-        assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getId(), actual.getId());
         checkEqualsWithoutOrder(expected.getParameters(), actual.getParameters());
     }
 
     //TODO: remove
     public static void checkEqualsExceptIdAndParameters(final LocationEntity expected, final LocationEntity actual) {
-        assertEquals(expected.getDateTime(), actual.getDateTime());
-        assertEquals(expected.getCoordinate(), actual.getCoordinate());
-        assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
-        assertEquals(expected.getCourse(), actual.getCourse());
-        assertEquals(expected.getAltitude(), actual.getAltitude());
+        Assert.assertEquals(expected.getDateTime(), actual.getDateTime());
+        Assert.assertEquals(expected.getCoordinate(), actual.getCoordinate());
+        Assert.assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
+        Assert.assertEquals(expected.getCourse(), actual.getCourse());
+        Assert.assertEquals(expected.getAltitude(), actual.getAltitude());
 //        assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
-        assertEquals(expected.getHdop(), actual.getHdop(), 0.);
-        assertEquals(expected.getInputs(), actual.getInputs());
-        assertEquals(expected.getOutputs(), actual.getOutputs());
+        Assert.assertEquals(expected.getHdop(), actual.getHdop(), 0.);
+        Assert.assertEquals(expected.getInputs(), actual.getInputs());
+        Assert.assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-        assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
-        assertEquals(expected.getTracker(), actual.getTracker());
-        assertEquals(expected.getAddress(), actual.getAddress());
+        Assert.assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
+        Assert.assertEquals(expected.getTracker(), actual.getTracker());
+        Assert.assertEquals(expected.getAddress(), actual.getAddress());
     }
 
     public static void checkEqualsExceptParameters(final LocationEntity expected, final LocationEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getDateTime(), actual.getDateTime());
-        assertEquals(expected.getCoordinate(), actual.getCoordinate());
-        assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
-        assertEquals(expected.getCourse(), actual.getCourse());
-        assertEquals(expected.getAltitude(), actual.getAltitude());
+        Assert.assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getDateTime(), actual.getDateTime());
+        Assert.assertEquals(expected.getCoordinate(), actual.getCoordinate());
+        Assert.assertEquals(expected.getSpeed(), actual.getSpeed(), 0.);
+        Assert.assertEquals(expected.getCourse(), actual.getCourse());
+        Assert.assertEquals(expected.getAltitude(), actual.getAltitude());
 //        assertEquals(expected.getAmountOfSatellites(), actual.getAmountOfSatellites());
-        assertEquals(expected.getHdop(), actual.getHdop(), 0.);
-        assertEquals(expected.getInputs(), actual.getInputs());
-        assertEquals(expected.getOutputs(), actual.getOutputs());
+        Assert.assertEquals(expected.getHdop(), actual.getHdop(), 0.);
+        Assert.assertEquals(expected.getInputs(), actual.getInputs());
+        Assert.assertEquals(expected.getOutputs(), actual.getOutputs());
         assertArrayEquals(expected.getAnalogInputs(), actual.getAnalogInputs(), 0.);
-        assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
-        assertEquals(expected.getTracker(), actual.getTracker());
-        assertEquals(expected.getAddress(), actual.getAddress());
+        Assert.assertEquals(expected.getDriverKeyCode(), actual.getDriverKeyCode());
+        Assert.assertEquals(expected.getTracker(), actual.getTracker());
+        Assert.assertEquals(expected.getAddress(), actual.getAddress());
     }
 
     public static boolean areParametersFetched(final LocationEntity data) {
@@ -72,11 +73,11 @@ public final class DataEntityUtil {
     }
 
     public static boolean areTrackersFetched(final Collection<LocationEntity> entities) {
-        return CollectionUtil.areAllMatch(entities, DataEntityUtil::isTrackerFetched);
+        return CollectionUtil.areAllMatch(entities, LocationEntityUtil::isTrackerFetched);
     }
 
     public static boolean areAddressesFetched(final Collection<LocationEntity> entities) {
-        return CollectionUtil.areAllMatch(entities, DataEntityUtil::isAddressFetched);
+        return CollectionUtil.areAllMatch(entities, LocationEntityUtil::isAddressFetched);
     }
 
     private static void checkEqualsWithoutOrder(final List<ParameterEntity> expected,

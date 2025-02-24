@@ -16,17 +16,19 @@ import java.util.Optional;
 @Component
 public final class GeocodingLoggingAspect {
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @AfterReturning(pointcut = "geocoding()", returning = "optionalAddress")
     public void log(final JoinPoint joinPoint, final Optional<Address> optionalAddress) {
         optionalAddress.ifPresentOrElse(address -> logSuccess(joinPoint, address), () -> logFailure(joinPoint));
     }
 
     @Pointcut(
-            "execution("
-                    + "public java.util.Optional<by.vladzuev.locationreceiver.crud.dto.Address> "
-                    + "by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder.geocode("
-                    + "by.vladzuev.locationreceiver.model.GpsCoordinate)"
-                    + ")"
+            """
+                    execution(
+                        public java.util.Optional<by.vladzuev.locationreceiver.crud.dto.Address>
+                        by.vladzuev.locationreceiver.service.geocoding.geocoder.Geocoder.geocode(
+                        by.vladzuev.locationreceiver.model.GpsCoordinate)
+                    )"""
     )
     private void geocoding() {
 

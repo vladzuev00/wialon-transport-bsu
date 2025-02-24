@@ -42,7 +42,7 @@ public class TrackerService extends CRUDEncryptingPasswordService<
 
     @Transactional(readOnly = true)
     public Page<Tracker> findByUserOrderedByImei(final User user, final Pageable pageable) {
-        return findDtoPage(repository -> repository.findByUserIdOrderedByImei(user.getId(), pageable));
+        return findDtoPage(repository -> repository.findByUserIdOrderingByImei(user.getId(), pageable));
     }
 
     @Transactional(readOnly = true)

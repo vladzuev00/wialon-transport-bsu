@@ -1,22 +1,19 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@jakarta.persistence.Entity
-@Table(name = "tracker_mileages")
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
 @Setter
 @Getter
-@ToString
 @Builder
-public class TrackerMileageEntity extends AbstractEntity<Long> {
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "mileages")
+public class MileageEntity extends AbstractEntity<Long> {
 
     @Id
     @Column(name = "id")

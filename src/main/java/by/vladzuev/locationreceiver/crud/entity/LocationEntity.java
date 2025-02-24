@@ -2,14 +2,12 @@ package by.vladzuev.locationreceiver.crud.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.SEQUENCE;
-import static org.hibernate.type.SqlTypes.ARRAY;
 
 
 @Setter
@@ -19,7 +17,7 @@ import static org.hibernate.type.SqlTypes.ARRAY;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "location")
+@Table(name = "locations")
 public class LocationEntity extends AbstractEntity<Long> {
 
     @Id
@@ -55,7 +53,6 @@ public class LocationEntity extends AbstractEntity<Long> {
     @Column(name = "outputs")
     private int outputs;
 
-    @JdbcTypeCode(ARRAY)
     @Column(name = "analog_inputs")
     private double[] analogInputs;
 
@@ -76,13 +73,13 @@ public class LocationEntity extends AbstractEntity<Long> {
     @JoinColumn(name = "address_id")
     private AddressEntity address;
 
-    @NoArgsConstructor
-    @AllArgsConstructor
     @Setter
     @Getter
-    @EqualsAndHashCode
     @ToString
     @Embeddable
+    @NoArgsConstructor
+    @EqualsAndHashCode
+    @AllArgsConstructor
     public static final class GpsCoordinate {
         private double latitude;
         private double longitude;

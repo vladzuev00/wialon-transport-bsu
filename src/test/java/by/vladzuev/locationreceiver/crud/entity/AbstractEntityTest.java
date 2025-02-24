@@ -27,7 +27,7 @@ public final class AbstractEntityTest extends AbstractSpringBootTest {
 
     @Test
     public void notProxyEntityShouldBeEqualProxyEntity() {
-        final AbstractEntity<Long> firstGivenEntity = createTracker(255L);
+        final AbstractEntity<Long> firstGivenEntity = TrackerEntity.builder().id(255L).build();
         final AbstractEntity<Long> secondGivenEntity = entityManager.find(TrackerEntity.class, 255L);
 
         assertEquals(firstGivenEntity, secondGivenEntity);
@@ -64,13 +64,6 @@ public final class AbstractEntityTest extends AbstractSpringBootTest {
         final int actual = givenEntity.hashCode();
         final int expected = 286;
         assertEquals(expected, actual);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static TrackerEntity createTracker(final Long id) {
-        return TrackerEntity.builder()
-                .id(id)
-                .build();
     }
 
     @Builder

@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.crud.dto;
 
-import by.vladzuev.locationreceiver.crud.entity.UserEntity.UserRole;
+import by.vladzuev.locationreceiver.crud.enumeration.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
