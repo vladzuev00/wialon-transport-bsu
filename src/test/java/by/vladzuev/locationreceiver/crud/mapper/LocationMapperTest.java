@@ -27,10 +27,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mockStatic;
 
-public final class DataMapperTest extends AbstractSpringBootTest {
+public final class LocationMapperTest extends AbstractSpringBootTest {
 
     @Autowired
-    private DataMapper mapper;
+    private LocationMapper mapper;
 
     @Test
     public void dtoShouldBeMappedToEntity() {

@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.dto.User;
 import by.vladzuev.locationreceiver.crud.entity.LocationEntity;
-import by.vladzuev.locationreceiver.crud.mapper.DataMapper;
+import by.vladzuev.locationreceiver.crud.mapper.LocationMapper;
 import by.vladzuev.locationreceiver.crud.repository.LocationRepository;
 import by.vladzuev.locationreceiver.model.DateInterval;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class LocationService extends CRUDService<Long, LocationEntity, Location, DataMapper, LocationRepository> {
+public class LocationService extends CRUDService<Long, LocationEntity, Location, LocationMapper, LocationRepository> {
 
-    public LocationService(final DataMapper mapper, final LocationRepository repository) {
+    public LocationService(final LocationMapper mapper, final LocationRepository repository) {
         super(mapper, repository);
     }
 

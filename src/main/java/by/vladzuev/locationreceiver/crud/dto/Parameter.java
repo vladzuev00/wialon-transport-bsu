@@ -13,4 +13,5 @@ public class Parameter implements Dto<Long> {
     String name;
     ParameterType type;
     String value;
+    Location location;
 }

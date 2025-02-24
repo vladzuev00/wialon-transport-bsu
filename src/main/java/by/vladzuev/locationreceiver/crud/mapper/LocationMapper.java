@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public final class DataMapper extends Mapper<LocationEntity, Location> {
+public final class LocationMapper extends Mapper<LocationEntity, Location> {
 
-    public DataMapper(final ModelMapper modelMapper) {
+    public LocationMapper(final ModelMapper modelMapper) {
         super(modelMapper, LocationEntity.class, Location.class);
     }
 
