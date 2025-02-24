@@ -14,12 +14,13 @@ public final class ParameterMapper extends Mapper<ParameterEntity, Parameter> {
 
     @Override
     protected Parameter createDto(final ParameterEntity source) {
-        return new Parameter(
-                source.getId(),
-                source.getName(),
-                source.getType(),
-                source.getValue()
-        );
+        return null;
+//        return new Parameter(
+//                source.getId(),
+//                source.getName(),
+//                source.getType(),
+//                source.getValue()
+//        );
     }
 
     @Override
