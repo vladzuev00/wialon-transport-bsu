@@ -35,7 +35,7 @@ public final class PrefixedBinaryPackageDecoderTest {
 
         @Override
         protected Short readPrefix(final ByteBuf buffer, final int length) {
-            return buffer.readShort();
+            throw new UnsupportedOperationException();
         }
 
         @Override
