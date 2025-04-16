@@ -41,14 +41,16 @@ public final class ContextAttributeManager {
         return findAttributeValue(context, KEY_LAST_LOCATION);
     }
 
+    private <V> void putAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key, final V value) {
+        context.channel()
+                .attr(key)
+                .set(value);
+    }
+
     private <V> Optional<V> findAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key) {
         return Optional.of(context)
                 .map(ChannelHandlerContext::channel)
                 .map(channel -> channel.attr(key))
                 .map(Attribute::get);
-    }
-
-    private <V> void putAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key, final V value) {
-        context.channel().attr(key).set(value);
     }
 }
