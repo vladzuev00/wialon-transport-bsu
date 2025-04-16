@@ -14,7 +14,7 @@ import static java.util.Optional.ofNullable;
 
 @Component
 @RequiredArgsConstructor
-public final class ChannelHandlerContextManager {
+public final class ContextManager {
     private final ContextAttributeManager attributeManager;
     private final Map<Long, ChannelHandlerContext> contextsByTrackerIds = new ConcurrentHashMap<>();
 

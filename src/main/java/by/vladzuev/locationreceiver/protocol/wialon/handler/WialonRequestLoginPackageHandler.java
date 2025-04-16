@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.protocol.wialon.handler;
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
 import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.contextmanager.ChannelHandlerContextManager;
+import by.vladzuev.locationreceiver.protocol.core.contextmanager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.ProtectedLoginPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
@@ -17,7 +17,7 @@ public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackag
     public WialonRequestLoginPackageHandler(final TrackerImeiFactory imeiFactory,
                                             final ContextAttributeManager contextAttributeManager,
                                             final TrackerService trackerService,
-                                            final ChannelHandlerContextManager contextManager,
+                                            final ContextManager contextManager,
                                             final LocationService locationService,
                                             final BCryptPasswordEncoder passwordEncoder) {
         super(

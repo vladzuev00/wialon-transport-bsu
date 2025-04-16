@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.protocol.core.handler;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.contextmanager.ChannelHandlerContextManager;
+import by.vladzuev.locationreceiver.protocol.core.contextmanager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -18,7 +18,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
 
     private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
-    private final ChannelHandlerContextManager contextManager;
+    private final ContextManager contextManager;
 
     @Override
     public void channelRead(final ChannelHandlerContext context, final Object request) {

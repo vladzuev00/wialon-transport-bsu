@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
 import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.contextmanager.ChannelHandlerContextManager;
+import by.vladzuev.locationreceiver.protocol.core.contextmanager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.core.model.LoginPackage;
@@ -16,14 +16,14 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     private final TrackerImeiFactory imeiFactory;
     private final ContextAttributeManager contextAttributeManager;
     private final TrackerService trackerService;
-    private final ChannelHandlerContextManager contextManager;
+    private final ContextManager contextManager;
     private final LocationService locationService;
 
     public LoginPackageHandler(final Class<REQUEST> requestType,
                                final TrackerImeiFactory imeiFactory,
                                final ContextAttributeManager contextAttributeManager,
                                final TrackerService trackerService,
-                               final ChannelHandlerContextManager contextManager,
+                               final ContextManager contextManager,
                                final LocationService locationService) {
         super(requestType);
         this.imeiFactory = imeiFactory;
