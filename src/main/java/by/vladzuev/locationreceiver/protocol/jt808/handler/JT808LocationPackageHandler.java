@@ -3,7 +3,7 @@ package by.vladzuev.locationreceiver.protocol.jt808.handler;
 import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.LocationPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808Location;

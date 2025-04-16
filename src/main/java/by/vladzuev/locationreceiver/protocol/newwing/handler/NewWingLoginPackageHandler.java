@@ -2,8 +2,8 @@ package by.vladzuev.locationreceiver.protocol.newwing.handler;
 
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.contextmanager.ContextManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.UnprotectedLoginPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLoginPackage;

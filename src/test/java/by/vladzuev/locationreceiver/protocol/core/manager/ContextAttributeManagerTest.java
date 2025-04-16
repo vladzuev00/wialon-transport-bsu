@@ -1,7 +1,8 @@
-package by.vladzuev.locationreceiver.protocol.core.contextattributemanager;
+package by.vladzuev.locationreceiver.protocol.core.manager;
 
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.Attribute;
@@ -12,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager.*;
+import static by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager.*;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;

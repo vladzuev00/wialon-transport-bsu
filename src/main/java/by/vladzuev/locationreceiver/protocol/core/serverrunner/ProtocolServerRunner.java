@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.core.serverrunner;
 
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.exceptionhandler.ProtocolExceptionHandler;
 import by.vladzuev.locationreceiver.protocol.core.model.ProtocolServer;
 import by.vladzuev.locationreceiver.protocol.core.property.ProtocolServerProperty;

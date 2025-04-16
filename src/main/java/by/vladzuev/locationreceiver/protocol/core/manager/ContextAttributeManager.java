@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.protocol.core.contextattributemanager;
+package by.vladzuev.locationreceiver.protocol.core.manager;
 
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;

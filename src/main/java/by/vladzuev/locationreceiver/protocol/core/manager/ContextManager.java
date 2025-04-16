@@ -1,7 +1,6 @@
-package by.vladzuev.locationreceiver.protocol.core.contextmanager;
+package by.vladzuev.locationreceiver.protocol.core.manager;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

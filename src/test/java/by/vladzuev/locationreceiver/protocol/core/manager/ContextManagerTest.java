@@ -1,7 +1,8 @@
-package by.vladzuev.locationreceiver.protocol.core.contextmanager;
+package by.vladzuev.locationreceiver.protocol.core.manager;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

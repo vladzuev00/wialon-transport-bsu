@@ -7,7 +7,7 @@
 //import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
 //import by.vladzuev.locationreceiver.model.GpsCoordinate;
 //import by.vladzuev.locationreceiver.crud.enumeration.ParameterType;
-//import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+//import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 //import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 //import io.netty.channel.ChannelHandlerContext;
 //import lombok.AllArgsConstructor;

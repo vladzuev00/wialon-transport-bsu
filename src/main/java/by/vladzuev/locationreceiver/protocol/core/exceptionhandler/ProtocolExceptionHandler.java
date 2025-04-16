@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.core.exceptionhandler;
 
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;

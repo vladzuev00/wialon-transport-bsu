@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.core.exceptionhandler;
 
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import io.netty.channel.ChannelHandlerContext;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;

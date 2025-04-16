@@ -1,8 +1,8 @@
 package by.vladzuev.locationreceiver.protocol.core.handler;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.protocol.core.contextattributemanager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.contextmanager.ContextManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
