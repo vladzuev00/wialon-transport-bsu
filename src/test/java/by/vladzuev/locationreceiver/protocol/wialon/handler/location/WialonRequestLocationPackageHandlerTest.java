@@ -22,7 +22,7 @@ public final class WialonRequestLocationPackageHandlerTest {
         final var givenSources = List.of(WialonLocation.builder().build(), WialonLocation.builder().build());
         final TestPackage givenRequest = new TestPackage(givenSources);
 
-        final List<WialonLocation> actual = handler.getLocationSources(givenRequest);
+        final List<WialonLocation> actual = handler.streamLocationSources(givenRequest);
         assertSame(givenSources, actual);
     }
 
@@ -268,7 +268,7 @@ public final class WialonRequestLocationPackageHandlerTest {
         final Set<Parameter> givenParameters = Set.of(mock(Parameter.class), mock(Parameter.class));
         final WialonLocation givenLocation = WialonLocation.builder().parameters(givenParameters).build();
 
-        final Stream<Parameter> actual = handler.getParameters(givenLocation);
+        final Stream<Parameter> actual = handler.streamParameters(givenLocation);
         final Set<Parameter> actualAsSet = actual.collect(toUnmodifiableSet());
         assertEquals(givenParameters, actualAsSet);
     }

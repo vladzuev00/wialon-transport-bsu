@@ -1,14 +1,14 @@
 package by.vladzuev.locationreceiver.protocol.core.handler.packages.location;
 
-import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.time.LocalDate;
@@ -44,13 +44,11 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
 
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
-        final List<LOCATION_SOURCE> locationSources = getLocationSources(request);
-        handleLocations(locationSources, context);
-        final int locationCount = locationSources.size();
-        return createResponse(locationCount);
+        handleLocations(request, context);
+        return createResponse(request);
     }
 
-    protected abstract List<LOCATION_SOURCE> getLocationSources(final REQUEST request);
+    protected abstract Stream<LOCATION_SOURCE> streamLocationSources(final REQUEST request);
 
     protected abstract Optional<LocalDate> findDate(final LOCATION_SOURCE source);
 
@@ -78,14 +76,14 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
 
     protected abstract Optional<String> findDriverKeyCode(final LOCATION_SOURCE source);
 
-    protected abstract Stream<Parameter> getParameters(final LOCATION_SOURCE source);
+    protected abstract Stream<Parameter> streamParameters(final LOCATION_SOURCE source);
 
-    protected abstract Object createResponse(final int locationCount);
+    protected abstract Object createResponse(final REQUEST request);
 
-    private void handleLocations(final List<LOCATION_SOURCE> sources, final ChannelHandlerContext context) {
+    private void handleLocations(final REQUEST request, final ChannelHandlerContext context) {
         final Tracker tracker = getTracker(context);
         final LocalDateTime lastReceivingDateTime = getLastReceivingDateTime(context);
-        sources.stream()
+        streamLocationSources(request)
                 .map(source -> createLocation(source, tracker))
                 .filter(locationValidator::isValid)
                 .sorted(DATE_TIME_COMPARATOR)
@@ -167,6 +165,6 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
     }
 
     private Map<String, Parameter> getParametersByNames(final LOCATION_SOURCE source) {
-        return getParameters(source).collect(toMap(Parameter::getName, identity()));
+        return streamParameters(source).collect(toMap(Parameter::getName, identity()));
     }
 }

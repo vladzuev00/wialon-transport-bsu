@@ -32,8 +32,9 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
         super(requestType, contextAttributeManager, locationDefaultProperty, locationValidator, locationProducer);
     }
 
+    //TODO: rename test
     @Override
-    protected final List<WialonLocation> getLocationSources(final REQUEST request) {
+    protected final List<WialonLocation> streamLocationSources(final REQUEST request) {
         return request.getLocations();
     }
 
@@ -102,8 +103,9 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
         return ofNullable(location.getDriverKeyCode());
     }
 
+    //TODO: rename test
     @Override
-    protected final Stream<Parameter> getParameters(final WialonLocation location) {
+    protected final Stream<Parameter> streamParameters(final WialonLocation location) {
         return location.getParameters().stream();
     }
 }

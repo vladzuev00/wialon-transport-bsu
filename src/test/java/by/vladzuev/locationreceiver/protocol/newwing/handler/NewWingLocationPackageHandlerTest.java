@@ -24,7 +24,7 @@ public final class NewWingLocationPackageHandlerTest {
         final var givenLocations = List.of(NewWingLocation.builder().build(), NewWingLocation.builder().build());
         final NewWingLocationPackage givenRequest = new NewWingLocationPackage(givenLocations);
 
-        final List<NewWingLocation> actual = handler.getLocationSources(givenRequest);
+        final List<NewWingLocation> actual = handler.streamLocationSources(givenRequest);
         assertSame(givenLocations, actual);
     }
 
@@ -158,7 +158,7 @@ public final class NewWingLocationPackageHandlerTest {
     public void parametersShouldBeGot() {
         final NewWingLocation givenLocation = NewWingLocation.builder().build();
 
-        final Stream<Parameter> actual = handler.getParameters(givenLocation);
+        final Stream<Parameter> actual = handler.streamParameters(givenLocation);
         final boolean actualEmpty = actual.findAny().isEmpty();
         assertTrue(actualEmpty);
     }

@@ -26,7 +26,7 @@ public final class JT808LocationPackageHandlerTest {
         final var givenLocations = List.of(JT808Location.builder().build(), JT808Location.builder().build());
         final JT808LocationPackage givenRequest = new JT808LocationPackage(givenLocations);
 
-        final List<JT808Location> actual = handler.getLocationSources(givenRequest);
+        final List<JT808Location> actual = handler.streamLocationSources(givenRequest);
         assertSame(givenLocations, actual);
     }
 
@@ -173,7 +173,7 @@ public final class JT808LocationPackageHandlerTest {
     public void parametersShouldBeGot() {
         final JT808Location givenLocation = mock(JT808Location.class);
 
-        final Stream<Parameter> actual = handler.getParameters(givenLocation);
+        final Stream<Parameter> actual = handler.streamParameters(givenLocation);
         final boolean actualEmpty = actual.findFirst().isEmpty();
         assertTrue(actualEmpty);
 

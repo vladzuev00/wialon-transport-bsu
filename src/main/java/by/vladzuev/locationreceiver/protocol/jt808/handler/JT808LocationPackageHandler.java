@@ -35,8 +35,9 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         );
     }
 
+    //TODO: rename test
     @Override
-    protected List<JT808Location> getLocationSources(final JT808LocationPackage request) {
+    protected List<JT808Location> streamLocationSources(final JT808LocationPackage request) {
         return request.getLocations();
     }
 
@@ -105,8 +106,9 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         return Optional.empty();
     }
 
+    //TODO: rename test
     @Override
-    protected Stream<Parameter> getParameters(final JT808Location location) {
+    protected Stream<Parameter> streamParameters(final JT808Location location) {
         return Stream.empty();
     }
 

@@ -35,8 +35,9 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
         );
     }
 
+    //TODO: rename test
     @Override
-    protected List<NewWingLocation> getLocationSources(final NewWingLocationPackage request) {
+    protected List<NewWingLocation> streamLocationSources(final NewWingLocationPackage request) {
         return request.getLocations();
     }
 
@@ -105,8 +106,9 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
         return Optional.empty();
     }
 
+    //TODO: rename test
     @Override
-    protected Stream<Parameter> getParameters(final NewWingLocation location) {
+    protected Stream<Parameter> streamParameters(final NewWingLocation location) {
         return Stream.empty();
     }
 
