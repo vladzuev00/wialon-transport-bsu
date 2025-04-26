@@ -23,13 +23,13 @@ public final class ProtocolExceptionHandler extends ChannelInboundHandlerAdapter
     private void logException(final ChannelHandlerContext context, final Throwable exception) {
         contextAttributeManager.findTrackerImei(context)
                 .ifPresentOrElse(
-                        trackerImei -> logException(trackerImei, exception),
+                        imei -> logException(imei, exception),
                         () -> logException(exception)
                 );
     }
 
-    private void logException(final String trackerImei, final Throwable exception) {
-        log.error("Communication with tracker '{}' arose exception", trackerImei, exception);
+    private void logException(final String imei, final Throwable exception) {
+        log.error("Communication with tracker '{}' arose exception", imei, exception);
     }
 
     private void logException(final Throwable exception) {
