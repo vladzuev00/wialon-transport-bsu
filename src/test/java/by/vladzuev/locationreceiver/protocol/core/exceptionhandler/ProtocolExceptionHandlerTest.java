@@ -44,7 +44,7 @@ public final class ProtocolExceptionHandlerTest {
         handler.exceptionCaught(givenContext, givenException);
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("During working with tracker '11112222333344445555' was arisen exception");
+        final List<String> expectedLogs = List.of("Communication with tracker '11112222333344445555' arose exception");
         assertEquals(expectedLogs, actualLogs);
 
         verify(givenContext, times(1)).close();
@@ -60,7 +60,7 @@ public final class ProtocolExceptionHandlerTest {
         handler.exceptionCaught(givenContext, givenException);
 
         final List<String> actualLogs = logCaptor.getLogs();
-        final List<String> expectedLogs = List.of("During working with tracker 'imei-not-defined' was arisen exception");
+        final List<String> expectedLogs = List.of("Communication with unknown tracker arose exception");
         assertEquals(expectedLogs, actualLogs);
 
         verify(givenContext, times(1)).close();
