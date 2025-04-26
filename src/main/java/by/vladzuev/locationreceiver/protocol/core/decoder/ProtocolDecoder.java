@@ -31,12 +31,12 @@ public abstract class ProtocolDecoder<SOURCE> extends ByteToMessageDecoder {
         return packageDecoders.stream()
                 .filter(decoder -> decoder.isAbleDecode(source))
                 .findFirst()
-                .orElseThrow(() -> createNoPackageDecoderException(source))
+                .orElseThrow(this::createNoPackageDecoderException)
                 .decode(source);
     }
 
-    private IllegalStateException createNoPackageDecoderException(final SOURCE source) {
-        return new IllegalStateException("No package decoder for '%s'".formatted(source));
+    private IllegalStateException createNoPackageDecoderException() {
+        return new IllegalStateException("No package decoder");
     }
 
     private void skipRemaining(final ByteBuf buffer) {

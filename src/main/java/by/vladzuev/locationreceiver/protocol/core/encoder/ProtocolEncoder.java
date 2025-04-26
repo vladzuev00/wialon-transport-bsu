@@ -18,10 +18,10 @@ public final class ProtocolEncoder extends MessageToByteEncoder<Object> {
                 .filter(encoder -> encoder.isAbleEncode(response))
                 .findFirst()
                 .map(encoder -> encoder.encode(response))
-                .ifPresentOrElse(out::writeBytes, () -> throwNoPackageEncoderException(response));
+                .ifPresentOrElse(out::writeBytes, this::throwNoPackageEncoderException);
     }
 
-    private void throwNoPackageEncoderException(final Object response) {
-        throw new IllegalStateException("No package encoder for '%s'".formatted(response));
+    private void throwNoPackageEncoderException() {
+        throw new IllegalStateException("No package encoder");
     }
 }
