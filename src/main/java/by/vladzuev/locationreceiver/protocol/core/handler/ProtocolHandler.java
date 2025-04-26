@@ -1,9 +1,9 @@
 package by.vladzuev.locationreceiver.protocol.core.handler;
 
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
+import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
-import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +14,13 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
-    private static final String NOT_DEFINED_TRACKER_IMEI = "imei-not-defined";
-
     private final List<? extends PackageHandler<?>> packageHandlers;
     private final ContextAttributeManager contextAttributeManager;
     private final ContextManager contextManager;
 
     @Override
     public void channelRead(final ChannelHandlerContext context, final Object request) {
-        logReceivingRequest(request);
+        logRequest(request);
         handle(request, context);
     }
 
@@ -37,7 +35,7 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
         remove(context);
     }
 
-    private void logReceivingRequest(final Object request) {
+    private void logRequest(final Object request) {
         log.info("Start handling request: {}", request);
     }
 
@@ -46,15 +44,22 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void logInactiveChannel(final ChannelHandlerContext context) {
-        final String trackerImei = contextAttributeManager.findTrackerImei(context).orElse(NOT_DEFINED_TRACKER_IMEI);
-        log.info("Tracker '{}' was disconnected", trackerImei);
+        contextAttributeManager.findImei(context).ifPresentOrElse(this::logInactiveChannel, this::logInactiveChannel);
+    }
+
+    private void logInactiveChannel(final String imei) {
+        log.info("Tracker '{}' was disconnected", imei);
+    }
+
+    private void logInactiveChannel() {
+        log.info("Unknown tracker was disconnected");
     }
 
     private void handle(final Object request, final ChannelHandlerContext context) {
         packageHandlers.stream()
                 .filter(handler -> handler.isAbleHandle(request))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No handler for request '%s'".formatted(request)))
+                .orElseThrow(() -> new IllegalArgumentException("There is no suitable handler"))
                 .handle(request, context);
     }
 

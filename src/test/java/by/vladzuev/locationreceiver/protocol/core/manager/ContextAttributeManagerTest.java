@@ -2,7 +2,6 @@ package by.vladzuev.locationreceiver.protocol.core.manager;
 
 import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.Attribute;
@@ -23,8 +22,8 @@ public final class ContextAttributeManagerTest {
     private final ContextAttributeManager manager = new ContextAttributeManager();
 
     @Test
-    public void trackerImeiShouldBePutAsAttribute() {
-        testPuttingAttribute("11111222223333344444", KEY_TRACKER_IMEI, ContextAttributeManager::putTrackerImei);
+    public void imeiShouldBePutAsAttribute() {
+        testPuttingAttribute("11111222223333344444", KEY_IMEI, ContextAttributeManager::putImei);
     }
 
     @Test
@@ -38,13 +37,13 @@ public final class ContextAttributeManagerTest {
     }
 
     @Test
-    public void trackerImeiShouldBeFoundInContextAsAttribute() {
-        testSuccessFindingAttribute("11111222223333344444", KEY_TRACKER_IMEI, ContextAttributeManager::findTrackerImei);
+    public void imeiShouldBeFoundInContextAsAttribute() {
+        testSuccessFindingAttribute("11111222223333344444", KEY_IMEI, ContextAttributeManager::findImei);
     }
 
     @Test
-    public void trackerImeiShouldNotBeFoundInContextAsAttribute() {
-        testFailFindingAttribute(KEY_TRACKER_IMEI, ContextAttributeManager::findTrackerImei);
+    public void imeiShouldNotBeFoundInContextAsAttribute() {
+        testFailFindingAttribute(KEY_IMEI, ContextAttributeManager::findImei);
     }
 
     @Test

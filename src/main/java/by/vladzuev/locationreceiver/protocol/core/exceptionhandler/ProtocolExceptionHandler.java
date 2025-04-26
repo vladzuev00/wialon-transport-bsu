@@ -21,7 +21,7 @@ public final class ProtocolExceptionHandler extends ChannelInboundHandlerAdapter
     }
 
     private void logException(final ChannelHandlerContext context, final Throwable exception) {
-        contextAttributeManager.findTrackerImei(context)
+        contextAttributeManager.findImei(context)
                 .ifPresentOrElse(
                         imei -> logException(imei, exception),
                         () -> logException(exception)

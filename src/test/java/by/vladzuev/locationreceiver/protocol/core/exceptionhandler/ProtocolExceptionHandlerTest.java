@@ -38,7 +38,7 @@ public final class ProtocolExceptionHandlerTest {
         final Throwable givenException = new RuntimeException();
 
         final String givenImei = "11112222333344445555";
-        when(mockedContextAttributeManager.findTrackerImei(same(givenContext))).thenReturn(Optional.of(givenImei));
+        when(mockedContextAttributeManager.findImei(same(givenContext))).thenReturn(Optional.of(givenImei));
 
         handler.exceptionCaught(givenContext, givenException);
 
@@ -54,7 +54,7 @@ public final class ProtocolExceptionHandlerTest {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final Throwable givenException = new RuntimeException();
 
-        when(mockedContextAttributeManager.findTrackerImei(same(givenContext))).thenReturn(empty());
+        when(mockedContextAttributeManager.findImei(same(givenContext))).thenReturn(empty());
 
         handler.exceptionCaught(givenContext, givenException);
 

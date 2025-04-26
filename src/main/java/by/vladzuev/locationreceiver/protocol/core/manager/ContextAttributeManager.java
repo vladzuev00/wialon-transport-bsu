@@ -13,12 +13,12 @@ import static io.netty.util.AttributeKey.valueOf;
 
 @Component
 public final class ContextAttributeManager {
-    static final AttributeKey<String> KEY_TRACKER_IMEI = valueOf("tracker_imei");
+    static final AttributeKey<String> KEY_IMEI = valueOf("imei");
     static final AttributeKey<Tracker> KEY_TRACKER = valueOf("tracker");
     static final AttributeKey<Location> KEY_LAST_LOCATION = valueOf("last_location");
 
-    public void putTrackerImei(final ChannelHandlerContext context, final String imei) {
-        putAttributeValue(context, KEY_TRACKER_IMEI, imei);
+    public void putImei(final ChannelHandlerContext context, final String imei) {
+        putAttributeValue(context, KEY_IMEI, imei);
     }
 
     public void putTracker(final ChannelHandlerContext context, final Tracker tracker) {
@@ -29,8 +29,8 @@ public final class ContextAttributeManager {
         putAttributeValue(context, KEY_LAST_LOCATION, location);
     }
 
-    public Optional<String> findTrackerImei(final ChannelHandlerContext context) {
-        return findAttributeValue(context, KEY_TRACKER_IMEI);
+    public Optional<String> findImei(final ChannelHandlerContext context) {
+        return findAttributeValue(context, KEY_IMEI);
     }
 
     public Optional<Tracker> findTracker(final ChannelHandlerContext context) {

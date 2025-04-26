@@ -69,7 +69,7 @@ public final class LoginPackageHandlerTest {
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
 
-        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
         verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), same(givenLocation));
         verify(mockedContextManager, times(1)).add(same(givenContext));
@@ -89,7 +89,7 @@ public final class LoginPackageHandlerTest {
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
 
-        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
         verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
         verify(mockedContextManager, times(1)).add(same(givenContext));
@@ -108,7 +108,7 @@ public final class LoginPackageHandlerTest {
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.NO_SUCH_IMEI);
         assertEquals(expected, actual);
 
-        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
         verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
         verifyNoInteractions(mockedContextManager, mockedLocationService);
@@ -126,7 +126,7 @@ public final class LoginPackageHandlerTest {
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.WRONG_PASSWORD);
         assertEquals(expected, actual);
 
-        verify(mockedContextAttributeManager, times(1)).putTrackerImei(same(givenContext), same(givenImei));
+        verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
         verify(mockedContextAttributeManager, times(0)).putLastLocation(any(ChannelHandlerContext.class), any(Location.class));
         verifyNoInteractions(mockedContextManager, mockedLocationService);

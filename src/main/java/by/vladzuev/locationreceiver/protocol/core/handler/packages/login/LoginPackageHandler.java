@@ -36,7 +36,7 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
         final String imei = imeiFactory.create(request);
-        contextAttributeManager.putTrackerImei(context, imei);
+        contextAttributeManager.putImei(context, imei);
         return trackerService.findByImei(imei)
                 .map(tracker -> login(tracker, request, context))
                 .orElseGet(this::createNoSuchImeiResponse);
