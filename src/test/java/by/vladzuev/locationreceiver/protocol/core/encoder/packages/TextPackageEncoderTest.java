@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public final class StringPackageEncoderTest {
-    private final TestStringPackageEncoder encoder = new TestStringPackageEncoder();
+public final class TextPackageEncoderTest {
+    private final TestTextPackageEncoder encoder = new TestTextPackageEncoder();
 
     @Test
     public void responseShouldBeDecodedInternally() {
@@ -22,9 +22,9 @@ public final class StringPackageEncoderTest {
         String value;
     }
 
-    private static final class TestStringPackageEncoder extends StringPackageEncoder<TestPackage> {
+    private static final class TestTextPackageEncoder extends TextPackageEncoder<TestPackage> {
 
-        public TestStringPackageEncoder() {
+        public TestTextPackageEncoder() {
             super(TestPackage.class);
         }
 
