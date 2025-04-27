@@ -9,7 +9,6 @@ import static by.vladzuev.locationreceiver.protocol.jt808.util.JT808Util.decodeM
 @Component
 public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
     private static final int IMEI_LENGTH_IN_PHONE_NUMBER = 10;
-
     private static final byte[] PREFIX = {126, 1, 0};
 
     public JT808RegistrationPackageDecoder() {
@@ -20,8 +19,7 @@ public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
     protected JT808RegistrationPackage decodeInternal(final ByteBuf buffer, final String phoneNumber) {
         skipProvinceId(buffer);
         skipCityId(buffer);
-        final String manufacturerId = decodeManufacturerId(buffer);
-        final String imei = createImei(manufacturerId, phoneNumber);
+        final String imei = extractImei(buffer, phoneNumber);
         return new JT808RegistrationPackage(imei);
     }
 
@@ -33,7 +31,7 @@ public final class JT808RegistrationPackageDecoder extends JT808PackageDecoder {
         buffer.skipBytes(Short.BYTES);
     }
 
-    private String createImei(final String manufacturerId, final String phoneNumber) {
-        return manufacturerId + phoneNumber.substring(phoneNumber.length() - IMEI_LENGTH_IN_PHONE_NUMBER);
+    private String extractImei(final ByteBuf buffer, final String phoneNumber) {
+        return decodeManufacturerId(buffer) + phoneNumber.substring(phoneNumber.length() - IMEI_LENGTH_IN_PHONE_NUMBER);
     }
 }
