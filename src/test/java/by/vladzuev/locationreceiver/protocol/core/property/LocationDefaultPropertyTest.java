@@ -27,7 +27,7 @@ public final class LocationDefaultPropertyTest extends AbstractSpringBootTest {
                 0.,
                 0,
                 0,
-                "test-driver"
+                "default-driver"
         );
         assertEquals(expected, property);
     }

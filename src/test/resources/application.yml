@@ -102,14 +102,21 @@ tracker-server:
 tracker-online:
   last-data-second-threshold: 300
 
-location-default:
-  latitude: 0
-  longitude: 0
-  course: 0
-  altitude: 0
-  speed: 0
-  satellite-count: 0
-  hdop: 0
-  inputs: 0
-  outputs: 0
-  driver-key-code: test-driver
+location:
+  default:
+    latitude: 0
+    longitude: 0
+    course: 0
+    altitude: 0
+    speed: 0
+    satellite-count: 0
+    hdop: 0
+    inputs: 0
+    outputs: 0
+    driver-key-code: default-driver
+  validation:
+    min-satellite-count: 3
+    max-satellite-count: 999
+    min-date-time: 2010-01-01T00:00:00
+    max-date-time-delta-from-now: 15s
+
