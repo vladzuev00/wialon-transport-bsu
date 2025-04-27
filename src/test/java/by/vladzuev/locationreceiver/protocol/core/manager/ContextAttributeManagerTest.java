@@ -22,57 +22,53 @@ public final class ContextAttributeManagerTest {
     private final ContextAttributeManager manager = new ContextAttributeManager();
 
     @Test
-    public void imeiShouldBePutAsAttribute() {
-        testPuttingAttribute("11111222223333344444", KEY_IMEI, ContextAttributeManager::putImei);
+    public void imeiShouldBePut() {
+        testPut("11111222223333344444", KEY_IMEI, ContextAttributeManager::putImei);
     }
 
     @Test
-    public void trackerShouldBePutAsAttribute() {
-        testPuttingAttribute(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::putTracker);
+    public void trackerShouldBePut() {
+        testPut(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::putTracker);
     }
 
     @Test
-    public void locationShouldBePutAsAttribute() {
-        testPuttingAttribute(Location.builder().build(), KEY_LAST_LOCATION, ContextAttributeManager::putLastLocation);
+    public void locationShouldBePut() {
+        testPut(Location.builder().build(), KEY_LAST_LOCATION, ContextAttributeManager::putLastLocation);
     }
 
     @Test
-    public void imeiShouldBeFoundInContextAsAttribute() {
-        testSuccessFindingAttribute("11111222223333344444", KEY_IMEI, ContextAttributeManager::findImei);
+    public void imeiShouldBeFound() {
+        testSuccessFind("11111222223333344444", KEY_IMEI, ContextAttributeManager::findImei);
     }
 
     @Test
-    public void imeiShouldNotBeFoundInContextAsAttribute() {
-        testFailFindingAttribute(KEY_IMEI, ContextAttributeManager::findImei);
+    public void imeiShouldNotBeFound() {
+        testFailedFind(KEY_IMEI, ContextAttributeManager::findImei);
     }
 
     @Test
-    public void trackerShouldBeFoundInContextAsAttribute() {
-        testSuccessFindingAttribute(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::findTracker);
+    public void trackerShouldBeFound() {
+        testSuccessFind(Tracker.builder().build(), KEY_TRACKER, ContextAttributeManager::findTracker);
     }
 
     @Test
-    public void trackerShouldNotBeFoundInContextAsAttribute() {
-        testFailFindingAttribute(KEY_TRACKER, ContextAttributeManager::findTracker);
+    public void trackerShouldNotBeFound() {
+        testFailedFind(KEY_TRACKER, ContextAttributeManager::findTracker);
     }
 
     @Test
-    public void lastLocationShouldBeFoundInContextAsAttribute() {
-        testSuccessFindingAttribute(
-                Location.builder().build(),
-                KEY_LAST_LOCATION,
-                ContextAttributeManager::findLastLocation
-        );
+    public void lastLocationShouldBeFound() {
+        testSuccessFind(Location.builder().build(), KEY_LAST_LOCATION, ContextAttributeManager::findLastLocation);
     }
 
     @Test
-    public void lastLocationShouldNotBeFoundInContextAsAttribute() {
-        testFailFindingAttribute(KEY_LAST_LOCATION, ContextAttributeManager::findLastLocation);
+    public void lastLocationShouldNotBeFound() {
+        testFailedFind(KEY_LAST_LOCATION, ContextAttributeManager::findLastLocation);
     }
 
-    private <T> void testPuttingAttribute(final T givenObject,
-                                          final AttributeKey<T> expectedKey,
-                                          final AttributePutOperation<T> operation) {
+    private <T> void testPut(final T givenObject,
+                             final AttributeKey<T> expectedKey,
+                             final AttributePutOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
         operation.execute(manager, givenContext, givenObject);
@@ -87,24 +83,23 @@ public final class ContextAttributeManagerTest {
         return attribute;
     }
 
-    private <T> void testSuccessFindingAttribute(final T expectedObject,
-                                                 final AttributeKey<T> expectedKey,
-                                                 final AttributeFindOperation<T> operation) {
-        final Optional<T> optionalActual = testFindingAttribute(expectedObject, expectedKey, operation);
+    private <T> void testSuccessFind(final T expectedObject,
+                                     final AttributeKey<T> expectedKey,
+                                     final AttributeFindOperation<T> operation) {
+        final Optional<T> optionalActual = testFind(expectedObject, expectedKey, operation);
         assertTrue(optionalActual.isPresent());
         final T actual = optionalActual.get();
         assertSame(expectedObject, actual);
     }
 
-    private <T> void testFailFindingAttribute(final AttributeKey<T> expectedKey,
-                                              final AttributeFindOperation<T> operation) {
-        final Optional<T> optionalActual = testFindingAttribute(null, expectedKey, operation);
+    private <T> void testFailedFind(final AttributeKey<T> expectedKey, final AttributeFindOperation<T> operation) {
+        final Optional<T> optionalActual = testFind(null, expectedKey, operation);
         assertTrue(optionalActual.isEmpty());
     }
 
-    private <T> Optional<T> testFindingAttribute(final T expectedObject,
-                                                 final AttributeKey<T> expectedKey,
-                                                 final AttributeFindOperation<T> operation) {
+    private <T> Optional<T> testFind(final T expectedObject,
+                                     final AttributeKey<T> expectedKey,
+                                     final AttributeFindOperation<T> operation) {
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         final Attribute<T> givenAttribute = mockAttribute(givenContext, expectedKey);
         when(givenAttribute.get()).thenReturn(expectedObject);

@@ -18,36 +18,36 @@ public final class ContextAttributeManager {
     static final AttributeKey<Location> KEY_LAST_LOCATION = valueOf("last_location");
 
     public void putImei(final ChannelHandlerContext context, final String imei) {
-        putAttributeValue(context, KEY_IMEI, imei);
+        put(context, KEY_IMEI, imei);
     }
 
     public void putTracker(final ChannelHandlerContext context, final Tracker tracker) {
-        putAttributeValue(context, KEY_TRACKER, tracker);
+        put(context, KEY_TRACKER, tracker);
     }
 
     public void putLastLocation(final ChannelHandlerContext context, final Location location) {
-        putAttributeValue(context, KEY_LAST_LOCATION, location);
+        put(context, KEY_LAST_LOCATION, location);
     }
 
     public Optional<String> findImei(final ChannelHandlerContext context) {
-        return findAttributeValue(context, KEY_IMEI);
+        return find(context, KEY_IMEI);
     }
 
     public Optional<Tracker> findTracker(final ChannelHandlerContext context) {
-        return findAttributeValue(context, KEY_TRACKER);
+        return find(context, KEY_TRACKER);
     }
 
     public Optional<Location> findLastLocation(final ChannelHandlerContext context) {
-        return findAttributeValue(context, KEY_LAST_LOCATION);
+        return find(context, KEY_LAST_LOCATION);
     }
 
-    private <V> void putAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key, final V value) {
+    private <V> void put(final ChannelHandlerContext context, final AttributeKey<V> key, final V value) {
         context.channel()
                 .attr(key)
                 .set(value);
     }
 
-    private <V> Optional<V> findAttributeValue(final ChannelHandlerContext context, final AttributeKey<V> key) {
+    private <V> Optional<V> find(final ChannelHandlerContext context, final AttributeKey<V> key) {
         return Optional.of(context)
                 .map(ChannelHandlerContext::channel)
                 .map(channel -> channel.attr(key))
