@@ -43,7 +43,7 @@ public final class JT808PackageDecoderTest {
         }
 
         @Override
-        protected Object decodeInternal(final ByteBuf buffer, final String phoneNumber) {
+        protected TestPackage decodeInternal(final ByteBuf buffer, final String phoneNumber) {
             final short value = buffer.readShort();
             return new TestPackage(phoneNumber, value);
         }
