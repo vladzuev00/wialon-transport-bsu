@@ -27,11 +27,11 @@ DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
 ALTER TABLE IF EXISTS trackers
 DROP CONSTRAINT IF EXISTS fk_trackers_to_mileages;
 
-ALTER TABLE IF EXISTS location
+ALTER TABLE IF EXISTS locations
 DROP
 CONSTRAINT IF EXISTS fk_location_to_trackers;
 
-ALTER TABLE IF EXISTS location
+ALTER TABLE IF EXISTS locations
 DROP
 CONSTRAINT IF EXISTS fk_location_to_addresses;
 
@@ -61,7 +61,7 @@ CONSTRAINT IF EXISTS fk_cities_to_addresses;
 --DROPPING tables
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
-DROP TABLE IF EXISTS location;
+DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS parameters;
 DROP TABLE IF EXISTS tracker_last_locations;
 DROP TABLE IF EXISTS addresses;
@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS mileages;
 
 --DROPPING SEQUENCES
 DROP SEQUENCE IF EXISTS addresses_id_seq;
-DROP SEQUENCE IF EXISTS location_id_seq;
+DROP SEQUENCE IF EXISTS locations_id_seq;
 DROP SEQUENCE IF EXISTS parameters_id_seq;
 
 --DROPPING TYPES
@@ -149,7 +149,7 @@ ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 
 CREATE INDEX ON addresses using GIST(geometry);
 
-CREATE TABLE location
+CREATE TABLE locations
 (
     id                     BIGSERIAL    PRIMARY KEY,
     date_time              TIMESTAMP(0) NOT NULL,
@@ -168,13 +168,13 @@ CREATE TABLE location
     address_id             BIGINT       NOT NULL
 );
 
-ALTER SEQUENCE location_id_seq INCREMENT 50;
+ALTER SEQUENCE locations_id_seq INCREMENT 50;
 
-ALTER TABLE location
+ALTER TABLE locations
     ADD CONSTRAINT fk_location_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id)
         ON DELETE CASCADE;
 
-ALTER TABLE location
+ALTER TABLE locations
     ADD CONSTRAINT fk_location_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
 
 CREATE TYPE parameter_type AS ENUM('INTEGER', 'DOUBLE', 'STRING');
@@ -219,6 +219,8 @@ CREATE TABLE cities
     id                          BIGSERIAL PRIMARY KEY,
     address_id                  BIGINT UNIQUE NOT NULL
 );
+
+ALTER SEQUENCE cities_id_seq INCREMENT 50;
 
 ALTER TABLE cities
     ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY (address_id)

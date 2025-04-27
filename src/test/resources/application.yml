@@ -102,7 +102,7 @@ tracker-server:
 tracker-online:
   last-data-second-threshold: 300
 
-location-default-property:
+location-default:
   latitude: 0
   longitude: 0
   course: 0

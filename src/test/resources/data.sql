@@ -25,7 +25,7 @@ INSERT INTO cities(id, address_id)
 VALUES(258, 257),
       (260, 259);
 
-INSERT INTO location(id, date_time, latitude, longitude, speed, course, altitude, amount_of_satellites, hdop,
+INSERT INTO locations(id, date_time, latitude, longitude, speed, course, altitude, satellite_count, hdop,
                  inputs, outputs, analog_inputs, driver_key_code, tracker_id, address_id)
 VALUES (252, '2019-10-21 14:39:52', 53.233, 27.3434, 8, 9, 10, 11, 12.4, 13, 14, ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 257),
        (253, '2019-10-22 14:39:52', 53.233, 27.3434, 8, 9, 10, 11, 12.4, 13, 14, ARRAY[0.2, 0.3, 0.4], 'driver key code', 255, 257),

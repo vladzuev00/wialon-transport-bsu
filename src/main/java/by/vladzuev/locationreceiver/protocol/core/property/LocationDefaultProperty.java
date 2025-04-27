@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Value
-@ConfigurationProperties("location-default-property")
+@ConfigurationProperties("location-default")
 public class LocationDefaultProperty {
     Double latitude;
     Double longitude;
