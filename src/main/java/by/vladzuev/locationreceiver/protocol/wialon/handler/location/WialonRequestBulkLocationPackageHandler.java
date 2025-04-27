@@ -25,7 +25,8 @@ public final class WialonRequestBulkLocationPackageHandler extends WialonRequest
     }
 
     @Override
-    protected WialonResponseBulkLocationPackage createResponse(final int locationCount) {
-        return new WialonResponseBulkLocationPackage(locationCount);
+    protected WialonResponseBulkLocationPackage createResponse(final WialonRequestBulkLocationPackage request) {
+        throw new UnsupportedOperationException();
+//        return new WialonResponseBulkLocationPackage(locationCount);
     }
 }

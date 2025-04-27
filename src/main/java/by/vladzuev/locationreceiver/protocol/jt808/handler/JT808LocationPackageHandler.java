@@ -37,8 +37,8 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
 
     //TODO: rename test
     @Override
-    protected List<JT808Location> streamLocationSources(final JT808LocationPackage request) {
-        return request.getLocations();
+    protected Stream<JT808Location> streamLocationSources(final JT808LocationPackage request) {
+        return request.getLocations().stream();
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
     }
 
     @Override
-    protected JT808ResponsePackage createResponse(final int locationCount) {
+    protected JT808ResponsePackage createResponse(final JT808LocationPackage request) {
         throw new UnsupportedOperationException();
     }
 }

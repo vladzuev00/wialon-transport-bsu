@@ -25,7 +25,7 @@ public final class WialonRequestSingleLocationPackageHandler extends WialonReque
     }
 
     @Override
-    protected WialonResponseSingleLocationPackage createResponse(final int locationCount) {
+    protected WialonResponseSingleLocationPackage createResponse(final WialonRequestLocationPackage request) {
         return new WialonResponseSingleLocationPackage(WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS);
     }
 }

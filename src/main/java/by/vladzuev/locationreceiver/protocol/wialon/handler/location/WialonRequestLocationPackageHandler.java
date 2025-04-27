@@ -34,8 +34,8 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
 
     //TODO: rename test
     @Override
-    protected final List<WialonLocation> streamLocationSources(final REQUEST request) {
-        return request.getLocations();
+    protected final Stream<WialonLocation> streamLocationSources(final REQUEST request) {
+        return request.getLocations().stream();
     }
 
     @Override

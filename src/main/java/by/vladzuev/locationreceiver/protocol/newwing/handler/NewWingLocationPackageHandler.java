@@ -37,8 +37,8 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
 
     //TODO: rename test
     @Override
-    protected List<NewWingLocation> streamLocationSources(final NewWingLocationPackage request) {
-        return request.getLocations();
+    protected Stream<NewWingLocation> streamLocationSources(final NewWingLocationPackage request) {
+        return request.getLocations().stream();
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
     }
 
     @Override
-    protected NewWingSuccessResponsePackage createResponse(final int locationCount) {
+    protected NewWingSuccessResponsePackage createResponse(final NewWingLocationPackage request) {
         return new NewWingSuccessResponsePackage();
     }
 }
