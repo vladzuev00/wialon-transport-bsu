@@ -56,7 +56,7 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
-    public void requestShouldBeHandledInternallySuccessfullyWithMemorizingLastData() {
+    public void requestShouldBeHandledInternallySuccessfullyWithMemorizingLastLocation() {
         final String givenPassword = "111";
         final TestPackage givenRequest = new TestPackage(givenPassword);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
@@ -76,7 +76,7 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
-    public void requestShouldBeHandledInternallySuccessfullyWithoutMemorizingLastData() {
+    public void requestShouldBeHandledInternallySuccessfullyWithoutMemorizingLastLocation() {
         final String givenPassword = "112";
         final TestPackage givenRequest = new TestPackage(givenPassword);
         final ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
