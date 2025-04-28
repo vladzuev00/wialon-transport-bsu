@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.newwing.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.core.decoder.packages.PrefixedByStringBinaryPackageDecoder;
-import by.vladzuev.locationreceiver.protocol.newwing.model.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;

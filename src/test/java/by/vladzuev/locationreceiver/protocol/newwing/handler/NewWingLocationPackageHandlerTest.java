@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.newwing.handler;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
-import by.vladzuev.locationreceiver.protocol.newwing.model.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocationPackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.response.NewWingSuccessResponsePackage;
 import org.junit.jupiter.api.Assertions;

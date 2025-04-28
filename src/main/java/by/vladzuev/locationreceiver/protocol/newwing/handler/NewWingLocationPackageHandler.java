@@ -6,7 +6,7 @@ import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.Loca
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
-import by.vladzuev.locationreceiver.protocol.newwing.model.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocationPackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.response.NewWingSuccessResponsePackage;
 import org.springframework.stereotype.Component;

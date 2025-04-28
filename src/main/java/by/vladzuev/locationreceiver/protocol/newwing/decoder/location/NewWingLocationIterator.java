@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.newwing.decoder.location;
 
-import by.vladzuev.locationreceiver.protocol.newwing.model.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 

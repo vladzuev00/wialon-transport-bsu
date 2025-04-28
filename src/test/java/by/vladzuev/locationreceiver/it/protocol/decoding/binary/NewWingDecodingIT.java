@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.it.protocol.decoding.binary;
 
 import by.vladzuev.locationreceiver.protocol.core.decoder.BinaryProtocolDecoder;
-import by.vladzuev.locationreceiver.protocol.newwing.model.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingEventCountPackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocationPackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLoginPackage;

@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.protocol.newwing.model;
+package by.vladzuev.locationreceiver.protocol.newwing.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
