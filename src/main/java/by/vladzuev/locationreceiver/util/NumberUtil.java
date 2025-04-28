@@ -13,7 +13,7 @@ public final class NumberUtil {
         return (double) Math.round(source * factor) / factor;
     }
 
-    public static double concatToDouble(final int integerPart, final int fractionalPart) {
+    public static double createDouble(final int integerPart, final int fractionalPart) {
         final double zeroWithFractionalPart = createZeroWithFractionalPart(fractionalPart);
         return integerPart + zeroWithFractionalPart;
     }

@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class NewWingUtilTest {
 
     @Test
-    public void shortShouldBeDecoded() {
+    public void courseShouldBeDecoded() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("0301"));
 
-        final short actual = decodeShort(givenBuffer);
+        final short actual = decodeCourse(givenBuffer);
         final short expected = 259;
         assertEquals(expected, actual);
 
@@ -109,5 +109,32 @@ public final class NewWingUtilTest {
         assertArrayEquals(expected, actual);
 
         assertEquals(0, givenBuffer.readableBytes());
+    }
+
+    @Test
+    public void flagByteShouldBeSkipped() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("000000000000b701"));
+
+        skipFlagByte(givenBuffer);
+
+        assertEquals(7, givenBuffer.readableBytes());
+    }
+
+    @Test
+    public void discreteInputStateByteShouldBeSkipped() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("000000000000b701"));
+
+        skipDiscreteInputStateByte(givenBuffer);
+
+        assertEquals(7, givenBuffer.readableBytes());
+    }
+
+    @Test
+    public void checksumShouldBeSkipped() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("000000000000b701"));
+
+        skipChecksum(givenBuffer);
+
+        assertEquals(6, givenBuffer.readableBytes());
     }
 }
