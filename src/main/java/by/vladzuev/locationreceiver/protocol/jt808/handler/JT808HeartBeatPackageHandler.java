@@ -1,15 +1,15 @@
 package by.vladzuev.locationreceiver.protocol.jt808.handler;
 
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.ignored.IgnoredPackageHandler;
-import by.vladzuev.locationreceiver.protocol.jt808.model.JT808AuthPackage;
+import by.vladzuev.locationreceiver.protocol.jt808.model.JT808HeartBeatPackage;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808ResponsePackage;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class JT808AuthPackageHandler extends IgnoredPackageHandler<JT808AuthPackage> {
+public final class JT808HeartBeatPackageHandler extends IgnoredPackageHandler<JT808HeartBeatPackage> {
 
-    public JT808AuthPackageHandler() {
-        super(JT808AuthPackage.class);
+    public JT808HeartBeatPackageHandler() {
+        super(JT808HeartBeatPackage.class);
     }
 
     @Override
