@@ -1,11 +1,11 @@
 package by.vladzuev.locationreceiver.protocol.jt808.handler;
 
-import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.LocationPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808Location;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808LocationPackage;
 import by.vladzuev.locationreceiver.protocol.jt808.model.JT808ResponsePackage;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -35,7 +34,6 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         );
     }
 
-    //TODO: rename test
     @Override
     protected Stream<JT808Location> streamLocationSources(final JT808LocationPackage request) {
         return request.getLocations().stream();
@@ -106,7 +104,6 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         return Optional.empty();
     }
 
-    //TODO: rename test
     @Override
     protected Stream<Parameter> streamParameters(final JT808Location location) {
         return Stream.empty();

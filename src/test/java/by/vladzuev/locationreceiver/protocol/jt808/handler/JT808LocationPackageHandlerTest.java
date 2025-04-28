@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,13 +19,13 @@ public final class JT808LocationPackageHandlerTest {
     private final JT808LocationPackageHandler handler = new JT808LocationPackageHandler(null, null, null, null);
 
     @Test
-    public void locationSourcesShouldBeFound() {
-//        TODO
-//        final var givenLocations = List.of(JT808Location.builder().build(), JT808Location.builder().build());
-//        final JT808LocationPackage givenRequest = new JT808LocationPackage(givenLocations);
-//
-//        final List<JT808Location> actual = handler.streamLocationSources(givenRequest);
-//        assertSame(givenLocations, actual);
+    public void locationSourcesShouldBeStreamed() {
+        final var givenLocations = List.of(JT808Location.builder().build(), JT808Location.builder().build());
+        final JT808LocationPackage givenRequest = new JT808LocationPackage(givenLocations);
+
+        final Stream<JT808Location> actual = handler.streamLocationSources(givenRequest);
+        final List<JT808Location> actualAsList = actual.toList();
+        assertEquals(givenLocations, actualAsList);
     }
 
     @Test
@@ -171,7 +168,7 @@ public final class JT808LocationPackageHandlerTest {
     }
 
     @Test
-    public void parametersShouldBeGot() {
+    public void parametersShouldBeStreamed() {
         final JT808Location givenLocation = mock(JT808Location.class);
 
         final Stream<Parameter> actual = handler.streamParameters(givenLocation);
@@ -183,6 +180,8 @@ public final class JT808LocationPackageHandlerTest {
 
     @Test
     public void responseShouldBeCreated() {
-        throw new UnsupportedOperationException();
+        final JT808LocationPackage givenRequest = new JT808LocationPackage(Collections.emptyList());
+
+        assertThrows(UnsupportedOperationException.class, () -> handler.createResponse(givenRequest));
     }
 }
