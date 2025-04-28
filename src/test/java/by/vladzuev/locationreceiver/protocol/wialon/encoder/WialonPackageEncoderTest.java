@@ -21,10 +21,10 @@ public final class WialonPackageEncoderTest {
         assertEquals(expected, actual);
     }
 
-    @RequiredArgsConstructor
     @Getter
-    @EqualsAndHashCode
     @ToString
+    @EqualsAndHashCode
+    @RequiredArgsConstructor
     private static final class TestPackage implements WialonPackage {
         private static final String PREFIX = "#PREFIX#";
 
