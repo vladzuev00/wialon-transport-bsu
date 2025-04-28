@@ -5,11 +5,13 @@ import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage;
 import org.springframework.stereotype.Component;
 
+import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage.PREFIX;
+
 @Component
 public final class WialonRequestSingleLocationPackageDecoder extends WialonRequestLocationPackageDecoder {
 
     public WialonRequestSingleLocationPackageDecoder(final WialonLocationParser locationParser) {
-        super(WialonRequestSingleLocationPackage.PREFIX, locationParser);
+        super(PREFIX, locationParser);
     }
 
     @Override

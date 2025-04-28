@@ -42,9 +42,9 @@ public final class WialonRequestLocationPackageDecoderTest {
         assertEquals(expected, actual);
     }
 
-    @RequiredArgsConstructor
-    @EqualsAndHashCode
     @ToString
+    @EqualsAndHashCode
+    @RequiredArgsConstructor
     private static class TestWialonPackage implements WialonPackage {
         private final WialonLocation location;
 
