@@ -3,6 +3,8 @@ package by.vladzuev.locationreceiver.protocol.wialon.decoder;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
 import org.springframework.stereotype.Component;
 
+import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage.PREFIX;
+
 @Component
 public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder {
     private static final String COMPONENT_DELIMITER = ";";
@@ -10,7 +12,7 @@ public final class WialonRequestLoginPackageDecoder extends WialonPackageDecoder
     private static final int INDEX_PASSWORD = 1;
 
     public WialonRequestLoginPackageDecoder() {
-        super(WialonRequestLoginPackage.PREFIX);
+        super(PREFIX);
     }
 
     @Override
