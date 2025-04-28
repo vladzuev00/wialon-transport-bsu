@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import static by.vladzuev.locationreceiver.protocol.newwing.util.NewWingUtil.decodeImei;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -19,7 +20,7 @@ public final class NewWingLoginPackageDecoderTest {
             final ByteBuf givenBuffer = mock(ByteBuf.class);
 
             final String givenImei = "3009";
-            mockedUtil.when(() -> NewWingUtil.decodeImei(givenBuffer)).thenReturn(givenImei);
+            mockedUtil.when(() -> decodeImei(givenBuffer)).thenReturn(givenImei);
 
             final NewWingLoginPackage actual = decoder.decodeInternal(givenBuffer);
             final NewWingLoginPackage expected = new NewWingLoginPackage(givenImei);
