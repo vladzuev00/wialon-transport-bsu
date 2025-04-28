@@ -57,7 +57,7 @@ public final class WialonLocationComponentParser {
 
     public WialonLocationComponentParser(final String source) {
         matcher = LOCATION_PATTERN.matcher(source);
-        match(source);
+        match();
         dateParser = new DateParser();
         timeParser = new TimeParser();
         latitudeParser = new LatitudeParser();
@@ -130,9 +130,9 @@ public final class WialonLocationComponentParser {
         return parametersParser.parse();
     }
 
-    private void match(final String source) {
+    private void match() {
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("Given source isn't valid: '%s'".formatted(source));
+            throw new IllegalArgumentException("Source isn't valid");
         }
     }
 
@@ -232,12 +232,12 @@ public final class WialonLocationComponentParser {
             return OptionalDouble.empty();
         }
 
-        private int extractIntGroup(final int groupNumber) {
-            return parseInt(matcher.group(groupNumber));
+        private int extractIntGroup(final int number) {
+            return parseInt(matcher.group(number));
         }
 
-        private char extractCharGroup(final int groupNumber) {
-            return matcher.group(groupNumber).charAt(0);
+        private char extractCharGroup(final int number) {
+            return matcher.group(number).charAt(0);
         }
     }
 
