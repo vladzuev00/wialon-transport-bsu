@@ -13,8 +13,8 @@ public abstract class WialonPackageEncoder<PACKAGE extends WialonPackage> extend
 
     @Override
     protected final String getText(final PACKAGE response) {
-        return response.getPrefix() + encodeMessage(response) + POSTFIX;
+        return response.getPrefix() + getMessage(response) + POSTFIX;
     }
 
-    protected abstract String encodeMessage(final PACKAGE response);
+    protected abstract String getMessage(final PACKAGE response);
 }

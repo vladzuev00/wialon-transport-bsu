@@ -9,10 +9,10 @@ public final class WialonResponseSingleLocationPackageEncoderTest {
     private final WialonResponseSingleLocationPackageEncoder encoder = new WialonResponseSingleLocationPackageEncoder();
 
     @Test
-    public void messageShouldBeEncoded() {
+    public void messageShouldBeGot() {
         final var givenResponse = new WialonResponseSingleLocationPackage(WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS);
 
-        final String actual = encoder.encodeMessage(givenResponse);
+        final String actual = encoder.getMessage(givenResponse);
         final String expected = "1";
         assertEquals(expected, actual);
     }

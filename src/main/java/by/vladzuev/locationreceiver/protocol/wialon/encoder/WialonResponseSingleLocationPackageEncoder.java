@@ -11,7 +11,7 @@ public final class WialonResponseSingleLocationPackageEncoder extends WialonPack
     }
 
     @Override
-    protected String encodeMessage(final WialonResponseSingleLocationPackage response) {
+    protected String getMessage(final WialonResponseSingleLocationPackage response) {
         return Byte.toString(response.getStatus().getValue());
     }
 }

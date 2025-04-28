@@ -43,7 +43,7 @@ public final class WialonPackageEncoderTest {
         }
 
         @Override
-        protected String encodeMessage(final TestPackage response) {
+        protected String getMessage(final TestPackage response) {
             return response.getValue();
         }
     }

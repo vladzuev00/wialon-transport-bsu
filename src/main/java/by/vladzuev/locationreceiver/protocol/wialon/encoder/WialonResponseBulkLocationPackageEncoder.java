@@ -11,7 +11,7 @@ public final class WialonResponseBulkLocationPackageEncoder extends WialonPackag
     }
 
     @Override
-    protected String encodeMessage(final WialonResponseBulkLocationPackage response) {
+    protected String getMessage(final WialonResponseBulkLocationPackage response) {
         return Integer.toString(response.getFixedLocationCount());
     }
 }

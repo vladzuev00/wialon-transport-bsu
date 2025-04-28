@@ -9,10 +9,10 @@ public final class WialonResponseBulkLocationPackageEncoderTest {
     private final WialonResponseBulkLocationPackageEncoder encoder = new WialonResponseBulkLocationPackageEncoder();
 
     @Test
-    public void messageShouldBeEncoded() {
+    public void messageShouldBeGot() {
         final WialonResponseBulkLocationPackage givenResponse = new WialonResponseBulkLocationPackage(5);
 
-        final String actual = encoder.encodeMessage(givenResponse);
+        final String actual = encoder.getMessage(givenResponse);
         final String expected = "5";
         assertEquals(expected, actual);
     }

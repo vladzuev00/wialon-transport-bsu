@@ -11,7 +11,7 @@ public final class WialonResponseLoginPackageEncoder extends WialonPackageEncode
     }
 
     @Override
-    protected String encodeMessage(final WialonResponseLoginPackage response) {
+    protected String getMessage(final WialonResponseLoginPackage response) {
         return response.getStatus().getValue();
     }
 }

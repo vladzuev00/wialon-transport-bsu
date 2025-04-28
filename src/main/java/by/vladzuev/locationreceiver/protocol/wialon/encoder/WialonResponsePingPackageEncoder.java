@@ -12,7 +12,7 @@ public final class WialonResponsePingPackageEncoder extends WialonPackageEncoder
     }
 
     @Override
-    protected String encodeMessage(final WialonResponsePingPackage response) {
+    protected String getMessage(final WialonResponsePingPackage response) {
         return ENCODED_MESSAGE;
     }
 }

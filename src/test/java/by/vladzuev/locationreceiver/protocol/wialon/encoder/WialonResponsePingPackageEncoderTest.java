@@ -10,10 +10,10 @@ public final class WialonResponsePingPackageEncoderTest {
     private final WialonResponsePingPackageEncoder encoder = new WialonResponsePingPackageEncoder();
 
     @Test
-    public void messageShouldBeEncoded() {
+    public void messageShouldBeGot() {
         final WialonResponsePingPackage givenResponse = new WialonResponsePingPackage();
 
-        final String actual = encoder.encodeMessage(givenResponse);
+        final String actual = encoder.getMessage(givenResponse);
         assertSame(ENCODED_MESSAGE, actual);
     }
 }
