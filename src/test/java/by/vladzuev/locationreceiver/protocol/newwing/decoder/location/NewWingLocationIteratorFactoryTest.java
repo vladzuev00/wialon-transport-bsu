@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.protocol.newwing.decoder.location;
 
-import by.vladzuev.locationreceiver.util.ReflectionUtil;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static by.vladzuev.locationreceiver.util.ReflectionUtil.getProperty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
@@ -42,10 +42,10 @@ public final class NewWingLocationIteratorFactoryTest {
     }
 
     private NewWingLocationDecoder getDecoder(final NewWingLocationIterator iterator) {
-        return ReflectionUtil.getProperty(iterator, FIELD_NAME_ITERATOR_DECODER, NewWingLocationDecoder.class);
+        return getProperty(iterator, FIELD_NAME_ITERATOR_DECODER, NewWingLocationDecoder.class);
     }
 
     private ByteBuf getBuffer(final NewWingLocationIterator iterator) {
-        return ReflectionUtil.getProperty(iterator, FIELD_NAME_ITERATOR_BUFFER, ByteBuf.class);
+        return getProperty(iterator, FIELD_NAME_ITERATOR_BUFFER, ByteBuf.class);
     }
 }
