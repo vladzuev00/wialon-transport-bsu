@@ -1,17 +1,16 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
-import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.LocationPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestLocationPackage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -32,7 +31,6 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
         super(requestType, contextAttributeManager, locationDefaultProperty, locationValidator, locationProducer);
     }
 
-    //TODO: rename test
     @Override
     protected final Stream<WialonLocation> streamLocationSources(final REQUEST request) {
         return request.getLocations().stream();
@@ -103,7 +101,6 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
         return ofNullable(location.getDriverKeyCode());
     }
 
-    //TODO: rename test
     @Override
     protected final Stream<Parameter> streamParameters(final WialonLocation location) {
         return location.getParameters().stream();
