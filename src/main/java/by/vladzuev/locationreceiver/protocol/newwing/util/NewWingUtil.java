@@ -21,6 +21,12 @@ public final class NewWingUtil {
     private static final int LONGITUDE_FIRST_PART_INTEGER_PART_NEXT_LAST_INDEX = 3;
     private static final String POINT = ".";
 
+    //TODO: test
+    public static short decodeCourse(final ByteBuf buffer) {
+        return buffer.readShortLE();
+    }
+
+    //TODO: do private
     public static short decodeShort(final ByteBuf buffer) {
         return buffer.readShortLE();
     }
@@ -78,6 +84,21 @@ public final class NewWingUtil {
         final short third = decodeShort(buffer);
         final short fourth = decodeShort(buffer);
         return new double[]{first, second, third, fourth};
+    }
+
+    //TODO: test
+    public void skipFlagByte(final ByteBuf buffer) {
+        buffer.skipBytes(Byte.BYTES);
+    }
+
+    //TODO: test
+    public void skipDiscreteInputStateByte(final ByteBuf buffer) {
+        buffer.skipBytes(Byte.BYTES);
+    }
+
+    //TODO: test
+    public void skipChecksum(final ByteBuf buffer) {
+        buffer.skipBytes(Short.BYTES);
     }
 
     private static double decodeGpsCoordinate(final ByteBuf buffer,
