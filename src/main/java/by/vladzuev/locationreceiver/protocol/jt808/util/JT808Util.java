@@ -13,38 +13,36 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
 @UtilityClass
-public final class JT808Util {
-    private static final int PHONE_NUMBER_BYTE_COUNT = 6;
-    private static final int MANUFACTURER_ID_BYTE_COUNT = 5;
-    private static final double LATITUDE_DELIMITER = 1000000.;
-    private static final double LONGITUDE_DELIMITER = 10000000.;
-    private static final int DATE_TIME_BYTE_COUNT = 6;
-    private static final DateTimeFormatter DATE_FORMAT = ofPattern("yyMMddHHmmss");
+public class JT808Util {
+    private final int PHONE_NUMBER_BYTE_COUNT = 6;
+    private final int MANUFACTURER_ID_BYTE_COUNT = 5;
+    private final double LATITUDE_DELIMITER = 1000000.;
+    private final double LONGITUDE_DELIMITER = 10000000.;
+    private final int DATE_TIME_BYTE_COUNT = 6;
+    private final DateTimeFormatter DATE_FORMAT = ofPattern("yyMMddHHmmss");
 
-    public static String decodePhoneNumber(final ByteBuf buffer) {
+    public String decodePhoneNumber(final ByteBuf buffer) {
         return decodeBcdString(buffer, PHONE_NUMBER_BYTE_COUNT);
     }
 
-    public static String decodeManufacturerId(final ByteBuf buffer) {
-        return buffer.readCharSequence(MANUFACTURER_ID_BYTE_COUNT, US_ASCII)
-                .toString()
-                .trim();
+    public String decodeManufacturerId(final ByteBuf buffer) {
+        return buffer.readCharSequence(MANUFACTURER_ID_BYTE_COUNT, US_ASCII).toString().trim();
     }
 
-    public static double decodeLatitude(final ByteBuf buffer) {
+    public double decodeLatitude(final ByteBuf buffer) {
         return buffer.readUnsignedInt() / LATITUDE_DELIMITER;
     }
 
-    public static double decodeLongitude(final ByteBuf buffer) {
+    public double decodeLongitude(final ByteBuf buffer) {
         return buffer.readUnsignedInt() / LONGITUDE_DELIMITER;
     }
 
-    public static LocalDateTime decodeDateTime(final ByteBuf buffer) {
-        final String content = decodeBcdString(buffer, DATE_TIME_BYTE_COUNT);
-        return parse(content, DATE_FORMAT);
+    public LocalDateTime decodeDateTime(final ByteBuf buffer) {
+        final String text = decodeBcdString(buffer, DATE_TIME_BYTE_COUNT);
+        return parse(text, DATE_FORMAT);
     }
 
-    private static String decodeBcdString(final ByteBuf buffer, final int length) {
+    private String decodeBcdString(final ByteBuf buffer, final int length) {
         final byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
         return range(0, length)
