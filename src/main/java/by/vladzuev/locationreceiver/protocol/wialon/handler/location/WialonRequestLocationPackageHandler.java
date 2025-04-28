@@ -6,7 +6,7 @@ import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.Loca
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
-import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestLocationPackage;
 
 import java.time.LocalDate;

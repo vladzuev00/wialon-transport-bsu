@@ -1,7 +1,5 @@
 package by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
-
 import java.util.List;
 
 public final class WialonRequestBulkLocationPackage extends WialonRequestLocationPackage {

@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public final class WialonResponseBulkLocationPackage implements WialonPackage {
     public static final String PREFIX = "#AB#";
 

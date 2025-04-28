@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.it.protocol.decoding.text;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.protocol.core.decoder.TextProtocolDecoder;
-import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;

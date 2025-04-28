@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.protocol.wialon.model;
+package by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import lombok.AllArgsConstructor;

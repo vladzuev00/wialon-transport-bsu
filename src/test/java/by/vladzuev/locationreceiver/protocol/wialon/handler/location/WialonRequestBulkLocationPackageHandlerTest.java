@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseBulkLocationPackage;
 import org.junit.jupiter.api.Test;

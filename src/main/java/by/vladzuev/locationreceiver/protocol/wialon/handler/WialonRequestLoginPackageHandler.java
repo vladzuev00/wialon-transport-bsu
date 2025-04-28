@@ -2,14 +2,16 @@ package by.vladzuev.locationreceiver.protocol.wialon.handler;
 
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.ProtectedLoginPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 
 @Component
 public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler<WialonRequestLoginPackage> {
@@ -33,16 +35,16 @@ public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackag
 
     @Override
     protected WialonResponseLoginPackage createNoSuchImeiResponse() {
-        return new WialonResponseLoginPackage(WialonResponseLoginPackage.Status.CONNECTION_FAILURE);
+        return new WialonResponseLoginPackage(CONNECTION_FAILURE);
     }
 
     @Override
     protected WialonResponseLoginPackage createSuccessResponse() {
-        return new WialonResponseLoginPackage(WialonResponseLoginPackage.Status.SUCCESS_AUTHORIZATION);
+        return new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);
     }
 
     @Override
     protected WialonResponseLoginPackage createWrongPasswordResponse() {
-        return new WialonResponseLoginPackage(WialonResponseLoginPackage.Status.PASSWORD_ERROR);
+        return new WialonResponseLoginPackage(PASSWORD_ERROR);
     }
 }

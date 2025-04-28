@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
-import by.vladzuev.locationreceiver.protocol.wialon.model.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 

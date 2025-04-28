@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public final class WialonResponseSingleLocationPackage implements WialonPackage {
     public static final String PREFIX = "#AD#";
 
@@ -20,8 +20,8 @@ public final class WialonResponseSingleLocationPackage implements WialonPackage 
         return PREFIX;
     }
 
-    @RequiredArgsConstructor
     @Getter
+    @RequiredArgsConstructor
     public enum Status {
         PACKAGE_FIX_SUCCESS((byte) 1);
 
