@@ -1,9 +1,9 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
-import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProducer;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
 import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseBulkLocationPackage;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,6 @@ public final class WialonRequestBulkLocationPackageHandler extends WialonRequest
 
     @Override
     protected WialonResponseBulkLocationPackage createResponse(final WialonRequestBulkLocationPackage request) {
-        throw new UnsupportedOperationException();
-//        return new WialonResponseBulkLocationPackage(locationCount);
+        return new WialonResponseBulkLocationPackage(request.getLocations().size());
     }
 }
