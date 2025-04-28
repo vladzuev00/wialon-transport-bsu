@@ -13,10 +13,10 @@ public final class WialonPackageEncoderTest {
     private final TestWialonPackageEncoder encoder = new TestWialonPackageEncoder();
 
     @Test
-    public void responseStringShouldBeGot() {
+    public void textShouldBeGot() {
         final TestPackage givenResponse = new TestPackage("message");
 
-        final String actual = encoder.getString(givenResponse);
+        final String actual = encoder.getText(givenResponse);
         final String expected = "#PREFIX#message\r\n";
         assertEquals(expected, actual);
     }

@@ -10,7 +10,7 @@ public abstract class NewWingPackageEncoder<PACKAGE extends NewWingResponsePacka
     }
 
     @Override
-    protected final String getString(final PACKAGE response) {
+    protected final String getText(final PACKAGE response) {
         return response.getValue();
     }
 }

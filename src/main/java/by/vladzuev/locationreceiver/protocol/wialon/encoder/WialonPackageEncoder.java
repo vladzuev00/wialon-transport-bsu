@@ -10,7 +10,7 @@ public abstract class WialonPackageEncoder<PACKAGE extends WialonPackage> extend
     }
 
     @Override
-    protected final String getString(final PACKAGE response) {
+    protected final String getText(final PACKAGE response) {
         return response.getPrefix() + encodeMessage(response) + WialonPackage.POSTFIX;
     }
 

@@ -9,11 +9,11 @@ public final class NewWingPackageEncoderTest {
     private final TestNewWingPackageEncoder encoder = new TestNewWingPackageEncoder();
 
     @Test
-    public void stringShouldBeGot() {
+    public void textShouldBeGot() {
         final String givenValue = "test-response";
         final TestPackage givenResponse = new TestPackage(givenValue);
 
-        final String actual = encoder.getString(givenResponse);
+        final String actual = encoder.getText(givenResponse);
         assertSame(givenValue, actual);
     }
 

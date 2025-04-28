@@ -10,8 +10,8 @@ public abstract class TextPackageEncoder<PACKAGE> extends PackageEncoder<PACKAGE
 
     @Override
     protected final byte[] encodeInternal(final PACKAGE response) {
-        return getString(response).getBytes(US_ASCII);
+        return getText(response).getBytes(US_ASCII);
     }
 
-    protected abstract String getString(final PACKAGE response);
+    protected abstract String getText(final PACKAGE response);
 }

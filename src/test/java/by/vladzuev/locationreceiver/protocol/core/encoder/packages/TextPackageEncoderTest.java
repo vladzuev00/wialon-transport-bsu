@@ -29,7 +29,7 @@ public final class TextPackageEncoderTest {
         }
 
         @Override
-        protected String getString(final TestPackage response) {
+        protected String getText(final TestPackage response) {
             return response.getValue();
         }
     }
