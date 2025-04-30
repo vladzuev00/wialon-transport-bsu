@@ -2,7 +2,7 @@ package by.vladzuev.locationreceiver.protocol.wialon.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.wialon.decoder.WialonPackageDecoder;
 import by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser.WialonLocationParser;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.WialonPackage;
 
 public abstract class WialonRequestLocationPackageDecoder extends WialonPackageDecoder {
     private final WialonLocationParser locationParser;

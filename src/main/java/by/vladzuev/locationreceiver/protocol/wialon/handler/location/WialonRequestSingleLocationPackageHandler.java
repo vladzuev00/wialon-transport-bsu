@@ -4,11 +4,11 @@ import by.vladzuev.locationreceiver.kafka.producer.data.KafkaInboundLocationProd
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestLocationPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseSingleLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.response.WialonResponseSingleLocationPackage;
 import org.springframework.stereotype.Component;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.location.response.WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS;
 
 @Component
 public final class WialonRequestSingleLocationPackageHandler extends WialonRequestLocationPackageHandler<WialonRequestLocationPackage> {

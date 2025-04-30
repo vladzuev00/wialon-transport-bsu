@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation.WialonLocationBuilder;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonLocation.WialonLocationBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

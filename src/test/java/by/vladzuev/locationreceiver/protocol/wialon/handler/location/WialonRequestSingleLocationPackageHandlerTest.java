@@ -1,10 +1,10 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestLocationPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseSingleLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.response.WialonResponseSingleLocationPackage;
 import org.junit.jupiter.api.Test;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.location.response.WialonResponseSingleLocationPackage.Status.PACKAGE_FIX_SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;

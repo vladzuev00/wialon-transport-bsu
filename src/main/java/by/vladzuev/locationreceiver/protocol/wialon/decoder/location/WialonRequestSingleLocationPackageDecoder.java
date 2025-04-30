@@ -1,11 +1,11 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser.WialonLocationParser;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestSingleLocationPackage;
 import org.springframework.stereotype.Component;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage.PREFIX;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestSingleLocationPackage.PREFIX;
 
 @Component
 public final class WialonRequestSingleLocationPackageDecoder extends WialonRequestLocationPackageDecoder {

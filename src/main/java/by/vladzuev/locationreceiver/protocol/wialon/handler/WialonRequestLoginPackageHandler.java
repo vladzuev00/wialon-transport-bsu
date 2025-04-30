@@ -6,12 +6,10 @@ import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.Protect
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonResponseLoginPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonRequestLoginPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonResponseLoginPackage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonResponseLoginPackage.Status.*;
 
 @Component
 public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler<WialonRequestLoginPackage> {

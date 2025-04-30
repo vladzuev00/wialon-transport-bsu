@@ -2,11 +2,11 @@ package by.vladzuev.locationreceiver.it.protocol.decoding.text;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
 import by.vladzuev.locationreceiver.protocol.core.decoder.TextProtocolDecoder;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestSingleLocationPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestBulkLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestSingleLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonRequestLoginPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonRequestPingPackage;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.LocalDate;

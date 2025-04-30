@@ -1,10 +1,10 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.wialon.decoder.location.parser.WialonLocationParser;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestBulkLocationPackage;
 import org.springframework.stereotype.Component;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestBulkLocationPackage.PREFIX;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestBulkLocationPackage.PREFIX;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;

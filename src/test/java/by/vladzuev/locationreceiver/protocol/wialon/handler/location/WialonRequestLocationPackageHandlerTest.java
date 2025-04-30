@@ -1,8 +1,8 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler.location;
 
 import by.vladzuev.locationreceiver.crud.dto.Parameter;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonLocation;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.request.WialonRequestLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonLocation;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.request.WialonRequestLocationPackage;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

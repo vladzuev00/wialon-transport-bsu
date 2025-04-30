@@ -1,9 +1,9 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder;
 
 import by.vladzuev.locationreceiver.protocol.core.decoder.packages.PrefixedTextPackageDecoder;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.WialonPackage;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage.POSTFIX;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.WialonPackage.POSTFIX;
 
 public abstract class WialonPackageDecoder extends PrefixedTextPackageDecoder {
 

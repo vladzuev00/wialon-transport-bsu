@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.login.WialonRequestLoginPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonRequestLoginPackage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

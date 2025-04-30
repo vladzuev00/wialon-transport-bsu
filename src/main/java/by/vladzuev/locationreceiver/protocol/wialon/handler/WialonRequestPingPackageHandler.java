@@ -1,8 +1,8 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler;
 
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.ignored.IgnoredPackageHandler;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonRequestPingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonResponsePingPackage;
 import org.springframework.stereotype.Component;
 
 @Component

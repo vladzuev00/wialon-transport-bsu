@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.handler;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonResponsePingPackage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

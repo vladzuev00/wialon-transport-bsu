@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.encoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.WialonPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.WialonPackage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

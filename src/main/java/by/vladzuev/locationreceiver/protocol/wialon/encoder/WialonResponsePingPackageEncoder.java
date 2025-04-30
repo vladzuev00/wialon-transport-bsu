@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.encoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonResponsePingPackage;
 import org.springframework.stereotype.Component;
 
 @Component

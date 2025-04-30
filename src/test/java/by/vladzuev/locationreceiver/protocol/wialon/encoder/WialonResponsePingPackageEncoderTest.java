@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.encoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonResponsePingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonResponsePingPackage;
 import org.junit.jupiter.api.Test;
 
 import static by.vladzuev.locationreceiver.protocol.wialon.encoder.WialonResponsePingPackageEncoder.ENCODED_MESSAGE;

@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.wialon.encoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.location.response.WialonResponseBulkLocationPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.location.response.WialonResponseBulkLocationPackage;
 import org.springframework.stereotype.Component;
 
 @Component

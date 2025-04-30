@@ -1,9 +1,9 @@
 package by.vladzuev.locationreceiver.protocol.wialon.decoder;
 
-import by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonRequestPingPackage;
+import by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonRequestPingPackage;
 import org.springframework.stereotype.Component;
 
-import static by.vladzuev.locationreceiver.protocol.wialon.model.packages.ping.WialonRequestPingPackage.PREFIX;
+import static by.vladzuev.locationreceiver.protocol.wialon.model.ping.WialonRequestPingPackage.PREFIX;
 
 @Component
 public final class WialonRequestPingPackageDecoder extends WialonPackageDecoder {
