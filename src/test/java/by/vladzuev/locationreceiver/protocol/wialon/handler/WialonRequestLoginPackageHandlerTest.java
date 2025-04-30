@@ -3,6 +3,7 @@ package by.vladzuev.locationreceiver.protocol.wialon.handler;
 import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonResponseLoginPackage;
 import org.junit.jupiter.api.Test;
 
+import static by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonResponseLoginPackage.Status.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class WialonRequestLoginPackageHandlerTest {
