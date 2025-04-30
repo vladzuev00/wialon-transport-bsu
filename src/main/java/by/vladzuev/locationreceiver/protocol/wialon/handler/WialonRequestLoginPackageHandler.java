@@ -11,6 +11,8 @@ import by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonResponseLo
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import static by.vladzuev.locationreceiver.protocol.wialon.model.login.WialonResponseLoginPackage.Status.*;
+
 @Component
 public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackageHandler<WialonRequestLoginPackage> {
 
