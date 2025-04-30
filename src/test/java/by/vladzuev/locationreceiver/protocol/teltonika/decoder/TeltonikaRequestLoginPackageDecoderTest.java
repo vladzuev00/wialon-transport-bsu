@@ -1,0 +1,47 @@
+package by.vladzuev.locationreceiver.protocol.teltonika.decoder;
+
+import by.vladzuev.locationreceiver.protocol.teltonika.holder.LoginSuccessHolder;
+import by.vladzuev.locationreceiver.protocol.teltonika.model.login.TeltonikaRequestLoginPackage;
+import io.netty.buffer.ByteBuf;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static io.netty.buffer.ByteBufUtil.decodeHexDump;
+import static io.netty.buffer.Unpooled.wrappedBuffer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@ExtendWith(MockitoExtension.class)
+public final class TeltonikaRequestLoginPackageDecoderTest {
+
+    @Mock
+    private LoginSuccessHolder mockedLoginSuccessHolder;
+
+    private TeltonikaRequestLoginPackageDecoder decoder;
+
+    @BeforeEach
+    public void initializeDecoder() {
+        decoder = new TeltonikaRequestLoginPackageDecoder(mockedLoginSuccessHolder);
+    }
+
+    @Test
+    public void decoderShouldBeAbleToDecode() {
+        throw new RuntimeException();
+    }
+
+    @Test
+    public void decoderShouldNotBeAbleToDecode() {
+        throw new RuntimeException();
+    }
+
+    @Test
+    public void imeiShouldBeDecoded() {
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("000F313233343536373839303132333435"));
+
+        final TeltonikaRequestLoginPackage actual = decoder.decode(givenBuffer);
+        final TeltonikaRequestLoginPackage expected = new TeltonikaRequestLoginPackage("123456789012345");
+        assertEquals(expected, actual);
+    }
+}

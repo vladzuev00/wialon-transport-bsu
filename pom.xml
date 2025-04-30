@@ -11,6 +11,9 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+    <java.version>21</java.version>
+    <maven.version>3.9.9</maven.version>
+    <project.java.version>${java.version}</project.java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <netty.version>4.1.85.Final</netty.version>
     <org.postgresql.version>42.5.1</org.postgresql.version>
@@ -20,6 +23,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.3.7</version>
+    <relativePath/>
   </parent>
 
   <dependencies>
@@ -56,11 +60,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-openfeign</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
@@ -85,7 +84,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -163,11 +162,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
       <version>1.15.3</version>
@@ -230,21 +224,10 @@
 
   <build>
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>19</source>
-          <target>19</target>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-
     </plugins>
   </build>
 
