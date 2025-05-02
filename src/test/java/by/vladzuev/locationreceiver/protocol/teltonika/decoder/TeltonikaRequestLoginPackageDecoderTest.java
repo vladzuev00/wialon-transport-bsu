@@ -11,7 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public final class TeltonikaRequestLoginPackageDecoderTest {
@@ -28,12 +29,24 @@ public final class TeltonikaRequestLoginPackageDecoderTest {
 
     @Test
     public void decoderShouldBeAbleToDecode() {
-        throw new RuntimeException();
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
+
+        when(mockedLoginSuccessHolder.isSuccess()).thenReturn(false);
+
+        assertTrue(decoder.isAbleDecode(givenBuffer));
+
+        verifyNoInteractions(givenBuffer);
     }
 
     @Test
     public void decoderShouldNotBeAbleToDecode() {
-        throw new RuntimeException();
+        final ByteBuf givenBuffer = mock(ByteBuf.class);
+
+        when(mockedLoginSuccessHolder.isSuccess()).thenReturn(true);
+
+        assertFalse(decoder.isAbleDecode(givenBuffer));
+
+        verifyNoInteractions(givenBuffer);
     }
 
     @Test
@@ -43,5 +56,7 @@ public final class TeltonikaRequestLoginPackageDecoderTest {
         final TeltonikaRequestLoginPackage actual = decoder.decode(givenBuffer);
         final TeltonikaRequestLoginPackage expected = new TeltonikaRequestLoginPackage("123456789012345");
         assertEquals(expected, actual);
+
+        verifyNoInteractions(mockedLoginSuccessHolder);
     }
 }
