@@ -19,7 +19,7 @@ public final class TeltonikaRequestLoginPackageDecoder extends TeltonikaPackageD
     }
 
     @Override
-    protected Object decodeInternal(final ByteBuf buffer) {
+    protected TeltonikaRequestLoginPackage decodeInternal(final ByteBuf buffer) {
         final String imei = buffer.toString(US_ASCII);
         return new TeltonikaRequestLoginPackage(imei);
     }
