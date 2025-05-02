@@ -1,6 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.newwing.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLocation;
+import by.vladzuev.locationreceiver.protocol.newwing.util.NewWingUtil;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
