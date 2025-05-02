@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.protocol.teltonika.decoder;
 
-import by.vladzuev.locationreceiver.protocol.core.decoder.packages.PackageDecoder;
 import by.vladzuev.locationreceiver.protocol.teltonika.holder.LoginSuccessHolder;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.login.TeltonikaRequestLoginPackage;
 import io.netty.buffer.ByteBuf;
@@ -11,7 +10,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
 @RequiredArgsConstructor
-public final class TeltonikaRequestLoginPackageDecoder implements PackageDecoder<ByteBuf> {
+public final class TeltonikaRequestLoginPackageDecoder extends TeltonikaPackageDecoder {
     private final LoginSuccessHolder loginSuccessHolder;
 
     @Override
@@ -20,13 +19,8 @@ public final class TeltonikaRequestLoginPackageDecoder implements PackageDecoder
     }
 
     @Override
-    public TeltonikaRequestLoginPackage decode(final ByteBuf buffer) {
-        final String imei = decodeImei(buffer);
+    protected Object decodeInternal(final ByteBuf buffer) {
+        final String imei = buffer.toString(US_ASCII);
         return new TeltonikaRequestLoginPackage(imei);
-    }
-
-    private String decodeImei(final ByteBuf buffer) {
-        buffer.skipBytes(Short.BYTES);
-        return buffer.toString(US_ASCII);
     }
 }
