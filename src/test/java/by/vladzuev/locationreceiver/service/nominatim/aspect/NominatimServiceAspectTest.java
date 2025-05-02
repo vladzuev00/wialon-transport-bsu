@@ -1,6 +1,5 @@
 package by.vladzuev.locationreceiver.service.nominatim.aspect;
 
-import by.vladzuev.locationreceiver.config.RestTemplateConfig;
 import by.vladzuev.locationreceiver.model.GpsCoordinate;
 import by.vladzuev.locationreceiver.service.nominatim.NominatimClient;
 import org.junit.Assert;
@@ -31,7 +30,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RunWith(SpringRunner.class)
 @Import(
         {
-                RestTemplateConfig.class,
                 AnnotationAwareAspectJAutoProxyCreator.class,
                 NominatimServiceAspect.class
         }
