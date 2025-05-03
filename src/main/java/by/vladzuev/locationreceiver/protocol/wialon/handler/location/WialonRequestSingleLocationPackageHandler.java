@@ -26,7 +26,6 @@ public final class WialonRequestSingleLocationPackageHandler extends WialonReque
         );
     }
 
-    //TODO: rename tests
     @Override
     protected WialonResponseSingleLocationPackage createSuccessResponse(final WialonRequestLocationPackage request) {
         return new WialonResponseSingleLocationPackage(PACKAGE_FIX_SUCCESS);

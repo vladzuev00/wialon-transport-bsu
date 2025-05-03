@@ -18,7 +18,7 @@ public final class WialonRequestSingleLocationPackageHandlerTest {
     );
 
     @Test
-    public void responseShouldBeCreated() {
+    public void successResponseShouldBeCreated() {
         final WialonRequestLocationPackage givenRequest = mock(WialonRequestLocationPackage.class);
 
         final WialonResponseSingleLocationPackage actual = handler.createSuccessResponse(givenRequest);
