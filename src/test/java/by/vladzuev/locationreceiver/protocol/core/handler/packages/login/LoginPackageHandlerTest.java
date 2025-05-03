@@ -4,12 +4,13 @@ import by.vladzuev.locationreceiver.crud.dto.Location;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
+import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
-import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
 import by.vladzuev.locationreceiver.protocol.core.model.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Value;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
@@ -55,6 +56,11 @@ public final class LoginPackageHandlerTest {
         );
     }
 
+    @AfterEach
+    public void resetHandler() {
+        handler.reset();
+    }
+
     @Test
     public void requestShouldBeHandledInternallySuccessfullyWithMemorizingLastLocation() {
         final String givenPassword = "111";
@@ -68,6 +74,7 @@ public final class LoginPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
+        assertTrue(handler.success);
 
         verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
@@ -88,6 +95,7 @@ public final class LoginPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.SUCCESS);
         assertEquals(expected, actual);
+        assertTrue(handler.success);
 
         verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(1)).putTracker(same(givenContext), same(givenTracker));
@@ -107,6 +115,7 @@ public final class LoginPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.NO_SUCH_IMEI);
         assertEquals(expected, actual);
+        assertFalse(handler.success);
 
         verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
@@ -125,6 +134,7 @@ public final class LoginPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponsePackage expected = new TestResponsePackage(ResponseStatus.WRONG_PASSWORD);
         assertEquals(expected, actual);
+        assertFalse(handler.success);
 
         verify(mockedContextAttributeManager, times(1)).putImei(same(givenContext), same(givenImei));
         verify(mockedContextAttributeManager, times(0)).putTracker(any(ChannelHandlerContext.class), any(Tracker.class));
@@ -177,6 +187,7 @@ public final class LoginPackageHandlerTest {
     }
 
     private static final class TestLoginPackageHandler extends LoginPackageHandler<TestPackage> {
+        private boolean success;
 
         public TestLoginPackageHandler(final TrackerImeiFactory imeiFactory,
                                        final ContextAttributeManager contextAttributeManager,
@@ -193,6 +204,10 @@ public final class LoginPackageHandlerTest {
             );
         }
 
+        public void reset() {
+            success = false;
+        }
+
         @Override
         protected TestResponsePackage createNoSuchImeiResponse() {
             return new TestResponsePackage(ResponseStatus.NO_SUCH_IMEI);
@@ -203,6 +218,11 @@ public final class LoginPackageHandlerTest {
             return Optional.of(request.password)
                     .filter(password -> !Objects.equals(password, tracker.getPassword()))
                     .map(password -> new TestResponsePackage(ResponseStatus.WRONG_PASSWORD));
+        }
+
+        @Override
+        protected void onSuccess() {
+            success = true;
         }
 
         @Override

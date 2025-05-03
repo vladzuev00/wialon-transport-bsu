@@ -58,7 +58,6 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
         putTracker(context, tracker);
         putLastLocation(context, tracker);
         contextManager.add(context);
-        //TODO: test
         onSuccess();
         return createSuccessResponse();
     }
