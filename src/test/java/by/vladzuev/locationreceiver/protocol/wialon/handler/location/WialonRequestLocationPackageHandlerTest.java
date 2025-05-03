@@ -274,6 +274,11 @@ public final class WialonRequestLocationPackageHandlerTest {
         assertEquals(givenParameters, actualAsSet);
     }
 
+    @Test
+    public void successShouldBeHandled() {
+        handler.onSuccess();
+    }
+
     private static final class TestPackage extends WialonRequestLocationPackage {
 
         public TestPackage(final List<WialonLocation> locations) {
