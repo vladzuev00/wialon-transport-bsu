@@ -24,7 +24,6 @@ public final class WialonRequestBulkLocationPackageHandler extends WialonRequest
         );
     }
 
-    //TODO: rename tests
     @Override
     protected WialonResponseBulkLocationPackage createSuccessResponse(final WialonRequestBulkLocationPackage request) {
         return new WialonResponseBulkLocationPackage(request.getLocations().size());

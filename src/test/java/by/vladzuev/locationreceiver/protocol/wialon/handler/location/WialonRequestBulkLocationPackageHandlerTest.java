@@ -18,7 +18,7 @@ public final class WialonRequestBulkLocationPackageHandlerTest {
     );
 
     @Test
-    public void responseShouldBeCreated() {
+    public void successResponseShouldBeCreated() {
         final WialonRequestBulkLocationPackage givenRequest = new WialonRequestBulkLocationPackage(
                 List.of(
                         WialonLocation.builder().build(),
