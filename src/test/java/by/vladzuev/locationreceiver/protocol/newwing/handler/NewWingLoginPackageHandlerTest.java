@@ -23,6 +23,11 @@ public final class NewWingLoginPackageHandlerTest {
     }
 
     @Test
+    public void successShouldBeHandled() {
+        handler.onSuccess();
+    }
+
+    @Test
     public void successResponseShouldBeCreated() {
         final NewWingSuccessResponsePackage actual = handler.createSuccessResponse();
         final NewWingSuccessResponsePackage expected = new NewWingSuccessResponsePackage();

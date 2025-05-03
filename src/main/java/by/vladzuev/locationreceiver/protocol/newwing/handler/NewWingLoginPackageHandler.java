@@ -2,10 +2,10 @@ package by.vladzuev.locationreceiver.protocol.newwing.handler;
 
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.UnprotectedLoginPackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.newwing.model.request.NewWingLoginPackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.response.NewWingFailureResponsePackage;
 import by.vladzuev.locationreceiver.protocol.newwing.model.response.NewWingSuccessResponsePackage;
@@ -34,7 +34,6 @@ public final class NewWingLoginPackageHandler extends UnprotectedLoginPackageHan
         return new NewWingFailureResponsePackage();
     }
 
-    //TODO: test
     @Override
     protected void onSuccess() {
 
