@@ -34,6 +34,12 @@ public final class TeltonikaLoginPackageHandler extends UnprotectedLoginPackageH
         return new TeltonikaResponseFailedLoginPackage();
     }
 
+    //TODO: test
+    @Override
+    protected void onSuccess() {
+
+    }
+
     @Override
     protected TeltonikaResponseSuccessLoginPackage createSuccessResponse() {
         return new TeltonikaResponseSuccessLoginPackage();

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Value
 public class TeltonikaLocation {
     LocalDateTime dateTime;
-    float latitude;
-    float longitude;
+    double latitude;
+    double longitude;
     short altitude;
     short angle;
     byte satelliteCount;
