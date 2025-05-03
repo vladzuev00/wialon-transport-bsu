@@ -3,10 +3,10 @@ package by.vladzuev.locationreceiver.protocol.core.handler.packages.login;
 import by.vladzuev.locationreceiver.crud.dto.Tracker;
 import by.vladzuev.locationreceiver.crud.service.LocationService;
 import by.vladzuev.locationreceiver.crud.service.TrackerService;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
-import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.PackageHandler;
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.login.factory.TrackerImeiFactory;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
+import by.vladzuev.locationreceiver.protocol.core.manager.ContextManager;
 import by.vladzuev.locationreceiver.protocol.core.model.LoginPackage;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -46,6 +46,8 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
 
     protected abstract Optional<Object> loginCreatingFailedResponse(final Tracker tracker, final REQUEST request);
 
+    protected abstract void onSuccess();
+
     protected abstract Object createSuccessResponse();
 
     private Object login(final Tracker tracker, final REQUEST request, final ChannelHandlerContext context) {
@@ -53,10 +55,20 @@ public abstract class LoginPackageHandler<REQUEST extends LoginPackage> extends 
     }
 
     private Object handleSuccess(final Tracker tracker, final ChannelHandlerContext context) {
+        putTracker(context, tracker);
+        putLastLocation(context, tracker);
+        contextManager.add(context);
+        //TODO: test
+        onSuccess();
+        return createSuccessResponse();
+    }
+
+    private void putTracker(final ChannelHandlerContext context, final Tracker tracker) {
         contextAttributeManager.putTracker(context, tracker);
+    }
+
+    private void putLastLocation(final ChannelHandlerContext context, final Tracker tracker) {
         locationService.findLastFetchingParameters(tracker)
                 .ifPresent(location -> contextAttributeManager.putLastLocation(context, location));
-        contextManager.add(context);
-        return createSuccessResponse();
     }
 }
