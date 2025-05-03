@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.teltonika.decoder.location;
 
 import by.vladzuev.locationreceiver.protocol.teltonika.decoder.TeltonikaPackageDecoder;
-import by.vladzuev.locationreceiver.protocol.teltonika.holder.LoginSuccessHolder;
+import by.vladzuev.locationreceiver.protocol.teltonika.holder.TeltonikaLoginSuccessHolder;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaRequestLocationPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import static java.util.stream.IntStream.range;
 public final class TeltonikaLocationPackageDecoder extends TeltonikaPackageDecoder {
     private final TeltonikaLocationDecoder locationDecoder;
 
-    public TeltonikaLocationPackageDecoder(final LoginSuccessHolder loginSuccessHolder,
+    public TeltonikaLocationPackageDecoder(final TeltonikaLoginSuccessHolder loginSuccessHolder,
                                            final TeltonikaLocationDecoder locationDecoder) {
         super(loginSuccessHolder, true);
         this.locationDecoder = locationDecoder;

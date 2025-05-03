@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Setter
 @Getter
 @Component
-public final class LoginSuccessHolder {
+public final class TeltonikaLoginSuccessHolder {
     private volatile boolean success;
 }

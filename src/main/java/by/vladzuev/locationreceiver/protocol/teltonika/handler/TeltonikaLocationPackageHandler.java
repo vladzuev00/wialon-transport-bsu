@@ -6,6 +6,7 @@ import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.Loca
 import by.vladzuev.locationreceiver.protocol.core.handler.packages.location.validator.LocationValidator;
 import by.vladzuev.locationreceiver.protocol.core.manager.ContextAttributeManager;
 import by.vladzuev.locationreceiver.protocol.core.property.LocationDefaultProperty;
+import by.vladzuev.locationreceiver.protocol.teltonika.holder.TeltonikaLoginSuccessHolder;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaLocation;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaRequestLocationPackage;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaResponseLocationPackage;
@@ -20,11 +21,13 @@ import java.util.stream.Stream;
 
 @Component
 public final class TeltonikaLocationPackageHandler extends LocationPackageHandler<TeltonikaLocation, TeltonikaRequestLocationPackage> {
+    private final TeltonikaLoginSuccessHolder loginSuccessHolder;
 
     public TeltonikaLocationPackageHandler(final ContextAttributeManager contextAttributeManager,
                                            final LocationDefaultProperty locationDefaultProperty,
                                            final LocationValidator locationValidator,
-                                           final KafkaInboundLocationProducer locationProducer) {
+                                           final KafkaInboundLocationProducer locationProducer,
+                                           final TeltonikaLoginSuccessHolder loginSuccessHolder) {
         super(
                 TeltonikaRequestLocationPackage.class,
                 contextAttributeManager,
@@ -32,6 +35,7 @@ public final class TeltonikaLocationPackageHandler extends LocationPackageHandle
                 locationValidator,
                 locationProducer
         );
+        this.loginSuccessHolder = loginSuccessHolder;
     }
 
     @Override
@@ -111,7 +115,7 @@ public final class TeltonikaLocationPackageHandler extends LocationPackageHandle
 
     @Override
     protected void onSuccess() {
-
+        loginSuccessHolder.setSuccess(false);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.teltonika.decoder;
 
-import by.vladzuev.locationreceiver.protocol.teltonika.holder.LoginSuccessHolder;
+import by.vladzuev.locationreceiver.protocol.teltonika.holder.TeltonikaLoginSuccessHolder;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.login.TeltonikaRequestLoginPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public final class TeltonikaLoginPackageDecoderTest {
 
     @Mock
-    private LoginSuccessHolder mockedLoginSuccessHolder;
+    private TeltonikaLoginSuccessHolder mockedLoginSuccessHolder;
 
     private TeltonikaLoginPackageDecoder decoder;
 
