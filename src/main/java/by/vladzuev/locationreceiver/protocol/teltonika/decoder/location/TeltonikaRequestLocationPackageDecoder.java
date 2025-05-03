@@ -1,5 +1,6 @@
-package by.vladzuev.locationreceiver.protocol.teltonika.decoder;
+package by.vladzuev.locationreceiver.protocol.teltonika.decoder.location;
 
+import by.vladzuev.locationreceiver.protocol.teltonika.decoder.TeltonikaPackageDecoder;
 import by.vladzuev.locationreceiver.protocol.teltonika.holder.LoginSuccessHolder;
 import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaRequestLocationPackage;
 import io.netty.buffer.ByteBuf;
