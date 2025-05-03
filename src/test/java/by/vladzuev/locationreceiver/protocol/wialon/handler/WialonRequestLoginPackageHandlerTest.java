@@ -24,6 +24,11 @@ public final class WialonRequestLoginPackageHandlerTest {
     }
 
     @Test
+    public void successShouldBeHandled() {
+        handler.onSuccess();
+    }
+
+    @Test
     public void successResponseShouldBeCreated() {
         final WialonResponseLoginPackage actual = handler.createSuccessResponse();
         final WialonResponseLoginPackage expected = new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);

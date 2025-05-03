@@ -39,6 +39,11 @@ public final class WialonRequestLoginPackageHandler extends ProtectedLoginPackag
     }
 
     @Override
+    protected void onSuccess() {
+
+    }
+
+    @Override
     protected WialonResponseLoginPackage createSuccessResponse() {
         return new WialonResponseLoginPackage(SUCCESS_AUTHORIZATION);
     }
