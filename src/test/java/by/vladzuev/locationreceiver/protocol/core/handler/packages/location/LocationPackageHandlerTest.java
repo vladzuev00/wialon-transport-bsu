@@ -12,7 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +33,7 @@ import static by.vladzuev.locationreceiver.util.OptionalUtil.ofNullableInt;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
@@ -67,6 +66,11 @@ public final class LocationPackageHandlerTest {
                 mockedLocationValidator,
                 mockedLocationProducer
         );
+    }
+
+    @AfterEach
+    public void resetHandler() {
+        handler.reset();
     }
 
     @Test
@@ -241,6 +245,7 @@ public final class LocationPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponse expected = new TestResponse(4);
         assertEquals(expected, actual);
+        assertTrue(handler.success);
 
         verify(mockedLocationProducer, times(2)).produce(locationCaptor.capture());
         verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), locationCaptor.capture());
@@ -422,6 +427,7 @@ public final class LocationPackageHandlerTest {
         final Object actual = handler.handleInternal(givenRequest, givenContext);
         final TestResponse expected = new TestResponse(4);
         assertEquals(expected, actual);
+        assertTrue(handler.success);
 
         verify(mockedLocationProducer, times(3)).produce(locationCaptor.capture());
         verify(mockedContextAttributeManager, times(1)).putLastLocation(same(givenContext), locationCaptor.capture());
@@ -433,7 +439,7 @@ public final class LocationPackageHandlerTest {
                 expectedThirdLocation,
                 expectedThirdLocation
         );
-        Assertions.assertEquals(expectedCapturedLocations, actualCapturedLocations);
+        assertEquals(expectedCapturedLocations, actualCapturedLocations);
     }
 
     @Test
@@ -496,6 +502,7 @@ public final class LocationPackageHandlerTest {
         when(mockedContextAttributeManager.findTracker(same(givenContext))).thenReturn(empty());
 
         assertThrows(IllegalArgumentException.class, () -> handler.handleInternal(givenRequest, givenContext));
+        assertFalse(handler.success);
 
         verifyNoInteractions(mockedLocationDefaultProperty, mockedLocationValidator, mockedLocationProducer);
     }
@@ -531,6 +538,7 @@ public final class LocationPackageHandlerTest {
     }
 
     private static final class TestLocationPackageHandler extends LocationPackageHandler<TestLocationSource, TestLocationPackage> {
+        private boolean success;
 
         public TestLocationPackageHandler(final ContextAttributeManager contextAttributeManager,
                                           final LocationDefaultProperty locationDefaultProperty,
@@ -543,6 +551,10 @@ public final class LocationPackageHandlerTest {
                     locationValidator,
                     locationProducer
             );
+        }
+
+        public void reset() {
+            success = false;
         }
 
         @Override
@@ -618,6 +630,11 @@ public final class LocationPackageHandlerTest {
         @Override
         protected Stream<Parameter> streamParameters(final TestLocationSource location) {
             return location.getParameters().stream();
+        }
+
+        @Override
+        protected void onSuccess() {
+            success = true;
         }
 
         @Override
