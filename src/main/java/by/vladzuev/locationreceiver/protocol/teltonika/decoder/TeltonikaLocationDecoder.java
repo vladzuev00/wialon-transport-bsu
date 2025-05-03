@@ -8,6 +8,12 @@ import org.springframework.stereotype.Component;
 public final class TeltonikaLocationDecoder {
 
     public TeltonikaLocation decode(final ByteBuf buffer) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        final float longitude = buffer.readFloat();
+        final float latitude = buffer.readFloat();
+        final short altitude = buffer.readShort();
+        final short angle = buffer.readShort();
+        final byte satelliteCount = buffer.readByte();
+        final short speed = buffer.readShort();
+        return new TeltonikaLocation(longitude, latitude, altitude, angle, satelliteCount, speed);
     }
 }
