@@ -4,17 +4,21 @@ import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaL
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @Component
 public final class TeltonikaLocationDecoder {
 
     public TeltonikaLocation decode(final ByteBuf buffer) {
+        final LocalDateTime dateTime = LocalDateTime.ofEpochSecond(buffer.readLong(), 0, ZoneOffset.UTC);
+        buffer.skipBytes(1); //TODO skipPriority
         final float longitude = buffer.readFloat();
         final float latitude = buffer.readFloat();
         final short altitude = buffer.readShort();
         final short angle = buffer.readShort();
         final byte satelliteCount = buffer.readByte();
         final short speed = buffer.readShort();
-        throw new UnsupportedOperationException();
-//        return new TeltonikaLocation(latitude, longitude, altitude, angle, satelliteCount, speed);
+        return new TeltonikaLocation(dateTime, latitude, longitude, altitude, angle, satelliteCount, speed);
     }
 }
