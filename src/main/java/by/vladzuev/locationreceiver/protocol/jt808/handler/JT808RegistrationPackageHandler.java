@@ -35,7 +35,7 @@ public final class JT808RegistrationPackageHandler extends UnprotectedLoginPacka
 
     @Override
     protected void onSuccess() {
-        throw new UnsupportedOperationException();
+
     }
 
     @Override

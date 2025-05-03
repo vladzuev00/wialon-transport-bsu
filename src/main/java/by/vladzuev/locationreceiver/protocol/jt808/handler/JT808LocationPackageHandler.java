@@ -109,13 +109,11 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         return Stream.empty();
     }
 
-    //TODO: test
     @Override
     protected void onSuccess() {
 
     }
 
-    //TODO: rename tests
     @Override
     protected JT808ResponsePackage createSuccessResponse(final JT808LocationPackage request) {
         throw new UnsupportedOperationException();

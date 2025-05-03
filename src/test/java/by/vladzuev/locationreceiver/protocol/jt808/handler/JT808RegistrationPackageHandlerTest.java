@@ -20,7 +20,7 @@ public final class JT808RegistrationPackageHandlerTest {
 
     @Test
     public void successShouldBeHandled() {
-        assertThrows(UnsupportedOperationException.class, handler::onSuccess);
+        handler.onSuccess();
     }
 
     @Test
