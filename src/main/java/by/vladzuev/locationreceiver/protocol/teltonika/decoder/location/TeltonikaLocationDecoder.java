@@ -14,6 +14,6 @@ public final class TeltonikaLocationDecoder {
         final short angle = buffer.readShort();
         final byte satelliteCount = buffer.readByte();
         final short speed = buffer.readShort();
-        return new TeltonikaLocation(longitude, latitude, altitude, angle, satelliteCount, speed);
+        return new TeltonikaLocation(latitude, longitude, altitude, angle, satelliteCount, speed);
     }
 }
