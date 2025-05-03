@@ -1,8 +1,8 @@
 package by.vladzuev.locationreceiver.protocol.teltonika.model.login;
 
-import lombok.Value;
+public final class TeltonikaResponseSuccessLoginPackage extends TeltonikaResponseLoginPackage {
 
-@Value
-public class TeltonikaResponseSuccessLoginPackage {
-    //TODO 01 byte
+    public TeltonikaResponseSuccessLoginPackage(final byte value) {
+        super(value);
+    }
 }
