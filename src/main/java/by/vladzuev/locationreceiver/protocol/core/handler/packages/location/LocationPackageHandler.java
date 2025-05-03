@@ -45,6 +45,7 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
         handleLocations(request, context);
+        //TODO: test
         onSuccess();
         return createSuccessResponse(request);
     }
