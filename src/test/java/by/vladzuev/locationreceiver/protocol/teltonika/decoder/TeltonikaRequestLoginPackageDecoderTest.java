@@ -50,10 +50,10 @@ public final class TeltonikaRequestLoginPackageDecoderTest {
     }
 
     @Test
-    public void imeiShouldBeDecoded() {
+    public void packageShouldBeDecodedInternally() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("000F313233343536373839303132333435"));
 
-        final TeltonikaRequestLoginPackage actual = decoder.decode(givenBuffer);
+        final TeltonikaRequestLoginPackage actual = decoder.decodeInternal(givenBuffer);
         final TeltonikaRequestLoginPackage expected = new TeltonikaRequestLoginPackage("123456789012345");
         assertEquals(expected, actual);
 
