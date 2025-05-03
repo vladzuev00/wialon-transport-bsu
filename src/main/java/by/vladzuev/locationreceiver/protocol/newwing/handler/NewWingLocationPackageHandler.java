@@ -109,13 +109,11 @@ public final class NewWingLocationPackageHandler extends LocationPackageHandler<
         return Stream.empty();
     }
 
-    //TODO: test
     @Override
     protected void onSuccess() {
 
     }
 
-    //TODO: rename tests
     @Override
     protected NewWingSuccessResponsePackage createSuccessResponse(final NewWingLocationPackage request) {
         return new NewWingSuccessResponsePackage();

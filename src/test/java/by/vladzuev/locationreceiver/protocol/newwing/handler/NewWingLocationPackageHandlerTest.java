@@ -167,7 +167,12 @@ public final class NewWingLocationPackageHandlerTest {
     }
 
     @Test
-    public void responseShouldBeCreated() {
+    public void successShouldBeHandled() {
+        handler.onSuccess();
+    }
+
+    @Test
+    public void successResponseShouldBeCreated() {
         final NewWingLocationPackage givenRequest = new NewWingLocationPackage(emptyList());
 
         final NewWingSuccessResponsePackage actual = handler.createSuccessResponse(givenRequest);
