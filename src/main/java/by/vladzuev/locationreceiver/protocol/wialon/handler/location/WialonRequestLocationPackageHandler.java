@@ -105,4 +105,10 @@ public abstract class WialonRequestLocationPackageHandler<REQUEST extends Wialon
     protected final Stream<Parameter> streamParameters(final WialonLocation location) {
         return location.getParameters().stream();
     }
+
+    //TODO: test
+    @Override
+    protected final void onSuccess() {
+
+    }
 }

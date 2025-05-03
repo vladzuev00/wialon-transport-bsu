@@ -33,6 +33,12 @@ public final class JT808RegistrationPackageHandler extends UnprotectedLoginPacka
         throw new UnsupportedOperationException();
     }
 
+    //TODO: test
+    @Override
+    protected void onSuccess() {
+
+    }
+
     @Override
     protected JT808ResponsePackage createSuccessResponse() {
         throw new UnsupportedOperationException();

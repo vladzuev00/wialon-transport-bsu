@@ -34,6 +34,12 @@ public final class NewWingLoginPackageHandler extends UnprotectedLoginPackageHan
         return new NewWingFailureResponsePackage();
     }
 
+    //TODO: test
+    @Override
+    protected void onSuccess() {
+
+    }
+
     @Override
     protected NewWingSuccessResponsePackage createSuccessResponse() {
         return new NewWingSuccessResponsePackage();
