@@ -33,6 +33,11 @@ public final class UnprotectedLoginPackageHandlerTest {
         }
 
         @Override
+        protected void onSuccess() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         protected Object createSuccessResponse() {
             throw new UnsupportedOperationException();
         }
