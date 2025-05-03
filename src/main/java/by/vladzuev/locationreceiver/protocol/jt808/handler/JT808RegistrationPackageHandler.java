@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public final class JT808RegistrationPackageHandler extends UnprotectedLoginPackageHandler<JT808RegistrationPackage> {
 
-    public JT808RegistrationPackageHandler(TrackerImeiFactory imeiFactory,
-                                           ContextAttributeManager contextAttributeManager,
-                                           TrackerService trackerService,
-                                           ContextManager contextManager,
-                                           LocationService locationService) {
+    public JT808RegistrationPackageHandler(final TrackerImeiFactory imeiFactory,
+                                           final ContextAttributeManager contextAttributeManager,
+                                           final TrackerService trackerService,
+                                           final ContextManager contextManager,
+                                           final LocationService locationService) {
         super(
                 JT808RegistrationPackage.class,
                 imeiFactory,
@@ -33,10 +33,9 @@ public final class JT808RegistrationPackageHandler extends UnprotectedLoginPacka
         throw new UnsupportedOperationException();
     }
 
-    //TODO: test
     @Override
     protected void onSuccess() {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override

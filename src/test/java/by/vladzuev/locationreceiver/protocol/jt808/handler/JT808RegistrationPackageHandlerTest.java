@@ -19,6 +19,11 @@ public final class JT808RegistrationPackageHandlerTest {
     }
 
     @Test
+    public void successShouldBeHandled() {
+        assertThrows(UnsupportedOperationException.class, handler::onSuccess);
+    }
+
+    @Test
     public void successResponseShouldBeCreated() {
         assertThrows(UnsupportedOperationException.class, handler::createSuccessResponse);
     }
