@@ -293,7 +293,7 @@ public final class WialonRequestLocationPackageHandlerTest {
         }
 
         @Override
-        protected Object createResponse(final TestPackage request) {
+        protected Object createSuccessResponse(final TestPackage request) {
             throw new UnsupportedOperationException();
         }
     }

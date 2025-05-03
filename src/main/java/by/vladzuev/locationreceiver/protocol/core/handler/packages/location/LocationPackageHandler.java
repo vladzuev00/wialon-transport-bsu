@@ -45,7 +45,8 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
     @Override
     protected final Object handleInternal(final REQUEST request, final ChannelHandlerContext context) {
         handleLocations(request, context);
-        return createResponse(request);
+        onSuccess();
+        return createSuccessResponse(request);
     }
 
     protected abstract Stream<LOCATION_SOURCE> streamLocationSources(final REQUEST request);
@@ -78,7 +79,9 @@ public abstract class LocationPackageHandler<LOCATION_SOURCE, REQUEST> extends P
 
     protected abstract Stream<Parameter> streamParameters(final LOCATION_SOURCE source);
 
-    protected abstract Object createResponse(final REQUEST request);
+    protected abstract void onSuccess();
+
+    protected abstract Object createSuccessResponse(final REQUEST request);
 
     private void handleLocations(final REQUEST request, final ChannelHandlerContext context) {
         final Tracker tracker = getTracker(context);

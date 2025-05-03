@@ -182,6 +182,6 @@ public final class JT808LocationPackageHandlerTest {
     public void responseShouldBeCreated() {
         final JT808LocationPackage givenRequest = new JT808LocationPackage(Collections.emptyList());
 
-        assertThrows(UnsupportedOperationException.class, () -> handler.createResponse(givenRequest));
+        assertThrows(UnsupportedOperationException.class, () -> handler.createSuccessResponse(givenRequest));
     }
 }

@@ -21,7 +21,7 @@ public final class WialonRequestSingleLocationPackageHandlerTest {
     public void responseShouldBeCreated() {
         final WialonRequestLocationPackage givenRequest = mock(WialonRequestLocationPackage.class);
 
-        final WialonResponseSingleLocationPackage actual = handler.createResponse(givenRequest);
+        final WialonResponseSingleLocationPackage actual = handler.createSuccessResponse(givenRequest);
         final var expected = new WialonResponseSingleLocationPackage(PACKAGE_FIX_SUCCESS);
         assertEquals(expected, actual);
 

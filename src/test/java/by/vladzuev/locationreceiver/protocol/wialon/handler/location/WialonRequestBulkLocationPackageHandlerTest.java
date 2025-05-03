@@ -30,7 +30,7 @@ public final class WialonRequestBulkLocationPackageHandlerTest {
                 )
         );
 
-        final WialonResponseBulkLocationPackage actual = handler.createResponse(givenRequest);
+        final WialonResponseBulkLocationPackage actual = handler.createSuccessResponse(givenRequest);
         final WialonResponseBulkLocationPackage expected = new WialonResponseBulkLocationPackage(6);
         assertEquals(expected, actual);
     }

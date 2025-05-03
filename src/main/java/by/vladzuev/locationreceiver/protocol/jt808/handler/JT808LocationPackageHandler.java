@@ -109,8 +109,9 @@ public final class JT808LocationPackageHandler extends LocationPackageHandler<JT
         return Stream.empty();
     }
 
+    //TODO: rename tests
     @Override
-    protected JT808ResponsePackage createResponse(final JT808LocationPackage request) {
+    protected JT808ResponsePackage createSuccessResponse(final JT808LocationPackage request) {
         throw new UnsupportedOperationException();
     }
 }

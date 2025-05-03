@@ -621,7 +621,7 @@ public final class LocationPackageHandlerTest {
         }
 
         @Override
-        protected TestResponse createResponse(final TestLocationPackage request) {
+        protected TestResponse createSuccessResponse(final TestLocationPackage request) {
             return new TestResponse(request.getLocations().size());
         }
     }

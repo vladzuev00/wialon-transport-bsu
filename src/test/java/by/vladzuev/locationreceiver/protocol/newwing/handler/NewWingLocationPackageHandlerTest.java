@@ -170,7 +170,7 @@ public final class NewWingLocationPackageHandlerTest {
     public void responseShouldBeCreated() {
         final NewWingLocationPackage givenRequest = new NewWingLocationPackage(emptyList());
 
-        final NewWingSuccessResponsePackage actual = handler.createResponse(givenRequest);
+        final NewWingSuccessResponsePackage actual = handler.createSuccessResponse(givenRequest);
         final NewWingSuccessResponsePackage expected = new NewWingSuccessResponsePackage();
         assertEquals(expected, actual);
     }
