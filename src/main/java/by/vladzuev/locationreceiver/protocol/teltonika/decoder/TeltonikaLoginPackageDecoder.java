@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
-public final class TeltonikaRequestLoginPackageDecoder extends TeltonikaPackageDecoder {
+public final class TeltonikaLoginPackageDecoder extends TeltonikaPackageDecoder {
 
-    public TeltonikaRequestLoginPackageDecoder(final LoginSuccessHolder loginSuccessHolder) {
+    public TeltonikaLoginPackageDecoder(final LoginSuccessHolder loginSuccessHolder) {
         super(loginSuccessHolder, false);
     }
 

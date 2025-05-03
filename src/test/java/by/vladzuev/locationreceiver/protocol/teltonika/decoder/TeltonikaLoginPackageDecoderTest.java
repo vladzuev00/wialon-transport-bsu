@@ -15,16 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public final class TeltonikaRequestLoginPackageDecoderTest {
+public final class TeltonikaLoginPackageDecoderTest {
 
     @Mock
     private LoginSuccessHolder mockedLoginSuccessHolder;
 
-    private TeltonikaRequestLoginPackageDecoder decoder;
+    private TeltonikaLoginPackageDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new TeltonikaRequestLoginPackageDecoder(mockedLoginSuccessHolder);
+        decoder = new TeltonikaLoginPackageDecoder(mockedLoginSuccessHolder);
     }
 
     @Test

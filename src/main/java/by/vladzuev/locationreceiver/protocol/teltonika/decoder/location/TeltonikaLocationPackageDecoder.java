@@ -11,11 +11,11 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
 @Component
-public final class TeltonikaRequestLocationPackageDecoder extends TeltonikaPackageDecoder {
+public final class TeltonikaLocationPackageDecoder extends TeltonikaPackageDecoder {
     private final TeltonikaLocationDecoder locationDecoder;
 
-    public TeltonikaRequestLocationPackageDecoder(final LoginSuccessHolder loginSuccessHolder,
-                                                  final TeltonikaLocationDecoder locationDecoder) {
+    public TeltonikaLocationPackageDecoder(final LoginSuccessHolder loginSuccessHolder,
+                                           final TeltonikaLocationDecoder locationDecoder) {
         super(loginSuccessHolder, true);
         this.locationDecoder = locationDecoder;
     }
