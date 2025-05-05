@@ -1,43 +1,12 @@
---DROPPING constraint
-ALTER TABLE IF EXISTS users
-DROP CONSTRAINT IF EXISTS email_should_be_correct;
-
-ALTER TABLE IF EXISTS users
-DROP CONSTRAINT IF EXISTS email_should_be_unique;
-
-ALTER TABLE IF EXISTS trackers
-DROP
-CONSTRAINT IF EXISTS fk_trackers_to_users;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS imei_should_be_unique;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS imei_should_be_correct;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS phone_number_should_be_unique;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS correct_phone_number;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
-
-ALTER TABLE IF EXISTS trackers
-DROP CONSTRAINT IF EXISTS fk_trackers_to_mileages;
-
-ALTER TABLE IF EXISTS locations
-DROP
-CONSTRAINT IF EXISTS fk_location_to_trackers;
-
-ALTER TABLE IF EXISTS locations
-DROP
-CONSTRAINT IF EXISTS fk_location_to_addresses;
-
-ALTER TABLE IF EXISTS cities
-DROP
-CONSTRAINT IF EXISTS address_id_should_be_unique;
+ALTER TABLE IF EXISTS users DROP CONSTRAINT IF EXISTS email_should_be_unique;
+ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS fk_trackers_to_users;
+ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS imei_should_be_unique;
+ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS phone_number_should_be_unique;
+ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
+ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS fk_trackers_to_mileages;
+ALTER TABLE IF EXISTS locations DROP CONSTRAINT IF EXISTS fk_locations_to_trackers;
+ALTER TABLE IF EXISTS locations DROP CONSTRAINT IF EXISTS fk_locations_to_addresses;
+ALTER TABLE IF EXISTS cities DROP CONSTRAINT IF EXISTS address_id_should_be_unique;
 
 ALTER TABLE IF EXISTS parameters
 DROP CONSTRAINT IF EXISTS parameter_name_should_be_correct;
