@@ -22,7 +22,7 @@ public final class TeltonikaLocationPackageDecoder extends TeltonikaPackageDecod
 
     @Override
     protected TeltonikaRequestLocationPackage decodeInternal(final ByteBuf buffer) {
-        final byte locationCount = buffer.readByte();
+        final int locationCount = buffer.readByte();
         return range(0, locationCount)
                 .mapToObj(i -> locationDecoder.decode(buffer))
                 .collect(collectingAndThen(toList(), TeltonikaRequestLocationPackage::new));
