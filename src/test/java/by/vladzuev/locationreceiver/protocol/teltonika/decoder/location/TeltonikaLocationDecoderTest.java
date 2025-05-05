@@ -4,10 +4,10 @@ import by.vladzuev.locationreceiver.protocol.teltonika.model.location.TeltonikaL
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
+import static java.time.LocalDateTime.ofEpochSecond;
+import static java.time.ZoneOffset.UTC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TeltonikaLocationDecoderTest {
@@ -19,7 +19,7 @@ public final class TeltonikaLocationDecoderTest {
 
         final TeltonikaLocation actual = decoder.decode(givenBuffer);
         final TeltonikaLocation expected = new TeltonikaLocation(
-                LocalDateTime.of(2007, 7, 25, 6, 46, 38),
+                ofEpochSecond(1185345998335L, 0, UTC),
                 54.7146368,
                 25.3032016,
                 (short) 111,
