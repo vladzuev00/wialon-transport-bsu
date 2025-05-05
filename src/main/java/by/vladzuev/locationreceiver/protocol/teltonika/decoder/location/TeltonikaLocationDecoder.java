@@ -32,8 +32,7 @@ public final class TeltonikaLocationDecoder {
     }
 
     private LocalDateTime readDateTime(final ByteBuf buffer) {
-        final long epochSecond = buffer.readLong();
-        return ofEpochSecond(epochSecond, 0, UTC);
+        return ofEpochSecond(buffer.readLong(), 0, UTC);
     }
 
     private double readGpsCoordinate(final ByteBuf buffer) {
