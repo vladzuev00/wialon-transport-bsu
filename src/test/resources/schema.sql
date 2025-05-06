@@ -7,7 +7,6 @@ ALTER TABLE IF EXISTS locations DROP CONSTRAINT IF EXISTS fk_locations_to_addres
 ALTER TABLE IF EXISTS parameters DROP CONSTRAINT IF EXISTS fk_parameters_to_locations;
 ALTER TABLE IF EXISTS tracker_last_locations DROP CONSTRAINT IF EXISTS fk_tracker_last_locations_to_trackers;
 ALTER TABLE IF EXISTS tracker_last_locations DROP CONSTRAINT IF EXISTS fk_tracker_last_locations_to_locations;
-ALTER TABLE IF EXISTS cities DROP CONSTRAINT IF EXISTS fk_cities_to_addresses;
 
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS trackers;
@@ -18,6 +17,7 @@ DROP TABLE IF EXISTS addresses;
 DROP TABLE IF EXISTS cities;
 DROP TABLE IF EXISTS mileages;
 
+DROP SEQUENCE IF EXISTS cities_id_seq;
 DROP SEQUENCE IF EXISTS addresses_id_seq;
 DROP SEQUENCE IF EXISTS locations_id_seq;
 DROP SEQUENCE IF EXISTS parameters_id_seq;
@@ -69,6 +69,18 @@ ALTER TABLE trackers ADD CONSTRAINT mileage_id_should_be_unique UNIQUE(mileage_i
 ALTER TABLE trackers ADD CONSTRAINT fk_trackers_to_mileages FOREIGN KEY (mileage_id) REFERENCES mileages(id);
 CREATE UNIQUE INDEX trackers_imei_unique_index ON trackers (imei) WHERE is_deleted = FALSE;
 CREATE UNIQUE INDEX trackers_phone_number_unique_index ON trackers (phone_number) WHERE is_deleted = FALSE;
+
+CREATE TABLE cities
+(
+    id           BIGSERIAL    PRIMARY KEY,
+    name         VARCHAR(256) NOT NULL,
+    country_name VARCHAR(256) NOT NULL,
+    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMP(0) NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP(0) NOT NULL DEFAULT NOW()
+);
+ALTER SEQUENCE cities_id_seq INCREMENT 50;
+CREATE UNIQUE INDEX cities_name_unique_index ON cities (name, country_name) WHERE is_deleted = FALSE;
 
 CREATE TABLE addresses
 (
@@ -136,19 +148,6 @@ CREATE TABLE tracker_last_locations
 ALTER TABLE tracker_last_locations ADD CONSTRAINT fk_tracker_last_locations_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id);
 ALTER TABLE tracker_last_locations ADD CONSTRAINT fk_tracker_last_locations_to_locations FOREIGN KEY (location_id) REFERENCES locations (id);
 
-CREATE TABLE cities
-(
-    id           BIGSERIAL    PRIMARY KEY,
-    name         VARCHAR(256) NOT NULL,
-    country_name VARCHAR(256) NOT NULL,
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at   TIMESTAMP(0) NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMP(0) NOT NULL DEFAULT NOW()
-);
-ALTER SEQUENCE cities_id_seq INCREMENT 50;
-ALTER TABLE cities ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
-CREATE UNIQUE INDEX cities_name_unique_index ON cities (name, country_name) WHERE is_deleted = FALSE;
-
 CREATE OR REPLACE FUNCTION insert_initial_mileage() RETURNS TRIGGER AS
 '
     BEGIN
@@ -183,4 +182,4 @@ CREATE OR REPLACE FUNCTION update_tracker_last_location() RETURNS TRIGGER AS
 
 CREATE TRIGGER tr_after_insert_location
 AFTER INSERT ON locations FOR EACH ROW
-EXECUTE PROCEDURE update_tracker_last_locations();
+EXECUTE PROCEDURE update_tracker_last_location();
