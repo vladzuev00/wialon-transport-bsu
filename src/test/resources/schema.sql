@@ -1,9 +1,9 @@
 ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS fk_trackers_to_users;
 ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS mileage_id_should_be_unique;
 ALTER TABLE IF EXISTS trackers DROP CONSTRAINT IF EXISTS fk_trackers_to_mileages;
+ALTER TABLE IF EXISTS addresses DROP CONSTRAINT IF EXISTS fk_addresses_to_cities;
 ALTER TABLE IF EXISTS locations DROP CONSTRAINT IF EXISTS fk_locations_to_trackers;
 ALTER TABLE IF EXISTS locations DROP CONSTRAINT IF EXISTS fk_locations_to_addresses;
-ALTER TABLE IF EXISTS cities DROP CONSTRAINT IF EXISTS address_id_should_be_unique;
 ALTER TABLE IF EXISTS parameters DROP CONSTRAINT IF EXISTS fk_parameters_to_locations;
 ALTER TABLE IF EXISTS tracker_last_locations DROP CONSTRAINT IF EXISTS fk_tracker_last_locations_to_trackers;
 ALTER TABLE IF EXISTS tracker_last_locations DROP CONSTRAINT IF EXISTS fk_tracker_last_locations_to_locations;
@@ -75,13 +75,13 @@ CREATE TABLE addresses
     id           BIGSERIAL    PRIMARY KEY,
     bounding_box GEOMETRY     NOT NULL,
     center       GEOMETRY     NOT NULL,
-    city_name    VARCHAR(256) NOT NULL,
-    country_name VARCHAR(256) NOT NULL,
     geometry     GEOMETRY     NOT NULL,
+    city_id      BIGINT       NOT NULL,
     is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at   TIMESTAMP    NOT NULL DEFAULT NOW(),
     updated_at   TIMESTAMP    NOT NULL DEFAULT NOW()
 );
+ALTER TABLE addresses ADD CONSTRAINT fk_addresses_to_cities FOREIGN KEY (city_id) REFERENCES cities (id);
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 CREATE INDEX ON addresses using GIST(geometry);
 
@@ -138,15 +138,16 @@ ALTER TABLE tracker_last_locations ADD CONSTRAINT fk_tracker_last_locations_to_l
 
 CREATE TABLE cities
 (
-    id         BIGSERIAL PRIMARY KEY,
-    address_id BIGINT    UNIQUE NOT NULL,
-    is_deleted BOOLEAN   NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    id           BIGSERIAL    PRIMARY KEY,
+    name         VARCHAR(256) NOT NULL,
+    country_name VARCHAR(256) NOT NULL,
+    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 ALTER SEQUENCE cities_id_seq INCREMENT 50;
 ALTER TABLE cities ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
-ALTER TABLE cities ADD CONSTRAINT address_id_should_be_unique UNIQUE (address_id);
+CREATE UNIQUE INDEX cities_name_unique_index ON cities (name, country_name) WHERE is_deleted = FALSE;
 
 CREATE OR REPLACE FUNCTION insert_initial_mileage() RETURNS TRIGGER AS
 '
