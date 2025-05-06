@@ -1,21 +1,44 @@
 package by.vladzuev.locationreceiver.crud.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static java.util.Objects.hash;
-
+@Setter
+@Getter
+@ToString
+@MappedSuperclass
+@NoArgsConstructor
 public abstract class AbstractEntity<ID> implements Serializable {
 
-    public abstract void setId(final ID id);
+    @Column(name = "is_deleted")
+    private Boolean deleted = Boolean.FALSE;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public abstract void setId(ID id);
 
     public abstract ID getId();
 
     @Override
     @SuppressWarnings({"unchecked", "EqualsWhichDoesntCheckParameterClass"})
-    public final boolean equals(final Object otherObject) {
+    public final boolean equals(Object otherObject) {
         if (this == otherObject) {
             return true;
         }
@@ -25,12 +48,12 @@ public abstract class AbstractEntity<ID> implements Serializable {
         if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
-        final AbstractEntity<ID> other = (AbstractEntity<ID>) otherObject;
+        AbstractEntity<ID> other = (AbstractEntity<ID>) otherObject;
         return Objects.equals(getId(), other.getId());
     }
 
     @Override
     public final int hashCode() {
-        return hash(getId());
+        return Objects.hash(getId());
     }
 }
