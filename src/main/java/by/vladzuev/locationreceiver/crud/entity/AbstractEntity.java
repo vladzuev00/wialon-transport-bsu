@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static java.lang.Boolean.FALSE;
+
 @Setter
 @Getter
 @ToString
@@ -22,7 +24,7 @@ import java.util.Objects;
 public abstract class AbstractEntity<ID> implements Serializable {
 
     @Column(name = "is_deleted")
-    private Boolean deleted = Boolean.FALSE;
+    private Boolean deleted = FALSE;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -38,7 +40,7 @@ public abstract class AbstractEntity<ID> implements Serializable {
 
     @Override
     @SuppressWarnings({"unchecked", "EqualsWhichDoesntCheckParameterClass"})
-    public final boolean equals(Object otherObject) {
+    public final boolean equals(final Object otherObject) {
         if (this == otherObject) {
             return true;
         }
@@ -48,7 +50,7 @@ public abstract class AbstractEntity<ID> implements Serializable {
         if (Hibernate.getClass(this) != Hibernate.getClass(otherObject)) {
             return false;
         }
-        AbstractEntity<ID> other = (AbstractEntity<ID>) otherObject;
+        final AbstractEntity<ID> other = (AbstractEntity<ID>) otherObject;
         return Objects.equals(getId(), other.getId());
     }
 
