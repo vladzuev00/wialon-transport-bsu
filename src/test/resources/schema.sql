@@ -36,7 +36,9 @@ CREATE TABLE users
     email              VARCHAR(256) NOT NULL,
     encrypted_password VARCHAR(256) NOT NULL,
     role               user_type    NOT NULL,
-    is_deleted         BOOLEAN      NOT NULL DEFAULT FALSE
+    is_deleted         BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at         TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at         TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 CREATE UNIQUE INDEX users_email_unique_index ON users (email) WHERE is_deleted = FALSE;
 
@@ -45,7 +47,9 @@ CREATE TABLE mileages
 	id           SERIAL           PRIMARY KEY,
 	urban        DOUBLE PRECISION NOT NULL,
 	country      DOUBLE PRECISION NOT NULL,
-    is_deleted   BOOLEAN          NOT NULL DEFAULT FALSE
+    is_deleted   BOOLEAN          NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMP        NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP        NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE trackers
@@ -56,7 +60,9 @@ CREATE TABLE trackers
     phone_number       CHAR(9)      NOT NULL,
     user_id            INTEGER      NOT NULL,
     mileage_id         INTEGER      NOT NULL,
-    is_deleted         BOOLEAN      NOT NULL DEFAULT FALSE
+    is_deleted         BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at         TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at         TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 ALTER TABLE trackers ADD CONSTRAINT fk_trackers_to_users FOREIGN KEY (user_id) REFERENCES users (id);
 ALTER TABLE trackers ADD CONSTRAINT mileage_id_should_be_unique UNIQUE(mileage_id);
@@ -72,7 +78,9 @@ CREATE TABLE addresses
     city_name    VARCHAR(256) NOT NULL,
     country_name VARCHAR(256) NOT NULL,
     geometry     GEOMETRY     NOT NULL,
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE
+    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 ALTER SEQUENCE addresses_id_seq INCREMENT 50;
 CREATE INDEX ON addresses using GIST(geometry);
@@ -94,7 +102,9 @@ CREATE TABLE locations
     driver_key_code        VARCHAR(256)       NOT NULL,
     tracker_id             INTEGER            NOT NULL,
     address_id             BIGINT             NOT NULL,
-    is_deleted             BOOLEAN            NOT NULL DEFAULT FALSE
+    is_deleted             BOOLEAN            NOT NULL DEFAULT FALSE,
+    created_at             TIMESTAMP          NOT NULL DEFAULT NOW(),
+    updated_at             TIMESTAMP          NOT NULL DEFAULT NOW()
 );
 ALTER SEQUENCE locations_id_seq INCREMENT 50;
 ALTER TABLE locations ADD CONSTRAINT fk_locations_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id);
@@ -107,17 +117,21 @@ CREATE TABLE parameters
     type        parameter_type NOT NULL,
     value       VARCHAR(256)   NOT NULL,
     location_id BIGINT         NOT NULL,
-    is_deleted  BOOLEAN        NOT NULL DEFAULT FALSE
+    is_deleted  BOOLEAN        NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMP      NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP      NOT NULL DEFAULT NOW()
 );
 ALTER SEQUENCE parameters_id_seq INCREMENT 50;
 ALTER TABLE parameters ADD CONSTRAINT fk_parameters_to_locations FOREIGN KEY (location_id) REFERENCES locations (id);
 
 CREATE TABLE tracker_last_locations
 (
-    id             SERIAL  PRIMARY KEY,
-    tracker_id     INTEGER NOT NULL UNIQUE,
-    location_id    BIGINT  UNIQUE,
-    is_deleted     BOOLEAN NOT NULL DEFAULT FALSE
+    id          SERIAL    PRIMARY KEY,
+    tracker_id  INTEGER   NOT NULL UNIQUE,
+    location_id BIGINT    UNIQUE,
+    is_deleted  BOOLEAN   NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ALTER TABLE tracker_last_locations ADD CONSTRAINT fk_tracker_last_locations_to_trackers FOREIGN KEY (tracker_id) REFERENCES trackers (id);
 ALTER TABLE tracker_last_locations ADD CONSTRAINT fk_tracker_last_locations_to_locations FOREIGN KEY (location_id) REFERENCES locations (id);
@@ -126,7 +140,9 @@ CREATE TABLE cities
 (
     id         BIGSERIAL PRIMARY KEY,
     address_id BIGINT    UNIQUE NOT NULL,
-    is_deleted BOOLEAN   NOT NULL DEFAULT FALSE
+    is_deleted BOOLEAN   NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ALTER SEQUENCE cities_id_seq INCREMENT 50;
 ALTER TABLE cities ADD CONSTRAINT fk_cities_to_addresses FOREIGN KEY (address_id) REFERENCES addresses (id);
