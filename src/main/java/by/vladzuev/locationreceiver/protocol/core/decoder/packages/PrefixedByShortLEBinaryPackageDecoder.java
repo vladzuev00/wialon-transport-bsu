@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.Objects;
 
-public abstract class PrefixedByShortBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<Short> {
+public abstract class PrefixedByShortLEBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<Short> {
 
-    public PrefixedByShortBinaryPackageDecoder(final Short prefix) {
+    public PrefixedByShortLEBinaryPackageDecoder(final Short prefix) {
         super(prefix);
     }
 
@@ -17,7 +17,7 @@ public abstract class PrefixedByShortBinaryPackageDecoder extends PrefixedBinary
 
     @Override
     protected final Short readPrefix(final ByteBuf buffer, final int length) {
-        return buffer.readShort();
+        return buffer.readShortLE();
     }
 
     @Override
