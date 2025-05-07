@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class ApelLocation {
-    int dateTime;
+    int epochSeconds;
     int latitude;
     int longitude;
     short speed;
