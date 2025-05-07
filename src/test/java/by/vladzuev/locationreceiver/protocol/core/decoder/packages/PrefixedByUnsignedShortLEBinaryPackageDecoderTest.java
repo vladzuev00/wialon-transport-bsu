@@ -3,51 +3,51 @@ package by.vladzuev.locationreceiver.protocol.core.decoder.packages;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
+import static io.netty.buffer.ByteBufUtil.decodeHexDump;
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public final class PrefixedByShortLEBinaryPackageDecoderTest {
+public final class PrefixedByUnsignedShortLEBinaryPackageDecoderTest {
     private final TestDecoder decoder = new TestDecoder();
 
     @Test
     public void prefixLengthShouldBeGot() {
-        final Short givenPrefix = 255;
+        final Integer givenPrefix = 255;
 
         final int actual = decoder.getLength(givenPrefix);
-        final int expected = 2;
+        final int expected = Short.BYTES;
         assertEquals(expected, actual);
     }
 
     @Test
     public void prefixShouldBeRead() {
-        final ByteBuf givenBuffer = mock(ByteBuf.class);
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("0c002900f12a00000f003235303032363533343135313036340f0033353638393530333632373938313101002000000000"));
         final int givenLength = Short.BYTES;
 
-        final short givenPrefix = 255;
-        when(givenBuffer.readShortLE()).thenReturn(givenPrefix);
+        final int actual = decoder.readPrefix(givenBuffer, givenLength);
+        final int expected = 12;
+        assertEquals(expected, actual);
 
-        final short actual = decoder.readPrefix(givenBuffer, givenLength);
-        assertEquals(givenPrefix, actual);
+        assertEquals(0, givenBuffer.readerIndex());
     }
 
     @Test
     public void prefixesShouldBeEqual() {
-        final Short givenFirst = 255;
-        final Short givenSecond = 255;
+        final Integer givenFirst = 255;
+        final Integer givenSecond = 255;
 
         assertTrue(decoder.isEqual(givenFirst, givenSecond));
     }
 
     @Test
     public void prefixesShouldNotBeEqual() {
-        final Short givenFirst = 255;
-        final Short givenSecond = 256;
+        final Integer givenFirst = 255;
+        final Integer givenSecond = 256;
 
         assertFalse(decoder.isEqual(givenFirst, givenSecond));
     }
 
-    private static final class TestDecoder extends PrefixedByShortLEBinaryPackageDecoder {
+    private static final class TestDecoder extends PrefixedByUnsignedShortLEBinaryPackageDecoder {
 
         public TestDecoder() {
             super(null);

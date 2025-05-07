@@ -32,7 +32,7 @@ public final class ApelPackageDecoderTest {
     private static final class TestDecoder extends ApelPackageDecoder {
 
         public TestDecoder() {
-            super(Short.MAX_VALUE);
+            super(Integer.MAX_VALUE);
         }
 
         @Override

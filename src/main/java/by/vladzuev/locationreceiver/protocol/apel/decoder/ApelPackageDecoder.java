@@ -1,11 +1,11 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
-import by.vladzuev.locationreceiver.protocol.core.decoder.packages.PrefixedByShortLEBinaryPackageDecoder;
+import by.vladzuev.locationreceiver.protocol.core.decoder.packages.PrefixedByUnsignedShortLEBinaryPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
-public abstract class ApelPackageDecoder extends PrefixedByShortLEBinaryPackageDecoder {
+public abstract class ApelPackageDecoder extends PrefixedByUnsignedShortLEBinaryPackageDecoder {
 
-    public ApelPackageDecoder(final Short prefix) {
+    public ApelPackageDecoder(final Integer prefix) {
         super(prefix);
     }
 

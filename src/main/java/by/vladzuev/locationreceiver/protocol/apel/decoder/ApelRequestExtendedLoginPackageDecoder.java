@@ -8,7 +8,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
 public final class ApelRequestExtendedLoginPackageDecoder extends ApelPackageDecoder {
-    private static final Short PREFIX = 12;
+    private static final Integer PREFIX = 12;
 
     public ApelRequestExtendedLoginPackageDecoder() {
         super(PREFIX);
