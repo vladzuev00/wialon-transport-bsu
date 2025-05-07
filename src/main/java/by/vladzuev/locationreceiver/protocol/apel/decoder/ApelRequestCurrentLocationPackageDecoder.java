@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class ApelRequestCurrentLocationPackageDecoder extends ApelPackageDecoder {
-    private static final Integer PREFIX = 101;
+    private static final Integer PREFIX = 100;
 
     public ApelRequestCurrentLocationPackageDecoder() {
         super(PREFIX);
