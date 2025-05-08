@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
-import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelCurrentLocationResponsePackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,8 @@ public final class ApelCurrentLocationResponsePackageDecoderTest {
                         448008575,
                         (short) 0,
                         (short) 2343,
-                        (short) -14
+                        (short) -14,
+                        new double[]{}
                 )
         );
         assertEquals(expected, actual);

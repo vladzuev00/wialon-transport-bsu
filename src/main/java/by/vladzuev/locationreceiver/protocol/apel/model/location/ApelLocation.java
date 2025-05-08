@@ -10,4 +10,5 @@ public class ApelLocation {
     short speed;
     short course;
     short altitude;
+    double[] analogInputs;
 }

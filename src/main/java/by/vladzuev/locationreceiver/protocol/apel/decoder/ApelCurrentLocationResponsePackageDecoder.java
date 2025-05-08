@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
-import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelCurrentLocationResponsePackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,8 @@ public final class ApelCurrentLocationResponsePackageDecoder extends ApelPackage
                         longitude,
                         speed,
                         course,
-                        altitude
+                        altitude,
+                        new double[]{}
                 )
         );
     }
