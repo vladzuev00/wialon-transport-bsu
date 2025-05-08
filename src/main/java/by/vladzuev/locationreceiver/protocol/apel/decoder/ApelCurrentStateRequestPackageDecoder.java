@@ -29,19 +29,7 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
         skipDI(buffer);
         skipDO(buffer);
         final double[] analogInputs = readAnalogInputs(buffer);
-        return new ApelCurrentStateRequestPackage(
-                new ApelLocation(
-                        epochSeconds,
-                        latitude,
-                        longitude,
-                        speed,
-                        (double) hdop,
-                        course,
-                        altitude,
-                        satelliteCount,
-                        analogInputs
-                )
-        );
+        return createPackage(epochSeconds, latitude, longitude, speed, hdop, course, altitude, satelliteCount, analogInputs);
     }
 
     private void skipGSM(final ByteBuf buffer) {
@@ -75,5 +63,29 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
                 buffer.readShortLE(),
                 buffer.readShortLE()
         };
+    }
+
+    private ApelCurrentStateRequestPackage createPackage(final int epochSeconds,
+                                                         final int latitude,
+                                                         final int longitude,
+                                                         final byte speed,
+                                                         final byte hdop,
+                                                         final short course,
+                                                         final short altitude,
+                                                         final byte satelliteCount,
+                                                         final double[] analogInputs) {
+        return new ApelCurrentStateRequestPackage(
+                new ApelLocation(
+                        epochSeconds,
+                        latitude,
+                        longitude,
+                        speed,
+                        (double) hdop,
+                        course,
+                        altitude,
+                        satelliteCount,
+                        analogInputs
+                )
+        );
     }
 }
