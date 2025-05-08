@@ -5,6 +5,7 @@ import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
+//TODO: apel сделать полностью не только это класс
 @Component
 public final class ApelCurrentLocationResponsePackageDecoder extends ApelPackageDecoder {
     private static final Integer PREFIX = 101;
