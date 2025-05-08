@@ -18,15 +18,14 @@ public final class ApelCurrentLocationResponsePackageDecoderTest {
 
         final ApelCurrentLocationResponsePackage actual = decoder.decodeStartingFromBody(givenBuffer);
         final ApelCurrentLocationResponsePackage expected = new ApelCurrentLocationResponsePackage(
-                new ApelLocation(
-                        1370089030,
-                        663991862,
-                        448008575,
-                        (short) 0,
-                        (short) 2343,
-                        (short) -14,
-                        new double[]{}
-                )
+                ApelLocation.builder()
+                        .epochSeconds(1370089030)
+                        .latitude(663991862)
+                        .longitude(448008575)
+                        .speed((short) 0)
+                        .course((short) 2343)
+                        .altitude((short) -14)
+                        .build()
         );
         assertEquals(expected, actual);
         assertEquals(Integer.BYTES, givenBuffer.readableBytes());

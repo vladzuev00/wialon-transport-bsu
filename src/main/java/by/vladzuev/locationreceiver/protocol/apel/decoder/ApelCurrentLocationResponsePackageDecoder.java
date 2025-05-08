@@ -21,16 +21,23 @@ public final class ApelCurrentLocationResponsePackageDecoder extends ApelPackage
         final short speed = buffer.readShortLE();
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
-        return new ApelCurrentLocationResponsePackage(
-                new ApelLocation(
-                        epochSeconds,
-                        latitude,
-                        longitude,
-                        speed,
-                        course,
-                        altitude,
-                        new double[]{}
-                )
-        );
+        final ApelLocation location = createLocation(epochSeconds, latitude, longitude, speed, course, altitude);
+        return new ApelCurrentLocationResponsePackage(location);
+    }
+
+    private ApelLocation createLocation(final int epochSeconds,
+                                        final int latitude,
+                                        final int longitude,
+                                        final short speed,
+                                        final short course,
+                                        final short altitude) {
+        return ApelLocation.builder()
+                .epochSeconds(epochSeconds)
+                .latitude(latitude)
+                .longitude(longitude)
+                .speed(speed)
+                .course(course)
+                .altitude(altitude)
+                .build();
     }
 }
