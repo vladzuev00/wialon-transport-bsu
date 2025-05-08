@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
 import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
-import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLogRecordsRequestPackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.logrecords.ApelLogRecordsRequestPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
