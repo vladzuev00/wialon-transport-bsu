@@ -10,5 +10,6 @@ public class ApelLocation {
     short speed;
     short course;
     short altitude;
+    byte satelliteCount;
     double[] analogInputs;
 }
