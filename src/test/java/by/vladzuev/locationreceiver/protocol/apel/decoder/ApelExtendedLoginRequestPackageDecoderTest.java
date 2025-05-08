@@ -8,8 +8,8 @@ import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class ApelRequestExtendedLoginPackageDecoderTest {
-    private final ApelRequestExtendedLoginPackageDecoder decoder = new ApelRequestExtendedLoginPackageDecoder();
+public final class ApelExtendedLoginRequestPackageDecoderTest {
+    private final ApelExtendedLoginRequestPackageDecoder decoder = new ApelExtendedLoginRequestPackageDecoder();
 
     @Test
     public void packageShouldBeDecodedStartingFromBody() {

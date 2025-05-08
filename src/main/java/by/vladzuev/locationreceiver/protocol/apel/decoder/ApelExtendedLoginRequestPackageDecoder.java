@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
-public final class ApelRequestExtendedLoginPackageDecoder extends ApelPackageDecoder {
+public final class ApelExtendedLoginRequestPackageDecoder extends ApelPackageDecoder {
     private static final Integer PREFIX = 12;
 
-    public ApelRequestExtendedLoginPackageDecoder() {
+    public ApelExtendedLoginRequestPackageDecoder() {
         super(PREFIX);
     }
 
