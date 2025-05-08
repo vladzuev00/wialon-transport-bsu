@@ -1,4 +1,4 @@
-package by.vladzuev.locationreceiver.protocol.apel.model.logrecords;
+package by.vladzuev.locationreceiver.protocol.apel.model;
 
 import lombok.Value;
 
