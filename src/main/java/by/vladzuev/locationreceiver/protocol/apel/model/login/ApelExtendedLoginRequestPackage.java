@@ -4,7 +4,7 @@ import by.vladzuev.locationreceiver.protocol.core.model.ProtectedLoginPackage;
 import lombok.Value;
 
 @Value
-public class ApelRequestExtendedLoginPackage implements ProtectedLoginPackage {
+public class ApelExtendedLoginRequestPackage implements ProtectedLoginPackage {
     String imei;
     String password;
 }

@@ -1,7 +1,7 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
 import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
-import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelRequestCurrentLocationPackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelCurrentLocationResponsePackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +14,14 @@ public final class ApelRequestCurrentLocationPackageDecoder extends ApelPackageD
     }
 
     @Override
-    protected ApelRequestCurrentLocationPackage decodeStartingFromBody(final ByteBuf buffer) {
+    protected ApelCurrentLocationResponsePackage decodeStartingFromBody(final ByteBuf buffer) {
         final int epochSeconds = buffer.readIntLE();
         final int latitude = buffer.readIntLE();
         final int longitude = buffer.readIntLE();
         final short speed = buffer.readShortLE();
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
-        return new ApelRequestCurrentLocationPackage(
+        return new ApelCurrentLocationResponsePackage(
                 new ApelLocation(
                         epochSeconds,
                         latitude,

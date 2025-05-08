@@ -1,6 +1,6 @@
 package by.vladzuev.locationreceiver.protocol.apel.decoder;
 
-import by.vladzuev.locationreceiver.protocol.apel.model.login.ApelRequestExtendedLoginPackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.login.ApelExtendedLoginRequestPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +15,12 @@ public final class ApelRequestExtendedLoginPackageDecoder extends ApelPackageDec
     }
 
     @Override
-    protected ApelRequestExtendedLoginPackage decodeStartingFromBody(final ByteBuf buffer) {
+    protected ApelExtendedLoginRequestPackage decodeStartingFromBody(final ByteBuf buffer) {
         skipTrackerId(buffer);
         skipSIM(buffer);
         final String imei = readImei(buffer);
         final String password = readPassword(buffer);
-        return new ApelRequestExtendedLoginPackage(imei, password);
+        return new ApelExtendedLoginRequestPackage(imei, password);
     }
 
     private void skipTrackerId(final ByteBuf buffer) {
