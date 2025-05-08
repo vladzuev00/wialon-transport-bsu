@@ -12,6 +12,7 @@ public class ApelLocation {
     int latitude;
     int longitude;
     short speed;
+    Double hdop;
     short course;
     short altitude;
     Byte satelliteCount;

@@ -19,15 +19,15 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
         final int latitude = buffer.readIntLE();
         final int longitude = buffer.readIntLE();
         final byte speed = buffer.readByte();
-        buffer.skipBytes(Byte.BYTES);  //hdop
+        final byte hdop = buffer.readByte();
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
         final byte satelliteCount = buffer.readByte();
-        buffer.skipBytes(Byte.BYTES);   //GSM
-        buffer.skipBytes(Short.BYTES);   //eventType
-        buffer.skipBytes(Integer.BYTES);   //metersTraveled
-        buffer.skipBytes(Byte.BYTES);   //DI
-        buffer.skipBytes(Byte.BYTES);   //DO
+        buffer.skipBytes(Byte.BYTES);
+        buffer.skipBytes(Short.BYTES);
+        buffer.skipBytes(Integer.BYTES);
+        buffer.skipBytes(Byte.BYTES);
+        buffer.skipBytes(Byte.BYTES);
         //TODO analogInputs
         final short firstAnalogInput = buffer.readShortLE();
         final short secondAnalogInput = buffer.readShortLE();
@@ -43,6 +43,7 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
                         latitude,
                         longitude,
                         speed,
+                        (double) hdop,
                         course,
                         altitude,
                         satelliteCount,
