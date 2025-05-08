@@ -23,20 +23,12 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
         final byte satelliteCount = buffer.readByte();
-        buffer.skipBytes(Byte.BYTES);
-        buffer.skipBytes(Short.BYTES);
-        buffer.skipBytes(Integer.BYTES);
-        buffer.skipBytes(Byte.BYTES);
-        buffer.skipBytes(Byte.BYTES);
-        //TODO analogInputs
-        final short firstAnalogInput = buffer.readShortLE();
-        final short secondAnalogInput = buffer.readShortLE();
-        final short thirdAnalogInput = buffer.readShortLE();
-        final short fourthAnalogInput = buffer.readShortLE();
-        final short fifthAnalogInput = buffer.readShortLE();
-        final short sixthAnalogInput = buffer.readShortLE();
-        final short seventhAnalogInput = buffer.readShortLE();
-        final short eighthAnalogInput = buffer.readShortLE();
+        skipGSM(buffer);
+        skipEventType(buffer);
+        skipMetersTraveled(buffer);
+        skipDI(buffer);
+        skipDO(buffer);
+        final double[] analogInputs = readAnalogInputs(buffer);
         return new ApelCurrentStateRequestPackage(
                 new ApelLocation(
                         epochSeconds,
@@ -47,17 +39,41 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
                         course,
                         altitude,
                         satelliteCount,
-                        new double[]{
-                                firstAnalogInput,
-                                secondAnalogInput,
-                                thirdAnalogInput,
-                                fourthAnalogInput,
-                                fifthAnalogInput,
-                                sixthAnalogInput,
-                                seventhAnalogInput,
-                                eighthAnalogInput
-                        }
+                        analogInputs
                 )
         );
+    }
+
+    private void skipGSM(final ByteBuf buffer) {
+        buffer.skipBytes(Byte.BYTES);
+    }
+
+    private void skipEventType(final ByteBuf buffer) {
+        buffer.skipBytes(Short.BYTES);
+    }
+
+    private void skipMetersTraveled(final ByteBuf buffer) {
+        buffer.skipBytes(Integer.BYTES);
+    }
+
+    private void skipDI(final ByteBuf buffer) {
+        buffer.skipBytes(Byte.BYTES);
+    }
+
+    private void skipDO(final ByteBuf buffer) {
+        buffer.skipBytes(Byte.BYTES);
+    }
+
+    private double[] readAnalogInputs(final ByteBuf buffer) {
+        return new double[]{
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE(),
+                buffer.readShortLE()
+        };
     }
 }

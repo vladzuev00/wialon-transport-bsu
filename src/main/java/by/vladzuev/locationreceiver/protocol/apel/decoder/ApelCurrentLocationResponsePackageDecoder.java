@@ -21,23 +21,24 @@ public final class ApelCurrentLocationResponsePackageDecoder extends ApelPackage
         final short speed = buffer.readShortLE();
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
-        final ApelLocation location = createLocation(epochSeconds, latitude, longitude, speed, course, altitude);
-        return new ApelCurrentLocationResponsePackage(location);
+        return createPackage(epochSeconds, latitude, longitude, speed, course, altitude);
     }
 
-    private ApelLocation createLocation(final int epochSeconds,
-                                        final int latitude,
-                                        final int longitude,
-                                        final short speed,
-                                        final short course,
-                                        final short altitude) {
-        return ApelLocation.builder()
-                .epochSeconds(epochSeconds)
-                .latitude(latitude)
-                .longitude(longitude)
-                .speed(speed)
-                .course(course)
-                .altitude(altitude)
-                .build();
+    private ApelCurrentLocationResponsePackage createPackage(final int epochSeconds,
+                                                             final int latitude,
+                                                             final int longitude,
+                                                             final short speed,
+                                                             final short course,
+                                                             final short altitude) {
+        return new ApelCurrentLocationResponsePackage(
+                ApelLocation.builder()
+                        .epochSeconds(epochSeconds)
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .speed(speed)
+                        .course(course)
+                        .altitude(altitude)
+                        .build()
+        );
     }
 }
