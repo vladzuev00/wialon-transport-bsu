@@ -14,17 +14,17 @@ public final class ApelRequestCurrentLocationPackageDecoderTest {
 
     @Test
     public void packageShouldBeDecodedStartingFromBody() {
-        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump(""));
+        final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("46e6a95136b693277f11b41a00002709f2ff00000000"));
 
         final ApelCurrentLocationResponsePackage actual = decoder.decodeStartingFromBody(givenBuffer);
         final ApelCurrentLocationResponsePackage expected = new ApelCurrentLocationResponsePackage(
                 new ApelLocation(
-                        0,
-                        0,
-                        0,
+                        1370089030,
+                        663991862,
+                        448008575,
                         (short) 0,
-                        (short) 0,
-                        (short) 0
+                        (short) 2343,
+                        (short) -14
                 )
         );
         assertEquals(expected, actual);
