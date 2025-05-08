@@ -9,8 +9,8 @@ import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class ApelRequestCurrentLocationPackageDecoderTest {
-    private final ApelRequestCurrentLocationPackageDecoder decoder = new ApelRequestCurrentLocationPackageDecoder();
+public final class ApelCurrentLocationResponsePackageDecoderTest {
+    private final ApelCurrentLocationResponsePackageDecoder decoder = new ApelCurrentLocationResponsePackageDecoder();
 
     @Test
     public void packageShouldBeDecodedStartingFromBody() {

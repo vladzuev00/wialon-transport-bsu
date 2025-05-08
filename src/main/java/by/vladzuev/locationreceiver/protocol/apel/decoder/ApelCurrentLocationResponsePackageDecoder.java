@@ -6,10 +6,10 @@ import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class ApelRequestCurrentLocationPackageDecoder extends ApelPackageDecoder {
+public final class ApelCurrentLocationResponsePackageDecoder extends ApelPackageDecoder {
     private static final Integer PREFIX = 101;
 
-    public ApelRequestCurrentLocationPackageDecoder() {
+    public ApelCurrentLocationResponsePackageDecoder() {
         super(PREFIX);
     }
 
