@@ -15,8 +15,8 @@ public final class ApelFullLocationDecoder extends ApelLocationDecoder {
     }
 
     @Override
-    protected Double readHdop(final ByteBuf buffer) {
-        return (double) buffer.readByte();
+    protected Byte readHdop(final ByteBuf buffer) {
+        return buffer.readByte();
     }
 
     @Override

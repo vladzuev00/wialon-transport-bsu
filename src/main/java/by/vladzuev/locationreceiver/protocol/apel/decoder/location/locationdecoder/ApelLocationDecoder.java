@@ -10,7 +10,7 @@ public abstract class ApelLocationDecoder {
         final int latitude = buffer.readIntLE();
         final int longitude = buffer.readIntLE();
         final short speed = readSpeed(buffer);
-        final Double hdop = readHdop(buffer);
+        final Byte hdop = readHdop(buffer);
         final short course = buffer.readShortLE();
         final short altitude = buffer.readShortLE();
         final Byte satelliteCount = readSatelliteCount(buffer);
@@ -20,7 +20,7 @@ public abstract class ApelLocationDecoder {
 
     protected abstract short readSpeed(final ByteBuf buffer);
 
-    protected abstract Double readHdop(final ByteBuf buffer);
+    protected abstract Byte readHdop(final ByteBuf buffer);
 
     protected abstract Byte readSatelliteCount(final ByteBuf buffer);
 

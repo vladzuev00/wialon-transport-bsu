@@ -26,7 +26,7 @@ public final class ApelShortLocationDecoderTest {
     public void hdopShouldBeRead() {
         final ByteBuf givenBuffer = mock(ByteBuf.class);
 
-        final Double actual = decoder.readHdop(givenBuffer);
+        final Byte actual = decoder.readHdop(givenBuffer);
         assertNull(actual);
 
         verifyNoInteractions(givenBuffer);

@@ -12,7 +12,7 @@ public final class ApelShortLocationDecoder extends ApelLocationDecoder {
     }
 
     @Override
-    protected Double readHdop(final ByteBuf buffer) {
+    protected Byte readHdop(final ByteBuf buffer) {
         return null;
     }
 

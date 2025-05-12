@@ -25,8 +25,8 @@ public final class ApelFullLocationDecoderTest {
     public void hdopShouldBeRead() {
         final ByteBuf givenBuffer = wrappedBuffer(decodeHexDump("25"));
 
-        final Double actual = decoder.readHdop(givenBuffer);
-        final Double expected = 37.;
+        final Byte actual = decoder.readHdop(givenBuffer);
+        final Byte expected = 37;
         assertEquals(expected, actual);
         assertEquals(0, givenBuffer.readableBytes());
     }
