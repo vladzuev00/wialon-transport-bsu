@@ -31,7 +31,9 @@ public final class ApelFullLocationDecoder extends ApelLocationDecoder {
         skipMetersTraveled(buffer);
         skipDI(buffer);
         skipDO(buffer);
-        return range(0, ANALOG_INPUT_COUNT).mapToDouble(i -> readAnalogInput(buffer)).toArray();
+        return range(0, ANALOG_INPUT_COUNT)
+                .mapToDouble(i -> readAnalogInput(buffer))
+                .toArray();
     }
 
     private void skipGSM(final ByteBuf buffer) {
