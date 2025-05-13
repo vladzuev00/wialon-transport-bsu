@@ -23,7 +23,7 @@ public final class ApelCurrentStateRequestPackageDecoderTest {
                         663991862,
                         448008575,
                         (short) 0,
-                        23.0,
+                        (byte) 23,
                         (short) 2343,
                         (short) -14,
                         (byte) 3,

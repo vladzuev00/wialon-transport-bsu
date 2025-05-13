@@ -80,7 +80,7 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelPackageDeco
                         latitude,
                         longitude,
                         speed,
-                        (double) hdop,
+                        hdop,
                         course,
                         altitude,
                         satelliteCount,
