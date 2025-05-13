@@ -5,9 +5,12 @@ import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
+import static java.util.stream.IntStream.range;
+
 @Component
 public final class ApelCurrentStateRequestPackageDecoder extends ApelLocationPackageDecoder {
     private static final Integer PREFIX = 92;
+    private static final int ANALOG_INPUT_COUNT = 8;
 
     public ApelCurrentStateRequestPackageDecoder() {
         super(PREFIX);
@@ -35,16 +38,9 @@ public final class ApelCurrentStateRequestPackageDecoder extends ApelLocationPac
         skipMetersTraveled(buffer);
         skipDI(buffer);
         skipDO(buffer);
-        return new double[]{
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer),
-                readAnalogInput(buffer)
-        };
+        return range(0, ANALOG_INPUT_COUNT)
+                .mapToDouble(i -> readAnalogInput(buffer))
+                .toArray();
     }
 
     @Override
