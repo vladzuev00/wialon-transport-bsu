@@ -1,13 +1,17 @@
-package by.vladzuev.locationreceiver.protocol.apel.decoder.location.locationdecoder;
+package by.vladzuev.locationreceiver.protocol.apel.decoder.location;
 
+import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelCurrentStateRequestPackage;
+import by.vladzuev.locationreceiver.protocol.apel.model.location.ApelLocation;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
-import static java.util.stream.IntStream.range;
-
 @Component
-public final class ApelFullLocationDecoder extends ApelLocationDecoder {
-    private static final int ANALOG_INPUT_COUNT = 8;
+public final class ApelCurrentStateRequestPackageDecoder extends ApelLocationPackageDecoder {
+    private static final Integer PREFIX = 92;
+
+    public ApelCurrentStateRequestPackageDecoder() {
+        super(PREFIX);
+    }
 
     @Override
     protected short readSpeed(final ByteBuf buffer) {
@@ -31,9 +35,21 @@ public final class ApelFullLocationDecoder extends ApelLocationDecoder {
         skipMetersTraveled(buffer);
         skipDI(buffer);
         skipDO(buffer);
-        return range(0, ANALOG_INPUT_COUNT)
-                .mapToDouble(i -> readAnalogInput(buffer))
-                .toArray();
+        return new double[]{
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer),
+                readAnalogInput(buffer)
+        };
+    }
+
+    @Override
+    protected ApelCurrentStateRequestPackage createPackage(final ApelLocation location) {
+        return new ApelCurrentStateRequestPackage(location);
     }
 
     private void skipGSM(final ByteBuf buffer) {
