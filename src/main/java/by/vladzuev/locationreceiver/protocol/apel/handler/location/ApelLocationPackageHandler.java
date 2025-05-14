@@ -47,12 +47,12 @@ public abstract class ApelLocationPackageHandler<REQUEST> extends LocationPackag
 
     @Override
     protected final OptionalDouble findLatitude(final ApelLocation location) {
-        return OptionalDouble.of(calculateGpsCoordinate(location.getLatitude()));
+        return OptionalDouble.of(findGpsCoordinate(location.getLatitude()));
     }
 
     @Override
     protected final OptionalDouble findLongitude(final ApelLocation location) {
-        return OptionalDouble.of(calculateGpsCoordinate(location.getLongitude()));
+        return OptionalDouble.of(findGpsCoordinate(location.getLongitude()));
     }
 
     @Override
@@ -72,12 +72,16 @@ public abstract class ApelLocationPackageHandler<REQUEST> extends LocationPackag
 
     @Override
     protected final OptionalInt findSatelliteCount(final ApelLocation location) {
-        return nonNull(location.getSatelliteCount()) ? OptionalInt.of(location.getSatelliteCount()) : OptionalInt.empty();
+        return nonNull(location.getSatelliteCount())
+                ? OptionalInt.of(location.getSatelliteCount())
+                : OptionalInt.empty();
     }
 
     @Override
     protected final OptionalDouble findHdop(final ApelLocation location) {
-        return nonNull(location.getHdop()) ? OptionalDouble.of(location.getHdop()) : OptionalDouble.empty();
+        return nonNull(location.getHdop())
+                ? OptionalDouble.of(location.getHdop())
+                : OptionalDouble.empty();
     }
 
     @Override
@@ -116,7 +120,7 @@ public abstract class ApelLocationPackageHandler<REQUEST> extends LocationPackag
         return ofEpochSecond(location.getEpochSeconds(), 0, UTC);
     }
 
-    private double calculateGpsCoordinate(final int units) {
+    private double findGpsCoordinate(final int units) {
         return units / 180. * 0x7FFFFFFF;
     }
 }
